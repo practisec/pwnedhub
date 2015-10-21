@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="banner center-content">
+        <h3>A collaborative space to conduct security assessments.</h3>
+        <input type="button" onclick="window.location='{{ url_for('login') }}';" value="get started" />
+    </div>
+    <div class="row center-content">
+        <div class="four columns panel rounded"><h5>Expose <span class="red">flaws</span>.</h5></div>
+        <div class="four columns panel rounded"><h5>Share <span class="red">results</span>.</h5></div>
+        <div class="four columns panel rounded"><h5>Win <span class="red">engagements</span>.</h5></div>
+    </div>
+{% endblock %}

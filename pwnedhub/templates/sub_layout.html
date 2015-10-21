@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block body %}
+            <div class="nav">
+                <div class="center-content">
+                    <ul>
+                        <li class="black">|</li>
+                        <li><a href="{{ url_for('notes') }}">notes</a></li>
+                        <li class="black">|</li>
+                        <li><a href="{{ url_for('messages') }}">messages</a></li>
+                        <li class="black">|</li>
+                        <li><a href="{{ url_for('artifacts') }}">artifacts</a></li>
+                        <li class="black">|</li>
+                        <li><a href="{{ url_for('tools') }}">tools</a></li>
+                        <li class="black">|</li>
+                        <li><a href="{{ url_for('games') }}">games</a></li>
+                        <li class="black">|</li>
+                    </ul>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+            <br><br>
+            {% block sub_body %}{% endblock %}
+{% endblock %}

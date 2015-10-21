@@ -1,0 +1,21 @@
+{% extends "sub_layout.html" %}
+{% block sub_body %}
+    <div class="row">
+        <div class="six columns offset-by-three auth-form rounded shaded">
+            <h4>change your profile</h4>
+            <form action="{{ url_for('profile') }}" method="post">
+                <label for="password">password</label>
+                <input class="u-full-width" name="password" type="password" value="{{ g.user.password_as_string }}" />
+                <label for="question">question</label>
+                <select class="u-full-width" name="question">
+                {% for question in questions %}
+                    <option value="{{ question }}"{% if question == g.user.question %} selected{% endif %}>{{ questions[question] }}</option>
+                {% endfor %}
+                </select>
+                <label for="answer">answer</label>
+                <input class="u-full-width" name="answer" type="text" value="{{ g.user.answer }}" />
+                <input class="u-full-width" type="submit" value="submit" onclick="this.form.submit();" />
+            </form>
+        </div>
+    </div>
+{% endblock %}

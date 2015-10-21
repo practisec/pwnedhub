@@ -1,0 +1,33 @@
+{% extends "sub_layout.html" %}
+{% block sub_body %}
+    <div class="row">
+        <div class="ten columns offset-by-one center-content">
+            <form action="{{ url_for('artifacts') }}" enctype="multipart/form-data" method="post">
+                <input name="file" type="file" />
+                <input type="submit" value="upload" onclick="this.form.submit();" />
+            </form>
+        </div>
+    </div>
+    {% if artifacts|length > 0 %}
+    <div class="row">
+        <div class="u-full-width artifacts">
+            <table class="center">
+                <thead>
+                    <tr><th>file</th><th>action</th></tr>
+                </thead>
+                <tbody>
+                {% for artifact in artifacts %}
+                    <tr>
+                        <td>{{ artifact }}</td>
+                        <td>
+                            <input type="button" onclick="window.location='{{ url_for('artifacts_view', filename=artifact) }}'" value="view" />
+                            <input type="button" onclick="window.location='{{ url_for('artifacts_delete', filename=artifact) }}'" value="delete" />
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

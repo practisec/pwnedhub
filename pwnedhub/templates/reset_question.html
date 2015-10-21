@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="row">
+        <div class="four columns offset-by-four auth-form rounded shaded">
+            <h4>answer the question</h4>
+            <form action="{{ url_for('reset_question') }}" method="post">
+                <label for="answer">{{ question }}</label>
+                <input class="u-full-width" name="answer" type="text" value="" />
+                <input class="u-full-width" type="submit" value="submit" onclick="this.form.submit();" />
+            </form>
+        </div>
+    </div>
+{% endblock %}

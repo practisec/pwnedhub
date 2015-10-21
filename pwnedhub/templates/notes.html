@@ -1,0 +1,26 @@
+{% extends "sub_layout.html" %}
+{% block sub_body %}
+    <div class="row">
+        <div class="u-full-width">
+            <form action="{{ url_for('notes') }}" method="post">
+                <textarea name="notes" class="notes" id="notes">{{ notes }}</textarea>
+            </form>
+        </div>
+    </div>
+    <script>
+//document.body.onunload = function(){
+document.getElementById('notes').onblur = function(){
+    minAjax({
+        url: "{{ url_for('notes') }}",
+        type: "POST",
+        method: false,
+        data: {
+            notes: this.value,
+        },
+        success: function(data){
+            console.log('Notes saved.')
+        }
+    });
+};
+    </script>
+{% endblock %}

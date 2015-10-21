@@ -1,0 +1,35 @@
+{% extends "sub_layout.html" %}
+{% block sub_body %}
+    <div class="row">
+        <div class="ten columns offset-by-one center-content">
+            <form action="{{ url_for('messages') }}" method="post">
+                <input style="float: right;" type="submit" value="submit" onclick="this.form.submit();" />
+                <span style="display: block; overflow: hidden; padding-right: 10px">
+                    <input style="width: 100%;" name="message" type="text" placeholder="message here..." />
+                </span>
+            </form>
+        </div>
+    </div>
+    {% if messages.all()|length > 0 %}
+    <div class="row">
+        <div class="ten columns offset-by-one messages">
+        {% for message in messages %}
+        {% if message.user == g.user %}
+            <div onmouseover="this.firstElementChild.style.visibility='visible'" onmouseout="this.firstElementChild.style.visibility='hidden'">
+                <div class=delete>
+                    <a href="{{ url_for('messages_delete', id=message.id) }}">delete</a>
+                </div>
+        {% endif %}
+                <div{% if message.user != g.user %} class="right-content"{% endif %}>
+                    <p><span class="red">{{ message.user.username }}</span> said...</p>
+                    <p>{{ message.comment }}</p>
+                    <p>{{ message.created_as_string }}</p>
+                </div>
+        {% if message.user == g.user %}
+            </div>
+        {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

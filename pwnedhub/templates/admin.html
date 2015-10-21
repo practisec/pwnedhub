@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block body %}
+    {% if vouchers.all()|length > 0 %}
+        <table class="u-full-width">
+            <caption><h4>vouchers</h4></caption>
+            <thead>
+                <tr><th>user</th><th>created</th><th>type</th><th>qty</th><th>status</th><th>actions</th></tr>
+            </thead>
+            <tbody>
+            {% for voucher in vouchers %}
+                <tr>
+                    <td>{{ voucher.user.username }}</td>
+                    <td>{{ voucher.created_as_string }}</td>
+                    <td>{{ voucher.type_as_string }}</td>
+                    <td>{{ voucher.quantity }}</td>
+                    <td>{{ voucher.status_as_string }}</td>
+                    <td>
+                        {% if voucher.status == 0 %}
+                            <input type="button" onclick="approve('{{ url_for('voucher_approve', vid=voucher.id) }}', {{ voucher.id }});" value="approve" />
+                            <input type="button" onclick="deny('{{ url_for('voucher_deny', vid=voucher.id) }}', {{ voucher.id }});" value="deny" />
+                            <input type="text" placeholder="comment" id="comment{{ voucher.id }}" />
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    {% if users.all()|length > 0 %}
+        <table class="u-full-width">
+            <caption><h4>users</h4></caption>
+            <thead>
+                <tr><th>username</th><th>role</th><th>active</th><th>actions</th></tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.role_as_string }}</td>
+                    <td>{{ user.active }}</td>
+                    <td>
+                        {% if user.active %}
+                            <input type="button" onclick="deactivate('{{ url_for('profile_deactivate', uid=user.id) }}');" value="deactivate" />
+                        {% else %}
+                            <input type="button" onclick="activate('{{ url_for('profile_activate', uid=user.id) }}');" value="activate" />
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

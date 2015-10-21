@@ -1,0 +1,216 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
+
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+th, td {
+    text-align: center;
+}
+
+td input, td select {
+    vertical-align: middle;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+}
+
+button, input[type="submit"], input[type="reset"], input[type="button"] {
+    padding: 0 1rem;
+}
+
+.flash {
+    position: absolute;
+    display: inline-block;
+    z-index: 100;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0 1rem;
+    font-size: 1.5rem;
+    visibility: hidden;
+    background-color: red;
+    color: white;
+    border: 1px solid black;
+}
+
+.container {
+    max-width: 1000px;
+}
+
+.nav {
+    display: table;
+    color: red;
+    width: 100%;
+    padding: .5rem 0;
+    text-align: right;
+}
+
+.nav div{
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.nav .links {
+    font-weight: bolder;
+    padding-right: 2rem
+}
+
+.nav .brand {
+    float: left;
+    font-size: 3rem;
+    margin-left: 1rem
+}
+
+.nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav li {
+    display: inline;
+}
+
+.nav a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.content {}
+
+.banner {
+    margin-top: 15rem;
+    margin-bottom: 10rem;
+}
+
+.panel {
+    padding: 2rem 2rem;
+    margin-bottom: 5rem;
+}
+
+.panel h5 {
+    margin-bottom: 0;
+}
+
+.auth-form {
+    border: 1px solid red;
+    padding: 1rem 1rem 0;
+    margin: 0 0 4rem;
+}
+
+.auth-form input[type=submit] {
+    background-color: red;
+    color: white;
+    margin-top: 1rem;
+    margin-bottom: 0;
+    border: 1px solid black;
+}
+
+.auth-form input[type=submit]:hover {
+    background-color: #ff3333;
+}
+
+.auth-form select {
+    border: 1px solid #a4a4a4;
+}
+
+.auth-form a {
+    color: red;
+    text-decoration: underline;
+}
+
+.auth-form p {
+    margin-bottom: 1.5rem;
+}
+
+.notes {
+    width: 100%;
+    min-height: 40rem;
+    padding: 1rem 1.5rem;
+    border: 1px solid #BBB;
+}
+
+.messages {
+    border-top: 1px solid #e1e1e1;
+    margin-bottom: 4rem;
+}
+
+.messages div p:nth-of-type(1) {
+    font-size: 1.75rem;
+}
+
+.messages div p:nth-of-type(3) {
+    font-size: 1rem;
+    margin-bottom: 0;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.delete {
+    float: right;
+    font-size: 1.25rem;
+    color: #e1e1e1;
+    visibility: hidden;
+}
+
+.delete a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.artifacts {
+    margin-bottom: 4rem;
+}
+
+.output {
+    min-height: 40rem;
+    padding: 1rem 1.5rem;
+    margin-bottom: 4rem;
+    border: 1px solid #BBB;
+}
+
+.output pre {
+    margin: 0;
+}
+
+.swf {
+    margin-bottom: 4rem;
+}
+
+.footer {
+    color: gray;
+    padding-top: 2rem;
+    border-top: 1px solid #e1e1e1;
+}
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center-content {
+    text-align: center;
+}
+
+.right-content {
+    text-align: right;
+}
+
+.rounded {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.shaded {
+    -webkit-box-shadow: 3px 3px 3px #e1e1e1;
+    -moz-box-shadow: 3px 3px 3px #e1e1e1;
+    box-shadow: 3px 3px 3px #e1e1e1;
+}
+
+.black {
+    color: black;
+}
+
+.red {
+    color: red;
+}

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block body %}
+    <br><br>
+    <div class="row">
+        <div class="six columns offset-by-three auth-form rounded shaded">
+            <h4>register a profile</h4>
+            <form action="{{ url_for('register') }}" method="post">
+                <label for="username">username</label>
+                <input class="u-full-width" name="username" type="text" />
+                <label for="password">password</label>
+                <input class="u-full-width" name="password" type="password" />
+                <label for="confirm_password">confirm password</label>
+                <input class="u-full-width" name="confirm_password" type="password" />
+                <label for="question">question</label>
+                <select class="u-full-width" name="question">
+                {% for question in questions %}
+                    <option value="{{ question }}">{{ questions[question] }}</option>
+                {% endfor %}
+                </select>
+                <label for="answer">answer</label>
+                <input class="u-full-width" name="answer" type="text" />
+                <input class="u-full-width" type="submit" value="register" onclick="this.form.submit();" />
+            </form>
+        </div>
+    </div>
+{% endblock %}
