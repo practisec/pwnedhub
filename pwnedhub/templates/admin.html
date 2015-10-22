@@ -1,53 +1,67 @@
-{% extends "layout.html" %}
-{% block body %}
-    {% if vouchers.all()|length > 0 %}
-        <table class="u-full-width">
-            <caption><h4>vouchers</h4></caption>
-            <thead>
-                <tr><th>user</th><th>created</th><th>type</th><th>qty</th><th>status</th><th>actions</th></tr>
-            </thead>
-            <tbody>
-            {% for voucher in vouchers %}
-                <tr>
-                    <td>{{ voucher.user.username }}</td>
-                    <td>{{ voucher.created_as_string }}</td>
-                    <td>{{ voucher.type_as_string }}</td>
-                    <td>{{ voucher.quantity }}</td>
-                    <td>{{ voucher.status_as_string }}</td>
-                    <td>
-                        {% if voucher.status == 0 %}
-                            <input type="button" onclick="approve('{{ url_for('voucher_approve', vid=voucher.id) }}', {{ voucher.id }});" value="approve" />
-                            <input type="button" onclick="deny('{{ url_for('voucher_deny', vid=voucher.id) }}', {{ voucher.id }});" value="deny" />
-                            <input type="text" placeholder="comment" id="comment{{ voucher.id }}" />
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
-    {% if users.all()|length > 0 %}
-        <table class="u-full-width">
-            <caption><h4>users</h4></caption>
-            <thead>
-                <tr><th>username</th><th>role</th><th>active</th><th>actions</th></tr>
-            </thead>
-            <tbody>
-            {% for user in users %}
-                <tr>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.role_as_string }}</td>
-                    <td>{{ user.active }}</td>
-                    <td>
-                        {% if user.active %}
-                            <input type="button" onclick="deactivate('{{ url_for('profile_deactivate', uid=user.id) }}');" value="deactivate" />
+{% extends "sub_layout.html" %}
+{% block sub_body %}
+    <div class="row">
+        <div class="u-full-width center-content">
+            <h4>Users</h4>
+            <table class="center">
+                <thead>
+                    <tr><th>created</th><th>username</th><th>role</th><th>status</th><th>action</th></tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.created_as_string }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.role_as_string }}</td>
+                        <td>{{ user.status_as_string }}</td>
+                        <td>
+                        {% if user.is_admin %}
+                            <input type="button" onclick="window.location='{{ url_for('admin_user', action='demote', id=user.id) }}'" value="demote" />
                         {% else %}
-                            <input type="button" onclick="activate('{{ url_for('profile_activate', uid=user.id) }}');" value="activate" />
+                            <input type="button" onclick="window.location='{{ url_for('admin_user', action='promote', id=user.id) }}'" value="promote" />
                         {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+                        {% if user.is_enabled %}
+                            <input type="button" onclick="window.location='{{ url_for('admin_user', action='disable', id=user.id) }}'" value="disable" />
+                        {% else %}
+                            <input type="button" onclick="window.location='{{ url_for('admin_user', action='enable', id=user.id) }}'" value="enable" />
+                        {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="u-full-width center-content">
+            <h4>Tools</h4>
+            <form action="{{ url_for('admin_tools_add') }}" method="post">
+                <table class="center">
+                    <thead>
+                        <tr><th>name</th><th>path</th><th>description</th><th>action</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" name="name" placeholder="name" /></td>
+                            <td><input type="text" name="path" placeholder="path" /></td>
+                            <td><input type="text" name="description" placeholder="description" /></td>
+                            <td><input type="submit" value="add" onclick="this.form.submit();" /></td>
+                        </tr>
+                    {% if tools|length > 0 %}
+                    {% for tool in tools %}
+                        <tr>
+                            <td>{{ tool.name }}</td>
+                            <td>{{ tool.path }}</td>
+                            <td>{{ tool.description }}</td>
+                            <td>
+                                <input type="button" onclick="window.location='{{ url_for('admin_tools_remove', id=tool.id) }}'" value="remove" />
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
 {% endblock %}

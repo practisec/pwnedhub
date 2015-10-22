@@ -2,9 +2,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-# Notes:
-# add login from file
-
 basedir = '/tmp'#os.path.abspath(os.path.dirname(__file__))
 
 # configuration

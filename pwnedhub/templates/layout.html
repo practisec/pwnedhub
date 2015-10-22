@@ -24,10 +24,6 @@
                     <li class="black">|</li>
                     <li><a href="{{ url_for('profile') }}">profile</a></li>
                     <li class="black">|</li>
-                    {% if g.user.is_admin() %}
-                        <li><a href=" url_for('admin') ">admin</a></li>
-                        <li class="black">|</li>
-                    {% endif %}
                     <li><a href="{{ url_for('logout') }}">log out</a></li>
                 {% else %}
                     <li><li><a href="{{ url_for('login') }}">log in</a></li>

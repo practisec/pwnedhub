@@ -3,17 +3,17 @@ ROLES = {
     1: 'user',
 }
 
+STATUSES = {
+    0: 'disabled',
+    1: 'enabled',
+}
+
 QUESTIONS = {
     0: 'Favorite food?',
     1: 'Pet\'s name?',
     2: 'High school mascot?',
     3: 'Birthplace?',
     4: 'First employer?',
-}
-
-TOOLS = {
-    0: ('Dig', 'dig', 'DNS interrogation tool.'),
-    1: ('Nikto', 'nikto', 'Web server scanner.'),
 }
 
 DEFAULT_NOTE = '''Welcome to PwnedHub! A collaborative space to conduct security assessments.

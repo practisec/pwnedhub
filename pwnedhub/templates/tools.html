@@ -4,7 +4,7 @@
         <div class="ten columns offset-by-one center-content">
             <select style="float: left;" id="tool">
             {% for tool in tools %}
-                <option value="{{ tool }}">{{ tools[tool][0] }}</option>
+                <option value="{{ tool.id }}">{{ tool.name }}</option>
             {% endfor %}
             </select>
             <input style="float: right;" type="button" onclick="execute('{{ url_for('tools_execute') }}');" value="execute" />

@@ -1,8 +1,8 @@
 from flask import request, session, g, redirect, url_for, render_template, jsonify, flash, abort, send_file
 from sqlalchemy import asc, desc
 from pwnedhub import app, db
-from models import User, Message, Score
-from constants import QUESTIONS, TOOLS, DEFAULT_NOTE
+from models import User, Message, Score, Tool
+from constants import QUESTIONS, DEFAULT_NOTE
 from decorators import login_required, roles_required
 from utils import xor_encrypt
 from validators import is_valid_quantity, is_valid_password, is_valid_file
@@ -39,18 +39,83 @@ def notes():
     notes = g.user.notes or DEFAULT_NOTE
     return render_template('notes.html', notes=notes)
 
-'''
 @app.route('/admin')
 @login_required
 @roles_required('admin')
 def admin():
-    vouchers = Voucher.query.order_by(Voucher.created.desc())
-    users = User.query.order_by(User.username.asc())
-    return render_template('admin.html', vouchers=vouchers, users=users)
-'''
+    tools = Tool.query.order_by(Tool.name.asc()).all()
+    users = User.query.order_by(User.username.asc()).all()
+    return render_template('admin.html', tools=tools, users=users)
+
+# ;;OSCI by adding commands and leveraging the tools page
+@app.route('/admin/tools/add', methods=['POST'])
+@login_required
+@roles_required('admin')
+def admin_tools_add():
+    tool = Tool(
+        name=request.form['name'],
+        path=request.form['path'],
+        description=request.form['description'],
+    )
+    db.session.add(tool)
+    db.session.commit()
+    flash('Tool added.')
+    return redirect(url_for('admin'))
+
+@app.route('/admin/tools/remove/<int:id>')
+@login_required
+@roles_required('admin')
+def admin_tools_remove(id):
+    tool = Tool.query.get(id)
+    if tool:
+        db.session.delete(tool)
+        db.session.commit()
+        flash('Tool removed.')
+    else:
+        flash('Invalid tool ID.')
+    return redirect(url_for('admin'))
+
+# ;;missing function level access control
+# ;;CSRF or force browse for privilege escalation
+# ;;IDOR for DoS by disabling accounts
+@app.route('/admin/user/<string:action>/<int:id>')
+@login_required
+#@roles_required('admin')
+def admin_user(action, id):
+    user = User.query.get(id)
+    if user:
+        if user != g.user:
+            if action == 'promote':
+                user.role = 0
+                db.session.add(user)
+                db.session.commit()
+                flash('User promoted.')
+            elif action == 'demote':
+                user.role = 1
+                db.session.add(user)
+                db.session.commit()
+                flash('User demoted.')
+            elif action == 'enable':
+                user.status = 1
+                db.session.add(user)
+                db.session.commit()
+                flash('User enabled.')
+            elif action == 'disable':
+                user.status = 0
+                db.session.add(user)
+                db.session.commit()
+                flash('User disabled.')
+            else:
+                flash('Invalid user action.')
+        else:
+            flash('Self modification denied.')
+    else:
+        flash('Invalid user ID.')
+    return redirect(url_for('admin'))
 
 # ;;no re-authentication for state changing operations
 # ;;passwords stored in a plain or reversable form
+# ;;CSRF for lateral authorizatiom bypass
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
@@ -69,7 +134,7 @@ def profile():
             flash('Password does not meet complexity requirements.')
     return render_template('profile.html', questions=QUESTIONS)
 
-# ;;stored XSS
+# ;;stored XSS via |safe filter in template
 @app.route('/messages', methods=['GET', 'POST'])
 @login_required
 def messages():
@@ -95,6 +160,8 @@ def messages_delete(id):
         flash('Invalid message ID.')
     return redirect(url_for('messages'))
 
+# ;;weak input validation
+# ;;file upload restriction bypass
 @app.route('/artifacts', methods=['GET', 'POST'])
 @login_required
 def artifacts():
@@ -117,7 +184,7 @@ def artifacts():
         break
     return render_template('artifacts.html', artifacts=artifacts)
 
-# ;;path traversal
+# ;;path traversal to delete any readable file
 @app.route('/artifacts/delete/<path:filename>')
 @login_required
 def artifacts_delete(filename):
@@ -128,7 +195,7 @@ def artifacts_delete(filename):
         flash('Unable to remove the artifact.')
     return redirect(url_for('artifacts'))
 
-# ;;path traversal
+# ;;path traversal to view any readable file
 @app.route('/artifacts/view/<path:filename>')
 @login_required
 def artifacts_view(filename):
@@ -141,15 +208,18 @@ def artifacts_view(filename):
 @app.route('/tools')
 @login_required
 def tools():
-    return render_template('tools.html', tools=TOOLS)
+    tools = Tool.query.all()
+    return render_template('tools.html', tools=tools)
 
+# ;;weak input sanitization
 # ;;OSCI using command substitution
 @app.route('/tools/execute', methods=['POST'])
 @login_required
 def tools_execute():
-    tool = TOOLS[int(request.form['tool'])][1]
+    tool = Tool.query.get(request.form['tool'])
+    path = tool.path
     args = request.form['args']
-    cmd = '{} {}'.format(tool, args)
+    cmd = '{} {}'.format(path, args)
     # filter out MOST characters that lead to OSCI
     cmd = re.sub('[;&|]', '', cmd)
     p = subprocess.Popen([cmd, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -223,6 +293,8 @@ def snake_enter_score():
 
 # authenticaton views
 
+# ;;weak password complexity requirement
+# ;;mass assignment
 # ;;user enumeration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -232,7 +304,7 @@ def register():
             password = request.form['password']
             if password == request.form['confirm_password']:
                 if is_valid_password(password):
-                    # ;;mass assignment
+                    # mass assignment here
                     user_dict = {}
                     for k in request.form:
                         if k not in ('confirm_password',):
@@ -251,7 +323,7 @@ def register():
             flash('Username already exists.')
     return render_template('register.html', questions=QUESTIONS)
 
-# ;; SQLi for auth bypass
+# ;; SQLi for authentication bypass
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # redirect to home if already logged in
@@ -264,12 +336,10 @@ def login():
         username = request.form['username']
         password_hash = xor_encrypt(request.form['password'], app.config['PW_ENC_KEY'])
         user = db.session.execute(query.format(username, password_hash)).first()
-        if user:
+        # if user and user.is_enabled:
+        if user and user['status'] == 1:
             #if user.check_password(request.form['password']):
             session['user_id'] = user.id
-            #flash('You have successfully logged in.')
-            #if user.is_admin():
-            #    return redirect(url_for('admin'))
             return redirect(url_for('home'))
         flash('Invalid username or password.')
     return render_template('login.html', username=username)
@@ -283,9 +353,8 @@ def logout():
 
 # password recovery flow views
 
-# ;;logic flaw
-# once an attacker submits a valid username, they can directly request
-# the reset password endpoint to bypass the security questions
+# ;;logic flaw in that once an attacker submits a valid username, they can
+# directly request the reset password endpoint to bypass the security question
 # ;;user enumeration
 @app.route('/reset', methods=['GET', 'POST'])
 def reset_init():
