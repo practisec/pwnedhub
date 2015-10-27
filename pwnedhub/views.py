@@ -126,15 +126,17 @@ def admin_user(action, id):
 
 # ;;no re-authentication for state changing operations
 # ;;passwords stored in a plain or reversable form
+# ;;method interchange
 # ;;CSRF for lateral authorizatiom bypass
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    if request.method == 'POST':
-        password = request.form['password']
+    #if request.method == 'POST':
+    if set(['password', 'question', 'answer']).issubset(request.values):
+        password = request.values['password']
         if is_valid_password(password):
-            question = request.form['question']
-            answer = request.form['answer']
+            question = request.values['question']
+            answer = request.values['answer']
             g.user.password = password
             g.user.question = question
             g.user.answer = answer
