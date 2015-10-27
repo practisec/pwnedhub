@@ -123,6 +123,10 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     margin-bottom: 1.5rem;
 }
 
+.admin {
+    margin-bottom: 4rem;
+}
+
 .notes {
     width: 100%;
     min-height: 40rem;
