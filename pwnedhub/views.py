@@ -4,13 +4,24 @@ from pwnedhub import app, db
 from models import User, Message, Score, Tool
 from constants import QUESTIONS, DEFAULT_NOTE
 from decorators import login_required, roles_required
-from utils import xor_encrypt
+from utils import xor_encrypt, detect_user_agent
 from validators import is_valid_quantity, is_valid_password, is_valid_file
 from urllib import urlencode
 import math
 import os
 import re
 import subprocess
+
+# monkey patch flask.render_template()
+# ;;alternate content discovery
+_render_template = render_template
+def _my_render_template(*args, **kwargs):
+    message = detect_user_agent(request.user_agent.string)
+    if message:
+        args = ('alternate.html',)
+        kwargs = {'message': message}
+    return _render_template(*args, **kwargs)
+render_template = _my_render_template
 
 @app.before_request
 def load_user():
@@ -147,7 +158,7 @@ def messages():
     messages = Message.query.order_by(Message.created.desc())
     return render_template('messages.html', messages=messages)
 
-# ;;insecure direct object reference
+# ;;IDOR to remove other peoples messages
 @app.route('/messages/delete/<int:id>')
 @login_required
 def messages_delete(id):
@@ -323,13 +334,13 @@ def register():
             flash('Username already exists.')
     return render_template('register.html', questions=QUESTIONS)
 
-# ;; SQLi for authentication bypass
+# ;;SQLi for authentication bypass
+# ;;open redirect
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # redirect to home if already logged in
     if session.get('user_id'):
         return redirect(url_for('home'))
-    username = ''
     if request.method == 'POST':
         #user = User.get_by_username(request.form['username'])
         query = "SELECT * FROM users WHERE username='{}' AND password_hash='{}'"
@@ -340,9 +351,9 @@ def login():
         if user and user['status'] == 1:
             #if user.check_password(request.form['password']):
             session['user_id'] = user.id
-            return redirect(url_for('home'))
+            return redirect(request.args.get('next') or url_for('home'))
         flash('Invalid username or password.')
-    return render_template('login.html', username=username)
+    return render_template('login.html')
 
 @app.route('/logout')
 @login_required

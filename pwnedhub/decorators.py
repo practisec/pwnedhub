@@ -1,4 +1,4 @@
-from flask import g, redirect, url_for, abort
+from flask import g, request, redirect, url_for, abort
 from constants import ROLES
 from functools import wraps
 from threading import Thread
@@ -8,7 +8,7 @@ def login_required(func):
     def wrapped(*args, **kwargs):
         if g.user:
             return func(*args, **kwargs)
-        return redirect(url_for('login'))
+        return redirect(url_for('login', next=request.url))
     return wrapped
 
 def roles_required(*roles):
