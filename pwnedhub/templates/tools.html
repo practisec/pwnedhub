@@ -2,12 +2,12 @@
 {% block sub_body %}
     <div class="row">
         <div class="ten columns offset-by-one center-content">
-            <select style="float: left;" id="tool">
+            <select style="float: left;" id="tool" onchange="info(this);">
             {% for tool in tools %}
                 <option value="{{ tool.id }}">{{ tool.name }}</option>
             {% endfor %}
             </select>
-            <input style="float: right;" type="button" onclick="execute('{{ url_for('tools_execute') }}');" value="execute" />
+            <input style="float: right;" type="button" onclick="execute();" value="execute" />
             <span style="display: block; overflow: hidden; padding-left: 10px; padding-right: 10px">
                 <input style="width: 100%" type="text" id="args" placeholder="command arguments..." />
             </span>
@@ -18,4 +18,44 @@
             <pre id="output"></pre>
         </div>
     </div>
+    <script>
+function execute() {
+    id = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].value;
+    name = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].text;
+    args = document.getElementById("args").value;
+    // execute the command
+    $.ajax({
+        url: "{{ url_for('tools_execute') }}",
+        type: "POST",
+        data: {
+            tool: id,
+            args: args,
+        },
+        success: function(data){
+            // update the textarea with the command output
+            output = document.getElementById("output");
+            output.innerHTML = data.output;
+        }
+    });
+}
+
+function info(e) {
+    tid = e.options[e.selectedIndex].value;
+    // get the description
+    $.ajax({
+        url: "{{ url_for('tools_info') }}",
+        type: "POST",
+        data: {
+            tid: tid,
+        },
+        success: function(data){
+            // update the textarea with the description
+            output = document.getElementById("output");
+            output.innerHTML = data.description;
+        }
+    });
+}
+// populate the default tool's description onload
+document.getElementById("tool").onchange()
+    </script>
 {% endblock %}

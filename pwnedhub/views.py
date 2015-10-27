@@ -240,6 +240,16 @@ def tools_execute():
     output = out + err
     return jsonify(cmd=cmd, output=output)
 
+# ;;SQLi for data extraction
+@app.route('/tools/info', methods=['POST'])
+@login_required
+def tools_info():
+    query = "SELECT description FROM tools WHERE id='{}'"
+    tid = request.form['tid']
+    result = db.session.execute(query.format(tid)).first()
+    description = result[0] if result else 'No description available.'
+    return jsonify(description=description)
+
 @app.route('/games/')
 @login_required
 def games():

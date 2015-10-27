@@ -10,10 +10,10 @@
     <script>
 //document.body.onunload = function(){
 document.getElementById('notes').onblur = function(){
-    minAjax({
+    $.ajax({
         url: "{{ url_for('notes') }}",
         type: "POST",
-        method: false,
+        async: false,
         data: {
             notes: this.value,
         },
