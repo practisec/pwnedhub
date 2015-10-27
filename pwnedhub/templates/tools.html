@@ -51,7 +51,8 @@ function info(e) {
         success: function(data){
             // update the textarea with the description
             output = document.getElementById("output");
-            output.innerHTML = data.description;
+            //output.innerHTML = data.description;
+            output.innerHTML = data.tools[0].description;
         }
     });
 }

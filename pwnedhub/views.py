@@ -244,11 +244,14 @@ def tools_execute():
 @app.route('/tools/info', methods=['POST'])
 @login_required
 def tools_info():
-    query = "SELECT description FROM tools WHERE id='{}'"
+    #query = "SELECT description FROM tools WHERE id='{}'"
+    query = "SELECT * FROM tools WHERE id='{}'"
     tid = request.form['tid']
-    result = db.session.execute(query.format(tid)).first()
-    description = result[0] if result else 'No description available.'
-    return jsonify(description=description)
+    #result = db.session.execute(query.format(tid)).first()
+    tools = db.session.execute(query.format(tid))
+    #description = result[0] if result else 'No description available.'
+    #return jsonify(description=description)
+    return jsonify(tools=[dict(t) for t in tools])
 
 @app.route('/games/')
 @login_required
