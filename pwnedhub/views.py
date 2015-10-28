@@ -31,9 +31,12 @@ def load_user():
     if session.get('user_id'):
         g.user = User.query.get(session["user_id"])
 
+# ;;header information disclosure
 @app.after_request
 def add_header(response):
     response.headers['X-Powered-By'] = 'Flask/{}'.format(__version__)
+    # disable browser XSS protections
+    response.headers['X-XSS-Protection'] = '0'
     return response
 
 # general views
