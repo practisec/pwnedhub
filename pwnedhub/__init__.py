@@ -3,15 +3,16 @@ from flask_sqlalchemy import SQLAlchemy
 from flask.ext.spyne import Spyne
 import os
 
-basedir = '/tmp'#os.path.abspath(os.path.dirname(__file__))
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 # configuration
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'pwnedhub.db')
+#SQLALCHEMY_DATABASE_URI = 'mysql://root:pwaptadmin@localhost/pwnedhub'
 DEBUG = True
 TESTING = False
 SECRET_KEY = 'development key'
 PW_ENC_KEY = 'sekrit'
-UPLOAD_FOLDER = '/tmp/artifacts'
+UPLOAD_FOLDER = os.path.join(basedir, 'artifacts')
 ALLOWED_EXTENSIONS = set(['txt', 'xml'])
 # ;;session cookie with HttpOnly disabled
 SESSION_COOKIE_HTTPONLY = False
