@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /admin
+Disallow: /artifacts
+Disallow: /games
+Disallow: /home
+Disallow: /messages
+Disallow: /notes
+Disallow: /profile
+Disallow: /tools
