@@ -6,8 +6,8 @@ import datetime
 class Tool(db.Model):
     __tablename__ = 'tools'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text, nullable=False)
-    path = db.Column(db.Text, nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    path = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
@@ -31,10 +31,10 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
-    username = db.Column(db.Text, nullable=False, unique=True)
-    password_hash = db.Column(db.Text)
+    username = db.Column(db.String(255), nullable=False, unique=True)
+    password_hash = db.Column(db.String(255))
     question = db.Column(db.Integer, nullable=False)
-    answer = db.Column(db.Text, nullable=False)
+    answer = db.Column(db.String(255), nullable=False)
     notes = db.Column(db.Text)
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
@@ -96,7 +96,7 @@ class Score(db.Model):
     __tablename__ = 'scores'
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
-    player = db.Column(db.Text, nullable=False)
+    player = db.Column(db.String(255), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     recid = db.Column(db.Integer)
     recording = db.Column(db.Text, nullable=False)
