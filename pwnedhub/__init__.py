@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask.ext.spyne import Spyne
 import os
 
 basedir = '/tmp'#os.path.abspath(os.path.dirname(__file__))
@@ -23,6 +24,7 @@ app = Flask(__name__, static_url_path='')
 app.config.from_object(__name__)
 
 db = SQLAlchemy(app)
+spyne = Spyne(app)
 
 def initdb():
     db.create_all()

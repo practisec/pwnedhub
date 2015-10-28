@@ -1,6 +1,6 @@
 from flask import request, session, g, redirect, url_for, render_template, jsonify, flash, abort, send_file
 from sqlalchemy import asc, desc
-from pwnedhub import app, db
+from pwnedhub import app, db, spyne
 from models import User, Message, Score, Tool
 from constants import QUESTIONS, DEFAULT_NOTE
 from decorators import login_required, roles_required
@@ -430,3 +430,25 @@ def reset_password():
         else:
             flash('Passwords do not match.')
     return render_template('reset_password.html')
+
+# SOAP web service view
+
+from spyne.protocol.soap import Soap11
+from spyne.model.primitive import AnyDict, Unicode, Integer
+from spyne.model.complex import Iterable
+
+class Tools(spyne.Service):
+    __service_url_path__ = '/service'
+    __in_protocol__ = Soap11(validator='lxml')
+    __out_protocol__ = Soap11()
+
+    # ;;SQLi for data extraction via SOAP web service
+    @spyne.srpc(Unicode, _returns=Iterable(AnyDict))
+    def info(tid):
+        query = "SELECT * FROM tools WHERE id='{}'"
+        try:
+            tools = db.session.execute(query.format(tid))
+        except Exception as e:
+            tools = [dict(error=e.__str__())]
+        for tool in tools:
+            yield dict(tool)
