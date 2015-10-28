@@ -123,6 +123,12 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     margin-bottom: 1.5rem;
 }
 
+.about {
+    text-align: justify;
+    margin-top: 10rem;
+    margin-bottom: 4rem;
+}
+
 .admin {
     margin-bottom: 4rem;
 }

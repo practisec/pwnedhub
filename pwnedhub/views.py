@@ -12,6 +12,8 @@ import os
 import re
 import subprocess
 
+# ;;robots.txt has a reference to /admin in it
+
 # monkey patch flask.render_template()
 # ;;alternate content discovery
 _render_template = render_template
@@ -317,6 +319,12 @@ def snake_enter_score():
         status = 'invalid scorehash'
     return urlencode({'status':status})
 
+# ;;contains info for guessing usernames
+# ;;contains a password for discovery with CeWL
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 # authenticaton views
 
 # ;;weak password complexity requirement
@@ -448,6 +456,7 @@ class Tools(spyne.Service):
     __out_protocol__ = Soap11()
 
     # ;;SQLi for data extraction via SOAP web service
+    # ;;exposed and discoverable via brute-force
     @spyne.srpc(Unicode, _returns=Iterable(AnyDict))
     def info(tid):
         query = "SELECT * FROM tools WHERE id='{}'"
