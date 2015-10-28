@@ -1,4 +1,4 @@
-from flask import request, session, g, redirect, url_for, render_template, jsonify, flash, abort, send_file
+from flask import request, session, g, redirect, url_for, render_template, jsonify, flash, abort, send_file, __version__
 from sqlalchemy import asc, desc
 from pwnedhub import app, db, spyne
 from models import User, Message, Score, Tool
@@ -30,6 +30,11 @@ def load_user():
     g.user = None
     if session.get('user_id'):
         g.user = User.query.get(session["user_id"])
+
+@app.after_request
+def add_header(response):
+    response.headers['X-Powered-By'] = 'Flask/{}'.format(__version__)
+    return response
 
 # general views
 
