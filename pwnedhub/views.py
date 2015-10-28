@@ -431,6 +431,11 @@ def reset_password():
             flash('Passwords do not match.')
     return render_template('reset_password.html')
 
+# ;;reflected XSS via |safe filter on URL in template
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html', message=request.url), 404
+
 # SOAP web service view
 
 from spyne.protocol.soap import Soap11
