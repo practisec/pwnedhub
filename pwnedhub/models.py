@@ -6,9 +6,9 @@ import datetime
 class Tool(db.Model):
     __tablename__ = 'tools'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    path = db.Column(db.String, nullable=False)
-    description = db.Column(db.String, nullable=False)
+    name = db.Column(db.Text, nullable=False)
+    path = db.Column(db.Text, nullable=False)
+    description = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
         return "<Tool '{}'>".format(self.name)
@@ -17,7 +17,7 @@ class Message(db.Model):
     __tablename__ = 'messages'
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
-    comment = db.Column(db.String)
+    comment = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     @property
@@ -31,11 +31,11 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
-    username = db.Column(db.String, nullable=False, unique=True)
-    password_hash = db.Column(db.String)
+    username = db.Column(db.Text, nullable=False, unique=True)
+    password_hash = db.Column(db.Text)
     question = db.Column(db.Integer, nullable=False)
-    answer = db.Column(db.String, nullable=False)
-    notes = db.Column(db.String)
+    answer = db.Column(db.Text, nullable=False)
+    notes = db.Column(db.Text)
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
     messages = db.relationship('Message', backref='user', lazy='dynamic')
@@ -96,10 +96,10 @@ class Score(db.Model):
     __tablename__ = 'scores'
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
-    player = db.Column(db.String, nullable=False)
+    player = db.Column(db.Text, nullable=False)
     score = db.Column(db.Integer, nullable=False)
     recid = db.Column(db.Integer)
-    recording = db.Column(db.String, nullable=False)
+    recording = db.Column(db.Text, nullable=False)
 
 def __repr__(self):
         return "<Score '{}:{}'>".format(self.player, self.score)
