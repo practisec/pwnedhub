@@ -13,7 +13,7 @@ TESTING = False
 SECRET_KEY = 'development key'
 PW_ENC_KEY = 'sekrit'
 UPLOAD_FOLDER = os.path.join(basedir, 'artifacts')
-ALLOWED_EXTENSIONS = set(['txt', 'xml'])
+ALLOWED_EXTENSIONS = set(['txt', 'xml', 'jpg', 'png', 'gif'])
 # ;;session cookie with HttpOnly disabled
 SESSION_COOKIE_HTTPONLY = False
 #SESSION_REFRESH_EACH_REQUEST = False # not available in 0.10.1
