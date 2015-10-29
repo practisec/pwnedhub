@@ -156,7 +156,7 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
 }
 
 .delete {
-    float: right;
+    float: left;
     font-size: 1.25rem;
     color: #e1e1e1;
     visibility: hidden;
