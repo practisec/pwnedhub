@@ -20,9 +20,9 @@
                     <a href="{{ url_for('messages_delete', id=message.id) }}">delete</a>
                 </div>
         {% endif %}
-                <div{% if message.user != g.user %} class="right-content"{% endif %}>
+                <div{% if message.user == g.user %} class="right-content"{% endif %}>
                     <p><span class="red">{{ message.user.username }}</span> said...</p>
-                    <p>{{ message.comment }}</p>
+                    <p>{{ message.comment|safe }}</p>
                     <p>{{ message.created_as_string }}</p>
                 </div>
         {% if message.user == g.user %}
