@@ -452,6 +452,11 @@ def reset_password():
 def page_not_found(e):
     return render_template('404.html', message=request.url), 404
 
+# ;;verbose error reporting
+@app.errorhandler(500)
+def internal_error(exception):
+    return render_template('500.html', exception=exception), 500
+
 # SOAP web service view
 
 from spyne.protocol.soap import Soap11
