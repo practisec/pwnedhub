@@ -186,6 +186,11 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     margin-bottom: 4rem;
 }
 
+.error {
+    margin-top: 10rem;
+    margin-bottom: 4rem;
+}
+
 .traceback {
     padding: 1rem 1.5rem;
     border: 1px solid #BBB;
