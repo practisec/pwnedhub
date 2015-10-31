@@ -186,6 +186,15 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     margin-bottom: 4rem;
 }
 
+.traceback {
+    padding: 1rem 1.5rem;
+    border: 1px solid #BBB;
+}
+
+.traceback pre {
+    margin: 0;
+}
+
 .footer {
     color: gray;
     padding-top: 2rem;
@@ -199,6 +208,10 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
 
 .center-content {
     text-align: center;
+}
+
+.left-content {
+    text-align: left;
 }
 
 .right-content {

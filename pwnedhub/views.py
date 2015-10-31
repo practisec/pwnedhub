@@ -11,6 +11,7 @@ import math
 import os
 import re
 import subprocess
+import traceback
 
 # ;;robots.txt has a reference to /admin in it
 
@@ -454,8 +455,9 @@ def page_not_found(e):
 
 # ;;verbose error reporting
 @app.errorhandler(500)
-def internal_error(exception):
-    return render_template('500.html', exception=exception), 500
+def internal_error(e):
+    message = traceback.format_exc()
+    return render_template('500.html', message=message), 500
 
 # SOAP web service view
 

@@ -1,1 +1,7 @@
-{{ exception }}
+{% extends "layout.html" %}
+{% block body %}
+    <div class="center-content banner">
+        <h1>Oops! Somethin' broke.</h1>
+        <div class="left-content rounded traceback"><pre>{{ message }}</pre></div>
+    </div>
+{% endblock %}
