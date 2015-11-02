@@ -3,17 +3,17 @@
     <div class="row">
         <div class="six columns offset-by-three auth-form rounded shaded">
             <h4>change your profile</h4>
-            <form action="{{ url_for('profile') }}" method="post">
+            <form action="{{ url_for('profile_change', uid=user.id) }}" method="post">
                 <label for="password">password</label>
-                <input class="u-full-width" name="password" type="password" value="{{ g.user.password_as_string }}" />
+                <input class="u-full-width" name="password" type="password" value="{{ user.password_as_string }}" />
                 <label for="question">question</label>
                 <select class="u-full-width" name="question">
                 {% for question in questions %}
-                    <option value="{{ question }}"{% if question == g.user.question %} selected{% endif %}>{{ questions[question] }}</option>
+                    <option value="{{ question }}"{% if question == user.question %} selected{% endif %}>{{ questions[question] }}</option>
                 {% endfor %}
                 </select>
                 <label for="answer">answer</label>
-                <input class="u-full-width" name="answer" type="text" value="{{ g.user.answer }}" />
+                <input class="u-full-width" name="answer" type="text" value="{{ user.answer }}" />
                 <input class="u-full-width" type="submit" value="submit" onclick="this.form.submit();" />
             </form>
         </div>

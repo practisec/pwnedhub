@@ -98,12 +98,14 @@ def admin_tools_remove(id):
     return redirect(url_for('admin'))
 
 # ;;missing function level access control
-# ;;CSRF or force browse for privilege escalation
-# ;;IDOR for DoS by disabling accounts
-@app.route('/admin/user/<string:action>/<int:id>')
+# ;;CSRF for privilege escalation
+# ;;IDOR to escalate privileges of other users (no self-modification allowed)
+# basic users are redirected and receive a 403 due to proper access controls
+# ;;IDOR to disable accounts
+@app.route('/admin/users/<string:action>/<int:id>')
 @login_required
 #@roles_required('admin')
-def admin_user(action, id):
+def admin_users(action, id):
     user = User.query.get(id)
     if user:
         if user != g.user:
@@ -130,33 +132,42 @@ def admin_user(action, id):
             else:
                 flash('Invalid user action.')
         else:
-            flash('Self modification denied.')
+            flash('Self-modification denied.')
     else:
         flash('Invalid user ID.')
     return redirect(url_for('admin'))
 
-# ;;no re-authentication for state changing operations
+
 # ;;passwords stored in a plain or reversable form
-# ;;method interchange
-# ;;CSRF for lateral authorizatiom bypass
-@app.route('/profile', methods=['GET', 'POST'])
+# ;;IDOR to view other users' profiles
+@app.route('/profile/<int:uid>')
 @login_required
-def profile():
-    #if request.method == 'POST':
+def profile(uid):
+    user = User.query.get(uid) or g.user
+    return render_template('profile.html', user=user, questions=QUESTIONS)
+
+# ;;method interchange
+# ;;no re-authentication for state changing operations
+# ;;CSRF for lateral authorizatiom bypass
+# ;;IDOR to change other user's profiles
+@app.route('/profile/change/<int:uid>', methods=['POST'])
+@login_required
+def profile_change(uid):
+    user = User.query.get(uid) or g.user
     if set(['password', 'question', 'answer']).issubset(request.values):
         password = request.values['password']
         if is_valid_password(password):
             question = request.values['question']
             answer = request.values['answer']
-            g.user.password = password
-            g.user.question = question
-            g.user.answer = answer
-            db.session.add(g.user)
+            user.password = password
+            user.question = question
+            user.answer = answer
+            db.session.add(user)
             db.session.commit()
             flash('Account information successfully changed.')
         else:
             flash('Password does not meet complexity requirements.')
-    return render_template('profile.html', questions=QUESTIONS)
+    return redirect(url_for('profile', uid=g.user.id))
 
 # ;;stored XSS via |safe filter in template
 @app.route('/messages', methods=['GET', 'POST'])

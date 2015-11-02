@@ -24,7 +24,7 @@
                     <li class="black">|</li>
                     <li><a href="{{ url_for('home') }}">home</a></li>
                     <li class="black">|</li>
-                    <li><a href="{{ url_for('profile') }}">profile</a></li>
+                    <li><a href="{{ url_for('profile', uid=g.user.id) }}">profile</a></li>
                     <li class="black">|</li>
                     <li><a href="{{ url_for('logout') }}">log out</a></li>
                 {% else %}
