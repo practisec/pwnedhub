@@ -1,4 +1,4 @@
-from flask import request, session, g, redirect, url_for, render_template, jsonify, flash, abort, send_file, __version__
+from flask import request, session, g, redirect, url_for, render_template, render_template_string, jsonify, flash, abort, send_file, __version__
 from sqlalchemy import asc, desc
 from pwnedhub import app, db, spyne
 from models import User, Message, Score, Tool
@@ -460,9 +460,19 @@ def reset_password():
     return render_template('reset_password.html')
 
 # ;;reflected XSS via |safe filter on URL in template
+# ;;SSTI
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html', message=request.url), 404
+    #return render_template('404.html', message=request.url), 404
+    template = '''{%% extends "layout.html" %%}
+{%% block body %%}
+    <div class="center-content error">
+        <h1>Oops! That page doesn't exist.</h1>
+        <h3>%s</h3>
+    </div>
+{%% endblock %%}
+''' % (request.url)
+    return render_template_string(template), 404
 
 # ;;verbose error reporting
 @app.errorhandler(500)
