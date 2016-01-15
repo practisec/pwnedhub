@@ -280,6 +280,23 @@ def tools_info():
     #return jsonify(description=description)
     return jsonify(tools=[dict(t) for t in tools])
 
+@app.route('/tools/save', methods=['POST'])
+@login_required
+def tools_save():
+    content = request.form['content']
+    filename = request.form['filename']+'-{}.txt'.format(datetime.now().strftime('%s'))
+    msg = 'Artifact created \'{}\'.'.format(filename)
+    path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if not os.path.isfile(path):
+        try:
+            with open(path, 'w') as fp:
+                fp.write(content)
+        except IOError:
+            msg = 'Unable to save as an artifact.'
+    else:
+        msg = 'An artifact with that name already exists.'
+    return jsonify(message=msg)
+
 @app.route('/games/')
 @login_required
 def games():

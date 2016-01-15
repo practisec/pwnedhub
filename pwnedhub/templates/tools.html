@@ -16,13 +16,13 @@
     <div class="row">
         <div class="u-full-width rounded output">
             <pre id="output"></pre>
+            <input style="position: absolute; top: 1rem; right: 1rem;" type="button" onclick="save();" value="save as artifact" />
         </div>
     </div>
     <script>
 function execute() {
-    id = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].value;
-    name = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].text;
-    args = document.getElementById("args").value;
+    var id = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].value;
+    var args = document.getElementById("args").value;
     // execute the command
     $.ajax({
         url: "{{ url_for('tools_execute') }}",
@@ -33,14 +33,13 @@ function execute() {
         },
         success: function(data){
             // update the textarea with the command output
-            output = document.getElementById("output");
-            output.innerHTML = data.output;
+            document.getElementById("output").innerHTML = data.output;
         }
     });
 }
 
 function info(e) {
-    tid = e.options[e.selectedIndex].value;
+    var tid = e.options[e.selectedIndex].value;
     // get the description
     $.ajax({
         url: "{{ url_for('tools_info') }}",
@@ -50,12 +49,31 @@ function info(e) {
         },
         success: function(data){
             // update the textarea with the description
-            output = document.getElementById("output");
-            //output.innerHTML = data.description;
-            output.innerHTML = data.tools[0].description;
+            document.getElementById("output").innerHTML = data.tools[0].description;
         }
     });
 }
+
+function save() {
+    var filename = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].text;
+    var content = document.getElementById("output").innerHTML
+    if (confirm("Save output as an artifact?") == true) {
+        // save the output
+        $.ajax({
+            url: "{{ url_for('tools_save') }}",
+            type: "POST",
+            data: {
+                filename: filename,
+                content: content,
+            },
+            success: function(data){
+                // update the textarea with the command output
+                show_flash(data.message);
+            }
+        });
+    }
+}
+
 // populate the default tool's description onload
 document.getElementById("tool").onchange()
     </script>

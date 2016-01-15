@@ -210,6 +210,7 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
 }
 
 .output {
+    position: relative;
     min-height: 40rem;
     padding: 1rem 1.5rem;
     margin-bottom: 4rem;
