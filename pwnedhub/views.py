@@ -6,6 +6,7 @@ from constants import QUESTIONS, DEFAULT_NOTE
 from decorators import login_required, roles_required
 from utils import xor_encrypt, detect_user_agent
 from validators import is_valid_quantity, is_valid_password, is_valid_file
+from datetime import datetime
 from urllib import urlencode
 import math
 import os
@@ -14,6 +15,10 @@ import subprocess
 import traceback
 
 # ;;robots.txt has a reference to /admin in it
+
+# register new jinja global for the current date
+# used in the layout to keep the current year
+app.jinja_env.globals['date'] = datetime.now()
 
 # monkey patch flask.render_template()
 # ;;alternate content discovery
