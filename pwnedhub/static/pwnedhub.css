@@ -76,6 +76,44 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     text-decoration: inherit;
 }
 
+.floating-nav {
+    padding: 1rem;
+    left: 0;
+    top: 15rem;
+    z-index: 98;
+    position: fixed;
+    -webkit-border-radius: 0 10px 10px 0;
+    -moz-border-radius: 0 10px 10px 0;
+    border-radius: 0 10px 10px 0;
+    border-width: 1px 1px 1px 0px;
+    border-style: solid;
+    border-color: red;
+}
+
+.floating-nav span {
+    display: inline;
+    position: relative;
+}
+
+.floating-nav span:hover:after{
+    background: #333;
+    opacity: 0.9;
+    border-radius: 5px;
+    bottom: 3rem;
+    left: 2rem;
+    color: #fff;
+    content: attr(title);
+    padding: 5px 15px;
+    position: absolute;
+    z-index: 99;
+}
+
+.floating-nav img {
+    opacity: 0.6;
+    width: 3rem;
+    margin: .5rem;
+}
+
 .content {}
 
 .banner {
@@ -137,7 +175,7 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     width: 100%;
     min-height: 40rem;
     padding: 1rem 1.5rem;
-    border: 1px solid #BBB;
+    border: 1px solid #bbbbbb;
 }
 
 .messages {
@@ -175,7 +213,7 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     min-height: 40rem;
     padding: 1rem 1.5rem;
     margin-bottom: 4rem;
-    border: 1px solid #BBB;
+    border: 1px solid #bbbbbb;
 }
 
 .output pre {
@@ -193,7 +231,7 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
 
 .traceback {
     padding: 1rem 1.5rem;
-    border: 1px solid #BBB;
+    border: 1px solid #bbbbbb;
 }
 
 .traceback pre {
