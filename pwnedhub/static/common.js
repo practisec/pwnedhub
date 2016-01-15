@@ -8,7 +8,13 @@ function show_flash(msg) {
 window.onload = function() {
     // flash on load if needed
     flash = document.getElementById("flash");
-    if (flash.innerHTML.length > 0) {
-        show_flash(flash.innerHTML);
+    var msg = flash.innerHTML
+    // ;;D-XSS in the error parameter
+    var error = document.URL.indexOf("error=");
+    if (error !== -1) {
+        var msg = decodeURI(document.URL.substring(error+6, document.URL.length)).replace(/\+/g, " ");
+    }
+    if (msg.length > 0) {
+        show_flash(msg);
     }
 }

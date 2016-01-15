@@ -379,6 +379,7 @@ def register():
 
 # ;;SQLi for authentication bypass
 # ;;open redirect
+# ;;D-XSS in the error parameter
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # redirect to home if already logged in
@@ -395,7 +396,8 @@ def login():
             #if user.check_password(request.form['password']):
             session['user_id'] = user.id
             return redirect(request.args.get('next') or url_for('home'))
-        flash('Invalid username or password.')
+        #flash('Invalid username or password.')
+        return redirect(url_for('login', error='Invalid username or password.'))
     return render_template('login.html')
 
 @app.route('/logout')
