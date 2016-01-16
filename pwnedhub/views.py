@@ -153,7 +153,7 @@ def profile(uid):
 
 # ;;method interchange
 # ;;no re-authentication for state changing operations
-# ;;CSRF for lateral authorizatiom bypass
+# ;;CSRF for lateral authorization bypass
 # ;;IDOR to change other user's profiles
 @app.route('/profile/change/<int:uid>', methods=['POST'])
 @login_required

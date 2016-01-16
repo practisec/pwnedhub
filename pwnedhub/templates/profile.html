@@ -3,6 +3,12 @@
     <form action="{{ url_for('profile_change', uid=user.id) }}" method="post">
         <div class="row">
             <div class="six columns offset-by-three">
+                <label for="username">username</label>
+                <input class="u-full-width" name="username" type="text" value="{{ user.username }}" disabled/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="six columns offset-by-three">
                 <label for="password">password</label>
                 <input class="u-full-width" name="password" type="password" value="{{ user.password_as_string }}" />
             </div>
