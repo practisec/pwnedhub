@@ -338,7 +338,7 @@ def snake_enter_score():
             recFood = request.form['recFood']
             recData = urlencode({ 'recTurn':recTurn, 'recFrame':recFrame, 'recFood':recFood })
             # add the new score
-            playerName = request.form['playerName']#re.sub('[&=#<>]', '', request.form['playerName'])
+            playerName = g.user.username#request.form['playerName']#re.sub('[&=#<>]', '', request.form['playerName'])
             score = Score(player=playerName, score=score, recording=recData)
             db.session.add(score)
             db.session.commit()
