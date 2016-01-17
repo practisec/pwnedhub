@@ -185,6 +185,11 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
 
 .messages div p:nth-of-type(1) {
     font-size: 1.75rem;
+    margin-bottom: .5rem;
+}
+
+.messages div p:nth-of-type(2) {
+    margin-bottom: .5rem;
 }
 
 .messages div p:nth-of-type(3) {
@@ -194,7 +199,7 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
 }
 
 .delete {
-    float: left;
+    float: right;
     font-size: 1.25rem;
     color: #e1e1e1;
     visibility: hidden;

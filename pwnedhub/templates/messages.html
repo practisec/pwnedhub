@@ -16,12 +16,12 @@
         {% for message in messages %}
         {% if message.user == g.user %}
             <div onmouseover="this.firstElementChild.style.visibility='visible'" onmouseout="this.firstElementChild.style.visibility='hidden'">
-                <div class=delete>
+                <div class="delete">
                     <a href="{{ url_for('messages_delete', id=message.id) }}">delete</a>
                 </div>
         {% endif %}
-                <div{% if message.user == g.user %} class="right-content"{% endif %}>
-                    <p><span class="red">{{ message.user.username }}</span> said...</p>
+                <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
+                    <p><span class="red">{{ message.user.username }}</span></p>
                     <p>{{ message.comment|safe }}</p>
                     <p>{{ message.created_as_string }}</p>
                 </div>
