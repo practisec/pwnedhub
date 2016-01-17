@@ -7,6 +7,7 @@ from decorators import login_required, roles_required
 from utils import xor_encrypt, detect_user_agent
 from validators import is_valid_quantity, is_valid_password, is_valid_file
 from datetime import datetime
+from hashlib import md5
 from urllib import urlencode
 import math
 import os
@@ -209,7 +210,7 @@ def artifacts():
         file = request.files['file']
         if file:
             if is_valid_file(file.filename):
-                path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+                path = os.path.join(session.get('upload_folder'), file.filename)
                 if not os.path.isfile(path):
                     try:
                         file.save(path)
@@ -219,7 +220,7 @@ def artifacts():
                     flash('An artifact with that name already exists.')
             else:
                 flash('Invalid file type. Only {} filetypes allowed.'.format(', '.join(app.config['ALLOWED_EXTENSIONS'])))
-    for (dirpath, dirnames, filenames) in os.walk(app.config['UPLOAD_FOLDER']):
+    for (dirpath, dirnames, filenames) in os.walk(session.get('upload_folder')):
         artifacts = [f for f in filenames if is_valid_file(f)]
         break
     return render_template('artifacts.html', artifacts=artifacts)
@@ -229,7 +230,7 @@ def artifacts():
 @login_required
 def artifacts_delete(filename):
     try:
-        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        os.remove(os.path.join(session.get('upload_folder'), filename))
         flash('Artifact deleted.')
     except IOError:
         flash('Unable to remove the artifact.')
@@ -240,7 +241,7 @@ def artifacts_delete(filename):
 @login_required
 def artifacts_view(filename):
     try:
-        return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return send_file(os.path.join(session.get('upload_folder'), filename))
     except IOError:
         flash('Unable to load the artifact.')
     return redirect(url_for('artifacts'))
@@ -286,7 +287,7 @@ def tools_save():
     content = request.form['content']
     filename = request.form['filename']+'-{}.txt'.format(datetime.now().strftime('%s'))
     msg = 'Artifact created \'{}\'.'.format(filename)
-    path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    path = os.path.join(session.get('upload_folder'), filename)
     if not os.path.isfile(path):
         try:
             with open(path, 'w') as fp:
@@ -417,6 +418,10 @@ def login():
         if user and user['status'] == 1:
             #if user.check_password(request.form['password']):
             session['user_id'] = user.id
+            path = os.path.join(app.config['UPLOAD_FOLDER'], md5(str(user.id)).hexdigest())
+            if not os.path.exists(path):
+                os.makedirs(path)
+            session['upload_folder'] = path
             return redirect(request.args.get('next') or url_for('home'))
         #flash('Invalid username or password.')
         return redirect(url_for('login', error='Invalid username or password.'))
