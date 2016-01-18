@@ -25,7 +25,19 @@ document.getElementById("notes").onblur = function() {
 function save() {
     var filename = "Notes";
     var content = document.getElementById("notes").innerHTML;
-    save_text(filename, content);
+    if (confirm("Save as an artifact?") == true) {
+        $.ajax({
+            url: "{{ url_for('artifacts_save', method='text') }}",
+            type: "POST",
+            data: {
+                filename: filename,
+                content: content,
+            },
+            success: function(data){
+                show_flash(data.message);
+            }
+        });
+    }
 }
     </script>
 {% endblock %}

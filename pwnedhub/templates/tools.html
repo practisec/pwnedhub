@@ -57,7 +57,19 @@ function info(e) {
 function save() {
     var filename = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].text;
     var content = document.getElementById("output").innerHTML;
-    save_text(filename, content);
+    if (confirm("Save as an artifact?") == true) {
+        $.ajax({
+            url: "{{ url_for('artifacts_save', method='text') }}",
+            type: "POST",
+            data: {
+                filename: filename,
+                content: content,
+            },
+            success: function(data){
+                show_flash(data.message);
+            }
+        });
+    }
 }
 
 // populate the default tool's description onload
