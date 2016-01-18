@@ -18,6 +18,10 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     padding: 0 1rem;
 }
 
+form {
+    margin-bottom: 0;
+}
+
 .flash {
     position: absolute;
     display: inline-block;
@@ -132,7 +136,7 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
 
 .auth-form {
     border: 1px solid red;
-    padding: 1rem 1rem 0;
+    padding: 1rem;
     margin: 0 0 4rem;
 }
 
@@ -171,11 +175,25 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     margin-bottom: 4rem;
 }
 
+.profile {
+    margin-bottom: 4rem;
+}
+
+.profile input[type="submit"] {
+    margin-bottom: 0;
+}
+
 .notes {
+    position: relative;
+    margin-bottom: 4rem;
+}
+
+.notes textarea {
     width: 100%;
     min-height: 40rem;
     padding: 1rem 1.5rem;
     border: 1px solid #bbbbbb;
+    margin-bottom: 0;
 }
 
 .messages {
@@ -228,6 +246,13 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
 
 .swf {
     margin-bottom: 4rem;
+}
+
+input[type="button"].save-as {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: #ffffff;
 }
 
 .error {

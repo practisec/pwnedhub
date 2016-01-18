@@ -1,36 +1,38 @@
 {% extends "layout.html" %}
 {% block body %}
-    <form action="{{ url_for('profile_change', uid=user.id) }}" method="post">
-        <div class="row">
-            <div class="six columns offset-by-three">
-                <label for="username">username</label>
-                <input class="u-full-width" name="username" type="text" value="{{ user.username }}" disabled/>
+    <div class="profile">
+        <form action="{{ url_for('profile_change', uid=user.id) }}" method="post">
+            <div class="row">
+                <div class="six columns offset-by-three">
+                    <label for="username">username</label>
+                    <input class="u-full-width" name="username" type="text" value="{{ user.username }}" disabled/>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="six columns offset-by-three">
-                <label for="password">password</label>
-                <input class="u-full-width" name="password" type="password" value="{{ user.password_as_string }}" />
+            <div class="row">
+                <div class="six columns offset-by-three">
+                    <label for="password">password</label>
+                    <input class="u-full-width" name="password" type="password" value="{{ user.password_as_string }}" />
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="three columns offset-by-three">
-                <label for="question">question</label>
-                <select class="u-full-width" name="question">
-                {% for question in questions %}
-                    <option value="{{ question }}"{% if question == user.question %} selected{% endif %}>{{ questions[question] }}</option>
-                {% endfor %}
-                </select>
+            <div class="row">
+                <div class="three columns offset-by-three">
+                    <label for="question">question</label>
+                    <select class="u-full-width" name="question">
+                    {% for question in questions %}
+                        <option value="{{ question }}"{% if question == user.question %} selected{% endif %}>{{ questions[question] }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="three columns">
+                    <label for="answer">answer</label>
+                    <input class="u-full-width" name="answer" type="text" value="{{ user.answer }}" />
+                </div>
             </div>
-            <div class="three columns">
-                <label for="answer">answer</label>
-                <input class="u-full-width" name="answer" type="text" value="{{ user.answer }}" />
+            <div class="row">
+                <div class="six columns offset-by-three right-content">
+                    <input type="submit" value="submit" onclick="this.form.submit();" />
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="six columns offset-by-three right-content">
-                <input type="submit" value="submit" onclick="this.form.submit();" />
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 {% endblock %}
