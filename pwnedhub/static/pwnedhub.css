@@ -18,7 +18,7 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     padding: 0 1rem;
 }
 
-form {
+form, table {
     margin-bottom: 0;
 }
 
@@ -137,7 +137,7 @@ form {
 .auth-form {
     border: 1px solid red;
     padding: 1rem;
-    margin: 0 0 4rem;
+    margin: 0;
 }
 
 .auth-form input[type=submit] {
@@ -168,16 +168,11 @@ form {
 .about {
     text-align: justify;
     margin-top: 10rem;
-    margin-bottom: 4rem;
 }
 
-.admin {
-    margin-bottom: 4rem;
-}
+.admin {}
 
-.profile {
-    margin-bottom: 4rem;
-}
+.profile {}
 
 .profile input[type="submit"] {
     margin-bottom: 0;
@@ -185,7 +180,6 @@ form {
 
 .notes {
     position: relative;
-    margin-bottom: 4rem;
 }
 
 .notes textarea {
@@ -198,7 +192,6 @@ form {
 
 .messages {
     border-top: 1px solid #e1e1e1;
-    margin-bottom: 4rem;
 }
 
 .messages div p:nth-of-type(1) {
@@ -228,15 +221,12 @@ form {
     text-decoration: inherit;
 }
 
-.artifacts {
-    margin-bottom: 4rem;
-}
+.artifacts {}
 
 .output {
     position: relative;
     min-height: 40rem;
     padding: 1rem 1.5rem;
-    margin-bottom: 4rem;
     border: 1px solid #bbbbbb;
 }
 
@@ -244,9 +234,7 @@ form {
     margin: 0;
 }
 
-.swf {
-    margin-bottom: 4rem;
-}
+.swf {}
 
 input[type="button"].save-as {
     position: absolute;
@@ -257,7 +245,6 @@ input[type="button"].save-as {
 
 .error {
     margin-top: 10rem;
-    margin-bottom: 4rem;
 }
 
 .traceback {
@@ -272,6 +259,7 @@ input[type="button"].save-as {
 .footer {
     color: gray;
     padding-top: 2rem;
+    margin-top: 4rem;
     border-top: 1px solid #e1e1e1;
 }
 
