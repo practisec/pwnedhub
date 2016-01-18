@@ -201,12 +201,20 @@ def messages_delete(id):
         flash('Invalid message ID.')
     return redirect(url_for('messages'))
 
-# ;;weak input validation
-# ;;file upload restriction bypass
-@app.route('/artifacts', methods=['GET', 'POST'])
+@app.route('/artifacts')
 @login_required
 def artifacts():
-    if request.method == 'POST':
+    for (dirpath, dirnames, filenames) in os.walk(session.get('upload_folder')):
+        artifacts = [f for f in filenames if is_valid_file(f)]
+        break
+    return render_template('artifacts.html', artifacts=artifacts)
+
+# ;;weak input validation
+# ;;file upload restriction bypass
+@app.route('/artifacts/save/<string:method>', methods=['POST'])
+@login_required
+def artifacts_save(method):
+    if method == 'file':
         file = request.files['file']
         if file:
             if is_valid_file(file.filename):
@@ -220,10 +228,23 @@ def artifacts():
                     flash('An artifact with that name already exists.')
             else:
                 flash('Invalid file type. Only {} filetypes allowed.'.format(', '.join(app.config['ALLOWED_EXTENSIONS'])))
-    for (dirpath, dirnames, filenames) in os.walk(session.get('upload_folder')):
-        artifacts = [f for f in filenames if is_valid_file(f)]
-        break
-    return render_template('artifacts.html', artifacts=artifacts)
+    elif method == 'text':
+        content = request.form['content']
+        filename = request.form['filename']
+        if all((content, filename)):
+            filename += '-{}.txt'.format(datetime.now().strftime('%s'))
+            msg = 'Artifact created \'{}\'.'.format(filename)
+            path = os.path.join(session.get('upload_folder'), filename)
+            if not os.path.isfile(path):
+                try:
+                    with open(path, 'w') as fp:
+                        fp.write(content)
+                except IOError:
+                    msg = 'Unable to save as an artifact.'
+            else:
+                msg = 'An artifact with that name already exists.'
+            return jsonify(message=msg)
+    return redirect(url_for('artifacts'))
 
 # ;;path traversal to delete any readable file
 @app.route('/artifacts/delete/<path:filename>')
@@ -280,23 +301,6 @@ def tools_info():
     #description = result[0] if result else 'No description available.'
     #return jsonify(description=description)
     return jsonify(tools=[dict(t) for t in tools])
-
-@app.route('/tools/save', methods=['POST'])
-@login_required
-def tools_save():
-    content = request.form['content']
-    filename = request.form['filename']+'-{}.txt'.format(datetime.now().strftime('%s'))
-    msg = 'Artifact created \'{}\'.'.format(filename)
-    path = os.path.join(session.get('upload_folder'), filename)
-    if not os.path.isfile(path):
-        try:
-            with open(path, 'w') as fp:
-                fp.write(content)
-        except IOError:
-            msg = 'Unable to save as an artifact.'
-    else:
-        msg = 'An artifact with that name already exists.'
-    return jsonify(message=msg)
 
 @app.route('/games/')
 @login_required

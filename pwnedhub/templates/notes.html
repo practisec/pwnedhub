@@ -1,15 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
     <div class="row">
-        <div class="u-full-width">
-            <form action="{{ url_for('notes') }}" method="post">
-                <textarea name="notes" class="notes" id="notes">{{ notes }}</textarea>
-            </form>
+        <div class="u-full-width notes">
+            <textarea name="notes" id="notes">{{ notes }}</textarea>
+            <input class="save-as" type="button" onclick="save();" value="save as artifact" />
         </div>
     </div>
     <script>
 //document.body.onunload = function(){
-document.getElementById('notes').onblur = function(){
+document.getElementById("notes").onblur = function() {
     $.ajax({
         url: "{{ url_for('notes') }}",
         type: "POST",
@@ -18,9 +17,15 @@ document.getElementById('notes').onblur = function(){
             notes: this.value,
         },
         success: function(data){
-            console.log('Notes saved.')
+            console.log("Notes saved.")
         }
     });
 };
+
+function save() {
+    var filename = "Notes";
+    var content = document.getElementById("notes").innerHTML;
+    save_text(filename, content);
+}
     </script>
 {% endblock %}

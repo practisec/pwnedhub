@@ -5,6 +5,22 @@ function show_flash(msg) {
     setTimeout(function() { flash.style.visibility = "hidden"; }, 5000);
 }
 
+function save_text(filename, content) {
+    if (confirm("Save as an artifact?") == true) {
+        $.ajax({
+            url: "{{ url_for('artifacts_save', method='text') }}",
+            type: "POST",
+            data: {
+                filename: filename,
+                content: content,
+            },
+            success: function(data){
+                show_flash(data.message);
+            }
+        });
+    }
+}
+
 window.onload = function() {
     // flash on load if needed
     flash = document.getElementById("flash");

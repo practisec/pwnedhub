@@ -2,7 +2,7 @@
 {% block body %}
     <div class="row">
         <div class="u-full-width center-content">
-            <form action="{{ url_for('artifacts') }}" enctype="multipart/form-data" method="post">
+            <form action="{{ url_for('artifacts_save', method='file') }}" enctype="multipart/form-data" method="post">
                 <input name="file" type="file" />
                 <input type="submit" value="upload" onclick="this.form.submit();" />
             </form>
@@ -21,7 +21,7 @@
                         <td>{{ artifact }}</td>
                         <td>
                             <input type="button" onclick="window.location='{{ url_for('artifacts_view', filename=artifact) }}'" value="view" />
-                            <input type="button" onclick="window.location='{{ url_for('artifacts_delete', filename=artifact) }}'" value="delete" />
+                            <input type="button" onclick="if (confirm('Delete the artifact?') == true) { window.location='{{ url_for('artifacts_delete', filename=artifact) }}' }" value="delete" />
                         </td>
                     </tr>
                 {% endfor %}

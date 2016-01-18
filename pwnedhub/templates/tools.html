@@ -16,7 +16,7 @@
     <div class="row">
         <div class="u-full-width rounded output">
             <pre id="output"></pre>
-            <input style="position: absolute; top: 1rem; right: 1rem;" type="button" onclick="save();" value="save as artifact" />
+            <input class="save-as" type="button" onclick="save();" value="save as artifact" />
         </div>
     </div>
     <script>
@@ -56,22 +56,8 @@ function info(e) {
 
 function save() {
     var filename = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].text;
-    var content = document.getElementById("output").innerHTML
-    if (confirm("Save output as an artifact?") == true) {
-        // save the output
-        $.ajax({
-            url: "{{ url_for('tools_save') }}",
-            type: "POST",
-            data: {
-                filename: filename,
-                content: content,
-            },
-            success: function(data){
-                // update the textarea with the command output
-                show_flash(data.message);
-            }
-        });
-    }
+    var content = document.getElementById("output").innerHTML;
+    save_text(filename, content);
 }
 
 // populate the default tool's description onload
