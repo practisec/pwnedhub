@@ -72,7 +72,7 @@ def notes():
 @roles_required('admin')
 def admin():
     tools = Tool.query.order_by(Tool.name.asc()).all()
-    users = User.query.order_by(User.username.asc()).all()
+    users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
     return render_template('admin.html', tools=tools, users=users)
 
 # ;;OSCI by adding commands and leveraging the tools page
