@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
+    {% if users|length > 0 %}
     <div class="row">
         <div class="u-full-width center-content">
             <h4>Users</h4>
@@ -32,6 +33,7 @@
             </table>
         </div>
     </div>
+    {% endif %}
     <div class="row">
         <div class="u-full-width center-content admin">
             <h4>Tools</h4>
@@ -47,7 +49,6 @@
                             <td><input type="text" name="description" placeholder="description" /></td>
                             <td><input type="submit" value="add" onclick="this.form.submit();" /></td>
                         </tr>
-                    {% if tools|length > 0 %}
                     {% for tool in tools %}
                         <tr>
                             <td>{{ tool.name }}</td>
@@ -58,7 +59,6 @@
                             </td>
                         </tr>
                     {% endfor %}
-                    {% endif %}
                     </tbody>
                 </table>
             </form>
