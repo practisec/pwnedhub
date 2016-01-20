@@ -35,7 +35,8 @@
             <div style="clear: both;"></div>
         </div>
     {% if g.user %}
-        <div class="floating-nav shaded">
+        <div class="floating-nav rounded shaded" id="draggable" draggable="true">
+            <hr><hr><hr>
         {% if g.user.is_admin %}
             <span title="admin"><a title="click to view" href="{{ url_for('admin') }}"><img src="{{ url_for('static', filename='images/admin.png') }}" /></a></span><br>
         {% endif %}

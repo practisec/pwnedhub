@@ -82,16 +82,19 @@ form, table {
 
 .floating-nav {
     padding: 1rem;
-    left: 0;
-    top: 15rem;
+    left: 2rem;
+    top: 2rem;
     z-index: 98;
     position: fixed;
-    -webkit-border-radius: 0 10px 10px 0;
-    -moz-border-radius: 0 10px 10px 0;
-    border-radius: 0 10px 10px 0;
-    border-width: 1px 1px 1px 0px;
-    border-style: solid;
-    border-color: red;
+    border: 1px solid red;
+    background-color: #ffffff;
+    opacity: 0.8;
+    visibility: hidden;
+    cursor: move;
+}
+
+.floating-nav hr {
+    margin: 0 0 .5rem;
 }
 
 .floating-nav span {
@@ -102,12 +105,12 @@ form, table {
 .floating-nav span:hover:after{
     background: #333;
     opacity: 0.9;
-    border-radius: 5px;
+    border-radius: .5rem;
     bottom: 3rem;
     left: 2rem;
     color: #fff;
     content: attr(title);
-    padding: 5px 15px;
+    padding: .5rem 1.5rem;
     position: absolute;
     z-index: 99;
 }
@@ -281,15 +284,15 @@ input[type="button"].save-as {
 }
 
 .rounded {
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
+    -webkit-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    border-radius: 1rem;
 }
 
 .shaded {
-    -webkit-box-shadow: 3px 3px 3px #e1e1e1;
-    -moz-box-shadow: 3px 3px 3px #e1e1e1;
-    box-shadow: 3px 3px 3px #e1e1e1;
+    -webkit-box-shadow: .3rem .3rem .3rem #e1e1e1;
+    -moz-box-shadow: .3rem .3rem .3rem #e1e1e1;
+    box-shadow: .3rem .3rem .3rem #e1e1e1;
 }
 
 .black {
