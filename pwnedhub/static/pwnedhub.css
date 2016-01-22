@@ -81,6 +81,7 @@ form, table {
 }
 
 .floating-nav {
+    max-width: 30px;
     padding: 1rem;
     left: 2rem;
     top: 2rem;
@@ -117,8 +118,8 @@ form, table {
 
 .floating-nav img {
     opacity: 0.6;
-    width: 3rem;
-    margin: .5rem;
+    max-width: 100%;
+    margin: .5rem 0 0;
 }
 
 .content {}
