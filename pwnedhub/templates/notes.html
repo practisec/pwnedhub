@@ -7,8 +7,15 @@
         </div>
     </div>
     <script>
-//document.body.onunload = function(){
-document.getElementById("notes").onblur = function() {
+var notes = document.getElementById("notes")
+var key = "{{ g.user.username }}-notes";
+
+// ;;sensitive data persisted on the client-side in localStorage
+// register an event to save the notes when focus is lost
+notes.onblur = function() {
+    // persist notes locally in case of a failed sync
+    localStorage.setItem(key, this.value);
+    // sync the notes
     $.ajax({
         url: "{{ url_for('notes') }}",
         type: "POST",
@@ -17,14 +24,25 @@ document.getElementById("notes").onblur = function() {
             notes: this.value,
         },
         success: function(data){
-            console.log("Notes saved.")
+            console.log(data.message)
         }
     });
 };
 
+// load the local version of the notes as they will
+// be the most recent in the event of a sync failure
+if (localStorage.getItem(key)) {
+    notes.value = localStorage.getItem(key);
+    // force an attempt to sync the notes to the server
+    notes.onblur();
+    // should move most of this logic into the AJAX call's
+    // success and error handlers to do it right
+}
+notes.style.visibility = "visible";
+
 function save() {
     var filename = "Notes";
-    var content = document.getElementById("notes").innerHTML;
+    var content = notes.innerHTML;
     if (confirm("Save as an artifact?") == true) {
         $.ajax({
             url: "{{ url_for('artifacts_save', method='text') }}",

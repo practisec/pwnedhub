@@ -64,6 +64,7 @@ def notes():
         g.user.notes = request.form['notes']
         db.session.add(g.user)
         db.session.commit()
+        return jsonify(message='Notes saved.')
     notes = g.user.notes or DEFAULT_NOTE
     return render_template('notes.html', notes=notes)
 
