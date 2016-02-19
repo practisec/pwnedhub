@@ -391,7 +391,6 @@ def register():
                     for k in request.form:
                         if k not in ('confirm_password',):
                             user_dict[k] = request.form[k]
-                    print user_dict
                     user = User(**user_dict)
                     db.session.add(user)
                     db.session.commit()
