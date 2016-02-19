@@ -10,7 +10,6 @@
 var notes = document.getElementById("notes")
 var key = "{{ g.user.username }}-notes";
 
-// ;;sensitive data persisted on the client-side in localStorage
 // register an event to save the notes when focus is lost
 notes.onblur = function() {
     // persist notes locally in case of a failed sync

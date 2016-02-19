@@ -15,14 +15,11 @@ import re
 import subprocess
 import traceback
 
-# ;;robots.txt has a reference to /admin in it
-
 # register new jinja global for the current date
 # used in the layout to keep the current year
 app.jinja_env.globals['date'] = datetime.now()
 
 # monkey patch flask.render_template()
-# ;;alternate content discovery
 _render_template = render_template
 def _my_render_template(*args, **kwargs):
     message = detect_user_agent(request.user_agent.string)
@@ -38,7 +35,6 @@ def load_user():
     if session.get('user_id'):
         g.user = User.query.get(session["user_id"])
 
-# ;;header information disclosure
 @app.after_request
 def add_header(response):
     response.headers['X-Powered-By'] = 'Flask/{}'.format(__version__)
@@ -76,7 +72,6 @@ def admin():
     users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
     return render_template('admin.html', tools=tools, users=users)
 
-# ;;OSCI by adding commands and leveraging the tools page
 @app.route('/admin/tools/add', methods=['POST'])
 @login_required
 @roles_required('admin')
@@ -104,14 +99,8 @@ def admin_tools_remove(id):
         flash('Invalid tool ID.')
     return redirect(url_for('admin'))
 
-# ;;missing function level access control
-# ;;CSRF for privilege escalation
-# ;;IDOR to escalate privileges of other users (no self-modification allowed)
-# basic users are redirected and receive a 403 due to proper access controls
-# ;;IDOR to disable accounts
 @app.route('/admin/users/<string:action>/<int:id>')
 @login_required
-#@roles_required('admin')
 def admin_users(action, id):
     user = User.query.get(id)
     if user:
@@ -144,19 +133,12 @@ def admin_users(action, id):
         flash('Invalid user ID.')
     return redirect(url_for('admin'))
 
-
-# ;;passwords stored in a plain or reversable form
-# ;;IDOR to view other users' profiles
 @app.route('/profile/<int:uid>')
 @login_required
 def profile(uid):
     user = User.query.get(uid) or g.user
     return render_template('profile.html', user=user, questions=QUESTIONS)
 
-# ;;method interchange
-# ;;no re-authentication for state changing operations
-# ;;CSRF for lateral authorization bypass
-# ;;IDOR to change other user's profiles
 @app.route('/profile/change/<int:uid>', methods=['POST'])
 @login_required
 def profile_change(uid):
@@ -176,7 +158,6 @@ def profile_change(uid):
             flash('Password does not meet complexity requirements.')
     return redirect(url_for('profile', uid=g.user.id))
 
-# ;;stored XSS via |safe filter in template
 @app.route('/messages', methods=['GET', 'POST'])
 @login_required
 def messages():
@@ -189,7 +170,6 @@ def messages():
     messages = Message.query.order_by(Message.created.desc())
     return render_template('messages.html', messages=messages)
 
-# ;;IDOR to remove other peoples messages
 @app.route('/messages/delete/<int:id>')
 @login_required
 def messages_delete(id):
@@ -210,8 +190,6 @@ def artifacts():
         break
     return render_template('artifacts.html', artifacts=artifacts)
 
-# ;;weak input validation
-# ;;file upload restriction bypass
 @app.route('/artifacts/save/<string:method>', methods=['POST'])
 @login_required
 def artifacts_save(method):
@@ -247,7 +225,6 @@ def artifacts_save(method):
             return jsonify(message=msg)
     return redirect(url_for('artifacts'))
 
-# ;;path traversal to delete any readable file
 @app.route('/artifacts/delete/<path:filename>')
 @login_required
 def artifacts_delete(filename):
@@ -258,7 +235,6 @@ def artifacts_delete(filename):
         flash('Unable to remove the artifact.')
     return redirect(url_for('artifacts'))
 
-# ;;path traversal to view any readable file
 @app.route('/artifacts/view/<path:filename>')
 @login_required
 def artifacts_view(filename):
@@ -274,8 +250,6 @@ def tools():
     tools = Tool.query.all()
     return render_template('tools.html', tools=tools)
 
-# ;;weak input sanitization
-# ;;OSCI using command substitution
 @app.route('/tools/execute', methods=['POST'])
 @login_required
 def tools_execute():
@@ -283,24 +257,18 @@ def tools_execute():
     path = tool.path
     args = request.form['args']
     cmd = '{} {}'.format(path, args)
-    # filter out MOST characters that lead to OSCI
     cmd = re.sub('[;&|]', '', cmd)
     p = subprocess.Popen([cmd, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     out, err = p.communicate()
     output = out + err
     return jsonify(cmd=cmd, output=output)
 
-# ;;SQLi for data extraction
 @app.route('/tools/info', methods=['POST'])
 @login_required
 def tools_info():
-    #query = "SELECT description FROM tools WHERE id='{}'"
     query = "SELECT * FROM tools WHERE id='{}'"
     tid = request.form['tid']
-    #result = db.session.execute(query.format(tid)).first()
     tools = db.session.execute(query.format(tid))
-    #description = result[0] if result else 'No description available.'
-    #return jsonify(description=description)
     return jsonify(tools=[dict(t) for t in tools])
 
 @app.route('/games/')
@@ -367,17 +335,12 @@ def snake_enter_score():
         status = 'invalid scorehash'
     return urlencode({'status':status})
 
-# ;;contains info for guessing usernames
-# ;;contains a password for discovery with CeWL
 @app.route('/about')
 def about():
     return render_template('about.html')
 
 # authenticaton views
 
-# ;;weak password complexity requirement
-# ;;mass assignment
-# ;;user enumeration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -386,7 +349,6 @@ def register():
             password = request.form['password']
             if password == request.form['confirm_password']:
                 if is_valid_password(password):
-                    # mass assignment here
                     user_dict = {}
                     for k in request.form:
                         if k not in ('confirm_password',):
@@ -404,30 +366,23 @@ def register():
             flash('Username already exists.')
     return render_template('register.html', questions=QUESTIONS)
 
-# ;;SQLi for authentication bypass
-# ;;open redirect
-# ;;D-XSS in the error parameter
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # redirect to home if already logged in
     if session.get('user_id'):
         return redirect(url_for('home'))
     if request.method == 'POST':
-        #user = User.get_by_username(request.form['username'])
         query = "SELECT * FROM users WHERE username='{}' AND password_hash='{}'"
         username = request.form['username']
         password_hash = xor_encrypt(request.form['password'], app.config['PW_ENC_KEY'])
         user = db.session.execute(query.format(username, password_hash)).first()
-        # if user and user.is_enabled:
         if user and user['status'] == 1:
-            #if user.check_password(request.form['password']):
             session['user_id'] = user.id
             path = os.path.join(app.config['UPLOAD_FOLDER'], md5(str(user.id)).hexdigest())
             if not os.path.exists(path):
                 os.makedirs(path)
             session['upload_folder'] = path
             return redirect(request.args.get('next') or url_for('home'))
-        #flash('Invalid username or password.')
         return redirect(url_for('login', error='Invalid username or password.'))
     return render_template('login.html')
 
@@ -435,14 +390,10 @@ def login():
 @login_required
 def logout():
     session.pop('user_id', None)
-    #flash('You have been logged out')
     return redirect(url_for('index'))
 
 # password recovery flow views
 
-# ;;logic flaw in that once an attacker submits a valid username, they can
-# directly request the reset password endpoint to bypass the security question
-# ;;user enumeration
 @app.route('/reset', methods=['GET', 'POST'])
 def reset_init():
     if request.method == 'POST':
@@ -492,11 +443,8 @@ def reset_password():
             flash('Passwords do not match.')
     return render_template('reset_password.html')
 
-# ;;reflected XSS via |safe filter on URL in template
-# ;;SSTI
 @app.errorhandler(404)
 def page_not_found(e):
-    #return render_template('404.html', message=request.url), 404
     template = '''{%% extends "layout.html" %%}
 {%% block body %%}
     <div class="center-content error">
@@ -507,7 +455,6 @@ def page_not_found(e):
 ''' % (request.url)
     return render_template_string(template), 404
 
-# ;;verbose error reporting
 @app.errorhandler(500)
 def internal_error(e):
     message = traceback.format_exc()
@@ -524,8 +471,6 @@ class Tools(spyne.Service):
     __in_protocol__ = Soap11(validator='lxml')
     __out_protocol__ = Soap11()
 
-    # ;;SQLi for data extraction via SOAP web service
-    # ;;exposed and discoverable via brute-force
     @spyne.srpc(Unicode, _returns=Iterable(AnyDict))
     def info(tid):
         query = "SELECT * FROM tools WHERE id='{}'"
