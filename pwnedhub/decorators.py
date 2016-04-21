@@ -1,4 +1,4 @@
-from flask import g, request, redirect, url_for, abort
+from flask import g, request, redirect, url_for, abort, make_response
 from constants import ROLES
 from functools import wraps
 from threading import Thread
@@ -26,3 +26,13 @@ def async(func):
         thr = Thread(target=func, args=args, kwargs=kwargs)
         thr.start()
     return wrapper
+
+def no_cache(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        response = make_response(func(*args, **kwargs))
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Expires'] = '0'
+        return response
+    return wrapped
