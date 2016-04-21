@@ -1,12 +1,8 @@
 from pwnedhub import app
 import re
 
-# 1 upper, 1 lower, 1 special, 1 number, minimim 10 chars
-#PASSWORD_REGEX = r'(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*\(\)]).{10,}'
 # anything except blank
 PASSWORD_REGEX = r'.+'
-# 15 more more characters
-#PASSWORD_REGEX = r'.{15,}'
 EMAIL_REGEX = r'[^@]+@[a-zA-Z\d-]+(?:\.[a-zA-Z\d-]+)+'
 
 def is_valid_quantity(quantity):
@@ -24,3 +20,24 @@ def is_valid_password(password):
 
 def is_valid_file(filename):
     return any([x for x in app.config['ALLOWED_EXTENSIONS'] if '.'+x in filename])
+
+from urlparse import urlparse, urljoin
+
+def is_safe_url(url, origin):
+    host = urlparse(origin).netloc
+    proto = urlparse(origin).scheme
+    # reject blank urls
+    if not url:
+        return False
+    url = url.strip()
+    url = url.replace('\\', '/')
+    # simplify down to proto://, //, and /
+    if url.startswith('///'):
+        return False
+    url_info = urlparse(url)
+    # no proto for relative paths, or a matching proto for absolute paths
+    if not url_info.scheme or url_info.scheme == proto:
+        # no host for relative paths, or a matching host for absolute paths
+        if not url_info.netloc or url_info.netloc == host:
+            return True
+    return False
