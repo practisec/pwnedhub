@@ -139,7 +139,7 @@ def profile(uid):
     user = User.query.get(uid) or g.user
     return render_template('profile.html', user=user, questions=QUESTIONS)
 
-@app.route('/profile/change/<int:uid>', methods=['POST'])
+@app.route('/profile/change/<int:uid>', methods=['GET', 'POST'])
 @login_required
 def profile_change(uid):
     user = User.query.get(uid) or g.user
