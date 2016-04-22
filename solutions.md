@@ -242,14 +242,21 @@ if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
 def is_safe_url(url, origin):
     host = urlparse(origin).netloc
     proto = urlparse(origin).scheme
+    # reject blank urls
     if not url:
         return False
     url = url.strip()
     url = url.replace('\\', '/')
+    # simplify down to proto://, //, and /
     if url.startswith('///'):
         return False
     url_info = urlparse(url)
+    # prevent browser manipulation via proto:///...
+    if url_info.scheme and not url_info.netloc:
+        return False
+    # no proto for relative paths, or a matching proto for absolute paths
     if not url_info.scheme or url_info.scheme == proto:
+        # no host for relative paths, or a matching host for absolute paths
         if not url_info.netloc or url_info.netloc == host:
             return True
     return False

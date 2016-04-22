@@ -35,6 +35,9 @@ def is_safe_url(url, origin):
     if url.startswith('///'):
         return False
     url_info = urlparse(url)
+    # prevent browser manipulation via proto:///...
+    if url_info.scheme and not url_info.netloc:
+        return False
     # no proto for relative paths, or a matching proto for absolute paths
     if not url_info.scheme or url_info.scheme == proto:
         # no host for relative paths, or a matching host for absolute paths
