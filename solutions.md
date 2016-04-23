@@ -33,8 +33,6 @@ localStorage.clear()
 | Location | `pwnedhub/views.py`: No cache control logic. |
 | Remediation | Implement the proper cache control headers to prevent the caching of sensitive information. |
 
-Example:
-
 ```
 # affects all views
 @app.after_request
@@ -101,8 +99,6 @@ def profile(uid):
 | Location | `pwnedhub/views.py`: The `page_not_found` view appends raw user input to a template string using string formating. |
 | Remediation | Send user input to the tempate context using the `render_template_string` function, which doesn't process input as raw template code. |
 
-Example:
-
 ```
 return render_template('404.html', message=request.url), 404
 ```
@@ -111,8 +107,6 @@ return render_template('404.html', message=request.url), 404
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: Raw query built with user input via string formatting/concatenation in the `login` view. |
 | Remediation | Use the ORM as intended, or prepared statements/parameterized queries. |
-
-Example:
 
 ```
         user = User.get_by_username(request.form['username'])
@@ -148,8 +142,6 @@ Example:
 | Location | `static/common.js`: Value of the `error` parameter parsed from `document.URL` and dynamically added to the page. |
 | Remediation | Use the builtin `flash` function from Flask, populate the DOM using safe JavaScript functions or properties, or properly encode the output on the client-side. |
 
-Example:
-
 ```
 // JavaScript
 flash.textContent = msg;
@@ -162,8 +154,6 @@ flash('Invalid username or password.')
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `page_not_found` view appends raw user input to a template string using string formating. |
 | Remediation | Send user input to the tempate context using the `render_template_string` function, which will enforce template context encoding. |
-
-Example:
 
 ```
 return render_template('404.html', message=request.url), 404
@@ -194,8 +184,6 @@ return render_template('404.html', message=request.url), 404
 | Location | `pwnedhub/views.py`: The `os.path.join` function in the `artifacts_save` view allows for path traversal. |
 | Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or sanitize input to remove malicious characters. |
 
-Example:
-
 ```
 unsafe_path = os.path.join(session.get('upload_folder'), filename)
 if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
@@ -207,8 +195,6 @@ if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
 | Location | `pwnedhub/views.py`: The `os.path.join` function in the `artifacts_delete` view allows for path traversal. |
 | Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or sanitize input to remove malicious characters. |
 
-Example:
-
 ```
 unsafe_path = os.path.join(session.get('upload_folder'), filename)
 if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
@@ -219,8 +205,6 @@ if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `os.path.join` function in the `artifacts_view` view allows for path traversal. |
 | Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or sanitize input to remove malicious characters. |
-
-Example:
 
 ```
 unsafe_path = os.path.join(session.get('upload_folder'), filename)
@@ -331,8 +315,6 @@ def is_safe_url(url, origin):
 | Location | `pwnedhub/validators.py`: `is_valid_password` function. |
 | Remediation | Enhance the validator to enforce something more than a minimum length of 1 character. |
 
-Example:
-
 ```
 # 1 upper, 1 lower, 1 special, 1 number, minimim 10 chars
 PASSWORD_REGEX = r'(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*\(\)]).{10,}'
@@ -344,8 +326,6 @@ PASSWORD_REGEX = r'.{15,}'
 | :-- | :-- |
 | Location | `pwnedhub/templates/about.html`: Paragragh with nicknames. |
 | Remediation | Prevent users from using words related to the application in their passwords. |
-
-Example:
 
 ```
 blacklist = ['PwnedHub', 'collaborate']
@@ -389,8 +369,6 @@ session['recovery_state'] = <new state>
 | :-- | :-- |
 | Location | `pwnedhub/static/jquery-1.6.2.min.js`: The `pwnedhub/templates/layout.html` template references an old version of jQuery. |
 | Remediation | Update the jQuery library and associated import statement in `pwnedhub/templates/layout.html`. |
-
-Example:
 
 ```
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.min.js') }}"></script>
