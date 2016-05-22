@@ -382,6 +382,7 @@ def login():
             if not os.path.exists(path):
                 os.makedirs(path)
             session['upload_folder'] = path
+            session.rotate()
             return redirect(request.args.get('next') or url_for('home'))
         return redirect(url_for('login', error='Invalid username or password.'))
     return render_template('login.html')
@@ -390,6 +391,7 @@ def login():
 @login_required
 def logout():
     session.pop('user_id', None)
+    session.clear()
     return redirect(url_for('index'))
 
 # password recovery flow views

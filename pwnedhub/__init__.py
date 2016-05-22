@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.spyne import Spyne
+from flask.ext.session import Session
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -15,7 +16,7 @@ PW_ENC_KEY = 'sekrit'
 UPLOAD_FOLDER = os.path.join(basedir, 'artifacts')
 ALLOWED_EXTENSIONS = set(['txt', 'xml', 'jpg', 'png', 'gif'])
 SESSION_COOKIE_HTTPONLY = False
-#SESSION_REFRESH_EACH_REQUEST = False # not available in 0.10.1
+PERMANENT_SESSION_LIFETIME = 600
 
 # setting the static_url_path to blank serves static
 # files from the web root, allowing for robots.txt
@@ -24,6 +25,7 @@ app.config.from_object(__name__)
 
 db = SQLAlchemy(app)
 spyne = Spyne(app)
+Session(app)
 
 def initdb():
     db.create_all()
