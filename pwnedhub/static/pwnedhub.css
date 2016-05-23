@@ -228,6 +228,10 @@ form, table {
 
 .artifacts {}
 
+.artifacts form {
+    display: inline;
+}
+
 .output {
     position: relative;
     min-height: 40rem;

@@ -225,9 +225,10 @@ def artifacts_save(method):
             return jsonify(message=msg)
     return redirect(url_for('artifacts'))
 
-@app.route('/artifacts/delete/<path:filename>')
+@app.route('/artifacts/delete', methods=['POST'])
 @login_required
-def artifacts_delete(filename):
+def artifacts_delete():
+    filename = request.form['filename']
     try:
         os.remove(os.path.join(session.get('upload_folder'), filename))
         flash('Artifact deleted.')
@@ -235,9 +236,10 @@ def artifacts_delete(filename):
         flash('Unable to remove the artifact.')
     return redirect(url_for('artifacts'))
 
-@app.route('/artifacts/view/<path:filename>')
+@app.route('/artifacts/view', methods=['POST'])
 @login_required
-def artifacts_view(filename):
+def artifacts_view():
+    filename = request.form['filename']
     try:
         return send_file(os.path.join(session.get('upload_folder'), filename))
     except IOError:
