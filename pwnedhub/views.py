@@ -1,5 +1,5 @@
 from flask import request, session, g, redirect, url_for, render_template, render_template_string, jsonify, flash, abort, send_file, __version__
-from sqlalchemy import asc, desc
+from sqlalchemy import asc, desc, exc
 from pwnedhub import app, db, spyne
 from models import User, Message, Score, Tool
 from constants import QUESTIONS, DEFAULT_NOTE
@@ -270,7 +270,10 @@ def tools_execute():
 def tools_info():
     query = "SELECT * FROM tools WHERE id='{}'"
     tid = request.form['tid']
-    tools = db.session.execute(query.format(tid))
+    try:
+        tools = db.session.execute(query.format(tid))
+    except exc.OperationalError:
+        tools = ()
     return jsonify(tools=[dict(t) for t in tools])
 
 @app.route('/games/')
