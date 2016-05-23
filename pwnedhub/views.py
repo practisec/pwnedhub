@@ -133,16 +133,15 @@ def admin_users(action, id):
         flash('Invalid user ID.')
     return redirect(url_for('admin'))
 
-@app.route('/profile/<int:uid>')
+@app.route('/profile')
 @login_required
-def profile(uid):
-    user = User.query.get(uid) or g.user
-    return render_template('profile.html', user=user, questions=QUESTIONS)
+def profile():
+    return render_template('profile.html', user=g.user, questions=QUESTIONS)
 
-@app.route('/profile/change/<int:uid>', methods=['GET', 'POST'])
+@app.route('/profile/change', methods=['GET', 'POST'])
 @login_required
-def profile_change(uid):
-    user = User.query.get(uid) or g.user
+def profile_change():
+    user = g.user
     if set(['password', 'question', 'answer']).issubset(request.values):
         password = request.values['password']
         if is_valid_password(password):
@@ -156,7 +155,7 @@ def profile_change(uid):
             flash('Account information successfully changed.')
         else:
             flash('Password does not meet complexity requirements.')
-    return redirect(url_for('profile', uid=g.user.id))
+    return redirect(url_for('profile'))
 
 @app.route('/messages', methods=['GET', 'POST'])
 @login_required

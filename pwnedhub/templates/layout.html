@@ -39,7 +39,7 @@
         {% if g.user.is_admin %}
             <span title="admin"><a title="click to view" href="{{ url_for('admin') }}"><img src="{{ url_for('static', filename='images/admin.png') }}" /></a></span><br>
         {% endif %}
-            <span title="profile"><a title="click to view" href="{{ url_for('profile', uid=g.user.id) }}"><img src="{{ url_for('static', filename='images/profile.png') }}" /></a></span><br>
+            <span title="profile"><a title="click to view" href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/profile.png') }}" /></a></span><br>
             <span title="notes"><a title="click to view" href="{{ url_for('notes') }}"><img src="{{ url_for('static', filename='images/notes.png') }}" /></a></span><br>
             <span title="messages"><a title="click to view" href="{{ url_for('messages') }}"><img src="{{ url_for('static', filename='images/messages.png') }}" /></a></span><br>
             <span title="artifacts"><a title="click to view" href="{{ url_for('artifacts') }}"><img src="{{ url_for('static', filename='images/artifacts.png') }}" /></a></span><br>
