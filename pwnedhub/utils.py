@@ -1,5 +1,5 @@
 def detect_user_agent(s):
-    if any([x for x in ('iphone', 'android') if x in s.lower()]):
+    if any([x for x in ('iphone', 'ipad', 'android') if x in s.lower()]):
         return 'Mobile coming soon!'
     elif any([x for x in ('googlebot', 'bingbot') if x in s.lower()]):
         return 'Nothing to see here, bot. Move along.'
