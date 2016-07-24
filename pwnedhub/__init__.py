@@ -16,7 +16,7 @@ PW_ENC_KEY = 'sekrit'
 UPLOAD_FOLDER = os.path.join(basedir, 'artifacts')
 ALLOWED_EXTENSIONS = set(['txt', 'xml', 'jpg', 'png', 'gif'])
 SESSION_COOKIE_HTTPONLY = False
-PERMANENT_SESSION_LIFETIME = 600
+PERMANENT_SESSION_LIFETIME = 3600 # 1 hour
 
 # setting the static_url_path to blank serves static
 # files from the web root, allowing for robots.txt
