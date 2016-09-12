@@ -8,7 +8,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # configuration
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'pwnedhub.db')
-#SQLALCHEMY_DATABASE_URI = 'mysql://root:pwaptadmin@localhost/pwnedhub'
 DEBUG = True
 TESTING = False
 SECRET_KEY = 'development key'
