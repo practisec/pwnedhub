@@ -31,6 +31,14 @@ function drop(event) {
     return false;
 }
 
+function toggle_visibility(name){
+   var els = document.getElementsByName(name);
+   for(var i=0; i<els.length; ++i){
+      var s = els[i].style;
+      s.visibility = s.visibility==='visible' ? 'hidden' : 'visible';
+   };
+}
+
 window.onload = function() {
     // flash on load if needed
     flash = document.getElementById("flash");

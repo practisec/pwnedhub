@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="row">
+        <div class="ten columns offset-by-one">
+            <input type="button" onclick="window.location='{{ url_for('mail_compose') }}'" value="compose" />
+            <div class="inbox">
+                <table class="u-full-width center">
+                    <thead>
+                        <tr><th class="left-content">from</th><th class="left-content">subject</th><th>date</th><th>action</th></tr>
+                    </thead>
+                    <tbody>
+                    {% if mail|length > 0 %}
+                    {% for item in mail %}
+                        <tr{% if item.read == 0 %} style="font-weight: bold;"{% endif %} onmouseover="toggle_visibility('action_{{ item.id }}')" onmouseout="toggle_visibility('action_{{ item.id }}')">
+                            <td class="left-content">{{ item.sender.name }}</td>
+                            <td class="left-content">{{ item.subject }}</td>
+                            <td>{{ item.created_as_string }}</td>
+                            <td>
+                                <input name="action_{{ item.id }}" type="button" onclick="window.location='{{ url_for('mail_view', id=item.id) }}'" value="view" />
+                                <input name="action_{{ item.id }}" type="button" onclick="window.location='{{ url_for('mail_delete', id=item.id) }}'" value="delete" />
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    {% else %}
+                        <tr><td colspan="4" class="center-content">you have no mail</td></tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

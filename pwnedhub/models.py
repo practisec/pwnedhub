@@ -27,11 +27,29 @@ class Message(db.Model):
     def __repr__(self):
         return "<Message '{}'>".format(self.id)
 
+class Mail(db.Model):
+    __tablename__ = 'mail'
+    id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+    subject = db.Column(db.Text)
+    content = db.Column(db.Text)
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    read = db.Column(db.Integer, nullable=False, default=0)
+
+    @property
+    def created_as_string(self):
+        return self.created.strftime("%Y-%m-%d %H:%M:%S")
+
+    def __repr__(self):
+        return "<Mail '{}'>".format(self.id)
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
     username = db.Column(db.String(255), nullable=False, unique=True)
+    name = db.Column(db.String(255), nullable=False)
     password_hash = db.Column(db.String(255))
     question = db.Column(db.Integer, nullable=False)
     answer = db.Column(db.String(255), nullable=False)
@@ -39,6 +57,8 @@ class User(db.Model):
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
     messages = db.relationship('Message', backref='user', lazy='dynamic')
+    sent_mail = db.relationship('Mail', foreign_keys='Mail.sender_id', backref='sender', lazy='dynamic')
+    received_mail = db.relationship('Mail', foreign_keys='Mail.receiver_id', backref='receiver', lazy='dynamic')
 
     @property
     def role_as_string(self):

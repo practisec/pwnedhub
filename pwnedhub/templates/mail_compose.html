@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="row">
+        <div class="ten columns offset-by-one mail">
+            <form action="{{ url_for('mail_compose') }}" method="post">
+                <label for="receiver">to:</label>
+                <select name="receiver">
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.name }}</option>
+                {% endfor %}
+                </select><br>
+                <label for="subject">subject:</label>
+                <input class="u-full-width" name="subject" type="text" placeholder="subject here..." /><br>
+                <label for="content">content:</label>
+                <textarea class="u-full-width" name="content" placeholder="content here..."></textarea><br>
+                <input type="submit" style="float: right" value="send" onclick="this.form.submit();" />
+            </form>
+        </div>
+    </div>
+{% endblock %}

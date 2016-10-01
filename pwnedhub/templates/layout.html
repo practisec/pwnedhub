@@ -19,7 +19,7 @@
             <div class="links">
                 <ul>
                 {% if g.user %}
-                    <li>hi {{ g.user.username }}!</li>
+                    <li>hi {{ g.user.name }}!</li>
                     <li class="black">|</li>
                     <li><a href="{{ url_for('logout') }}">log out</a></li>
                 {% else %}
@@ -41,6 +41,7 @@
         {% endif %}
             <span title="profile"><a title="click to view" href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/profile.png') }}" /></a></span><br>
             <span title="notes"><a title="click to view" href="{{ url_for('notes') }}"><img src="{{ url_for('static', filename='images/notes.png') }}" /></a></span><br>
+            <span title="mail"><a title="click to view" href="{{ url_for('mail') }}"><img src="{{ url_for('static', filename='images/mail.png') }}" /></a></span><br>
             <span title="messages"><a title="click to view" href="{{ url_for('messages') }}"><img src="{{ url_for('static', filename='images/messages.png') }}" /></a></span><br>
             <span title="artifacts"><a title="click to view" href="{{ url_for('artifacts') }}"><img src="{{ url_for('static', filename='images/artifacts.png') }}" /></a></span><br>
             <span title="tools"><a title="click to view" href="{{ url_for('tools') }}"><img src="{{ url_for('static', filename='images/tools.png') }}" /></a></span><br>

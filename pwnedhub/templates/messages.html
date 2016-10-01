@@ -10,18 +10,18 @@
             </form>
         </div>
     </div>
-    {% if messages.all()|length > 0 %}
+    {% if messages|length > 0 %}
     <div class="row">
         <div class="ten columns offset-by-one messages">
         {% for message in messages %}
         {% if message.user == g.user %}
-            <div onmouseover="this.firstElementChild.style.visibility='visible'" onmouseout="this.firstElementChild.style.visibility='hidden'">
-                <div class="delete">
+            <div onmouseover="toggle_visibility('action_{{ message.id }}')" onmouseout="toggle_visibility('action_{{ message.id }}')">
+                <div name="action_{{ message.id }}" class="delete">
                     <a href="{{ url_for('messages_delete', id=message.id) }}">delete</a>
                 </div>
         {% endif %}
                 <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
-                    <p><span class="red">{{ message.user.username }}</span></p>
+                    <p><span class="red">{{ message.user.name }}</span></p>
                     <p>{{ message.comment|safe }}</p>
                     <p>{{ message.created_as_string }}</p>
                 </div>

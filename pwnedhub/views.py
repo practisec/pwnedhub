@@ -1,7 +1,7 @@
 from flask import request, session, g, redirect, url_for, render_template, render_template_string, jsonify, flash, abort, send_file, __version__
 from sqlalchemy import asc, desc, exc
 from pwnedhub import app, db, spyne
-from models import User, Message, Score, Tool
+from models import Mail, Message, Score, Tool, User
 from constants import QUESTIONS, DEFAULT_NOTE
 from decorators import login_required, roles_required
 from utils import xor_encrypt, detect_user_agent
@@ -145,8 +145,10 @@ def profile_change():
     if set(['password', 'question', 'answer']).issubset(request.values):
         password = request.values['password']
         if is_valid_password(password):
+            name = request.values['name']
             question = request.values['question']
             answer = request.values['answer']
+            user.name = name
             user.password = password
             user.question = question
             user.answer = answer
@@ -157,6 +159,54 @@ def profile_change():
             flash('Password does not meet complexity requirements.')
     return redirect(url_for('profile'))
 
+@app.route('/mail')
+@login_required
+def mail():
+    mail = g.user.received_mail.order_by(Mail.created.desc()).all()
+    return render_template('mail_inbox.html', mail=mail)
+
+@app.route('/mail/compose', methods=['GET', 'POST'])
+@login_required
+def mail_compose():
+    if request.method == 'POST':
+        content = request.form['content']
+        if content:
+            receiver = User.query.get(request.form['receiver'])
+            subject = request.form['subject']
+            mail = Mail(content=content, subject=subject, sender=g.user, receiver=receiver)
+            db.session.add(mail)
+            db.session.commit()
+            flash('Mail sent.')
+            return redirect(url_for('mail'))
+    users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
+    return render_template('mail_compose.html', users=users)
+
+@app.route('/mail/view/<int:id>')
+@login_required
+def mail_view(id):
+    mail = Mail.query.get(id)
+    if mail:
+        if mail.read == 0:
+            mail.read = 1
+            db.session.add(mail)
+            db.session.commit()
+    else:
+        flash('Invalid mail ID.')
+        return redirect(url_for('mail'))
+    return render_template('mail_view.html', mail=mail)
+
+@app.route('/mail/delete/<int:id>')
+@login_required
+def mail_delete(id):
+    mail = Mail.query.get(id)
+    if mail:
+        db.session.delete(mail)
+        db.session.commit()
+        flash('Mail deleted.')
+    else:
+        flash('Invalid mail ID.')
+    return redirect(url_for('mail'))
+
 @app.route('/messages', methods=['GET', 'POST'])
 @login_required
 def messages():
@@ -166,14 +216,14 @@ def messages():
             msg = Message(comment=message, user=g.user)
             db.session.add(msg)
             db.session.commit()
-    messages = Message.query.order_by(Message.created.desc())
+    messages = Message.query.order_by(Message.created.desc()).all()
     return render_template('messages.html', messages=messages)
 
 @app.route('/messages/delete/<int:id>')
 @login_required
 def messages_delete(id):
     message = Message.query.get(id)
-    if message:
+    if message and message.user == g.user:
         db.session.delete(message)
         db.session.commit()
         flash('Message deleted.')

@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="row">
+        <div class="ten columns offset-by-one mail">
+            <label for="sender">from:</label>
+            <input name="sender" type="text" value="{{ mail.sender.name }}" disabled/><br>
+            <label for="subject">subject:</label>
+            <input class="u-full-width" name="subject" type="text" value="{{ mail.subject }}" disabled/><br>
+            <label for="content">content:</label>
+            <textarea class="u-full-width" name="content" disabled>{{ mail.content }}</textarea><br>
+            <input type="button" style="float: right" value="delete" onclick="window.location='{{ url_for('mail_delete', id=mail.id) }}'" />
+        </div>
+    </div>
+{% endblock %}

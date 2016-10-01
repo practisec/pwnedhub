@@ -235,6 +235,24 @@ form, table {
     visibility: hidden;
 }
 
+.inbox {}
+
+.inbox td {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.inbox input {
+    visibility: hidden;
+}
+
+.mail {}
+
+.mail textarea {
+    width: 100%;
+    height: 150px;
+}
+
 .messages {
     border-top: 1px solid #e1e1e1;
 }

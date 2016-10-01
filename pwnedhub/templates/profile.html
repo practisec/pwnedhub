@@ -10,6 +10,12 @@
             </div>
             <div class="row">
                 <div class="six columns offset-by-three">
+                    <label for="name">display name</label>
+                    <input class="u-full-width" name="name" type="text" value="{{ user.name }}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="six columns offset-by-three">
                     <label for="password">password</label>
                     <input class="u-full-width" name="password" type="password" value="{{ user.password_as_string }}" />
                 </div>
