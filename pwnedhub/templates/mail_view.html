@@ -8,7 +8,10 @@
             <input class="u-full-width" name="subject" type="text" value="{{ mail.subject }}" disabled/><br>
             <label for="content">content:</label>
             <textarea class="u-full-width" name="content" disabled>{{ mail.content }}</textarea><br>
-            <input type="button" style="float: right" value="delete" onclick="window.location='{{ url_for('mail_delete', id=mail.id) }}'" />
+            <div class="u-full-width right-content">
+                <input type="button" value="reply" onclick="window.location='{{ url_for('mail_compose', id=mail.sender.id) }}'" />
+                <input type="button" value="delete" onclick="window.location='{{ url_for('mail_delete', id=mail.id) }}'" />
+            </div>
         </div>
     </div>
 {% endblock %}

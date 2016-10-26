@@ -166,8 +166,9 @@ def mail():
     return render_template('mail_inbox.html', mail=mail)
 
 @app.route('/mail/compose', methods=['GET', 'POST'])
+@app.route('/mail/compose/<int:id>')
 @login_required
-def mail_compose():
+def mail_compose(id=0):
     if request.method == 'POST':
         content = request.form['content']
         if content:
@@ -178,7 +179,7 @@ def mail_compose():
             db.session.commit()
             flash('Mail sent.')
             return redirect(url_for('mail'))
-    users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
+    users = User.query.filter(User.id == id).all() or User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
     return render_template('mail_compose.html', users=users)
 
 @app.route('/mail/view/<int:id>')

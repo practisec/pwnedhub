@@ -11,13 +11,14 @@
                     <tbody>
                     {% if mail|length > 0 %}
                     {% for item in mail %}
-                        <tr{% if item.read == 0 %} style="font-weight: bold;"{% endif %} onmouseover="toggle_visibility('action_{{ item.id }}')" onmouseout="toggle_visibility('action_{{ item.id }}')">
+                        <tr{% if item.read == 0 %} style="font-weight: bold;"{% endif %}>
                             <td class="left-content">{{ item.sender.name }}</td>
                             <td class="left-content">{{ item.subject }}</td>
                             <td>{{ item.created_as_string }}</td>
                             <td>
-                                <input name="action_{{ item.id }}" type="button" onclick="window.location='{{ url_for('mail_view', id=item.id) }}'" value="view" />
-                                <input name="action_{{ item.id }}" type="button" onclick="window.location='{{ url_for('mail_delete', id=item.id) }}'" value="delete" />
+                                <input name="action_{{ item.id }}" type="button" value="view" onclick="window.location='{{ url_for('mail_view', id=item.id) }}'" />
+                                <input name="action_{{ item.id }}" type="button" value="reply" onclick="window.location='{{ url_for('mail_compose', id=item.sender.id) }}'" />
+                                <input name="action_{{ item.id }}" type="button" value="delete" onclick="window.location='{{ url_for('mail_delete', id=item.id) }}'" />
                             </td>
                         </tr>
                     {% endfor %}
