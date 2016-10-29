@@ -208,6 +208,37 @@ def mail_delete(id):
         flash('Invalid mail ID.')
     return redirect(url_for('mail'))
 
+@app.route('/messages.react')
+@login_required
+def messages_react():
+    return render_template('messages.html', react=True)
+
+@app.route('/api/messages', methods=['GET', 'POST'])
+@app.route('/api/messages/<int:id>', methods=['DELETE'])
+@login_required
+def api_messages(id=None):
+    if request.method == 'POST':
+        message = request.json['message']
+        if message:
+            msg = Message(comment=message, user=g.user)
+            db.session.add(msg)
+            db.session.commit()
+    if request.method == 'DELETE':
+        message = Message.query.get(id)
+        if message and message.user == g.user:
+            db.session.delete(message)
+            db.session.commit()
+    messages = []
+    # add is_owner field to each message
+    for message in Message.query.order_by(Message.created.desc()).all():
+        is_owner = False
+        if message.user == g.user:
+            is_owner = True
+        message = message.serialize()
+        message['is_owner'] = is_owner
+        messages.append(message)
+    return jsonify(messages=messages)
+
 @app.route('/messages', methods=['GET', 'POST'])
 @login_required
 def messages():

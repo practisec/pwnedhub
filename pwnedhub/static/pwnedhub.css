@@ -278,12 +278,19 @@ select:disabled {
     float: right;
     font-size: 1.25rem;
     color: #e1e1e1;
-    visibility: hidden;
+    cursor: pointer;
+    cursor: hand;
 }
 
 .delete a {
     color: inherit;
     text-decoration: inherit;
+}
+
+.delete img {
+    opacity: 0.2;
+    width: 2rem;
+    margin: .5rem;
 }
 
 .artifacts {}

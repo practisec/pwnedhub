@@ -24,6 +24,14 @@ class Message(db.Model):
     def created_as_string(self):
         return self.created.strftime("%Y-%m-%d %H:%M:%S")
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'created': self.created_as_string, 
+            'comment': self.comment,
+            'user': self.user.name,
+        }
+
     def __repr__(self):
         return "<Message '{}'>".format(self.id)
 

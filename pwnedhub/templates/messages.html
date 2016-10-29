@@ -1,5 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
+{% if react %}
+    <script src="{{ url_for('static', filename='react/react.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='react/react-dom.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='react/browser.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='react/axios.min.js') }}"></script>
+    <script type="text/babel" src="{{ url_for('static', filename='react/messages.js') }}"></script>
+    <div id="react-container"></div>
+{% else %}
     <div class="row">
         <div class="ten columns offset-by-one center-content">
             <form action="{{ url_for('messages') }}" method="post">
@@ -15,9 +23,11 @@
         <div class="ten columns offset-by-one messages">
         {% for message in messages %}
         {% if message.user == g.user %}
-            <div onmouseover="toggle_visibility('action_{{ message.id }}')" onmouseout="toggle_visibility('action_{{ message.id }}')">
+            <div>
                 <div name="action_{{ message.id }}" class="delete">
-                    <a href="{{ url_for('messages_delete', id=message.id) }}">delete</a>
+                    <a href="{{ url_for('messages_delete', id=message.id) }}">
+                        <img src="{{ url_for('static', filename='images/trash.png') }}" />
+                    </a>
                 </div>
         {% endif %}
                 <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
@@ -32,4 +42,5 @@
         </div>
     </div>
     {% endif %}
+{% endif %}
 {% endblock %}
