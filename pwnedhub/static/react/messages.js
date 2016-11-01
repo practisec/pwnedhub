@@ -143,14 +143,16 @@ var MessageDelete = React.createClass({
 });
 
 var Message = React.createClass({
-    render() {
+    getMessageStyle() {
         // set an inline style if the message is owned by the current user
-        var messageStyle = {};
         if (this.props.message.is_owner == true) {
-            messageStyle = {fontWeight: "bold"};
+            return { fontWeight: "bold" };
         };
+        return {};
+    },
+    render() {
         return (
-            <div style={messageStyle}>
+            <div style={this.getMessageStyle()}>
                 <p><span className="red">{this.props.message.user}</span></p>
                 <p dangerouslySetInnerHTML={{__html: this.props.message.comment}}></p>
                 <p>{this.props.message.created}</p>
