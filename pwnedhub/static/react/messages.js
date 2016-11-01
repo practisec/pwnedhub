@@ -61,8 +61,10 @@ var MessageForm = React.createClass({
     },
     handleFormSubmit(e) {
         e.preventDefault();
-        this.props.onMessageSubmit({message: this.state.message});
-        this.setState({ message: "" });
+        if (this.props.onMessageSubmit) {
+            this.props.onMessageSubmit({message: this.state.message});
+            this.setState({ message: "" });
+        }
     },
     onChange(e) {
         this.setState({ message: e.target.value });
@@ -105,7 +107,9 @@ var MessageList = React.createClass({
 var MessageDelete = React.createClass({
     handleDeleteClick(e) {
         e.preventDefault();
-        this.props.onDeleteMessage(this.props.message.id);
+        if (this.props.onDeleteMessage) {
+            this.props.onDeleteMessage(this.props.message.id);
+        }
     },
     render() {
         // prevent the componenet from mounting if it is not owned by the current user
