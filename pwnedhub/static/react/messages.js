@@ -9,7 +9,7 @@ var MessagesComponent = React.createClass({
             "/api/messages"
         )
         .then(function(response) {
-            this.setState(response.data);
+            this.setState({ messages: response.data.messages });
         }.bind(this))
         .catch(function (error) {
             console.log(error);
@@ -26,7 +26,7 @@ var MessagesComponent = React.createClass({
             message
         )
         .then(function(response) {
-            this.setState(response.data);
+            this.setState({ messages: response.data.messages });
         }.bind(this))
         .catch(function (error) {
             console.log(error);
@@ -37,7 +37,7 @@ var MessagesComponent = React.createClass({
             "/api/messages/" + id
         )
         .then(function(response) {
-            this.setState(response.data);
+            this.setState({ messages: response.data.messages });
         }.bind(this))
         .catch(function (error) {
             console.log(error);
