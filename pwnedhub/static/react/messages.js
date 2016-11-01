@@ -1,10 +1,10 @@
 // dynamic URLs via template
 
 var MessagesComponent = React.createClass({
-    getInitialState: function () {
+    getInitialState() {
         return { messages: [] };
     },
-    loadMessagesFromServer: function() {
+    loadMessagesFromServer() {
         axios.get(
             "/api/messages"
         )
@@ -15,12 +15,12 @@ var MessagesComponent = React.createClass({
             console.log(error);
         });
     },
-    componentDidMount: function() {
+    componentDidMount() {
         this.loadMessagesFromServer();
         // uncomment to enable live updates
         //setInterval(this.loadMessagesFromServer, 2000);
     },
-    handleMessageSubmit: function(message) {
+    handleMessageSubmit(message) {
         axios.post(
             "/api/messages",
             message
@@ -32,7 +32,7 @@ var MessagesComponent = React.createClass({
             console.log(error);
         });
     },
-    handleMessageDelete: function(id) {
+    handleMessageDelete(id) {
         axios.delete(
             "/api/messages/" + id
         )
@@ -43,7 +43,7 @@ var MessagesComponent = React.createClass({
             console.log(error);
         });
     },
-    render: function() {
+    render() {
         return (
             <div>
                 <div className="row">
@@ -56,10 +56,10 @@ var MessagesComponent = React.createClass({
 });
 
 var MessageForm = React.createClass({
-    getInitialState: function() {
+    getInitialState() {
         return { message: "" };
     },
-    handleFormSubmit: function(e) {
+    handleFormSubmit(e) {
         e.preventDefault();
         this.props.onMessageSubmit({message: this.state.message});
         this.setState({ message: "" });
@@ -67,7 +67,7 @@ var MessageForm = React.createClass({
     onChange(e) {
         this.setState({ message: e.target.value });
     },
-    render: function() {
+    render() {
         return (
             <div className="ten columns offset-by-one center-content">
                 <form onSubmit={this.handleFormSubmit}>
@@ -82,7 +82,7 @@ var MessageForm = React.createClass({
 });
 
 var MessageList = React.createClass({
-    render: function() {
+    render() {
         return (
             <div className="row">
                 <div className="ten columns offset-by-one messages">
@@ -103,11 +103,11 @@ var MessageList = React.createClass({
 });
 
 var MessageDelete = React.createClass({
-    handleDeleteClick: function(e) {
+    handleDeleteClick(e) {
         e.preventDefault();
         this.props.onDeleteMessage(this.props.message.id);
     },
-    render: function() {
+    render() {
         // prevent the componenet from mounting if it is not owned by the current user
         if (this.props.message.is_owner == false) {
             return false;
@@ -121,7 +121,7 @@ var MessageDelete = React.createClass({
 });
 
 var Message = React.createClass({
-    render: function() {
+    render() {
         // set an inline style if the message is owned by the current user
         var messageStyle = {};
         if (this.props.message.is_owner == true) {
