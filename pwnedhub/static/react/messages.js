@@ -71,8 +71,8 @@ var MessageForm = React.createClass({
             this.setState({ message: "" });
         }
     },
-    onChange(e) {
-        this.setState({ message: e.target.value });
+    onChange() {
+        this.setState({ message: this.refs.inputElement.value });
     },
     inputStyle: {
         float: "right"
@@ -89,6 +89,7 @@ var MessageForm = React.createClass({
                     <input style={this.inputStyle} type="submit" value="submit" />
                     <span style={this.spanStyle}>
                         <input
+                            ref="inputElement"
                             className="u-full-width"
                             type="text"
                             value={this.state.message}
