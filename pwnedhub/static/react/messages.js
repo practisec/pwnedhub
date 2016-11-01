@@ -74,12 +74,20 @@ var MessageForm = React.createClass({
     onChange(e) {
         this.setState({ message: e.target.value });
     },
+    inputStyle: {
+        float: "right"
+    },
+    spanStyle: {
+        display: "block",
+        overflow: "hidden",
+        paddingRight: "10px"
+    },
     render() {
         return (
             <div className="ten columns offset-by-one center-content">
                 <form onSubmit={this.handleFormSubmit}>
-                    <input style={{float: "right"}} type="submit" value="submit" />
-                    <span style={{display: "block", overflow: "hidden", paddingRight: "10px"}}>
+                    <input style={this.inputStyle} type="submit" value="submit" />
+                    <span style={this.spanStyle}>
                         <input
                             className="u-full-width"
                             type="text"
