@@ -47,9 +47,14 @@ var MessagesComponent = React.createClass({
         return (
             <div>
                 <div className="row">
-                    <MessageForm onMessageSubmit={this.handleMessageSubmit} />
+                    <MessageForm
+                        onMessageSubmit={this.handleMessageSubmit}
+                    />
                 </div>
-                <MessageList messages={this.state.messages} onDeleteMessage={this.handleMessageDelete} />
+                <MessageList
+                    messages={this.state.messages}
+                    onDeleteMessage={this.handleMessageDelete}
+                />
             </div>
         );
     }
@@ -75,7 +80,13 @@ var MessageForm = React.createClass({
                 <form onSubmit={this.handleFormSubmit}>
                     <input style={{float: "right"}} type="submit" value="submit" />
                     <span style={{display: "block", overflow: "hidden", paddingRight: "10px"}}>
-                        <input className="u-full-width" type="text" value={this.state.message} placeholder="message here..." onChange={this.onChange} />
+                        <input
+                            className="u-full-width"
+                            type="text"
+                            value={this.state.message}
+                            placeholder="message here..."
+                            onChange={this.onChange}
+                        />
                     </span>
                 </form>
             </div>
@@ -92,8 +103,15 @@ var MessageList = React.createClass({
                         function(message, i) {
                             return (
                                 <div>
-                                    <MessageDelete message={message} onDeleteMessage={this.props.onDeleteMessage} key={'1-'+i} />
-                                    <Message message={message} key={'2-'+i} />
+                                    <MessageDelete
+                                        message={message}
+                                        onDeleteMessage={this.props.onDeleteMessage}
+                                        key={'1-'+i}
+                                    />
+                                    <Message
+                                        message={message}
+                                        key={'2-'+i}
+                                    />
                                 </div>
                             );
                         }, this
