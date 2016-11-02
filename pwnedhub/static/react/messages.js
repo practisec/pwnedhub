@@ -1,79 +1,101 @@
 // dynamic URLs via template
 
 var MessagesComponent = React.createClass({
-    getInitialState: function () {
+    getInitialState() {
         return { messages: [] };
     },
-    loadMessagesFromServer: function() {
+    loadMessagesFromServer() {
         axios.get(
             "/api/messages"
         )
         .then(function(response) {
-            this.setState(response.data);
+            this.setState({ messages: response.data.messages });
         }.bind(this))
         .catch(function (error) {
             console.log(error);
         });
     },
-    componentDidMount: function() {
+    componentDidMount() {
         this.loadMessagesFromServer();
         // uncomment to enable live updates
         //setInterval(this.loadMessagesFromServer, 2000);
     },
-    handleMessageSubmit: function(message) {
+    handleMessageSubmit(message) {
         axios.post(
             "/api/messages",
             message
         )
         .then(function(response) {
-            this.setState(response.data);
+            this.setState({ messages: response.data.messages });
         }.bind(this))
         .catch(function (error) {
             console.log(error);
         });
     },
-    handleMessageDelete: function(id) {
+    handleMessageDelete(id) {
         axios.delete(
             "/api/messages/" + id
         )
         .then(function(response) {
-            this.setState(response.data);
+            this.setState({ messages: response.data.messages });
         }.bind(this))
         .catch(function (error) {
             console.log(error);
         });
     },
-    render: function() {
+    render() {
         return (
             <div>
                 <div className="row">
-                    <MessageForm onMessageSubmit={this.handleMessageSubmit} />
+                    <MessageForm
+                        onMessageSubmit={this.handleMessageSubmit}
+                    />
                 </div>
-                <MessageList messages={this.state.messages} onDeleteMessage={this.handleMessageDelete} />
+                <MessageList
+                    messages={this.state.messages}
+                    onMessageDelete={this.handleMessageDelete}
+                />
             </div>
         );
     }
 });
 
 var MessageForm = React.createClass({
-    getInitialState: function() {
+    getInitialState() {
         return { message: "" };
     },
-    handleFormSubmit: function(e) {
+    handleFormSubmit(e) {
         e.preventDefault();
-        this.props.onMessageSubmit({message: this.state.message});
-        this.setState({ message: "" });
+        if (this.props.onMessageSubmit) {
+            this.props.onMessageSubmit({message: this.state.message});
+            this.setState({ message: "" });
+        }
     },
-    onChange(e) {
-        this.setState({ message: e.target.value });
+    onChange() {
+        this.setState({ message: this.refs.inputElement.value });
     },
-    render: function() {
+    inputStyle: {
+        float: "right"
+    },
+    spanStyle: {
+        display: "block",
+        overflow: "hidden",
+        paddingRight: "10px"
+    },
+    render() {
         return (
             <div className="ten columns offset-by-one center-content">
                 <form onSubmit={this.handleFormSubmit}>
-                    <input style={{float: "right"}} type="submit" value="submit" />
-                    <span style={{display: "block", overflow: "hidden", paddingRight: "10px"}}>
-                        <input className="u-full-width" type="text" value={this.state.message} placeholder="message here..." onChange={this.onChange} />
+                    <input style={this.inputStyle} type="submit" value="submit" />
+                    <span style={this.spanStyle}>
+                        <input
+                            ref="inputElement"
+                            className="u-full-width"
+                            type="text"
+                            value={this.state.message}
+                            placeholder="message here..."
+                            onChange={this.onChange}
+                        />
                     </span>
                 </form>
             </div>
@@ -82,7 +104,7 @@ var MessageForm = React.createClass({
 });
 
 var MessageList = React.createClass({
-    render: function() {
+    render() {
         return (
             <div className="row">
                 <div className="ten columns offset-by-one messages">
@@ -90,8 +112,15 @@ var MessageList = React.createClass({
                         function(message, i) {
                             return (
                                 <div>
-                                    <MessageDelete message={message} onDeleteMessage={this.props.onDeleteMessage} key={'1-'+i} />
-                                    <Message message={message} key={'2-'+i} />
+                                    <MessageDelete
+                                        message={message}
+                                        onMessageDelete={this.props.onMessageDelete}
+                                        key={'1-'+i}
+                                    />
+                                    <Message
+                                        message={message}
+                                        key={'2-'+i}
+                                    />
                                 </div>
                             );
                         }, this
@@ -103,11 +132,13 @@ var MessageList = React.createClass({
 });
 
 var MessageDelete = React.createClass({
-    handleDeleteClick: function(e) {
+    handleDeleteClick(e) {
         e.preventDefault();
-        this.props.onDeleteMessage(this.props.message.id);
+        if (this.props.onMessageDelete) {
+            this.props.onMessageDelete(this.props.message.id);
+        }
     },
-    render: function() {
+    render() {
         // prevent the componenet from mounting if it is not owned by the current user
         if (this.props.message.is_owner == false) {
             return false;
@@ -121,14 +152,13 @@ var MessageDelete = React.createClass({
 });
 
 var Message = React.createClass({
-    render: function() {
+    getMessageStyle() {
         // set an inline style if the message is owned by the current user
-        var messageStyle = {};
-        if (this.props.message.is_owner == true) {
-            messageStyle = {fontWeight: "bold"};
-        };
+        return this.props.message.is_owner == true ? {fontWeight: "bold"} : {}
+    },
+    render() {
         return (
-            <div style={messageStyle}>
+            <div style={this.getMessageStyle()}>
                 <p><span className="red">{this.props.message.user}</span></p>
                 <p dangerouslySetInnerHTML={{__html: this.props.message.comment}}></p>
                 <p>{this.props.message.created}</p>
