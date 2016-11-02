@@ -104,6 +104,15 @@ var MessageForm = React.createClass({
 });
 
 var MessageList = React.createClass({
+    getInitialState() {
+        return { hoveringOn: null };
+    },
+    handleMouseEnter(i) {
+        this.setState({ hoveringOn: i });
+    },
+    handleMouseLeave(i) {
+        this.setState({ hoveringOn: null });
+    },
     render() {
         return (
             <div className="row">
@@ -111,8 +120,12 @@ var MessageList = React.createClass({
                     {this.props.messages.map(
                         function(message, i) {
                             return (
-                                <div>
+                                <div
+                                    onMouseEnter={this.handleMouseEnter.bind(this, i)}
+                                    onMouseLeave={this.handleMouseLeave}
+                                >
                                     <MessageDelete
+                                        enabled={this.state.hoveringOn === i}
                                         message={message}
                                         onDeleteMessage={this.props.onDeleteMessage}
                                         key={'1-'+i}
@@ -139,8 +152,9 @@ var MessageDelete = React.createClass({
         }
     },
     render() {
-        // prevent the componenet from mounting if it is not owned by the current user
-        if (this.props.message.is_owner == false) {
+        // prevent the componenet from mounting unless it is
+        // owner by the current user and the message is hovered over
+        if (!(this.props.message.is_owner && this.props.enabled)) {
             return false;
         };
         return (
