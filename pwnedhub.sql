@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.44, for debian-linux-gnu (i686)
+-- MySQL dump 10.13  Distrib 5.5.53, for debian-linux-gnu (i686)
 --
 -- Host: localhost    Database: pwnedhub
 -- ------------------------------------------------------
--- Server version	5.5.44-0ubuntu0.14.04.1
+-- Server version      5.5.53-0ubuntu0.14.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,39 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `mail`
+--
+
+DROP TABLE IF EXISTS `mail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `mail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created` datetime NOT NULL,
+  `subject` text,
+  `content` text,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `read` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sender_id` (`sender_id`),
+  KEY `receiver_id` (`receiver_id`),
+  CONSTRAINT `mail_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `mail_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mail`
+--
+
+LOCK TABLES `mail` WRITE;
+/*!40000 ALTER TABLE `mail` DISABLE KEYS */;
+INSERT INTO `mail` VALUES (1,'2016-10-07 22:30:14.509923','Training','Hey Cooper,\r\n\r\nHave you heard about that PWAPT class by Tim Tomes? Sounds like some top notch stuff. We should get him in here to do some training.',4,2,1),(2,'2016-10-07 22:45:38.620758','RE: Training','Tanner,\r\n\r\nSounds good to me. I\'ll put a request in to Taylor.',2,4,1),(3,'2016-10-07 22:46:29.639263','PWAPT Training','Taylor,\r\n\r\nTanner and some of the folks have been asking about some training. Specifically, the PWAPT class by Tim Tomes. You ever heard of it?',2,3,1),(4,'2016-10-07 22:48:12.456073','RE: PWAPT Training','Cooper,\r\n\r\nYeah, I\'ve heard about that guy. He\'s a hack!',3,2,1);
+/*!40000 ALTER TABLE `mail` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `messages`
@@ -72,6 +105,23 @@ INSERT INTO `scores` VALUES (1,'2015-10-28 03:07:00','Babygirl#1',50,8,'recTurn=
 UNLOCK TABLES;
 
 --
+-- Table structure for table `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sessions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` varchar(256) DEFAULT NULL,
+  `data` text,
+  `expiry` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `session_id` (`session_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `tools`
 --
 
@@ -108,6 +158,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `created` datetime NOT NULL,
   `username` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `password_hash` varchar(255) DEFAULT NULL,
   `question` int(11) NOT NULL,
   `answer` varchar(255) NOT NULL,
@@ -125,7 +176,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'2015-10-28 01:51:59','admin','FgsMEw4RHgAFBho=',1,'Ralf',NULL,0,1),(2,'2015-10-28 04:46:27','Cooperman','WQ1cIlpBBTwmC01QHRUGJxMQGQQcAgslJQ==',3,'Augusta',NULL,1,1),(3,'2015-10-28 04:47:14','Babygirl#1','EFFBIk0nSwEsMTM1FQIxSycWKwEPVC80Ug==',2,'Rocket',NULL,1,1),(4,'2015-10-28 04:48:19','Hack3rPrincess','V1ddUwhNMxYBUSEeKg1fCBgZBTBOGVAtBA==',0,'Drumstick',NULL,1,1);
+INSERT INTO `users` VALUES (1,'2015-10-28 01:51:59','admin','Administrator','FgsMEw4RHgAFBho=',1,'Ralf',NULL,0,1),(2,'2015-10-28 04:46:27','Cooperman','Cooper','WQ1cIlpBBTwmC01QHRUGJxMQGQQcAgslJQ==',3,'Augusta',NULL,1,1),(3,'2015-10-28 04:47:14','Babygirl#1','Taylor','EFFBIk0nSwEsMTM1FQIxSycWKwEPVC80Ug==',2,'Rocket',NULL,1,1),(4,'2015-10-28 04:48:19','Hack3rPrincess','Tanner','V1ddUwhNMxYBUSEeKg1fCBgZBTBOGVAtBA==',0,'Drumstick',NULL,1,1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -138,4 +189,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-28  5:53:06
+-- Dump completed on 2017-01-09 22:50:38
