@@ -54,7 +54,7 @@ def no_cache(func):
         return response
     return wrapped
 
-@app.route('/profile/<int:uid>')
+@app.route('/profile')
 @no_cache
 def profile(uid):
     ...
@@ -97,7 +97,7 @@ def profile(uid):
 | Vulnerability | Server-Side Template Injection (SSTI) |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `page_not_found` view appends raw user input to a template string using string formating. |
-| Remediation | Send user input to the tempate context using the `render_template_string` function, which doesn't process input as raw template code. |
+| Remediation | Send user input to the template context using the `render_template` function, which doesn't process input as raw template code. |
 
 ```
 return render_template('404.html', message=request.url), 404
@@ -120,12 +120,28 @@ return render_template('404.html', message=request.url), 404
 | :-- | :-- |
 | Note | Discoverable and exploitable from an unathenticated perspective. |
 | Location | `pwnedhub/views.py`: The `info` view builds a raw query with raw user input via string formatting/concatenation. |
-| Remediation | Use the ORM as intended, prepared statements/parameterized queries, or sanitize input to remove malicious characters. |
+| Remediation | Use the ORM as intended, prepared statements/parameterized queries, or validate input to prevent malicious characters. |
 
-| Vulnerability | SQL Injection (SQLi) for data extraction. |
+| Vulnerability | Blind SQL Injection (SQLi) for data extraction. |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `tools_info` view builds a raw query with raw user input via string formatting/concatenation. |
-| Remediation | Use the ORM as intended, prepared statements/parameterized queries, or sanitize input to remove malicious characters. |
+| Remediation | Use the ORM as intended, prepared statements/parameterized queries, or validate input to prevent malicious characters. |
+
+```
+# views.py
+tid = request.form['tid']
+tool = Tool.query.get(tid)
+return jsonify(tools=[tool.serialize()])
+
+# models.py
+def serialize(self):
+    return {
+        'id': self.id,
+        'name': self.name,
+        'path': self.path,
+        'description': self.description,
+    }
+```
 
 | Vulnerability | Mass Assignment to set the role of the registered user. |
 | :-- | :-- |
@@ -153,7 +169,7 @@ flash('Invalid username or password.')
 | Vulnerability | Reflected Cross-Site Scripting (XSS) |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `page_not_found` view appends raw user input to a template string using string formating. |
-| Remediation | Send user input to the tempate context using the `render_template_string` function, which will enforce template context encoding. |
+| Remediation | Send user input to the template context using the `render_template` function, which will enforce template context encoding. |
 
 ```
 return render_template('404.html', message=request.url), 404
@@ -163,11 +179,38 @@ return render_template('404.html', message=request.url), 404
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: Lack of CSRF protection for the `admin_users` view. |
 | Remediation | Implement anti-CSRF controls on the `admin_users` view. |
+| Note | Requires rearchitecting the `admin_users` view to use `POST`, or passing the token as a header that must be processed and returned by the client. |
 
 | Vulnerability | Cross-Site Request Forgery (CSRF) for lateral authorization bypass. |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: Lack of CSRF protection for the `profile_change` view. |
 | Remediation | Implement anti-CSRF controls on the `profile_change` view. |
+
+```
+# in login view
+session['csrf_token'] = 'thisisacryptographicallystrongtoken'
+
+# in profile template
+<input name="csrf_token" type="hidden" value="{{ session.csrf_token }}" />
+
+# in profile_change view
+if request.values['csrf_token'] == session.get('csrf_token'):
+
+# decorator alternative
+def csrf_protect(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        if 'csrf_token' in request.values and request.values['csrf_token'] == session.get('csrf_token'):
+            return func(*args, **kwargs)
+        return abort(403)
+    return wrapped
+
+app.route('/profile/change', methods=['GET', 'POST'])
+@login_required
+@csrf_protect
+def profile_change():
+    ...
+```
 
 | Vulnerability | Method Interchange to simplify CSRF attacks against users' profiles. |
 | :-- | :-- |
@@ -182,7 +225,7 @@ return render_template('404.html', message=request.url), 404
 | Vulnerability | Path Traversal to upload files to any writeable location. |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `os.path.join` function in the `artifacts_save` view allows for path traversal. |
-| Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or sanitize input to remove malicious characters. |
+| Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or validate input to prevent malicious characters. |
 
 ```
 unsafe_path = os.path.join(session.get('upload_folder'), filename)
@@ -193,7 +236,7 @@ if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
 | Vulnerability | Path Traversal to delete arbitrary files. |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `os.path.join` function in the `artifacts_delete` view allows for path traversal. |
-| Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or sanitize input to remove malicious characters. |
+| Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or validate input to prevent malicious characters. |
 
 ```
 unsafe_path = os.path.join(session.get('upload_folder'), filename)
@@ -204,7 +247,7 @@ if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
 | Vulnerability | Path Traversal to read arbitrary files. |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `os.path.join` function in the `artifacts_view` view allows for path traversal. |
-| Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or sanitize input to remove malicious characters. |
+| Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or validate input to prevent malicious characters. |
 
 ```
 unsafe_path = os.path.join(session.get('upload_folder'), filename)
@@ -212,7 +255,7 @@ if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
     # continue
 ```
 
-| Vulnerability | Weak input sanitization allowing arbitrary access to the operating system. |
+| Vulnerability | Weak input validation allowing arbitrary access to the operating system. |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `admin_tools_add` view doesn't limit the commands available for configuration. |
 | Remediation | Apply a whiltelist filter of eligible commands. |
@@ -255,31 +298,38 @@ def is_safe_url(url, origin):
 | Location | `pwnedhub/views.py`: Missing decorator for the `admin_users` view. |
 | Remediation | Add the `@roles_required('admin')` decorator to the `admin_users` view. |
 
-| Vulnerability | Insecure Direct Object Reference (IDOR) to escalate privileges for other users (no self-modification allowed). |
+| Vulnerability | Insecure Direct Object Reference (IDOR) to escalate/revoke privileges for other users (no self-modification allowed). |
 | :-- | :-- |
 | Note | Basic users are redirected and receive a 403 after successful exploitation. |
 | Location | `pwnedhub/views.py`: Missing decorator for the `admin_users` view. |
 | Remediation | Add the `@roles_required('admin')` decorator to the `admin_users` view. |
 
-| Vulnerability | Insecure Direct Object Reference (IDOR) to disable other users' profiles. |
+| Vulnerability | Insecure Direct Object Reference (IDOR) to enable/disable other users' profiles. |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: Missing decorator for the `admin_users` view. |
 | Remediation | Add the `@roles_required('admin')` decorator to the `admin_users` view. |
 
-| Vulnerability | Insecure Direct Object Reference (IDOR) to view other users' profiles. |
+| Vulnerability | Insecure Direct Object Reference (IDOR) to read other users' mail. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: Lack of user validation in the `profile` view. |
-| Remediation | Ensure that the requested `uid` belongs to the owner of the session by comparing it to the `user_id` stored in the session. |
+| Location | `pwnedhub/views.py`: Lack of receiver validation in the `mail_view` view. |
+| Remediation | Ensure that the provided mail `id` belongs to the owner of the session by comparing the current user to the mail's receiver. |
 
-| Vulnerability | Insecure Direct Object Reference (IDOR) to change other users' profiles. |
-| :-- | :-- |
-| Location | `pwnedhub/views.py`: Lack of user validation in the `profile_change` view. |
-| Remediation | Ensure that the requested `uid` belongs to the owner of the session by comparing it to the `user_id` stored in the session. |
+```
+...
+if mail and mail.receiver == g.user:
+...
+```
 
-| Vulnerability | Insecure Direct Object Reference (IDOR) to remove other users' messages. |
+| Vulnerability | Insecure Direct Object Reference (IDOR) to delete other users' mail. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: Lack of user validation in the `messages_delete` view. |
-| Remediation | Ensure that the requested `uid` belongs to the owner of the session by comparing it to the `user_id` stored in the session. |
+| Location | `pwnedhub/views.py`: Lack of receiver validation in the `mail_view` view. |
+| Remediation | Ensure that the provided mail `id` belongs to the owner of the session by comparing the current user to the mail's receiver. |
+
+```
+...
+if mail and mail.receiver == g.user:
+...
+```
 
 | Vulnerability | No re-authentication required for state-changing operations. |
 | :-- | :-- |
@@ -365,13 +415,50 @@ session['recovery_state'] = <new state>
 
 ## Miscellaneous
 
-| Vulnerability | Outdated Software |
+| Vulnerability | Outdated client-side software. |
 | :-- | :-- |
 | Location | `pwnedhub/static/jquery-1.6.2.min.js`: The `pwnedhub/templates/layout.html` template references an old version of jQuery. |
 | Remediation | Update the jQuery library and associated import statement in `pwnedhub/templates/layout.html`. |
 
 ```
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.min.js') }}"></script>
+```
+
+| Vulnerability | Systemic User Interface Redressing. |
+| :-- | :-- |
+| Location | `pwnedhub/views.py`: No framing prevention logic. |
+| Remediation | Implement the proper headers to prevent the application from being framed by untrusted third parties. |
+
+```
+# affects all views
+@app.after_request
+def add_header(response):
+    response.headers["X-Frame-Options"] = "DENY"
+    # Other safe values:
+    # SAMEORIGIN
+    # ALLOW-FROM https://trusted.com/
+    # or
+    response.headers["Content-Security-Policy"] = "frame-ancestors 'none'"
+    # Other safe values:
+    # frame-ancestors 'self'
+    # frame-ancestors trusted.com
+    return response
+
+# decorator for specific views
+def no_frame(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        response = make_response(func(*args, **kwargs))
+        response.headers["X-Frame-Options"] = "DENY"
+        # or
+        response.headers["Content-Security-Policy"] = "frame-ancestors 'none'"
+        return response
+    return wrapped
+
+@app.route('/profile')
+@no_frame
+def profile():
+    ...
 ```
 
 ---
