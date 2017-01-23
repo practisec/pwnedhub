@@ -18,36 +18,44 @@
             </div>
             <div class="links">
                 <ul>
-                {% if g.user %}
-                    <li>hi {{ g.user.name }}!</li>
+                    <li><a href="{{ url_for('about') }}">about</a></li>
                     <li class="black">|</li>
-                    <li><a href="{{ url_for('logout') }}">log out</a></li>
+                {% if g.user %}
+                    <li><a href="{{ url_for('games') }}">games</a></li>
+                    <li class="black">|</li>
+                    <li class="dropdown"><span class="black">&raquo; </span><a href="#">testing</a>
+                        <ul>
+                            <li><a href="{{ url_for('notes') }}">notes</a></li>
+                            <li><a href="{{ url_for('artifacts') }}">artifacts</a></li>
+                            <li><a href="{{ url_for('tools') }}">tools</a></li>
+                        </ul>
+                    </li>
+                    <li class="black">|</li>
+                    <li class="dropdown"><span class="black">&raquo; </span><a href="#">collaboration</a>
+                        <ul>
+                            <li><a href="{{ url_for('mail') }}">mail</a></li>
+                            <li><a href="{{ url_for('messages') }}">messages</a></li>
+                        </ul>
+                    </li>
+                    <li class="black">|</li>
+                    <li class="dropdown"><span class="black">&raquo; </span><a href="#">{{ g.user.name }}</a>
+                        <ul>
+                        {% if g.user.is_admin %}
+                            <li><a href="{{ url_for('admin') }}">manage</a></li>
+                        {% endif %}
+                            <li><a href="{{ url_for('profile') }}">profile</a></li>
+                            <li><a href="{{ url_for('logout') }}">log out</a></li>
+                        </ul>
+                    </li>
                 {% else %}
                     <li><a href="{{ url_for('register') }}">register</a></li>
                     <li class="black">|</li>
                     <li><a href="{{ url_for('login') }}">log in</a></li>
                 {% endif %}
-                <li class="black">|</li>
-                <li><a href="{{ url_for('about') }}">about</a></li>
                 </ul>
             </div>
             <div style="clear: both;"></div>
         </div>
-    {% if g.user %}
-        <div class="floating-nav rounded shaded" id="draggable" draggable="true">
-            <hr><hr><hr>
-        {% if g.user.is_admin %}
-            <span title="admin"><a title="click to view" href="{{ url_for('admin') }}"><img src="{{ url_for('static', filename='images/admin.png') }}" /></a></span><br>
-        {% endif %}
-            <span title="profile"><a title="click to view" href="{{ url_for('profile') }}"><img src="{{ url_for('static', filename='images/profile.png') }}" /></a></span><br>
-            <span title="notes"><a title="click to view" href="{{ url_for('notes') }}"><img src="{{ url_for('static', filename='images/notes.png') }}" /></a></span><br>
-            <span title="mail"><a title="click to view" href="{{ url_for('mail') }}"><img src="{{ url_for('static', filename='images/mail.png') }}" /></a></span><br>
-            <span title="messages"><a title="click to view" href="{{ url_for('messages') }}"><img src="{{ url_for('static', filename='images/messages.png') }}" /></a></span><br>
-            <span title="artifacts"><a title="click to view" href="{{ url_for('artifacts') }}"><img src="{{ url_for('static', filename='images/artifacts.png') }}" /></a></span><br>
-            <span title="tools"><a title="click to view" href="{{ url_for('tools') }}"><img src="{{ url_for('static', filename='images/tools.png') }}" /></a></span><br>
-            <span title="games"><a title="click to view" href="{{ url_for('games') }}"><img src="{{ url_for('static', filename='images/games.png') }}" /></a></span><br>
-        </div>
-    {% endif %}
         <div class="content">
             <br><br>
             {% block body %}{% endblock %}
