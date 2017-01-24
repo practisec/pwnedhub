@@ -89,13 +89,12 @@ select:disabled {
 
 .nav {
     display: table;
-    color: red;
     width: 100%;
     padding: .5rem 0;
     text-align: right;
 }
 
-.nav div{
+.nav div {
     display: table-cell;
     vertical-align: middle;
 }
@@ -108,46 +107,60 @@ select:disabled {
 .nav .brand {
     float: left;
     font-size: 3rem;
-    margin-left: 1rem
+    margin-left: 1rem;
 }
 
 .nav .links {
     font-weight: bolder;
-    margin-right: 1rem
 }
 
 .nav .links ul {
     list-style: none;
+    position: relative;
+    float: right;
     margin: 0;
     padding: 0;
 }
 
-.nav .links > ul > li {
-    display: inline;
+.nav .links ul a {
+    display: block;
+    text-decoration: none;
+    padding: 0 .5rem;
 }
 
-.dropdown {
+.nav .links ul li {
     position: relative;
+    float: left;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    z-index: 1;
 }
 
-.dropdown ul {
+.nav .links ul li:hover {
+    background: #f6f6f6;
+}
+
+.nav .links ul ul {
     display: none;
     position: absolute;
     top: 100%;
-    right: 0;
-}
-
-.dropdown ul li {
-    float: none;
-    margin: 0;
+    left: 0;
     padding: 0;
+    min-width: 100%;
 }
 
-.dropdown li:hover {
-    background: #f6f6f6
+.nav .links ul ul li {
+    float: none;
 }
 
-.dropdown:hover ul {
+.nav .links ul ul a {
+    padding: 0 .5rem;
+    color: red;
+}
+
+.nav .links ul li:hover > ul {
     display: block;
 }
 

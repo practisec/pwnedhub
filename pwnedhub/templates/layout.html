@@ -14,31 +14,27 @@
     <div class="container">
         <div class="nav">
             <div class="brand">
-                <a href="{{ url_for('index') }}"><span class="black">Pwned</span><b>Hub</b></a>
+                <a href="{{ url_for('index') }}">Pwned<span class="red"><b>Hub</b></span></a>
             </div>
             <div class="links">
                 <ul>
                     <li><a href="{{ url_for('about') }}">about</a></li>
-                    <li class="black">|</li>
                 {% if g.user %}
                     <li><a href="{{ url_for('games') }}">games</a></li>
-                    <li class="black">|</li>
-                    <li class="dropdown"><span class="black">&raquo; </span><a href="#">testing</a>
+                    <li class="dropdown"><a href="#">testing</a>
                         <ul>
                             <li><a href="{{ url_for('notes') }}">notes</a></li>
                             <li><a href="{{ url_for('artifacts') }}">artifacts</a></li>
                             <li><a href="{{ url_for('tools') }}">tools</a></li>
                         </ul>
                     </li>
-                    <li class="black">|</li>
-                    <li class="dropdown"><span class="black">&raquo; </span><a href="#">collaboration</a>
+                    <li class="dropdown"><a href="#">collaboration</a>
                         <ul>
                             <li><a href="{{ url_for('mail') }}">mail</a></li>
                             <li><a href="{{ url_for('messages') }}">messages</a></li>
                         </ul>
                     </li>
-                    <li class="black">|</li>
-                    <li class="dropdown"><span class="black">&raquo; </span><a href="#">{{ g.user.name }}</a>
+                    <li class="dropdown"><a href="#">{{ g.user.name }}</a>
                         <ul>
                         {% if g.user.is_admin %}
                             <li><a href="{{ url_for('admin') }}">manage</a></li>
@@ -49,7 +45,6 @@
                     </li>
                 {% else %}
                     <li><a href="{{ url_for('register') }}">register</a></li>
-                    <li class="black">|</li>
                     <li><a href="{{ url_for('login') }}">log in</a></li>
                 {% endif %}
                 </ul>
