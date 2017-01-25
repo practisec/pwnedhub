@@ -4,7 +4,7 @@ from pwnedhub import app, db, spyne
 from models import Mail, Message, Score, Tool, User
 from constants import QUESTIONS, DEFAULT_NOTE
 from decorators import login_required, roles_required
-from utils import xor_encrypt, detect_user_agent
+from utils import xor_encrypt, detect_user_agent, get_token
 from validators import is_valid_quantity, is_valid_password, is_valid_file
 from datetime import datetime
 from hashlib import md5
@@ -33,7 +33,7 @@ render_template = _my_render_template
 def load_user():
     g.user = None
     if session.get('user_id'):
-        g.user = User.query.get(session["user_id"])
+        g.user = User.query.get(session.get('user_id'))
 
 @app.after_request
 def add_header(response):
@@ -458,19 +458,23 @@ def login():
     if session.get('user_id'):
         return redirect(url_for('home'))
     if request.method == 'POST':
-        query = "SELECT * FROM users WHERE username='{}' AND password_hash='{}'"
-        username = request.form['username']
-        password_hash = xor_encrypt(request.form['password'], app.config['PW_ENC_KEY'])
-        user = db.session.execute(query.format(username, password_hash)).first()
-        if user and user['status'] == 1:
-            session['user_id'] = user.id
-            path = os.path.join(app.config['UPLOAD_FOLDER'], md5(str(user.id)).hexdigest())
-            if not os.path.exists(path):
-                os.makedirs(path)
-            session['upload_folder'] = path
-            session.rotate()
-            return redirect(request.args.get('next') or url_for('home'))
-        return redirect(url_for('login', error='Invalid username or password.'))
+        token = request.form['token']
+        if md5(session.get('seed')).hexdigest() == token:
+            query = "SELECT * FROM users WHERE username='{}' AND password_hash='{}'"
+            username = request.form['username']
+            password_hash = xor_encrypt(request.form['password'], app.config['PW_ENC_KEY'])
+            user = db.session.execute(query.format(username, password_hash)).first()
+            if user and user['status'] == 1:
+                session['user_id'] = user.id
+                path = os.path.join(app.config['UPLOAD_FOLDER'], md5(str(user.id)).hexdigest())
+                if not os.path.exists(path):
+                    os.makedirs(path)
+                session['upload_folder'] = path
+                session.rotate()
+                return redirect(request.args.get('next') or url_for('home'))
+            return redirect(url_for('login', error='Invalid username or password.'))
+        return redirect(url_for('login', error='Bot detected.'))
+    session['seed'] = get_token(5)
     return render_template('login.html')
 
 @app.route('/logout')
