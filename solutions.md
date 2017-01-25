@@ -461,4 +461,9 @@ def profile():
     ...
 ```
 
+| Vulnerability | Weak anti-automation controls. |
+| :-- | :-- |
+| Location | `pwnedhub/views.py`: The `login` view atempts to prevent automated attacks through requiring the client to perform a simple calculation. |
+| Remediation | Implement an account lockout system, CAPTCHA, or network level rate limiting. |
+
 ---
