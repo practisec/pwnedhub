@@ -177,6 +177,12 @@ def mail_compose(id=0):
             mail = Mail(content=content, subject=subject, sender=g.user, receiver=receiver)
             db.session.add(mail)
             db.session.commit()
+            # generate automated Administrator response
+            if receiver.id == 1:
+                content = "I would be more than happy to help you with that. Unforunately, the person respsonsible for that is unavailable at the moment. We'll get back with you soon. Thanks."
+                mail = Mail(content=content, subject='RE:'+subject, sender=receiver, receiver=g.user)
+                db.session.add(mail)
+                db.session.commit()
             flash('Mail sent.')
             return redirect(url_for('mail'))
     users = User.query.filter(User.id == id).all() or User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
@@ -441,6 +447,14 @@ def register():
                             user_dict[k] = request.form[k]
                     user = User(**user_dict)
                     db.session.add(user)
+                    db.session.commit()
+                    # create default welcome message
+                    sender = User.query.get(1)
+                    receiver = user
+                    subject = 'Welcome to PwnedHub!'
+                    content = "We're glad you've chosen PwnedHub to help you take your next step in becoming a more efficient security consultant. We're here to help. If you have any questions or concerns, please don't hesitate to reach out to this account for assistance. Together, we can make seurity testing great again!"
+                    mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
+                    db.session.add(mail)
                     db.session.commit()
                     flash('Account created. Please log in.')
                     return redirect(url_for('login'))
