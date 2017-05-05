@@ -355,7 +355,7 @@ def tools_execute():
 @app.route('/tools/info', methods=['POST'])
 @login_required
 def tools_info():
-    query = "SELECT * FROM tools WHERE id='{}'"
+    query = "SELECT * FROM tools WHERE id={}"
     tid = request.form['tid']
     try:
         tools = db.session.execute(query.format(tid))
@@ -503,7 +503,12 @@ def logout():
 @app.route('/reset', methods=['GET', 'POST'])
 def reset_init():
     if request.method == 'POST':
-        user = User.get_by_username(request.form['username'])
+        query = "SELECT * FROM users WHERE username='{}'"
+        username = request.form['username']
+        try:
+            user = db.session.execute(query.format(username)).first()
+        except exc.OperationalError:
+            user = None
         if user:
             # add to session to begin the reset flow
             session['reset_id'] = user.id
@@ -579,10 +584,10 @@ class Tools(spyne.Service):
 
     @spyne.srpc(Unicode, _returns=Iterable(AnyDict))
     def info(tid):
-        query = "SELECT * FROM tools WHERE id='{}'"
+        query = "SELECT * FROM tools WHERE id={}"
         try:
             tools = db.session.execute(query.format(tid))
         except Exception as e:
-            tools = [dict(error=e.__str__())]
+            tools = ()
         for tool in tools:
             yield dict(tool)

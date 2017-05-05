@@ -116,13 +116,22 @@ return render_template('404.html', message=request.url), 404
             if user.check_password(request.form['password']):
 ```
 
-| Vulnerability | SQL Injection (SQLi) for data extraction via SOAP web service. |
+| Vulnerability | Blind SQL Injection (SQLi) for data extraction (string type). |
+| :-- | :-- |
+| Location | `pwnedhub/views.py`: The `reset_init` view builds a raw query with raw user input via string formatting/concatenation. |
+| Remediation | Use the ORM as intended, prepared statements/parameterized queries, or validate input to prevent malicious characters. |
+
+```
+user = User.get_by_username(request.form['username'])
+```
+
+| Vulnerability | Blind SQL Injection (SQLi) for data extraction via SOAP web service (integer type). |
 | :-- | :-- |
 | Note | Discoverable and exploitable from an unathenticated perspective. |
 | Location | `pwnedhub/views.py`: The `info` view builds a raw query with raw user input via string formatting/concatenation. |
 | Remediation | Use the ORM as intended, prepared statements/parameterized queries, or validate input to prevent malicious characters. |
 
-| Vulnerability | Blind SQL Injection (SQLi) for data extraction. |
+| Vulnerability | Blind SQL Injection (SQLi) for data extraction (integer type). |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `tools_info` view builds a raw query with raw user input via string formatting/concatenation. |
 | Remediation | Use the ORM as intended, prepared statements/parameterized queries, or validate input to prevent malicious characters. |
