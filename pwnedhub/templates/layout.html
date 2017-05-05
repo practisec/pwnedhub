@@ -37,11 +37,16 @@
                             <li><a href="{{ url_for('games') }}">games</a></li>
                         </ul>
                     </li>
+                {% if g.user.is_admin %}
+                    <li><a href="#">admin</a>
+                        <ul>
+                            <li><a href="{{ url_for('admin_tools') }}">tools</a></li>
+                            <li><a href="{{ url_for('admin_users') }}">users</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
                     <li><a href="#"><span class="red">{{ g.user.name }}</span></a>
                         <ul>
-                        {% if g.user.is_admin %}
-                            <li><a href="{{ url_for('admin') }}">manage</a></li>
-                        {% endif %}
                             <li><a href="{{ url_for('profile') }}">profile</a></li>
                             <li><a href="{{ url_for('logout') }}">logout</a></li>
                         </ul>

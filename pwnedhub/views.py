@@ -64,13 +64,12 @@ def notes():
     notes = g.user.notes or DEFAULT_NOTE
     return render_template('notes.html', notes=notes)
 
-@app.route('/admin')
+@app.route('/admin/tools')
 @login_required
 @roles_required('admin')
-def admin():
+def admin_tools():
     tools = Tool.query.order_by(Tool.name.asc()).all()
-    users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
-    return render_template('admin.html', tools=tools, users=users)
+    return render_template('admin_tools.html', tools=tools)
 
 @app.route('/admin/tools/add', methods=['POST'])
 @login_required
@@ -84,7 +83,7 @@ def admin_tools_add():
     db.session.add(tool)
     db.session.commit()
     flash('Tool added.')
-    return redirect(url_for('admin'))
+    return redirect(url_for('admin_tools'))
 
 @app.route('/admin/tools/remove/<int:id>')
 @login_required
@@ -97,11 +96,18 @@ def admin_tools_remove(id):
         flash('Tool removed.')
     else:
         flash('Invalid tool ID.')
-    return redirect(url_for('admin'))
+    return redirect(url_for('admin_tools'))
+
+@app.route('/admin/users')
+@login_required
+@roles_required('admin')
+def admin_users():
+    users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
+    return render_template('admin_users.html', users=users)
 
 @app.route('/admin/users/<string:action>/<int:id>')
 @login_required
-def admin_users(action, id):
+def admin_users_modify(action, id):
     user = User.query.get(id)
     if user:
         if user != g.user:
@@ -131,7 +137,7 @@ def admin_users(action, id):
             flash('Self-modification denied.')
     else:
         flash('Invalid user ID.')
-    return redirect(url_for('admin'))
+    return redirect(url_for('admin_users'))
 
 @app.route('/profile')
 @login_required

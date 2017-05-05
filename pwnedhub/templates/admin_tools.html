@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="row">
+        <div class="u-full-width center-content">
+            <form action="{{ url_for('admin_tools_add') }}" method="post">
+                <table class="center">
+                    <thead>
+                        <tr><th>name</th><th>path</th><th>description</th><th>action</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" name="name" placeholder="name" /></td>
+                            <td><input type="text" name="path" placeholder="path" /></td>
+                            <td><input type="text" name="description" placeholder="description" /></td>
+                            <td><input type="submit" value="add" onclick="this.form.submit();" /></td>
+                        </tr>
+                    {% for tool in tools %}
+                        <tr>
+                            <td>{{ tool.name }}</td>
+                            <td>{{ tool.path }}</td>
+                            <td>{{ tool.description }}</td>
+                            <td>
+                                <input type="button" onclick="window.location='{{ url_for('admin_tools_remove', id=tool.id) }}'" value="remove" />
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+{% endblock %}

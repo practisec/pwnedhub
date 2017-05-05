@@ -1,5 +1,6 @@
 User-agent: *
-Disallow: /admin
+Disallow: /admin/tools
+Disallow: /admin/users
 Disallow: /artifacts
 Disallow: /games
 Disallow: /home
