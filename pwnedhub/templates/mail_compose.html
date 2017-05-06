@@ -18,7 +18,10 @@
                 <input class="u-full-width" name="subject" type="text" placeholder="subject here..." /><br>
                 <label for="content">content:</label>
                 <textarea class="u-full-width" name="content" placeholder="content here..."></textarea><br>
-                <input type="submit" style="float: right" value="send" onclick="this.form.submit();" />
+                <div class="u-full-width right-content">
+                    <input type="button" value="discard" onclick="window.location='{{ url_for('mail') }}'" />
+                    <input type="submit" value="send" onclick="this.form.submit();" />
+                </div>
             </form>
         </div>
     </div>
