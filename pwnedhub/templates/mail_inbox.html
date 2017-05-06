@@ -17,7 +17,7 @@
                             <td>{{ item.created_as_string }}</td>
                             <td>
                                 <input name="action_{{ item.id }}" type="button" value="view" onclick="window.location='{{ url_for('mail_view', id=item.id) }}'" />
-                                <input name="action_{{ item.id }}" type="button" value="reply" onclick="window.location='{{ url_for('mail_compose', id=item.sender.id) }}'" />
+                                <input name="action_{{ item.id }}" type="button" value="reply" onclick="window.location='{{ url_for('mail_reply', id=item.id) }}'" />
                                 <input name="action_{{ item.id }}" type="button" value="delete" onclick="window.location='{{ url_for('mail_delete', id=item.id) }}'" />
                             </td>
                         </tr>
