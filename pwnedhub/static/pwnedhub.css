@@ -131,55 +131,104 @@ a:active {
 }
 
 .nav .links {
-    font-weight: bolder;
+    /*letter-spacing: .1rem;
+    text-transform: uppercase;
+    font-weight: bold;*/
 }
 
 .nav .links ul {
     list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav .links li {
+    margin: 0;
+    padding: 0;
+}
+
+.nav .links > ul {
     position: relative;
     float: right;
-    margin: 0;
-    padding: 0;
 }
 
-.nav .links ul a {
-    display: block;
-    padding: 0 .5rem;
-}
-
-.nav .links ul li {
+.nav .links > ul > li {
     position: relative;
     float: left;
-    text-align: right;
-    margin: 0;
-    padding: 0;
-    background: #ffffff;
     z-index: 1;
 }
 
-.nav .links ul li:hover {
-    background: #f6f6f6;
+.nav .links > ul > li.user {
+    color: red;
 }
 
-.nav .links ul ul {
+.nav .links > ul > li > a {
+    display: block;
+    font-size: 1.25rem;
+    letter-spacing: .1rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 1rem;
+}
+
+.nav .links > ul > li > ul {
     display: none;
     position: absolute;
     top: 100%;
-    right: 0;
-    padding: 0;
-    min-width: 100%;
+    left: 50%;
+    margin-left: -4.5rem;
+    width: 8rem;
+    padding: .5rem;
+    background: #ffffff;
+    border: 1px solid #bbb;
+    -webkit-border-radius: .5rem;
+    -moz-border-radius: .5rem;
+    border-radius: .5rem;
 }
 
-.nav .links ul ul li {
+.nav .links > ul > li > ul:before {
+    content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    left: 50%;
+    margin-left: -10px;
+    top: -8px;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #fff;
+    z-index:9999;
+}
+
+.nav .links > ul > li > ul:after {
+    content: "";
+    position: absolute;
+    height: 0;
+    width: 0;
+    left: 50%;
+    margin-left: -10px;
+    top: -10px;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #bbb;
+    z-index:9998;
+}
+
+.nav .links > ul > li > ul > li {
     float: none;
+    text-align: center;
 }
 
-.nav .links ul ul a {
+.nav .links ul > li > ul > li:hover {
+    background: #f6f6f6;
+}
+
+.nav .links ul > li > ul > li > a {
     padding: 0 .5rem;
     color: red;
 }
 
-.nav .links ul li:hover > ul {
+.nav .links ul > li:hover > ul {
     display: block;
 }
 
