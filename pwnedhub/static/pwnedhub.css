@@ -107,14 +107,27 @@ a:active {
     max-width: 1000px;
 }
 
-.nav {
+header {
+    border-bottom: 1px solid #bbb;
+}
+
+.header {
     display: table;
-    width: 100%;
-    padding: .5rem 0;
     text-align: right;
 }
 
-.nav div {
+.brand {
+    float: left;
+    font-size: 3rem;
+    margin-left: 1rem;
+}
+
+.brand a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.nav {
     display: table-cell;
     vertical-align: middle;
 }
@@ -124,45 +137,29 @@ a:active {
     text-decoration: inherit;
 }
 
-.nav .brand {
-    float: left;
-    font-size: 3rem;
-    margin-left: 1rem;
-}
-
-.nav .links {
-    /*letter-spacing: .1rem;
-    text-transform: uppercase;
-    font-weight: bold;*/
-}
-
-.nav .links ul {
+.nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-.nav .links li {
+.nav li {
     margin: 0;
     padding: 0;
 }
 
-.nav .links > ul {
+.nav > ul {
     position: relative;
     float: right;
 }
 
-.nav .links > ul > li {
+.nav > ul > li {
     position: relative;
     float: left;
     z-index: 1;
 }
 
-.nav .links > ul > li.user {
-    color: red;
-}
-
-.nav .links > ul > li > a {
+.nav > ul > li > a {
     display: block;
     font-size: 1.25rem;
     letter-spacing: .1rem;
@@ -171,22 +168,27 @@ a:active {
     padding: 1rem;
 }
 
-.nav .links > ul > li > ul {
+.nav > ul > li.user a {
+    color: red;
+}
+
+.nav > ul > li > ul {
     display: none;
     position: absolute;
-    top: 100%;
+    top: 95%;
     left: 50%;
     margin-left: -4.5rem;
     width: 8rem;
     padding: .5rem;
     background: #ffffff;
     border: 1px solid #bbb;
-    -webkit-border-radius: .5rem;
-    -moz-border-radius: .5rem;
-    border-radius: .5rem;
 }
 
-.nav .links > ul > li > ul:before {
+.nav > ul > li:hover > ul {
+    display: block;
+}
+
+.nav > ul > li > ul:before {
     content: "";
     position: absolute;
     height: 0;
@@ -200,7 +202,7 @@ a:active {
     z-index:9999;
 }
 
-.nav .links > ul > li > ul:after {
+.nav > ul > li > ul:after {
     content: "";
     position: absolute;
     height: 0;
@@ -214,23 +216,24 @@ a:active {
     z-index:9998;
 }
 
-.nav .links > ul > li > ul > li {
+.nav > ul > li > ul > li {
     float: none;
     text-align: center;
 }
 
-.nav .links ul > li > ul > li:hover {
-    background: #f6f6f6;
+.nav > ul > li > ul > li > a {
+    padding: 0 .5rem;
 }
 
-.nav .links ul > li > ul > li > a {
-    padding: 0 .5rem;
+.nav > ul > li.user > ul > li > a {
+    color: black;
+}
+
+.nav > ul > li > ul > li > a:hover {
     color: red;
 }
 
-.nav .links ul > li:hover > ul {
-    display: block;
-}
+section {}
 
 .content {}
 
@@ -396,6 +399,8 @@ input[type="button"].save-as {
     margin: 0;
 }
 
+footer {}
+
 .footer {
     color: gray;
     padding-top: 2rem;
@@ -426,10 +431,16 @@ input[type="button"].save-as {
     border-radius: 1rem;
 }
 
+.rounded-sm {
+    -webkit-border-radius: .5rem;
+    -moz-border-radius: .5rem;
+    border-radius: .5rem;    
+}
+
 .shaded {
-    -webkit-box-shadow: .3rem .3rem .3rem #e1e1e1;
-    -moz-box-shadow: .3rem .3rem .3rem #e1e1e1;
-    box-shadow: .3rem .3rem .3rem #e1e1e1;
+    -webkit-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
 }
 
 .black {

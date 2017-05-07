@@ -11,64 +11,77 @@
 </head>
 <body>
     <div id="flash" class="flash center-content rounded shaded">{{ get_flashed_messages()|join(', ') }}</div>
-    <div class="container">
-        <div class="nav">
-            <div class="brand">
-                <a href="{{ url_for('index') }}">Pwned<span class="red"><b>Hub</b></span></a>
+    <header class="shaded">
+        <div class="container">
+            <div class="row">
+                <div class="u-full-width header">
+                    <div class="brand">
+                        <a href="{{ url_for('index') }}">Pwned<span class="red"><b>Hub</b></span></a>
+                    </div>
+                    <div class="nav">
+                        <ul>
+                        {% if g.user %}
+                            <li><a href="#">testing</a>
+                                <ul class="rounded-sm shaded">
+                                    <li><a href="{{ url_for('notes') }}">notes</a></li>
+                                    <li><a href="{{ url_for('artifacts') }}">artifacts</a></li>
+                                    <li><a href="{{ url_for('tools') }}">tools</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#">collaboration</a>
+                                <ul class="rounded-sm shaded">
+                                    <li><a href="{{ url_for('mail') }}">mail</a></li>
+                                    <li><a href="{{ url_for('messages') }}">messages</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#">social</a>
+                                <ul class="rounded-sm shaded">
+                                    <li><a href="{{ url_for('games') }}">games</a></li>
+                                </ul>
+                            </li>
+                        {% if g.user.is_admin %}
+                            <li><a href="#">admin</a>
+                                <ul class="rounded-sm shaded">
+                                    <li><a href="{{ url_for('admin_tools') }}">tools</a></li>
+                                    <li><a href="{{ url_for('admin_users') }}">users</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                            <li class="user"><a href="#">{{ g.user.name }}</span></a>
+                                <ul class="rounded-sm shaded">
+                                    <li><a href="{{ url_for('profile') }}">profile</a></li>
+                                    <li><a href="{{ url_for('logout') }}">logout</a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li><a href="{{ url_for('register') }}">register</a></li>
+                            <li><a href="{{ url_for('login') }}">log in</a></li>
+                        {% endif %}
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="links">
-                <ul>
-                {% if g.user %}
-                    <li><a href="#">testing</a>
-                        <ul>
-                            <li><a href="{{ url_for('notes') }}">notes</a></li>
-                            <li><a href="{{ url_for('artifacts') }}">artifacts</a></li>
-                            <li><a href="{{ url_for('tools') }}">tools</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">collaboration</a>
-                        <ul>
-                            <li><a href="{{ url_for('mail') }}">mail</a></li>
-                            <li><a href="{{ url_for('messages') }}">messages</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">social</a>
-                        <ul>
-                            <li><a href="{{ url_for('games') }}">games</a></li>
-                        </ul>
-                    </li>
-                {% if g.user.is_admin %}
-                    <li><a href="#">admin</a>
-                        <ul>
-                            <li><a href="{{ url_for('admin_tools') }}">tools</a></li>
-                            <li><a href="{{ url_for('admin_users') }}">users</a></li>
-                        </ul>
-                    </li>
-                {% endif %}
-                    <li class="user"><a href="#">{{ g.user.name }}</span></a>
-                        <ul>
-                            <li><a href="{{ url_for('profile') }}">profile</a></li>
-                            <li><a href="{{ url_for('logout') }}">logout</a></li>
-                        </ul>
-                    </li>
-                {% else %}
-                    <li><a href="{{ url_for('register') }}">register</a></li>
-                    <li><a href="{{ url_for('login') }}">log in</a></li>
-                {% endif %}
-                </ul>
+        </div>
+    </header>
+    <section>
+        <div class="container">
+            <div class="content">
+                <br><br>
+                {% block body %}{% endblock %}
             </div>
-            <div style="clear: both;"></div>
         </div>
-        <div class="content">
-            <br><br>
-            {% block body %}{% endblock %}
+    </section>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="footer center-content">
+                    <a href="{{ url_for('index') }}">home</a>
+                    |
+                    <a href="{{ url_for('about') }}">about</a><br>
+                    &copy; {{ date.year }} PwnedHub. All rights reserved.
+                </div>
+            </div>
         </div>
-        <div class="footer center-content">
-            <a href="{{ url_for('index') }}">home</a>
-            |
-            <a href="{{ url_for('about') }}">about</a><br>
-            &copy; {{ date.year }} PwnedHub. All rights reserved.
-        </div>
-    </div>
+    </footer>
 </body>
 </html>
