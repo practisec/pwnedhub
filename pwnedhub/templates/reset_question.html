@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
     <div class="row">
-        <div class="four columns offset-by-four auth-form rounded shaded">
+        <div class="four columns offset-by-four">
             <h4>answer the question</h4>
             <form action="{{ url_for('reset_question') }}" method="post">
                 <label for="answer">{{ question }}</label>

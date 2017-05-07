@@ -22,33 +22,33 @@
                         <ul>
                         {% if g.user %}
                             <li><a href="#">testing</a>
-                                <ul class="rounded-sm shaded">
+                                <ul class="rounded shaded">
                                     <li><a href="{{ url_for('notes') }}">notes</a></li>
                                     <li><a href="{{ url_for('artifacts') }}">artifacts</a></li>
                                     <li><a href="{{ url_for('tools') }}">tools</a></li>
                                 </ul>
                             </li>
                             <li><a href="#">collaboration</a>
-                                <ul class="rounded-sm shaded">
+                                <ul class="rounded shaded">
                                     <li><a href="{{ url_for('mail') }}">mail</a></li>
                                     <li><a href="{{ url_for('messages') }}">messages</a></li>
                                 </ul>
                             </li>
                             <li><a href="#">social</a>
-                                <ul class="rounded-sm shaded">
+                                <ul class="rounded shaded">
                                     <li><a href="{{ url_for('games') }}">games</a></li>
                                 </ul>
                             </li>
                         {% if g.user.is_admin %}
                             <li><a href="#">admin</a>
-                                <ul class="rounded-sm shaded">
+                                <ul class="rounded shaded">
                                     <li><a href="{{ url_for('admin_tools') }}">tools</a></li>
                                     <li><a href="{{ url_for('admin_users') }}">users</a></li>
                                 </ul>
                             </li>
                         {% endif %}
                             <li class="user"><a href="#">{{ g.user.name }}</span></a>
-                                <ul class="rounded-sm shaded">
+                                <ul class="rounded shaded">
                                     <li><a href="{{ url_for('profile') }}">profile</a></li>
                                     <li><a href="{{ url_for('logout') }}">logout</a></li>
                                 </ul>
@@ -65,8 +65,7 @@
     </header>
     <section>
         <div class="container">
-            <div class="content">
-                <br><br>
+            <div class="content rounded shaded">
                 {% block body %}{% endblock %}
             </div>
         </div>

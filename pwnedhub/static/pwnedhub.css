@@ -42,6 +42,7 @@
 
 body {
     font-family: 'Open Sans', sans-serif;
+    background-color: #eee;
 }
 
 th, td {
@@ -56,6 +57,7 @@ td input, td select {
 
 button, input[type="submit"], input[type="reset"], input[type="button"] {
     padding: 0 1rem;
+    background-color: white;
 }
 
 form, table {
@@ -99,8 +101,8 @@ a:active {
     font-size: 1.5rem;
     visibility: hidden;
     background-color: red;
-    color: white;
-    border: 1px solid black;
+    color: #eee;
+    border: 1px solid #bbb;
 }
 
 .container {
@@ -109,6 +111,7 @@ a:active {
 
 header {
     border-bottom: 1px solid #bbb;
+    background-color: #fafafa;
 }
 
 .header {
@@ -233,9 +236,14 @@ header {
     color: red;
 }
 
-section {}
+section {
+    padding: 3rem 0;
+}
 
-.content {}
+.content {
+    background-color: #fafafa;
+    padding: 3rem;
+}
 
 .banner {
     margin-top: 15rem;
@@ -249,37 +257,6 @@ section {}
 
 .panel h5 {
     margin-bottom: 0;
-}
-
-.auth-form {
-    border: 1px solid red;
-    padding: 1rem;
-    margin: 0;
-}
-
-.auth-form input[type=submit] {
-    background-color: red;
-    color: white;
-    margin-top: 1rem;
-    margin-bottom: 0;
-    border: 1px solid black;
-}
-
-.auth-form input[type=submit]:hover {
-    background-color: #ff3333;
-}
-
-.auth-form select {
-    border: 1px solid #a4a4a4;
-}
-
-.auth-form a {
-    color: red;
-    text-decoration: underline;
-}
-
-.auth-form p {
-    margin-bottom: 1.5rem;
 }
 
 .about {
@@ -404,7 +381,6 @@ footer {}
 .footer {
     color: gray;
     padding-top: 2rem;
-    margin-top: 4rem;
     border-top: 1px solid #e1e1e1;
 }
 
@@ -426,12 +402,6 @@ footer {}
 }
 
 .rounded {
-    -webkit-border-radius: 1rem;
-    -moz-border-radius: 1rem;
-    border-radius: 1rem;
-}
-
-.rounded-sm {
     -webkit-border-radius: .5rem;
     -moz-border-radius: .5rem;
     border-radius: .5rem;    
