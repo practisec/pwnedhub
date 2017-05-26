@@ -1,6 +1,6 @@
 # PwnedHub
 
-PwnedHub is a vulnerable application designed exclusively for the [#PWAPT](http://www.lanmaster53.com/training/) training course. PwnedHub contains intentional vulnerability and should never be exposed to the open Internet. This software is NOT Open Source. See the `LICENSE.txt` file for more information.
+PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http://www.lanmaster53.com/training/) training course. PwnedHub contains intentional vulnerability and should never be exposed to the open Internet. This software is NOT Open Source. See the `LICENSE.txt` file for more information.
 
 ## Installation (Ubuntu)
 
@@ -27,7 +27,7 @@ PwnedHub is a vulnerable application designed exclusively for the [#PWAPT](http:
         2. Create a database named `pwnedhub`.
         3. Edit the configuration file `pwnedhub/__init__.py`.
             1. Comment out the SQLite connection string.
-            2. Uncomment the MySQL connection string.
+            2. Add a MySQL connection string. e.g. `mysql://username:password@localhost/pwnedhub`
             3. Update the MYSQL connection string with the proper credentials.
 6. Initialize the database in a Python interpreter.
 
@@ -44,16 +44,11 @@ PwnedHub is a vulnerable application designed exclusively for the [#PWAPT](http:
     ```
 
 8. Visit the application and register a user.
-9. Promote the user to the "administrator" role in a Python interpreter.
+
+Administrative access can be gained through exploiting the application. However, to create an administrative user, promote a previously created user to the "administrator" role in a Python interpreter.
 
     ```
     $ python
     >>> import pwnedhub
     >>> pwnedhub.make_admin('username')
-    ```
-
-10. Start the server again and engage the target.
-
-    ```
-    $ python ./pwnedhub.py
     ```
