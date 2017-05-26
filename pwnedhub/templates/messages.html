@@ -31,7 +31,7 @@
                 </div>
         {% endif %}
                 <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
-                    <p><span class="red">{{ message.user.name }}</span></p>
+                    <p><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
                     <p>{{ message.comment|safe }}</p>
                     <p>{{ message.created_as_string }}</p>
                 </div>
@@ -39,6 +39,17 @@
             </div>
         {% endif %}
         {% endfor %}
+        {% if pages %}
+            <div class="pagination">
+            {% for page in range(0, pages) %}
+            {% if page == current_page %}
+                <b class="red">{{ page }}</b>
+            {% else %}
+                <a href="{{ url_for('messages_page', page=page) }}">{{ page }}</a>
+            {% endif %}
+            {% endfor %}
+            </div>
+        {% endif %}
         </div>
     </div>
     {% endif %}

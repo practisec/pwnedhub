@@ -318,6 +318,10 @@ section {
     border-bottom: 1px solid #e1e1e1;
 }
 
+.pagination {
+    text-align: right;
+}
+
 .delete {
     float: right;
     font-size: 1.25rem;

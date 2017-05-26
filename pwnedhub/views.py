@@ -265,8 +265,21 @@ def messages():
             msg = Message(comment=message, user=g.user)
             db.session.add(msg)
             db.session.commit()
+    return redirect(url_for('messages_page', page=0))
     messages = Message.query.order_by(Message.created.desc()).all()
     return render_template('messages.html', messages=messages)
+
+@app.route('/messages/page/<int:page>')
+@login_required
+def messages_page(page):
+    per_page = 5
+    messages = Message.query.order_by(Message.created.desc()).all()
+    subsets = [messages[i:i + per_page] for i in xrange(0, len(messages), per_page)]
+    try:
+        subset = subsets[page]
+    except IndexError:
+        abort(404)
+    return render_template('messages.html', messages=subset, current_page=page, pages=len(subsets))
 
 @app.route('/messages/delete/<int:id>')
 @login_required
