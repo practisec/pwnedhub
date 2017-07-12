@@ -8,7 +8,7 @@ PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http:/
 2. Clone the PwnedHub repository.
 
     ```
-    $ git clone https://LaNMaSteR53@bitbucket.org/LaNMaSteR53/pwnedhub.git
+    $ git clone https://github.com/lanmaster53/pwnedhub.git
     ```
 
 3. Install the dependencies.
@@ -18,6 +18,9 @@ PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http:/
     $ pip install libmysqlclient-dev
     $ pip install -r REQUIREMENTS.txt
     ```
+
+    Note that the `lxml` dependency may require installing the `python-dev`, `libxml2-dev`, `libxslt-dev`, and `lib32z1-dev` packages on Ubuntu. Look
+     for compiler errors during the above process and install the needed packages.
 
 4. Install/configure the database.
     * SQLite3
