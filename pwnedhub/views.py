@@ -1,12 +1,12 @@
-from flask import request, session, g, redirect, url_for, render_template, render_template_string, jsonify, flash, abort, send_file, __version__
+from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, render_template_string, jsonify, flash, abort, send_file, __version__
 from sqlalchemy import asc, desc, exc
-from pwnedhub import app, db, spyne
+from pwnedhub import db
 from models import Mail, Message, Score, Tool, User
 from constants import QUESTIONS, DEFAULT_NOTE
 from decorators import login_required, roles_required
 from utils import xor_encrypt, detect_user_agent, get_token
 from validators import is_valid_quantity, is_valid_password, is_valid_file
-from datetime import datetime
+from service import ToolsInfo
 from hashlib import md5
 from urllib import urlencode
 import math
@@ -15,9 +15,7 @@ import re
 import subprocess
 import traceback
 
-# register new jinja global for the current date
-# used in the layout to keep the current year
-app.jinja_env.globals['date'] = datetime.now()
+ph_bp = Blueprint('ph_bp', __name__)
 
 # monkey patch flask.render_template()
 _render_template = render_template
@@ -29,13 +27,13 @@ def _my_render_template(*args, **kwargs):
     return _render_template(*args, **kwargs)
 render_template = _my_render_template
 
-@app.before_request
+@ph_bp.before_request
 def load_user():
     g.user = None
     if session.get('user_id'):
         g.user = User.query.get(session.get('user_id'))
 
-@app.after_request
+@ph_bp.after_request
 def add_header(response):
     response.headers['X-Powered-By'] = 'Flask/{}'.format(__version__)
     # disable browser XSS protections
@@ -44,16 +42,16 @@ def add_header(response):
 
 # general views
 
-@app.route('/')
-@app.route('/index')
+@ph_bp.route('/')
+@ph_bp.route('/index')
 def index():
     return render_template('index.html')
 
-@app.route('/home')
+@ph_bp.route('/home')
 def home():
-    return redirect(url_for('notes'))
+    return redirect(url_for('ph_bp.notes'))
 
-@app.route('/notes', methods=['GET', 'POST'])
+@ph_bp.route('/notes', methods=['GET', 'POST'])
 @login_required
 def notes():
     if request.method == 'POST':
@@ -64,14 +62,14 @@ def notes():
     notes = g.user.notes or DEFAULT_NOTE
     return render_template('notes.html', notes=notes)
 
-@app.route('/admin/tools')
+@ph_bp.route('/admin/tools')
 @login_required
 @roles_required('admin')
 def admin_tools():
     tools = Tool.query.order_by(Tool.name.asc()).all()
     return render_template('admin_tools.html', tools=tools)
 
-@app.route('/admin/tools/add', methods=['POST'])
+@ph_bp.route('/admin/tools/add', methods=['POST'])
 @login_required
 @roles_required('admin')
 def admin_tools_add():
@@ -83,9 +81,9 @@ def admin_tools_add():
     db.session.add(tool)
     db.session.commit()
     flash('Tool added.')
-    return redirect(url_for('admin_tools'))
+    return redirect(url_for('ph_bp.admin_tools'))
 
-@app.route('/admin/tools/remove/<int:id>')
+@ph_bp.route('/admin/tools/remove/<int:id>')
 @login_required
 @roles_required('admin')
 def admin_tools_remove(id):
@@ -96,16 +94,16 @@ def admin_tools_remove(id):
         flash('Tool removed.')
     else:
         flash('Invalid tool ID.')
-    return redirect(url_for('admin_tools'))
+    return redirect(url_for('ph_bp.admin_tools'))
 
-@app.route('/admin/users')
+@ph_bp.route('/admin/users')
 @login_required
 @roles_required('admin')
 def admin_users():
     users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
     return render_template('admin_users.html', users=users)
 
-@app.route('/admin/users/<string:action>/<int:id>')
+@ph_bp.route('/admin/users/<string:action>/<int:id>')
 @login_required
 def admin_users_modify(action, id):
     user = User.query.get(id)
@@ -137,14 +135,14 @@ def admin_users_modify(action, id):
             flash('Self-modification denied.')
     else:
         flash('Invalid user ID.')
-    return redirect(url_for('admin_users'))
+    return redirect(url_for('ph_bp.admin_users'))
 
-@app.route('/profile')
+@ph_bp.route('/profile')
 @login_required
 def profile():
     return render_template('profile.html', user=g.user, questions=QUESTIONS)
 
-@app.route('/profile/change', methods=['GET', 'POST'])
+@ph_bp.route('/profile/change', methods=['GET', 'POST'])
 @login_required
 def profile_change():
     user = g.user
@@ -163,15 +161,15 @@ def profile_change():
             flash('Account information successfully changed.')
         else:
             flash('Password does not meet complexity requirements.')
-    return redirect(url_for('profile'))
+    return redirect(url_for('ph_bp.profile'))
 
-@app.route('/mail')
+@ph_bp.route('/mail')
 @login_required
 def mail():
     mail = g.user.received_mail.order_by(Mail.created.desc()).all()
     return render_template('mail_inbox.html', mail=mail)
 
-@app.route('/mail/compose', methods=['GET', 'POST'])
+@ph_bp.route('/mail/compose', methods=['GET', 'POST'])
 @login_required
 def mail_compose():
     if request.method == 'POST':
@@ -189,17 +187,17 @@ def mail_compose():
                 db.session.add(mail)
                 db.session.commit()
             flash('Mail sent.')
-            return redirect(url_for('mail'))
+            return redirect(url_for('ph_bp.mail'))
     users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
     return render_template('mail_compose.html', users=users)
 
-@app.route('/mail/reply/<int:id>')
+@ph_bp.route('/mail/reply/<int:id>')
 @login_required
 def mail_reply(id=0):
     mail = Mail.query.filter(Mail.id == id).first()
     return render_template('mail_reply.html', mail=mail)
 
-@app.route('/mail/view/<int:id>')
+@ph_bp.route('/mail/view/<int:id>')
 @login_required
 def mail_view(id):
     mail = Mail.query.get(id)
@@ -210,10 +208,10 @@ def mail_view(id):
             db.session.commit()
     else:
         flash('Invalid mail ID.')
-        return redirect(url_for('mail'))
+        return redirect(url_for('ph_bp.mail'))
     return render_template('mail_view.html', mail=mail)
 
-@app.route('/mail/delete/<int:id>')
+@ph_bp.route('/mail/delete/<int:id>')
 @login_required
 def mail_delete(id):
     mail = Mail.query.get(id)
@@ -223,15 +221,15 @@ def mail_delete(id):
         flash('Mail deleted.')
     else:
         flash('Invalid mail ID.')
-    return redirect(url_for('mail'))
+    return redirect(url_for('ph_bp.mail'))
 
-@app.route('/messages.react')
+@ph_bp.route('/messages.react')
 @login_required
 def messages_react():
     return render_template('messages.html', react=True)
 
-@app.route('/api/messages', methods=['GET', 'POST'])
-@app.route('/api/messages/<int:id>', methods=['DELETE'])
+@ph_bp.route('/api/messages', methods=['GET', 'POST'])
+@ph_bp.route('/api/messages/<int:id>', methods=['DELETE'])
 @login_required
 def api_messages(id=None):
     if request.method == 'POST':
@@ -256,7 +254,7 @@ def api_messages(id=None):
         messages.append(message)
     return jsonify(messages=messages)
 
-@app.route('/messages', methods=['GET', 'POST'])
+@ph_bp.route('/messages', methods=['GET', 'POST'])
 @login_required
 def messages():
     if request.method == 'POST':
@@ -265,11 +263,11 @@ def messages():
             msg = Message(comment=message, user=g.user)
             db.session.add(msg)
             db.session.commit()
-    return redirect(url_for('messages_page', page=0))
+    return redirect(url_for('ph_bp.messages_page', page=0))
     messages = Message.query.order_by(Message.created.desc()).all()
     return render_template('messages.html', messages=messages)
 
-@app.route('/messages/page/<int:page>')
+@ph_bp.route('/messages/page/<int:page>')
 @login_required
 def messages_page(page):
     per_page = 5
@@ -281,7 +279,7 @@ def messages_page(page):
         abort(404)
     return render_template('messages.html', messages=subset, current_page=page, pages=len(subsets))
 
-@app.route('/messages/delete/<int:id>')
+@ph_bp.route('/messages/delete/<int:id>')
 @login_required
 def messages_delete(id):
     message = Message.query.get(id)
@@ -291,9 +289,9 @@ def messages_delete(id):
         flash('Message deleted.')
     else:
         flash('Invalid message ID.')
-    return redirect(url_for('messages'))
+    return redirect(url_for('ph_bp.messages'))
 
-@app.route('/artifacts')
+@ph_bp.route('/artifacts')
 @login_required
 def artifacts():
     for (dirpath, dirnames, filenames) in os.walk(session.get('upload_folder')):
@@ -301,7 +299,7 @@ def artifacts():
         break
     return render_template('artifacts.html', artifacts=artifacts)
 
-@app.route('/artifacts/save/<string:method>', methods=['POST'])
+@ph_bp.route('/artifacts/save/<string:method>', methods=['POST'])
 @login_required
 def artifacts_save(method):
     if method == 'file':
@@ -317,7 +315,7 @@ def artifacts_save(method):
                 else:
                     flash('An artifact with that name already exists.')
             else:
-                flash('Invalid file type. Only {} filetypes allowed.'.format(', '.join(app.config['ALLOWED_EXTENSIONS'])))
+                flash('Invalid file type. Only {} filetypes allowed.'.format(', '.join(current_app.config['ALLOWED_EXTENSIONS'])))
     elif method == 'text':
         content = request.form['content']
         filename = request.form['filename']
@@ -334,9 +332,9 @@ def artifacts_save(method):
             else:
                 msg = 'An artifact with that name already exists.'
             return jsonify(message=msg)
-    return redirect(url_for('artifacts'))
+    return redirect(url_for('ph_bp.artifacts'))
 
-@app.route('/artifacts/delete', methods=['POST'])
+@ph_bp.route('/artifacts/delete', methods=['POST'])
 @login_required
 def artifacts_delete():
     filename = request.form['filename']
@@ -345,9 +343,9 @@ def artifacts_delete():
         flash('Artifact deleted.')
     except IOError:
         flash('Unable to remove the artifact.')
-    return redirect(url_for('artifacts'))
+    return redirect(url_for('ph_bp.artifacts'))
 
-@app.route('/artifacts/view', methods=['POST'])
+@ph_bp.route('/artifacts/view', methods=['POST'])
 @login_required
 def artifacts_view():
     filename = request.form['filename']
@@ -355,15 +353,15 @@ def artifacts_view():
         return send_file(os.path.join(session.get('upload_folder'), filename))
     except IOError:
         flash('Unable to load the artifact.')
-    return redirect(url_for('artifacts'))
+    return redirect(url_for('ph_bp.artifacts'))
 
-@app.route('/tools')
+@ph_bp.route('/tools')
 @login_required
 def tools():
     tools = Tool.query.all()
     return render_template('tools.html', tools=tools)
 
-@app.route('/tools/execute', methods=['POST'])
+@ph_bp.route('/tools/execute', methods=['POST'])
 @login_required
 def tools_execute():
     tool = Tool.query.get(request.form['tool'])
@@ -376,7 +374,7 @@ def tools_execute():
     output = out + err
     return jsonify(cmd=cmd, output=output)
 
-@app.route('/tools/info', methods=['POST'])
+@ph_bp.route('/tools/info', methods=['POST'])
 @login_required
 def tools_info():
     query = "SELECT * FROM tools WHERE id={}"
@@ -387,12 +385,12 @@ def tools_info():
         tools = ()
     return jsonify(tools=[dict(t) for t in tools])
 
-@app.route('/games/')
+@ph_bp.route('/games/')
 @login_required
 def games():
     return render_template('games.html')
 
-@app.route('/snake/<path:filename>')
+@ph_bp.route('/snake/<path:filename>')
 @login_required
 def snake_files(filename):
     rec_regex = r'rec(\d+)\.txt'
@@ -412,7 +410,7 @@ def snake_files(filename):
         return score.recording
     abort(404)
 
-@app.route('/snake/enterHighscore.php', methods=['POST'])
+@ph_bp.route('/snake/enterHighscore.php', methods=['POST'])
 @login_required
 def snake_enter_score():
     status = 'no response'
@@ -451,13 +449,13 @@ def snake_enter_score():
         status = 'invalid scorehash'
     return urlencode({'status':status})
 
-@app.route('/about')
+@ph_bp.route('/about')
 def about():
     return render_template('about.html')
 
 # authenticaton views
 
-@app.route('/register', methods=['GET', 'POST'])
+@ph_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -481,7 +479,7 @@ def register():
                     db.session.add(mail)
                     db.session.commit()
                     flash('Account created. Please log in.')
-                    return redirect(url_for('login'))
+                    return redirect(url_for('ph_bp.login'))
                 else:
                     flash('Password does not meet complexity requirements.')
             else:
@@ -490,41 +488,41 @@ def register():
             flash('Username already exists.')
     return render_template('register.html', questions=QUESTIONS)
 
-@app.route('/login', methods=['GET', 'POST'])
+@ph_bp.route('/login', methods=['GET', 'POST'])
 def login():
     # redirect to home if already logged in
     if session.get('user_id'):
-        return redirect(url_for('home'))
+        return redirect(url_for('ph_bp.home'))
     if request.method == 'POST':
         token = request.form['token']
         if md5(session.get('seed')).hexdigest() == token:
             query = "SELECT * FROM users WHERE username='{}' AND password_hash='{}'"
             username = request.form['username']
-            password_hash = xor_encrypt(request.form['password'], app.config['PW_ENC_KEY'])
+            password_hash = xor_encrypt(request.form['password'], current_app.config['PW_ENC_KEY'])
             user = db.session.execute(query.format(username, password_hash)).first()
             if user and user['status'] == 1:
                 session['user_id'] = user.id
-                path = os.path.join(app.config['UPLOAD_FOLDER'], md5(str(user.id)).hexdigest())
+                path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user.id)).hexdigest())
                 if not os.path.exists(path):
                     os.makedirs(path)
                 session['upload_folder'] = path
                 session.rotate()
-                return redirect(request.args.get('next') or url_for('home'))
-            return redirect(url_for('login', error='Invalid username or password.'))
-        return redirect(url_for('login', error='Bot detected.'))
+                return redirect(request.args.get('next') or url_for('ph_bp.home'))
+            return redirect(url_for('ph_bp.login', error='Invalid username or password.'))
+        return redirect(url_for('ph_bp.login', error='Bot detected.'))
     session['seed'] = get_token(5)
     return render_template('login.html')
 
-@app.route('/logout')
+@ph_bp.route('/logout')
 @login_required
 def logout():
     session.pop('user_id', None)
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for('ph_bp.index'))
 
 # password recovery flow views
 
-@app.route('/reset', methods=['GET', 'POST'])
+@ph_bp.route('/reset', methods=['GET', 'POST'])
 def reset_init():
     if request.method == 'POST':
         query = "SELECT * FROM users WHERE username='{}'"
@@ -536,32 +534,32 @@ def reset_init():
         if user:
             # add to session to begin the reset flow
             session['reset_id'] = user.id
-            return redirect(url_for('reset_question'))
+            return redirect(url_for('ph_bp.reset_question'))
         else:
             flash('User not recognized.')
     return render_template('reset_init.html')
 
-@app.route('/reset/question', methods=['GET', 'POST'])
+@ph_bp.route('/reset/question', methods=['GET', 'POST'])
 def reset_question():
     # enforce flow control
     if not session.get('reset_id'):
         flash('Reset improperly initialized.')
-        return redirect(url_for('reset_init'))
+        return redirect(url_for('ph_bp.reset_init'))
     user = User.query.get(session.get('reset_id'))
     if request.method == 'POST':
         answer = request.form['answer']
         if user.answer == answer:
-            return redirect(url_for('reset_password'))
+            return redirect(url_for('ph_bp.reset_password'))
         else:
             flash('Incorrect answer.')
     return render_template('reset_question.html', question=user.question_as_string)
 
-@app.route('/reset/password', methods=['GET', 'POST'])
+@ph_bp.route('/reset/password', methods=['GET', 'POST'])
 def reset_password():
     # enforce flow control
     if not session.get('reset_id'):
         flash('Reset improperly initialized.')
-        return redirect(url_for('reset_init'))
+        return redirect(url_for('ph_bp.reset_init'))
     if request.method == 'POST':
         password = request.form['password']
         if password == request.form['confirm_password']:
@@ -571,14 +569,14 @@ def reset_password():
                 db.session.add(user)
                 db.session.commit()
                 flash('Password reset. Please log in.')
-                return redirect(url_for('login'))
+                return redirect(url_for('ph_bp.login'))
             else:
                 flash('Invalid password.')
         else:
             flash('Passwords do not match.')
     return render_template('reset_password.html')
 
-@app.errorhandler(404)
+@ph_bp.errorhandler(404)
 def page_not_found(e):
     template = '''{%% extends "layout.html" %%}
 {%% block body %%}
@@ -590,28 +588,7 @@ def page_not_found(e):
 ''' % (request.url)
     return render_template_string(template), 404
 
-@app.errorhandler(500)
+@ph_bp.errorhandler(500)
 def internal_error(e):
     message = traceback.format_exc()
     return render_template('500.html', message=message), 500
-
-# SOAP web service view
-
-from spyne.protocol.soap import Soap11
-from spyne.model.primitive import AnyDict, Unicode, Integer
-from spyne.model.complex import Iterable
-
-class Tools(spyne.Service):
-    __service_url_path__ = '/service'
-    __in_protocol__ = Soap11(validator='lxml')
-    __out_protocol__ = Soap11()
-
-    @spyne.srpc(Unicode, _returns=Iterable(AnyDict))
-    def info(tid):
-        query = "SELECT * FROM tools WHERE id={}"
-        try:
-            tools = db.session.execute(query.format(tid))
-        except Exception as e:
-            tools = ()
-        for tool in tools:
-            yield dict(tool)

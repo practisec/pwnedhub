@@ -10,7 +10,7 @@
 {% else %}
     <div class="row">
         <div class="ten columns offset-by-one center-content">
-            <form action="{{ url_for('messages') }}" method="post">
+            <form action="{{ url_for('ph_bp.messages') }}" method="post">
                 <input style="float: right;" type="submit" value="submit" onclick="this.form.submit();" />
                 <span style="display: block; overflow: hidden; padding-right: 10px">
                     <input style="width: 100%;" name="message" type="text" placeholder="message here..." />
@@ -25,7 +25,7 @@
         {% if message.user == g.user %}
             <div>
                 <div name="action_{{ message.id }}" class="delete">
-                    <a href="{{ url_for('messages_delete', id=message.id) }}">
+                    <a href="{{ url_for('ph_bp.messages_delete', id=message.id) }}">
                         <img src="{{ url_for('static', filename='images/trash.png') }}" />
                     </a>
                 </div>
@@ -45,7 +45,7 @@
             {% if page == current_page %}
                 <b class="red">{{ page }}</b>
             {% else %}
-                <a href="{{ url_for('messages_page', page=page) }}">{{ page }}</a>
+                <a href="{{ url_for('ph_bp.messages_page', page=page) }}">{{ page }}</a>
             {% endif %}
             {% endfor %}
             </div>

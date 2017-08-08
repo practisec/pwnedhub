@@ -2,7 +2,7 @@
 {% block body %}
     <div class="row">
         <div class="ten columns offset-by-one mail">
-            <form action="{{ url_for('mail_compose') }}" method="post">
+            <form action="{{ url_for('ph_bp.mail_compose') }}" method="post">
                 <label for="receiver">to:</label>
                 <select name="receiver">
                 {% for user in users %}
@@ -14,7 +14,7 @@
                 <label for="content">content:</label>
                 <textarea class="u-full-width" name="content" placeholder="content here..."></textarea><br>
                 <div class="u-full-width right-content">
-                    <input type="button" value="discard" onclick="window.location='{{ url_for('mail') }}'" />
+                    <input type="button" value="discard" onclick="window.location='{{ url_for('ph_bp.mail') }}'" />
                     <input type="submit" value="send" onclick="this.form.submit();" />
                 </div>
             </form>

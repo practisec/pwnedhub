@@ -8,7 +8,7 @@
                 <input class="u-full-width" name="username" type="text" />
                 <label for="password">password</label>
                 <input class="u-full-width" name="password" type="password" />
-                <p><a href="{{ url_for('reset_init') }}">forget your password?</a></p>
+                <p><a href="{{ url_for('ph_bp.reset_init') }}">forget your password?</a></p>
                 <input id="seed" name="seed" type="hidden" value="{{ session.seed }}" />
                 <input class="u-full-width" type="submit" value="login" onclick="this.form.submit();" />
             </form>

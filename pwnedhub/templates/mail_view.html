@@ -9,9 +9,9 @@
             <label for="content">content:</label>
             <textarea class="u-full-width" name="content" disabled>{{ mail.content }}</textarea><br>
             <div class="u-full-width right-content">
-                <input type="button" value="inbox" onclick="window.location='{{ url_for('mail') }}'" />
-                <input type="button" value="reply" onclick="window.location='{{ url_for('mail_reply', id=mail.id) }}'" />
-                <input type="button" value="delete" onclick="window.location='{{ url_for('mail_delete', id=mail.id) }}'" />
+                <input type="button" value="inbox" onclick="window.location='{{ url_for('ph_bp.mail') }}'" />
+                <input type="button" value="reply" onclick="window.location='{{ url_for('ph_bp.mail_reply', id=mail.id) }}'" />
+                <input type="button" value="delete" onclick="window.location='{{ url_for('ph_bp.mail_delete', id=mail.id) }}'" />
             </div>
         </div>
     </div>

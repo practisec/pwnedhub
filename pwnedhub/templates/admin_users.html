@@ -16,14 +16,14 @@
                         <td>{{ user.status_as_string }}</td>
                         <td>
                         {% if user.is_admin %}
-                            <input type="button" onclick="window.location='{{ url_for('admin_users_modify', action='demote', id=user.id) }}'" value="demote" />
+                            <input type="button" onclick="window.location='{{ url_for('ph_bp.admin_users_modify', action='demote', id=user.id) }}'" value="demote" />
                         {% else %}
-                            <input type="button" onclick="window.location='{{ url_for('admin_users_modify', action='promote', id=user.id) }}'" value="promote" />
+                            <input type="button" onclick="window.location='{{ url_for('ph_bp.admin_users_modify', action='promote', id=user.id) }}'" value="promote" />
                         {% endif %}
                         {% if user.is_enabled %}
-                            <input type="button" onclick="window.location='{{ url_for('admin_users_modify', action='disable', id=user.id) }}'" value="disable" />
+                            <input type="button" onclick="window.location='{{ url_for('ph_bp.admin_users_modify', action='disable', id=user.id) }}'" value="disable" />
                         {% else %}
-                            <input type="button" onclick="window.location='{{ url_for('admin_users_modify', action='enable', id=user.id) }}'" value="enable" />
+                            <input type="button" onclick="window.location='{{ url_for('ph_bp.admin_users_modify', action='enable', id=user.id) }}'" value="enable" />
                         {% endif %}
                         </td>
                     </tr>

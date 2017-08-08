@@ -1,4 +1,4 @@
-from pwnedhub import app
+from flask import current_app
 import re
 
 # anything except blank
@@ -19,7 +19,7 @@ def is_valid_password(password):
     return True
 
 def is_valid_file(filename):
-    return any([x for x in app.config['ALLOWED_EXTENSIONS'] if '.'+x in filename])
+    return any([x for x in current_app.config['ALLOWED_EXTENSIONS'] if '.'+x in filename])
 
 from urlparse import urlparse, urljoin
 

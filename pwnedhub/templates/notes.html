@@ -16,7 +16,7 @@ notes.onblur = function() {
     localStorage.setItem(key, this.value);
     // sync the notes
     $.ajax({
-        url: "{{ url_for('notes') }}",
+        url: "{{ url_for('ph_bp.notes') }}",
         type: "POST",
         async: false,
         data: {
@@ -44,7 +44,7 @@ function save() {
     var content = notes.innerHTML;
     if (confirm("Save as an artifact?") == true) {
         $.ajax({
-            url: "{{ url_for('artifacts_save', method='text') }}",
+            url: "{{ url_for('ph_bp.artifacts_save', method='text') }}",
             type: "POST",
             data: {
                 filename: filename,

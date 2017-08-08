@@ -1,30 +1,32 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask.ext.spyne import Spyne
-from flask.ext.session import Session
-import os
+from flask_spyne import Spyne
+from flask_session import Session
+from datetime import datetime
 
-basedir = os.path.abspath(os.path.dirname(__file__))
+db = SQLAlchemy()
+spyne = Spyne()
+sess = Session()
 
-# configuration
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'pwnedhub.db')
-DEBUG = True
-TESTING = False
-SECRET_KEY = 'development key'
-PW_ENC_KEY = 'sekrit'
-UPLOAD_FOLDER = '/tmp'
-ALLOWED_EXTENSIONS = set(['txt', 'xml', 'jpg', 'png', 'gif'])
-SESSION_COOKIE_HTTPONLY = False
-PERMANENT_SESSION_LIFETIME = 3600 # 1 hour
+def create_app(config='pwnedhub.config.Development'):
 
-# setting the static_url_path to blank serves static
-# files from the web root, allowing for robots.txt
-app = Flask(__name__, static_url_path='')
-app.config.from_object(__name__)
+    # setting the static_url_path to blank serves static
+    # files from the web root, allowing for robots.txt
+    app = Flask(__name__, static_url_path='')
+    app.config.from_object(config)
 
-db = SQLAlchemy(app)
-spyne = Spyne(app)
-Session(app)
+    db.init_app(app)
+    spyne.init_app(app)
+    sess.init_app(app)
+
+    # register new jinja global for the current date
+    # used in the layout to keep the current year
+    app.jinja_env.globals['date'] = datetime.now()
+
+    from views import ph_bp
+    app.register_blueprint(ph_bp)
+
+    return app
 
 def initdb():
     db.create_all()
@@ -33,9 +35,6 @@ def initdb():
 def dropdb():
     db.drop_all()
     print 'Database dropped.'
-
-import models
-import views
 
 def make_admin(username):
     user = models.User.get_by_username(username)

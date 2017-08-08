@@ -2,7 +2,7 @@
 {% block body %}
     <div class="row">
         <div class="u-full-width center-content">
-            <form action="{{ url_for('artifacts_save', method='file') }}" enctype="multipart/form-data" method="post">
+            <form action="{{ url_for('ph_bp.artifacts_save', method='file') }}" enctype="multipart/form-data" method="post">
                 <input name="file" type="file" />
                 <input type="submit" value="upload" onclick="this.form.submit();" />
             </form>
@@ -20,11 +20,11 @@
                     <tr>
                         <td>{{ artifact }}</td>
                         <td>
-                            <form action="{{ url_for('artifacts_view') }}" method="post">
+                            <form action="{{ url_for('ph_bp.artifacts_view') }}" method="post">
                                 <input type="hidden" name="filename" value="{{ artifact }}" />
                                 <input type="submit" value="view" onclick="this.form.submit();" />
                             </form>
-                            <form action="{{ url_for('artifacts_delete') }}" method="post">
+                            <form action="{{ url_for('ph_bp.artifacts_delete') }}" method="post">
                                 <input type="hidden" name="filename" value="{{ artifact }}" />
                                 <input type="submit" value="delete" onclick="if (confirm('Delete the artifact?') == true) { this.form.submit(); }; return false;" />
                             </form>

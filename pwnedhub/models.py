@@ -1,4 +1,5 @@
-from pwnedhub import app, db
+from flask import current_app
+from pwnedhub import db
 from constants import ROLES, QUESTIONS, STATUSES
 from utils import xor_encrypt, xor_decrypt
 import datetime
@@ -82,7 +83,7 @@ class User(db.Model):
 
     @property
     def password_as_string(self):
-        return xor_decrypt(self.password_hash, app.config['PW_ENC_KEY'])
+        return xor_decrypt(self.password_hash, current_app.config['PW_ENC_KEY'])
 
     @property
     def created_as_string(self):
@@ -94,7 +95,7 @@ class User(db.Model):
 
     @password.setter
     def password(self, password):
-        self.password_hash = xor_encrypt(password, app.config['PW_ENC_KEY'])
+        self.password_hash = xor_encrypt(password, current_app.config['PW_ENC_KEY'])
 
     @property
     def is_admin(self):
@@ -109,7 +110,7 @@ class User(db.Model):
         return False
 
     def check_password(self, password):
-        if self.password_hash == xor_encrypt(password, app.config['PW_ENC_KEY']):
+        if self.password_hash == xor_encrypt(password, current_app.config['PW_ENC_KEY']):
             return True
         return False
 
