@@ -7,7 +7,7 @@ class BaseConfig(object):
     DEBUG = False
     SECRET_KEY = 'development key'
     PW_ENC_KEY = 'sekrit'
-    UPLOAD_FOLDER = '/tmp'
+    UPLOAD_FOLDER = '/tmp/artifacts'
     ALLOWED_EXTENSIONS = set(['txt', 'xml', 'jpg', 'png', 'gif'])
     SESSION_COOKIE_HTTPONLY = False
     PERMANENT_SESSION_LIFETIME = 3600 # 1 hour
@@ -26,4 +26,5 @@ class Test(BaseConfig):
 
 class Production(BaseConfig):
 
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///production.db'
+    SECRET_KEY = 'M>\n\xb2\xa9B\xae\x8cL~\x0b\xc4\x19\r/GR6\xca\xd1^o\xa3$'
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:pwaptadmin@localhost/pwnedhub'
