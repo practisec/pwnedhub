@@ -18,9 +18,9 @@
             </form>
         </div>
     </div>
-    {% if messages|length > 0 %}
     <div class="row">
         <div class="ten columns offset-by-one messages">
+        {% if messages|length > 0 %}
         {% for message in messages %}
         {% if message.user == g.user %}
             <div>
@@ -50,8 +50,12 @@
             {% endfor %}
             </div>
         {% endif %}
+        {% else %}
+            <div class="center-content">
+                no messages
+            </div>
+        {% endif %}
         </div>
     </div>
-    {% endif %}
 {% endif %}
 {% endblock %}

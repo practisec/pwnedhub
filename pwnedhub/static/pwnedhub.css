@@ -347,6 +347,11 @@ section {
     display: inline;
 }
 
+.artifacts td {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 .output {
     position: relative;
     min-height: 40rem;
