@@ -264,8 +264,6 @@ def messages():
             db.session.add(msg)
             db.session.commit()
     return redirect(url_for('ph_bp.messages_page', page=0))
-    messages = Message.query.order_by(Message.created.desc()).all()
-    return render_template('messages.html', messages=messages)
 
 @ph_bp.route('/messages/page/<int:page>')
 @login_required
@@ -276,7 +274,7 @@ def messages_page(page):
     try:
         subset = subsets[page]
     except IndexError:
-        abort(404)
+        subset = []
     return render_template('messages.html', messages=subset, current_page=page, pages=len(subsets))
 
 @ph_bp.route('/messages/delete/<int:id>')
