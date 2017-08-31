@@ -234,7 +234,8 @@ def messages_react():
 @login_required
 def api_messages(id=None):
     if request.method == 'POST':
-        message = request.json['message']
+        jsonobj = request.get_json(force=True)
+        message = jsonobj['message']
         if message:
             msg = Message(comment=message, user=g.user)
             db.session.add(msg)
@@ -253,7 +254,9 @@ def api_messages(id=None):
         message = message.serialize()
         message['is_owner'] = is_owner
         messages.append(message)
-    return jsonify(messages=messages)
+    resp = jsonify(messages=messages)
+    resp.mimetype = 'text/html'
+    return resp
 
 @ph_bp.route('/messages', methods=['GET', 'POST'])
 @login_required
