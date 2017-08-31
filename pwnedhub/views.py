@@ -368,7 +368,9 @@ def tools_execute():
     args = request.form['args']
     cmd = '{} {}'.format(path, args)
     cmd = re.sub('[;&|]', '', cmd)
-    p = subprocess.Popen([cmd, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    env = os.environ.copy()
+    env['PATH'] = os.pathsep.join(('/usr/bin',env["PATH"]))
+    p = subprocess.Popen([cmd, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=env)
     out, err = p.communicate()
     output = out + err
     return jsonify(cmd=cmd, output=output)

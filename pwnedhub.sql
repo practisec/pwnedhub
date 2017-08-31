@@ -143,7 +143,7 @@ CREATE TABLE `tools` (
 
 LOCK TABLES `tools` WRITE;
 /*!40000 ALTER TABLE `tools` DISABLE KEYS */;
-INSERT INTO `tools` VALUES (1,'Dig','/usr/bin/dig','(Domain Internet Groper) Network administration tool for Domain Name System (DNS) name server interrogation.'),(2,'Nmap','/usr/bin/nmap','(Network Mapper) Utility for network discovery and security auditing.'),(3,'Nikto','/usr/bin/nikto','Signature-based web server scanner.'),(4,'SSLyze','/usr/bin/sslyze','Fast and powerful SSL/TLS server scanning library.'),(5,'SQLmap','/usr/bin/sqlmap --batch','Penetration testing tool that automates the process of detecting and exploiting SQL injection flaws.');
+INSERT INTO `tools` VALUES (1,'Dig','dig','(Domain Internet Groper) Network administration tool for Domain Name System (DNS) name server interrogation.'),(2,'Nmap','nmap','(Network Mapper) Utility for network discovery and security auditing.'),(3,'Nikto','nikto','Signature-based web server scanner.'),(4,'SSLyze','sslyze','Fast and powerful SSL/TLS server scanning library.'),(5,'SQLmap','sqlmap --batch','Penetration testing tool that automates the process of detecting and exploiting SQL injection flaws.');
 /*!40000 ALTER TABLE `tools` ENABLE KEYS */;
 UNLOCK TABLES;
 
