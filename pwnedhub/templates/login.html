@@ -7,10 +7,10 @@
                 <label for="username">username</label>
                 <input class="u-full-width" name="username" type="text" />
                 <label for="password">password</label>
-                <input class="u-full-width" name="password" type="password" />
+                <input class="u-full-width" id="password" name="password" type="password" />
                 <p><a href="{{ url_for('ph_bp.reset_init') }}">forget your password?</a></p>
-                <input id="seed" name="seed" type="hidden" value="{{ session.seed }}" />
-                <input class="u-full-width" type="submit" value="login" onclick="this.form.submit();" />
+                <input id="nonce" name="nonce" type="hidden" value="{{ session.nonce }}" />
+                <input class="u-full-width" type="submit" value="login" onclick="protectedSubmit(this);" />
             </form>
         </div>
     </div>
@@ -225,9 +225,13 @@ function addHidden(form, key, value) {
     form.appendChild(input);
 }
 
-var seed = document.getElementById("seed").value;
-var token = MD5(seed);
-var form = document.forms[0];
-addHidden(form, 'token', token);
+function protectedSubmit(e) {
+    var nonce = document.getElementById("nonce").value;
+    var password = document.getElementById("password").value;
+    var token = MD5(password+nonce);
+    var form = e.form;
+    addHidden(form, 'token', token);
+    form.submit();
+}
     </script>
 {% endblock %}

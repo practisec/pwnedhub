@@ -498,8 +498,8 @@ def login():
     if session.get('user_id'):
         return redirect(url_for('ph_bp.home'))
     if request.method == 'POST':
-        token = request.form['token']
-        if md5(session.get('seed')).hexdigest() == token:
+        token = md5(request.form['password']+session.get('nonce', '')).hexdigest()
+        if token == request.form['token']:
             query = "SELECT * FROM users WHERE username='{}' AND password_hash='{}'"
             username = request.form['username']
             password_hash = xor_encrypt(request.form['password'], current_app.config['PW_ENC_KEY'])
@@ -514,7 +514,7 @@ def login():
                 return redirect(request.args.get('next') or url_for('ph_bp.home'))
             return redirect(url_for('ph_bp.login', error='Invalid username or password.'))
         return redirect(url_for('ph_bp.login', error='Bot detected.'))
-    session['seed'] = get_token(5)
+    session['nonce'] = get_token(5)
     return render_template('login.html')
 
 @ph_bp.route('/logout')
