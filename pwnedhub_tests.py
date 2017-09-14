@@ -27,8 +27,8 @@ class PwnedHubTestCase(unittest.TestCase):
         from hashlib import md5
         from lxml.html import fromstring
         tree = fromstring(rv.data)
-        seed = tree.xpath('//input[@name="seed"]/@value')[0]
-        token = md5(seed).hexdigest()
+        nonce = tree.xpath('//input[@name="nonce"]/@value')[0]
+        token = md5(password+nonce).hexdigest()
         return self.client.post('/login', data=dict(
             username=username,
             password=password,
