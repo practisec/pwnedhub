@@ -580,7 +580,7 @@ def reset_password():
             flash('Passwords do not match.')
     return render_template('reset_password.html')
 
-@ph_bp.errorhandler(404)
+@ph_bp.app_errorhandler(404)
 def page_not_found(e):
     template = '''{%% extends "layout.html" %%}
 {%% block body %%}
@@ -592,7 +592,7 @@ def page_not_found(e):
 ''' % (request.url)
     return render_template_string(template), 404
 
-@ph_bp.errorhandler(500)
+@ph_bp.app_errorhandler(500)
 def internal_error(e):
     message = traceback.format_exc()
     return render_template('500.html', message=message), 500
