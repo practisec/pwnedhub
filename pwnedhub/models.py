@@ -130,5 +130,5 @@ class Score(db.Model):
     recid = db.Column(db.Integer)
     recording = db.Column(db.Text, nullable=False)
 
-def __repr__(self):
+    def __repr__(self):
         return "<Score '{}:{}'>".format(self.player, self.score)
