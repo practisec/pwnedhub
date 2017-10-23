@@ -37,7 +37,7 @@ PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http:/
     ```
     $ python
     >>> import pwnedhub
-    >>> pwnedhub.initdb()
+    >>> pwnedhub.init_db()
     ```
 
 7. Start the PwnedHub server.
