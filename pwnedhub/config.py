@@ -27,4 +27,4 @@ class Test(BaseConfig):
 class Production(BaseConfig):
 
     SECRET_KEY = 'M>\n\xb2\xa9B\xae\x8cL~\x0b\xc4\x19\r/GR6\xca\xd1^o\xa3$'
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:pwaptadmin@localhost/pwnedhub'
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:adminpass@localhost/pwnedhub'
