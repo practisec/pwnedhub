@@ -14,7 +14,7 @@ class ToolsInfo(spyne.Service):
         with ctx.udc['_spyne_ctx'].app.app_context():
             try:
                 tools = db.session.execute(query.format(tid))
-            except Exception as e:
+            except:
                 tools = ()
             for tool in tools:
                 yield dict(tool)

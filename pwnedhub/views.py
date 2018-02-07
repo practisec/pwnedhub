@@ -1,5 +1,5 @@
 from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, render_template_string, jsonify, flash, abort, send_file, __version__
-from sqlalchemy import asc, desc, exc
+from sqlalchemy import asc, desc
 from pwnedhub import db
 from models import Mail, Message, Score, Tool, User
 from constants import QUESTIONS, DEFAULT_NOTE
@@ -385,7 +385,7 @@ def tools_info():
     tid = request.form['tid']
     try:
         tools = db.session.execute(query.format(tid))
-    except exc.OperationalError:
+    except:
         tools = ()
     return jsonify(tools=[dict(t) for t in tools])
 
@@ -529,7 +529,7 @@ def reset_init():
         username = request.form['username']
         try:
             user = db.session.execute(query.format(username)).first()
-        except exc.OperationalError:
+        except:
             user = None
         if user:
             # add to session to begin the reset flow
