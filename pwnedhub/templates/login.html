@@ -7,10 +7,32 @@
                 <label for="username">username</label>
                 <input class="u-full-width" name="username" type="text" />
                 <label for="password">password</label>
-                <input class="u-full-width" id="password" name="password" type="password" />
+                <div style="position: relative;">
+                    <input class="u-full-width" id="password" name="password" type="password" />
+                    <input type="button" class="show" onclick="toggleShow();" value="show" />
+                </div>
                 <p><a href="{{ url_for('ph_bp.reset_init') }}">forget your password?</a></p>
                 <input class="u-full-width" type="submit" value="login" onclick="protectedSubmit(this);" />
             </form>
         </div>
     </div>
+    <style>
+input.show {
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 0;
+}
+    </style>
+    <script>
+function toggleShow() {
+    var el = document.getElementById("password");
+    if (el.type =="password") {
+        el.type = "text";
+    } else {
+        el.type = "password";
+    }
+}
+    </script>
 {% endblock %}
