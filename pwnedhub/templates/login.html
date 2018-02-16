@@ -9,7 +9,7 @@
                 <label for="password">password</label>
                 <div style="position: relative;">
                     <input class="u-full-width" id="password" name="password" type="password" />
-                    <input type="button" class="show" onclick="toggleShow();" value="show" />
+                    <input type="button" class="show" onclick="toggle_show();" value="show" />
                 </div>
                 <p><a href="{{ url_for('ph_bp.reset_init') }}">forget your password?</a></p>
                 <input class="u-full-width" type="submit" value="login" onclick="protectedSubmit(this);" />
@@ -26,7 +26,7 @@ input.show {
 }
     </style>
     <script>
-function toggleShow() {
+function toggle_show() {
     var el = document.getElementById("password");
     if (el.type =="password") {
         el.type = "text";

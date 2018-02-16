@@ -16,7 +16,7 @@
     <div class="row">
         <div class="u-full-width rounded output">
             <pre id="output"></pre>
-            <input class="save-as" type="button" onclick="save();" value="save as artifact" />
+            <input class="save-as" type="button" onclick="save_artifact();" value="save as artifact" />
         </div>
     </div>
     <script>
@@ -54,19 +54,17 @@ function info(e) {
     });
 }
 
-function save() {
+function save_artifact() {
     var filename = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].text;
     var content = document.getElementById("output").innerHTML;
     if (confirm("Save as an artifact?") == true) {
         $.ajax({
-            url: "{{ url_for('ph_bp.artifacts_save', method='text') }}",
+            url: "{{ url_for('ph_bp.api_artifacts') }}",
             type: "POST",
-            data: {
-                filename: filename,
-                content: content,
-            },
+            data: "<xml><filename>"+filename+"</filename><content>"+content+"</content></xml>",
+            contentType: 'application/xml',
             success: function(data){
-                show_flash(data.message);
+                show_flash($(data).find("message").text());
             }
         });
     }

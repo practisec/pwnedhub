@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, render_template_string, jsonify, flash, abort, send_file, __version__
+from flask import Blueprint, Response, current_app, request, session, g, redirect, url_for, render_template, render_template_string, jsonify, flash, abort, send_file, __version__
 from sqlalchemy import asc, desc
 from pwnedhub import db
 from models import Mail, Message, Score, Tool, User
@@ -9,6 +9,7 @@ from validators import is_valid_quantity, is_valid_password, is_valid_file
 from service import ToolsInfo
 from datetime import datetime
 from hashlib import md5
+from lxml import etree
 from urllib import urlencode
 import math
 import os
@@ -301,39 +302,24 @@ def artifacts():
         break
     return render_template('artifacts.html', artifacts=artifacts)
 
-@ph_bp.route('/artifacts/save/<string:method>', methods=['POST'])
+@ph_bp.route('/artifacts/save', methods=['POST'])
 @login_required
-def artifacts_save(method):
-    if method == 'file':
-        file = request.files['file']
-        if file:
-            if is_valid_file(file.filename):
-                path = os.path.join(session.get('upload_folder'), file.filename)
-                if not os.path.isfile(path):
-                    try:
-                        file.save(path)
-                    except IOError:
-                        flash('Unable to save the artifact.')
-                else:
-                    flash('An artifact with that name already exists.')
-            else:
-                flash('Invalid file type. Only {} filetypes allowed.'.format(', '.join(current_app.config['ALLOWED_EXTENSIONS'])))
-    elif method == 'text':
-        content = request.form['content']
-        filename = request.form['filename']
-        if all((content, filename)):
-            filename += '-{}.txt'.format(datetime.now().strftime('%s'))
-            msg = 'Artifact created \'{}\'.'.format(filename)
-            path = os.path.join(session.get('upload_folder'), filename)
+def artifacts_save():
+    file = request.files['file']
+    if file:
+        if is_valid_file(file.filename):
+            path = os.path.join(session.get('upload_folder'), file.filename)
             if not os.path.isfile(path):
                 try:
-                    with open(path, 'w') as fp:
-                        fp.write(content)
+                    file.save(path)
                 except IOError:
-                    msg = 'Unable to save as an artifact.'
+                    flash('Unable to save the artifact.')
             else:
-                msg = 'An artifact with that name already exists.'
-            return jsonify(message=msg)
+                flash('An artifact with that name already exists.')
+        else:
+            flash('Invalid file type. Only {} filetypes allowed.'.format(', '.join(current_app.config['ALLOWED_EXTENSIONS'])))
+    else:
+        flash('Invalid request.')
     return redirect(url_for('ph_bp.artifacts'))
 
 @ph_bp.route('/artifacts/delete', methods=['POST'])
@@ -356,6 +342,31 @@ def artifacts_view():
     except IOError:
         flash('Unable to load the artifact.')
     return redirect(url_for('ph_bp.artifacts'))
+
+@ph_bp.route('/api/artifacts', methods=['POST'])
+@login_required
+def api_artifacts():
+    xml = request.data
+    parser = etree.XMLParser()
+    doc = etree.fromstring(str(xml), parser)
+    content = doc.find('content').text
+    filename = doc.find('filename').text
+    if all((content, filename)):
+        filename += '-{}.txt'.format(datetime.now().strftime('%s'))
+        msg = 'Artifact created \'{}\'.'.format(filename)
+        path = os.path.join(session.get('upload_folder'), filename)
+        if not os.path.isfile(path):
+            try:
+                with open(path, 'w') as fp:
+                    fp.write(content)
+            except IOError:
+                msg = 'Unable to save as an artifact.'
+        else:
+            msg = 'An artifact with that name already exists.'
+    else:
+        msg = 'Invalid request.'
+    xml = '<xml><message>{}</message></xml>'.format(msg)
+    return Response(xml, mimetype='application/xml')
 
 @ph_bp.route('/tools')
 @login_required

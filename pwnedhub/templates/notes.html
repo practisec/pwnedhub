@@ -3,12 +3,12 @@
     <div class="row">
         <div class="u-full-width notes">
             <textarea name="notes" id="notes">{{ notes }}</textarea>
-            <input class="save-as" type="button" onclick="save();" value="save as artifact" />
+            <input class="save-as" type="button" onclick="save_artifact();" value="save as artifact" />
         </div>
     </div>
     <script>
 var notes = document.getElementById("notes")
-var key = "{{ g.user.username }}-notes";
+var key = "{{ g.user.username|safe }}-notes";
 
 // register an event to save the notes when focus is lost
 notes.onblur = function() {
@@ -37,21 +37,18 @@ if (localStorage.getItem(key)) {
     // should move most of this logic into the AJAX call's
     // success and error handlers to do it right
 }
-notes.style.visibility = "visible";
 
-function save() {
+function save_artifact() {
     var filename = "Notes";
     var content = notes.innerHTML;
     if (confirm("Save as an artifact?") == true) {
         $.ajax({
-            url: "{{ url_for('ph_bp.artifacts_save', method='text') }}",
+            url: "{{ url_for('ph_bp.api_artifacts') }}",
             type: "POST",
-            data: {
-                filename: filename,
-                content: content,
-            },
+            data: "<xml><filename>"+filename+"</filename><content>"+content+"</content></xml>",
+            contentType: 'application/xml',
             success: function(data){
-                show_flash(data.message);
+                show_flash($(data).find("message").text());
             }
         });
     }
