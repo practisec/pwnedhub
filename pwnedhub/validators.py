@@ -21,7 +21,7 @@ def is_valid_password(password):
 def is_valid_file(filename):
     return any([x for x in current_app.config['ALLOWED_EXTENSIONS'] if '.'+x in filename])
 
-from urlparse import urlparse, urljoin
+from urlparse import urlparse
 
 def is_safe_url(url, origin):
     host = urlparse(origin).netloc
