@@ -160,7 +160,7 @@ var Message = React.createClass({
         return (
             <div style={this.getMessageStyle()}>
                 <p><span className="red">{this.props.message.user}</span></p>
-                <p dangerouslySetInnerHTML={{__html: this.props.message.comment}}></p>
+                <p>{this.props.message.comment}</p>
                 <p>{this.props.message.created}</p>
             </div>
         );
