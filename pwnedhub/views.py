@@ -225,6 +225,7 @@ def mail_delete(id):
         flash('Invalid mail ID.')
     return redirect(url_for('ph_bp.mail'))
 
+# has no XSS, pagination, or user enumeration
 @ph_bp.route('/messages.react')
 @login_required
 def messages_react():
@@ -243,17 +244,17 @@ def api_messages(id=None):
             db.session.commit()
     if request.method == 'DELETE':
         message = Message.query.get(id)
-        if message and message.user == g.user:
+        if message and (message.user == g.user or g.user.is_admin):
             db.session.delete(message)
             db.session.commit()
     messages = []
     # add is_owner field to each message
     for message in Message.query.order_by(Message.created.desc()).all():
-        is_owner = False
-        if message.user == g.user:
-            is_owner = True
+        can_delete = False
+        if message.user == g.user or g.user.is_admin:
+            can_delete = True
         message = message.serialize()
-        message['is_owner'] = is_owner
+        message['is_owner'] = can_delete
         messages.append(message)
     resp = jsonify(messages=messages)
     resp.mimetype = 'text/html'
@@ -286,7 +287,7 @@ def messages_page(page):
 @login_required
 def messages_delete(id):
     message = Message.query.get(id)
-    if message and message.user == g.user:
+    if message and (message.user == g.user or g.user.is_admin):
         db.session.delete(message)
         db.session.commit()
         flash('Message deleted.')

@@ -22,7 +22,7 @@
         <div class="ten columns offset-by-one messages">
         {% if messages|length > 0 %}
         {% for message in messages %}
-        {% if message.user == g.user %}
+        {% if message.user == g.user or g.user.is_admin %}
             <div>
                 <div name="action_{{ message.id }}" class="delete">
                     <a href="{{ url_for('ph_bp.messages_delete', id=message.id) }}">
