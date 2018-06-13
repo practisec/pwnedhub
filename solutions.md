@@ -87,7 +87,7 @@ def profile(uid):
 | Vulnerability | Command Injection (OSCI) using command substitution. |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: `re.sub('[;&|]', '', cmd)` in the `tools_execute` view does not account for command substitution characters. |
-| Remediation | Add the `` `$()`` characters to the blacklist. |
+| Remediation | Add the `` `$()\r\n`` characters to the blacklist. |
 
 | Vulnerability | Command Injection (OSCI) by adding commands via the admin interface and leveraging the tools page. |
 | :-- | :-- |
@@ -157,10 +157,57 @@ def serialize(self):
 | Location | `pwnedhub/views.py`: The `register` view builds `user_dict` from `request.form`. |
 | Remediation | Build the `user_dict` using explicitly named fields rather than trust all incoming parameters. |
 
-| Vulnerability | Stored Cross-Site Scripting (XSS) |
+| Vulnerability | Reflected Cross-Site Scripting (XSS) |
+| :-- | :-- |
+| Location | `pwnedhub/views.py`: The `page_not_found` view appends raw user input to a template string using string formating. |
+| Remediation | Send user input to the template context using the `render_template` function, which will enforce template context encoding. |
+
+```
+return render_template('404.html', message=request.url), 404
+```
+
+| Vulnerability | Stored Cross-Site Scripting (XSS) in the HTML context. |
 | :-- | :-- |
 | Location | `pwnedhub/templates/messages.html`: `|safe` filter used on the `message.comment` string. |
 | Remediation | Remove the `|safe` filter to properly encode for the HTML context. |
+
+| Vulnerability | Stored Cross-Site Scripting (XSS) in a REST web service. |
+| :-- | :-- |
+| Location | `pwnedhub/templates/views.py`: The `api_messages` view sets the response's content type to `text/html`. |
+| Remediation | Set the response's `Content-Type` header to match the content type of the response payload. |
+| Note | This is done correctly by default in Flask and must be explicitely set incorrectly. |
+
+| Vulnerability | Stored Cross-Site Scripting (XSS) in the JavaScript context. |
+| :-- | :-- |
+| Location | `pwnedhub/templates/notes.html`: `g.user.username` string used as the value for a JavaScript variable. |
+| Remediation | Replace the `|safe` filter with a custom filter that properly escapes for the JavaScript context. |
+
+```
+_js_escapes = {
+    ord(u'\\'): u'\\u005C',
+    ord(u'\''): u'\\u0027',
+    ord(u'"'): u'\\u0022',
+    ord(u'>'): u'\\u003E',
+    ord(u'<'): u'\\u003C',
+    ord(u'&'): u'\\u0026',
+    ord(u'='): u'\\u003D',
+    ord(u'-'): u'\\u002D',
+    ord(u';'): u'\\u003B',
+    ord(u'`'): u'\\u0060',
+    ord(u'\u2028'): u'\\u2028',
+    ord(u'\u2029'): u'\\u2029'
+}
+
+# escape every ASCII character with a value less than 32.
+_js_escapes.update((ord(u'%c' % z), u'\\u%04X' % z) for z in range(32))
+
+def escapejs(value):
+    """hex encode characters for use in JavaScript strings."""
+    return unicode(value).translate(_js_escapes)
+
+from utils import escapejs
+app.jinja_env.filters['escapejs'] = escapejs
+```
 
 | Vulnerability | DOM-based Cross-Site Scripting (D-XSS) |
 | :-- | :-- |
@@ -173,15 +220,6 @@ flash.textContent = msg;
 
 # Flask
 flash('Invalid username or password.')
-```
-
-| Vulnerability | Reflected Cross-Site Scripting (XSS) |
-| :-- | :-- |
-| Location | `pwnedhub/views.py`: The `page_not_found` view appends raw user input to a template string using string formating. |
-| Remediation | Send user input to the template context using the `render_template` function, which will enforce template context encoding. |
-
-```
-return render_template('404.html', message=request.url), 404
 ```
 
 | Vulnerability | Cross-Site Request Forgery (CSRF) for privilege escalation. |
@@ -221,6 +259,16 @@ def profile_change():
     ...
 ```
 
+| Vulnerability | Cross-Site Request Forgery (CSRF) of a REST web service. |
+| :-- | :-- |
+| Location | `pwnedhub/templates/views.py`: The `api_messages` view parses JSON from requests with mismatched content types, allowing the request to bypass preflighted CORS checks. |
+| Remediation | Set the JSON parser to only parse requests with the proper JSON content type. |
+| Note | This is done correctly by default in Flask and must be explicitely set incorrectly. |
+
+```
+jsonobj = request.get_json()
+```
+
 | Vulnerability | Method Interchange to simplify CSRF attacks against users' profiles. |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: `method` parameter of the route decorator for the `profile_change` view. |
@@ -229,7 +277,7 @@ def profile_change():
 | Vulnerability | Weak input validation allowing upload of any type of file. |
 | :-- | :-- |
 | Location | `pwnedhub/validators.py`: `is_valid_file` function. |
-| Remediation | Enhance the validator to properly validate the file extension and MIME-typ via magic bytes. |
+| Remediation | Enhance the validator to properly validate the file extension and MIME-type via magic bytes. |
 
 | Vulnerability | Path Traversal to upload files to any writeable location. |
 | :-- | :-- |
@@ -298,25 +346,30 @@ def is_safe_url(url, origin):
     return False
 ```
 
+| Vulnerability | XML External Entity (XXE) processing enabled. |
+| :-- | :-- |
+| Location | `pwnedhub/views.py`: The `api_artifacts` view doesn't explicitely disable DTD processing. |
+| Remediation | Explicitely disable DTD processing by setting the `resolve_entities=False` argument when instantiating the `XMLParser`. |
+
+```
+parser = etree.XMLParser(resolve_entities=False)
+```
+
 ---
 
 ## Authorization
 
-| Vulnerability | Missing function level access control. |
-| :-- | :-- |
-| Location | `pwnedhub/views.py`: Missing decorator for the `admin_users` view. |
-| Remediation | Add the `@roles_required('admin')` decorator to the `admin_users` view. |
-
-| Vulnerability | Insecure Direct Object Reference (IDOR) to escalate/revoke privileges for other users (no self-modification allowed). |
+| Vulnerability | Missing Function Level Access Control (MFLAC) to escalate/revoke other users' privileges (no self-modification allowed). |
 | :-- | :-- |
 | Note | Basic users are redirected and receive a 403 after successful exploitation. |
-| Location | `pwnedhub/views.py`: Missing decorator for the `admin_users` view. |
-| Remediation | Add the `@roles_required('admin')` decorator to the `admin_users` view. |
+| Location | `pwnedhub/views.py`: Missing decorator for the `admin_users_modify` view. |
+| Remediation | Add the `@roles_required('admin')` decorator to the `admin_users_modify` view. |
 
-| Vulnerability | Insecure Direct Object Reference (IDOR) to enable/disable other users' profiles. |
+| Vulnerability | Missing Function Level Access Control (MFLAC) to enable/disable other users' profiles. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: Missing decorator for the `admin_users` view. |
-| Remediation | Add the `@roles_required('admin')` decorator to the `admin_users` view. |
+| Note | Basic users are redirected and receive a 403 after successful exploitation. |
+| Location | `pwnedhub/views.py`: Missing decorator for the `admin_users_modify` view. |
+| Remediation | Add the `@roles_required('admin')` decorator to the `admin_users_modify` view. |
 
 | Vulnerability | Insecure Direct Object Reference (IDOR) to read other users' mail. |
 | :-- | :-- |
@@ -469,10 +522,5 @@ def no_frame(func):
 def profile():
     ...
 ```
-
-| Vulnerability | Weak anti-automation controls. |
-| :-- | :-- |
-| Location | `pwnedhub/views.py`: The `login` view atempts to prevent automated attacks through requiring the client to perform a simple calculation. |
-| Remediation | Implement an account lockout system, CAPTCHA, or network level rate limiting. |
 
 ---
