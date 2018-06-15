@@ -18,8 +18,18 @@ def is_valid_password(password):
         return False
     return True
 
-def is_valid_file(filename):
-    return any([x for x in current_app.config['ALLOWED_EXTENSIONS'] if '.'+x in filename])
+def is_valid_filename(filename):
+    # validate that the filename includes an allowed extension
+    for ext in current_app.config['ALLOWED_EXTENSIONS']:
+        if '.'+ext in filename:
+            return True
+    return False
+
+def is_valid_mimetype(mimetype):
+    # validate that the mimetype is allowed
+    if mimetype in current_app.config['ALLOWED_MIMETYPES']:
+        return True
+    return False
 
 from urlparse import urlparse
 

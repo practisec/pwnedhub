@@ -8,7 +8,8 @@ class BaseConfig(object):
     SECRET_KEY = 'development key'
     PW_ENC_KEY = 'sekrit'
     UPLOAD_FOLDER = '/tmp/artifacts'
-    ALLOWED_EXTENSIONS = set(['txt', 'xml', 'jpg', 'png', 'gif'])
+    ALLOWED_EXTENSIONS = set(['txt', 'xml', 'jpg', 'png', 'gif', 'pdf'])
+    ALLOWED_MIMETYPES = set(['text/plain', 'application/xml', 'image/jpeg', 'image/png', 'image/gif', 'application/pdf'])
     SESSION_COOKIE_HTTPONLY = False
     PERMANENT_SESSION_LIFETIME = 3600 # 1 hour
     SQLALCHEMY_TRACK_MODIFICATIONS = False

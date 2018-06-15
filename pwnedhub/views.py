@@ -5,7 +5,7 @@ from models import Mail, Message, Score, Tool, User
 from constants import QUESTIONS, DEFAULT_NOTE
 from decorators import login_required, roles_required
 from utils import xor_encrypt, detect_user_agent
-from validators import is_valid_quantity, is_valid_password, is_valid_file
+from validators import is_valid_quantity, is_valid_password, is_valid_filename, is_valid_mimetype
 from service import ToolsInfo
 from datetime import datetime
 from hashlib import md5
@@ -299,7 +299,7 @@ def messages_delete(id):
 @login_required
 def artifacts():
     for (dirpath, dirnames, filenames) in os.walk(session.get('upload_folder')):
-        artifacts = [f for f in filenames if is_valid_file(f)]
+        artifacts = [f for f in filenames if is_valid_filename(f)]
         break
     return render_template('artifacts.html', artifacts=artifacts)
 
@@ -308,17 +308,20 @@ def artifacts():
 def artifacts_save():
     file = request.files['file']
     if file:
-        if is_valid_file(file.filename):
-            path = os.path.join(session.get('upload_folder'), file.filename)
-            if not os.path.isfile(path):
-                try:
-                    file.save(path)
-                except IOError:
-                    flash('Unable to save the artifact.')
+        if is_valid_filename(file.filename):
+            if is_valid_mimetype(file.mimetype):
+                path = os.path.join(session.get('upload_folder'), file.filename)
+                if not os.path.isfile(path):
+                    try:
+                        file.save(path)
+                    except IOError:
+                        flash('Unable to save the artifact.')
+                else:
+                    flash('An artifact with that name already exists.')
             else:
-                flash('An artifact with that name already exists.')
+                flash('Invalid file type. Only {} types allowed.'.format(', '.join(current_app.config['ALLOWED_MIMETYPES'])))
         else:
-            flash('Invalid file type. Only {} filetypes allowed.'.format(', '.join(current_app.config['ALLOWED_EXTENSIONS'])))
+            flash('Invalid file extension. Only {} extensions allowed.'.format(', '.join(current_app.config['ALLOWED_EXTENSIONS'])))
     else:
         flash('Invalid request.')
     return redirect(url_for('ph_bp.artifacts'))

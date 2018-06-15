@@ -274,10 +274,10 @@ jsonobj = request.get_json()
 | Location | `pwnedhub/views.py`: `method` parameter of the route decorator for the `profile_change` view. |
 | Remediation | Remove `GET` from the list of allowed methods on the route decorator. |
 
-| Vulnerability | Weak input validation allowing upload of any type of file. |
+| Vulnerability | Arbitrary file upload. |
 | :-- | :-- |
-| Location | `pwnedhub/validators.py`: `is_valid_file` function. |
-| Remediation | Enhance the validator to properly validate the file extension and MIME-type via magic bytes. |
+| Location | `pwnedhub/validators.py`: `is_valid_filename` function.<br>`pwnedhub/views.py`: `is_valid_mimetype` function call from the `artifacts_save` view. |
+| Remediation | Enhance the validator to properly validate the file extension, and validate the MIME-type via the file content's magic bytes rather than the untrusted `Content-Type` header. |
 
 | Vulnerability | Path Traversal to upload files to any writeable location. |
 | :-- | :-- |
