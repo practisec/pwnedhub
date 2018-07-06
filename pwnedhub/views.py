@@ -4,7 +4,7 @@ from pwnedhub import db
 from models import Mail, Message, Score, Tool, User
 from constants import QUESTIONS, DEFAULT_NOTE
 from decorators import login_required, roles_required
-from utils import xor_encrypt, detect_user_agent
+from utils import xor_encrypt, detect_user_agent, unfurl
 from validators import is_valid_quantity, is_valid_password, is_valid_filename, is_valid_mimetype
 from service import ToolsInfo
 from datetime import datetime
@@ -294,6 +294,22 @@ def messages_delete(id):
     else:
         flash('Invalid message ID.')
     return redirect(url_for('ph_bp.messages'))
+
+@ph_bp.route('/api/unfurl')
+def api_unfurl():
+    uri = request.args.get('uri')
+    headers = {'User-Agent': request.headers.get('User-Agent')}
+    if uri:
+        try:
+            data = unfurl(uri, headers)
+            status = 200
+        except Exception as e:
+            data = {'error': 'UnfurlError', 'message': str(e)}
+            status = 500
+    else:
+        data = {'error': 'RequestError', 'message': 'Invalid request.'}
+        status = 400
+    return jsonify(unfurl=data), status
 
 @ph_bp.route('/artifacts')
 @login_required

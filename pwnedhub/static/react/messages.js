@@ -159,9 +159,9 @@ var Message = React.createClass({
     render() {
         return (
             <div style={this.getMessageStyle()}>
-                <p><span className="red">{this.props.message.user}</span></p>
-                <p>{this.props.message.comment}</p>
-                <p>{this.props.message.created}</p>
+                <p className="name"><span className="red">{this.props.message.user}</span></p>
+                <p className="message">{this.props.message.comment}</p>
+                <p className="timestamp">{this.props.message.created}</p>
             </div>
         );
     }

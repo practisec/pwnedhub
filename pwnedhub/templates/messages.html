@@ -31,9 +31,10 @@
                 </div>
         {% endif %}
                 <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
-                    <p><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
-                    <p>{{ message.comment|safe }}</p>
-                    <p>{{ message.created_as_string }}</p>
+                    <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
+                    <p class="message">{{ message.comment|safe }}</p>
+                    <div class="unfurl"></div>
+                    <p class="timestamp">{{ message.created_as_string }}</p>
                 </div>
         {% if message.user == g.user %}
             </div>
@@ -57,5 +58,59 @@
         {% endif %}
         </div>
     </div>
+    <script>
+function buildUnfurl(uri, data) {
+    // build array of values in specific order
+    var values = [];
+    var keys = ["site_name", "title", "description"];
+    for (var k in keys) {
+        if (data.unfurl[keys[k]] !== null) {
+            values.push(data.unfurl[keys[k]]);
+        }
+    }
+    // return nothing if there are no values
+    if (values.length === 0) {
+        return '';
+    }
+    // create unfurl content
+    var p = document.createElement("p");
+    p.textContent = values.join(" | ");
+    // create unfurl link (root)
+    var a = document.createElement("a");
+    a.href = uri;
+    // append content to link
+    a.append(p);
+    // return the root element
+    return a;
+}
+
+var messages = document.getElementsByClassName("message");
+var pattern = /\w+:(\/?\/?)[^\s]+/gi;
+for (var i = 0; i < messages.length; i++) {
+    var content = messages[i].innerHTML;
+    matches = content.match(pattern);
+    if (matches !== null) {
+        for (var x = 0; x < matches.length; x++) {
+            var uri = matches[x];
+            // closure required to localize parameters
+            (function(i, uri) {
+                $.ajax({
+                    url: "{{ url_for('ph_bp.api_unfurl') }}",
+                    type: "GET",
+                    data: {uri: uri},
+                    success: function(data){
+                        var content = buildUnfurl(uri, data);
+                        // append content to unfurl div
+                        messages[i].nextElementSibling.append(content);
+                    },
+                    error: function(xhr) {
+                        //console.log(xhr);
+                    }
+                });
+            })(i, uri);
+        }
+    }
+}
+    </script>
 {% endif %}
 {% endblock %}

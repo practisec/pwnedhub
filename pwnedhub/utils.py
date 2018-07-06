@@ -19,6 +19,27 @@ import os
 def get_token(n=40):
     return binascii.hexlify(os.urandom(n))
 
+from lxml import etree
+import urllib2
+
+def unfurl(uri, headers={}):
+    # request resource
+    request = urllib2.Request(uri, headers=headers)
+    content = urllib2.urlopen(request).read()
+    # parse meta tags
+    html = etree.HTML(content)
+    data = {}
+    for kw in ('site_name', 'title', 'description'):
+        # standard
+        prop = kw
+        values = html.xpath('//meta[@property=\'{}\']/@content'.format(prop))
+        data[kw] = ' '.join(values) or None
+        # OpenGraph
+        prop = 'og:{}'.format(kw)
+        values = html.xpath('//meta[@property=\'{}\']/@content'.format(prop))
+        data[kw] = ' '.join(values) or None
+    return data
+
 # borrowed from Django and modified to work in Python 2
 
 _js_escapes = {
