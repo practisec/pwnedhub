@@ -77,7 +77,7 @@ def profile(uid):
 
 | Vulnerability | Possible usernames in static content. |
 | :-- | :-- |
-| Location | `pwnedhub/templates/about.html`: Paragragh with nicknames. |
+| Location | `pwnedhub/templates/about.html`: Paragraph with nicknames. |
 | Remediation | Remove sensitive information from public access. |
 
 ---
@@ -127,7 +127,7 @@ user = User.get_by_username(request.form['username'])
 
 | Vulnerability | Blind SQL Injection (SQLi) for data extraction via SOAP web service (integer type). |
 | :-- | :-- |
-| Note | Discoverable and exploitable from an unathenticated perspective. |
+| Note | Discoverable and exploitable from an unauthenticated perspective. |
 | Location | `pwnedhub/views.py`: The `info` view builds a raw query with raw user input via string formatting/concatenation. |
 | Remediation | Use the ORM as intended, prepared statements/parameterized queries, or validate input to prevent malicious characters. |
 
@@ -175,7 +175,7 @@ return render_template('404.html', message=request.url), 404
 | :-- | :-- |
 | Location | `pwnedhub/templates/views.py`: The `api_messages` view sets the response's content type to `text/html`. |
 | Remediation | Set the response's `Content-Type` header to match the content type of the response payload. |
-| Note | This is done correctly by default in Flask and must be explicitely set incorrectly. |
+| Note | This is done correctly by default in Flask and must be explicitly set incorrectly. |
 
 | Vulnerability | Stored Cross-Site Scripting (XSS) in the JavaScript context. |
 | :-- | :-- |
@@ -212,7 +212,7 @@ app.jinja_env.filters['escapejs'] = escapejs
 | Vulnerability | DOM-based Cross-Site Scripting (D-XSS) |
 | :-- | :-- |
 | Location | `static/common.js`: Value of the `error` parameter parsed from `document.URL` and dynamically added to the page. |
-| Remediation | Use the builtin `flash` function from Flask, populate the DOM using safe JavaScript functions or properties, or properly encode the output on the client-side. |
+| Remediation | Use the built-in `flash` function from Flask, populate the DOM using safe JavaScript functions or properties, or properly encode the output on the client-side. |
 
 ```
 // JavaScript
@@ -226,7 +226,7 @@ flash('Invalid username or password.')
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: Lack of CSRF protection for the `admin_users` view. |
 | Remediation | Implement anti-CSRF controls on the `admin_users` view. |
-| Note | Requires rearchitecting the `admin_users` view to use `POST`, or passing the token as a header that must be processed and returned by the client. |
+| Note | Requires refactoring the `admin_users` view to use `POST`, or passing the token as a header that must be processed and returned by the client. |
 
 | Vulnerability | Cross-Site Request Forgery (CSRF) for lateral authorization bypass. |
 | :-- | :-- |
@@ -263,7 +263,7 @@ def profile_change():
 | :-- | :-- |
 | Location | `pwnedhub/templates/views.py`: The `api_messages` view parses JSON from requests with mismatched content types, allowing the request to bypass preflighted CORS checks. |
 | Remediation | Set the JSON parser to only parse requests with the proper JSON content type. |
-| Note | This is done correctly by default in Flask and must be explicitely set incorrectly. |
+| Note | This is done correctly by default in Flask and must be explicitly set incorrectly. |
 
 ```
 jsonobj = request.get_json()
@@ -279,7 +279,7 @@ jsonobj = request.get_json()
 | Location | `pwnedhub/validators.py`: `is_valid_filename` function.<br>`pwnedhub/views.py`: `is_valid_mimetype` function call from the `artifacts_save` view. |
 | Remediation | Enhance the validator to properly validate the file extension, and validate the MIME-type via the file content's magic bytes rather than the untrusted `Content-Type` header. |
 
-| Vulnerability | Path Traversal to upload files to any writeable location. |
+| Vulnerability | Path Traversal to upload files to any writable location. |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `os.path.join` function in the `artifacts_save` view allows for path traversal. |
 | Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or validate input to prevent malicious characters. |
@@ -315,7 +315,7 @@ if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
 | Vulnerability | Weak input validation allowing arbitrary access to the operating system. |
 | :-- | :-- |
 | Location | `pwnedhub/views.py`: The `admin_tools_add` view doesn't limit the commands available for configuration. |
-| Remediation | Apply a whiltelist filter of eligible commands. |
+| Remediation | Apply a whitelist filter of eligible commands. |
 
 | Vulnerability | Open Redirect |
 | :-- | :-- |
@@ -348,12 +348,17 @@ def is_safe_url(url, origin):
 
 | Vulnerability | XML External Entity (XXE) processing enabled. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `api_artifacts` view doesn't explicitely disable DTD processing. |
-| Remediation | Explicitely disable DTD processing by setting the `resolve_entities=False` argument when instantiating the `XMLParser`. |
+| Location | `pwnedhub/views.py`: The `api_artifacts` view doesn't explicitly disable DTD processing. |
+| Remediation | Explicitly disable DTD processing by setting the `resolve_entities=False` argument when instantiating the `XMLParser`. |
 
 ```
 parser = etree.XMLParser(resolve_entities=False)
 ```
+
+| Vulnerability | Server-Side Request Forgery (SSRF). |
+| :-- | :-- |
+| Location | `pwnedhub/views.py`: The `api_unfurl` view doesn't validate the provided `uri` as safe to unfurl. |
+| Remediation | On the Application layer, disallow non-HTTP protocol handlers, disable redirects, and validate the provided `uri` to prevent the use of RFC 1918 addresses. Resolve hostnames to dot-decimal notation IP addresses prior to validation. Ensure that inconsistencies between URL parsers, DNS checkers, and URL requesters don't allow for the injection of CR-LF characters. On the Network layer, restrict inbound traffic from the server. |
 
 ---
 
@@ -402,7 +407,7 @@ if mail and mail.receiver == g.user:
 
 ## Data Storage
 
-| Vulnerability | Passwords stored in plain text or reversable form. |
+| Vulnerability | Passwords stored in plain text or reversible form. |
 | :-- | :-- |
 | Location | `pwnedhub/templates/profile.html`: `password` field contains the password. |
 | Remediation | Modify the `User` model to use an Adaptive Hashing algorithm (e.g. bcrypt) as opposed to encryption (XOR). |
@@ -428,7 +433,7 @@ if mail and mail.receiver == g.user:
 | Remediation | Enhance the validator to enforce something more than a minimum length of 1 character. |
 
 ```
-# 1 upper, 1 lower, 1 special, 1 number, minimim 10 chars
+# 1 upper, 1 lower, 1 special, 1 number, minimum 10 chars
 PASSWORD_REGEX = r'(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*\(\)]).{10,}'
 # 15 more more characters
 PASSWORD_REGEX = r'.{15,}'
@@ -436,7 +441,7 @@ PASSWORD_REGEX = r'.{15,}'
 
 | Vulnerability | Users permitted to use words related to the application in their passwords. |
 | :-- | :-- |
-| Location | `pwnedhub/templates/about.html`: Paragragh with nicknames. |
+| Location | `pwnedhub/templates/about.html`: Paragraph with nicknames. |
 | Remediation | Prevent users from using words related to the application in their passwords. |
 
 ```
