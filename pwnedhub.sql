@@ -72,7 +72,7 @@ CREATE TABLE `messages` (
 
 LOCK TABLES `messages` WRITE;
 /*!40000 ALTER TABLE `messages` DISABLE KEYS */;
-INSERT INTO `messages` VALUES (1,'2015-10-28 04:55:11','Hey, did you guys hear that we\'re having a security assessment this week?',3),(2,'2015-10-28 04:55:19','No.',4),(3,'2015-10-28 04:56:09','First I\'m hearing of it. I hope they don\'t find any bugs. This is my \"get rich quick\" scheme.',2),(4,'2015-10-28 04:57:02','Heh. Me too. So looking forward to afternoons on my yacht. :-)',3),(5,'2015-10-28 04:57:32','So, yeah, did any of you guys fix those things I found during peer review?',3),(6,'2015-10-28 04:57:37','No.',4),(7,'2015-10-28 04:57:41','Nope.',2),(8,'2015-10-28 04:57:46','Uh oh...',3);
+INSERT INTO `messages` VALUES (1,'2015-10-28 04:55:11','Hey, did you guys hear that we\'re having a security assessment this week?',3),(2,'2015-10-28 04:55:19','No.',4),(3,'2015-10-28 04:56:09','First I\'m hearing of it. I hope they don\'t find any bugs. This is my \"get rich quick\" scheme.',2),(4,'2015-10-28 04:57:02','Heh. Me too. So looking forward to afternoons on my yacht. :-)',3),(5,'2015-10-28 04:57:32','So, yeah, did any of you guys fix those things I found during peer review? I posted them in the slack channel. https://www.slack.com',3),(6,'2015-10-28 04:57:37','No.',4),(7,'2015-10-28 04:57:41','Nope.',2),(8,'2015-10-28 04:57:46','Uh oh...',3);
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
