@@ -322,7 +322,7 @@ def artifacts():
 @ph_bp.route('/artifacts/save', methods=['POST'])
 @login_required
 def artifacts_save():
-    file = request.files['file']
+    file = request.files.get('file')
     if file:
         if is_valid_filename(file.filename):
             if is_valid_mimetype(file.mimetype):
