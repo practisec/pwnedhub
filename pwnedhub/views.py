@@ -538,14 +538,13 @@ def reset_password():
 
 @ph_bp.app_errorhandler(404)
 def page_not_found(e):
-    template = '''{%% extends "layout.html" %%}
-{%% block body %%}
+    template = '''{% extends "layout.html" %}
+{% block body %}
     <div class="center-content error">
         <h1>Oops! That page doesn't exist.</h1>
-        <h3>%s</h3>
+        <h3>'''+request.url+'''</h3>
     </div>
-{%% endblock %%}
-''' % (request.url)
+{% endblock %}'''
     return render_template_string(template), 404
 
 @ph_bp.app_errorhandler(500)
