@@ -318,17 +318,6 @@ def tools():
     tools = Tool.query.all()
     return render_template('tools.html', tools=tools)
 
-@core.route('/tools/info', methods=['POST'])
-@login_required
-def tools_info():
-    query = "SELECT * FROM tools WHERE id={}"
-    tid = request.form['tid']
-    try:
-        tools = db.session.execute(query.format(tid))
-    except:
-        tools = ()
-    return jsonify(tools=[dict(t) for t in tools])
-
 @core.route('/tools/execute', methods=['POST'])
 @login_required
 def tools_execute():

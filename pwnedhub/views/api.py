@@ -36,6 +36,17 @@ def artifacts():
     xml = '<xml><message>{}</message></xml>'.format(msg)
     return Response(xml, mimetype='application/xml')
 
+# get specific tool information (JSON)
+@api.route('/tools/<string:tid>')
+@login_required
+def tools(tid):
+    query = "SELECT * FROM tools WHERE id={}"
+    try:
+        tools = db.session.execute(query.format(tid))
+    except:
+        tools = ()
+    return jsonify(tools=[dict(t) for t in tools])
+
 # get, create or delete messages (JSON)
 @api.route('/messages', methods=['GET', 'POST'])
 @api.route('/messages/<int:mid>', methods=['DELETE'])

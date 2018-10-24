@@ -42,11 +42,7 @@ function info(e) {
     var tid = e.options[e.selectedIndex].value;
     // get the description
     $.ajax({
-        url: "{{ url_for('core.tools_info') }}",
-        type: "POST",
-        data: {
-            tid: tid,
-        },
+        url: "{{ url_for('api.tools', tid='') }}" + tid,
         success: function(data){
             // update the textarea with the description
             document.getElementById("output").innerHTML = data.tools[0].description;

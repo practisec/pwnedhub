@@ -133,7 +133,7 @@ user = User.get_by_username(request.form['username'])
 
 | Vulnerability | Blind SQL Injection (SQLi) for data extraction (integer type). |
 | :-- | :-- |
-| Location | `pwnedhub/views/core.py`: The `tools_info` view builds a raw query with raw user input via string formatting/concatenation. |
+| Location | `pwnedhub/views/api.py`: The `tools` view builds a raw query with raw user input via string formatting/concatenation. |
 | Remediation | Use the ORM as intended, prepared statements/parameterized queries, or validate input to prevent malicious characters. |
 
 ```
