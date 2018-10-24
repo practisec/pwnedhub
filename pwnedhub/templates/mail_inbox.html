@@ -2,7 +2,7 @@
 {% block body %}
     <div class="row">
         <div class="ten columns offset-by-one">
-            <input type="button" onclick="window.location='{{ url_for('ph_bp.mail_compose') }}'" value="compose" />
+            <input type="button" onclick="window.location='{{ url_for('core.mail_compose') }}'" value="compose" />
             <div class="inbox">
                 <table class="u-full-width center">
                     <thead>
@@ -16,9 +16,9 @@
                             <td class="left-content">{{ item.subject }}</td>
                             <td>{{ item.created_as_string }}</td>
                             <td>
-                                <input name="action_{{ item.id }}" type="button" value="view" onclick="window.location='{{ url_for('ph_bp.mail_view', id=item.id) }}'" />
-                                <input name="action_{{ item.id }}" type="button" value="reply" onclick="window.location='{{ url_for('ph_bp.mail_reply', id=item.id) }}'" />
-                                <input name="action_{{ item.id }}" type="button" value="delete" onclick="window.location='{{ url_for('ph_bp.mail_delete', id=item.id) }}'" />
+                                <input name="action_{{ item.id }}" type="button" value="view" onclick="window.location='{{ url_for('core.mail_view', id=item.id) }}'" />
+                                <input name="action_{{ item.id }}" type="button" value="reply" onclick="window.location='{{ url_for('core.mail_reply', id=item.id) }}'" />
+                                <input name="action_{{ item.id }}" type="button" value="delete" onclick="window.location='{{ url_for('core.mail_delete', id=item.id) }}'" />
                             </td>
                         </tr>
                     {% endfor %}

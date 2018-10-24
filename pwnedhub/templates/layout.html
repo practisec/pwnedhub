@@ -16,41 +16,41 @@
             <div class="row">
                 <div class="u-full-width header">
                     <div class="brand">
-                        <a href="{{ url_for('ph_bp.index') }}">Pwned<span class="red"><b>Hub</b></span></a>
+                        <a href="{{ url_for('core.index') }}">Pwned<span class="red"><b>Hub</b></span></a>
                     </div>
                     <div class="nav">
                         <ul>
                         {% if g.user %}
                             <li><a href="#">testing</a>
                                 <ul class="rounded shaded">
-                                    <li><a href="{{ url_for('ph_bp.notes') }}">notes</a></li>
-                                    <li><a href="{{ url_for('ph_bp.artifacts') }}">artifacts</a></li>
-                                    <li><a href="{{ url_for('ph_bp.tools') }}">tools</a></li>
+                                    <li><a href="{{ url_for('core.notes') }}">notes</a></li>
+                                    <li><a href="{{ url_for('core.artifacts') }}">artifacts</a></li>
+                                    <li><a href="{{ url_for('core.tools') }}">tools</a></li>
                                 </ul>
                             </li>
                             <li><a href="#">collaboration</a>
                                 <ul class="rounded shaded">
-                                    <li><a href="{{ url_for('ph_bp.mail') }}">mail</a></li>
-                                    <li><a href="{{ url_for('ph_bp.messages') }}">messages</a></li>
+                                    <li><a href="{{ url_for('core.mail') }}">mail</a></li>
+                                    <li><a href="{{ url_for('core.messages') }}">messages</a></li>
                                 </ul>
                             </li>
                         {% if g.user.is_admin %}
                             <li><a href="#">admin</a>
                                 <ul class="rounded shaded">
-                                    <li><a href="{{ url_for('ph_bp.admin_tools') }}">tools</a></li>
-                                    <li><a href="{{ url_for('ph_bp.admin_users') }}">users</a></li>
+                                    <li><a href="{{ url_for('core.admin_tools') }}">tools</a></li>
+                                    <li><a href="{{ url_for('core.admin_users') }}">users</a></li>
                                 </ul>
                             </li>
                         {% endif %}
                             <li class="user"><a href="#">{{ g.user.name }}</a>
                                 <ul class="rounded shaded">
-                                    <li><a href="{{ url_for('ph_bp.profile') }}">profile</a></li>
-                                    <li><a href="{{ url_for('ph_bp.logout') }}">logout</a></li>
+                                    <li><a href="{{ url_for('core.profile') }}">profile</a></li>
+                                    <li><a href="{{ url_for('auth.logout') }}">logout</a></li>
                                 </ul>
                             </li>
                         {% else %}
-                            <li><a href="{{ url_for('ph_bp.register') }}">register</a></li>
-                            <li><a href="{{ url_for('ph_bp.login') }}">log in</a></li>
+                            <li><a href="{{ url_for('auth.register') }}">register</a></li>
+                            <li><a href="{{ url_for('auth.login') }}">log in</a></li>
                         {% endif %}
                         </ul>
                     </div>
@@ -69,9 +69,9 @@
         <div class="container">
             <div class="row">
                 <div class="footer center-content">
-                    <a href="{{ url_for('ph_bp.index') }}">home</a>
+                    <a href="{{ url_for('core.index') }}">home</a>
                     |
-                    <a href="{{ url_for('ph_bp.about') }}">about</a><br>
+                    <a href="{{ url_for('core.about') }}">about</a><br>
                     &copy; {{ date.year }} PwnedHub. All rights reserved.
                 </div>
             </div>

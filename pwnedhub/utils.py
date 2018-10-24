@@ -16,7 +16,7 @@ def get_token(n=40):
 from lxml import etree
 import urllib2
 
-def unfurl(uri, headers={}):
+def unfurl_uri(uri, headers={}):
     # request resource
     request = urllib2.Request(uri, headers=headers)
     content = urllib2.urlopen(request).read()

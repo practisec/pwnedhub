@@ -23,8 +23,14 @@ def create_app(config='Development'):
     # used in the layout to keep the current year
     app.jinja_env.globals['date'] = datetime.now()
 
-    from views import ph_bp
-    app.register_blueprint(ph_bp)
+    from views.core import core
+    from views.auth import auth
+    from views.api import api
+    app.register_blueprint(core)
+    app.register_blueprint(auth)
+    app.register_blueprint(api)
+
+    from views.service import ToolsInfo
 
     return app
 

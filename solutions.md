@@ -67,13 +67,13 @@ def profile(uid):
 
 | Vulnerability | Verbose error reporting. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `internal_error` view provides verbose output for 500 server error conditions. |
+| Location | `pwnedhub/views/core.py`: The `internal_error` view provides verbose output for 500 server error conditions. |
 | Remediation | Remove this functionality and only debug in the development environment. |
 
 | Vulnerability | Verbose response headers. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: Result of the `add_header` view. |
-| Remediation | Remove the declaration within the `add_header` function. |
+| Location | `pwnedhub/views.py`: Result of the `core.add_header` function. |
+| Remediation | Remove the declaration within the `core.add_header` function. |
 
 | Vulnerability | Possible usernames in static content. |
 | :-- | :-- |
@@ -86,17 +86,17 @@ def profile(uid):
 
 | Vulnerability | Command Injection (OSCI) using command substitution. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: `re.sub('[;&|]', '', cmd)` in the `tools_execute` view does not account for command substitution characters. |
+| Location | `pwnedhub/views/core.py`: `re.sub('[;&|]', '', cmd)` in the `tools_execute` view does not account for command substitution characters. |
 | Remediation | Add the `` `$()\r\n`` characters to the blacklist. |
 
 | Vulnerability | Command Injection (OSCI) by adding commands via the admin interface and leveraging the tools page. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: Result of the `admin_tools` view. |
+| Location | `pwnedhub/views/core.py`: Result of the `admin_tools` view. |
 | Remediation | Restrict which tools administrators can add to the application. |
 
 | Vulnerability | Server-Side Template Injection (SSTI) |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `page_not_found` view appends raw user input to a template string using string formating. |
+| Location | `pwnedhub/views/core.py`: The `page_not_found` view appends raw user input to a template string using string formating. |
 | Remediation | Send user input to the template context using the `render_template` function, which doesn't process input as raw template code. |
 
 ```
@@ -105,7 +105,7 @@ return render_template('404.html', message=request.url), 404
 
 | Vulnerability | SQL Injection (SQLi) for authentication bypass. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: Raw query built with user input via string formatting/concatenation in the `login` view. |
+| Location | `pwnedhub/views/auth.py`: Raw query built with user input via string formatting/concatenation in the `login` view. |
 | Remediation | Use the ORM as intended, or prepared statements/parameterized queries. |
 
 ```
@@ -118,7 +118,7 @@ return render_template('404.html', message=request.url), 404
 
 | Vulnerability | Blind SQL Injection (SQLi) for data extraction (string type). |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `reset_init` view builds a raw query with raw user input via string formatting/concatenation. |
+| Location | `pwnedhub/views/auth.py`: The `reset_init` view builds a raw query with raw user input via string formatting/concatenation. |
 | Remediation | Use the ORM as intended, prepared statements/parameterized queries, or validate input to prevent malicious characters. |
 
 ```
@@ -128,12 +128,12 @@ user = User.get_by_username(request.form['username'])
 | Vulnerability | Blind SQL Injection (SQLi) for data extraction via SOAP web service (integer type). |
 | :-- | :-- |
 | Note | Discoverable and exploitable from an unauthenticated perspective. |
-| Location | `pwnedhub/views.py`: The `info` view builds a raw query with raw user input via string formatting/concatenation. |
+| Location | `pwnedhub/views/service.py`: The `ToolsInfo` operation builds a raw query with raw user input via string formatting/concatenation. |
 | Remediation | Use the ORM as intended, prepared statements/parameterized queries, or validate input to prevent malicious characters. |
 
 | Vulnerability | Blind SQL Injection (SQLi) for data extraction (integer type). |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `tools_info` view builds a raw query with raw user input via string formatting/concatenation. |
+| Location | `pwnedhub/views/core.py`: The `tools_info` view builds a raw query with raw user input via string formatting/concatenation. |
 | Remediation | Use the ORM as intended, prepared statements/parameterized queries, or validate input to prevent malicious characters. |
 
 ```
@@ -154,12 +154,12 @@ def serialize(self):
 
 | Vulnerability | Mass Assignment to set the role of the registered user. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `register` view builds `user_dict` from `request.form`. |
+| Location | `pwnedhub/views/auth.py`: The `register` view builds `user_dict` from `request.form`. |
 | Remediation | Build the `user_dict` using explicitly named fields rather than trust all incoming parameters. |
 
 | Vulnerability | Reflected Cross-Site Scripting (XSS) |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `page_not_found` view appends raw user input to a template string using string formating. |
+| Location | `pwnedhub/views/core.py`: The `page_not_found` view appends raw user input to a template string using string formating. |
 | Remediation | Send user input to the template context using the `render_template` function, which will enforce template context encoding. |
 
 ```
@@ -173,7 +173,7 @@ return render_template('404.html', message=request.url), 404
 
 | Vulnerability | Stored Cross-Site Scripting (XSS) in a REST web service. |
 | :-- | :-- |
-| Location | `pwnedhub/templates/views.py`: The `api_messages` view sets the response's content type to `text/html`. |
+| Location | `pwnedhub/views/api.py`: The `messages` view sets the response's content type to `text/html`. |
 | Remediation | Set the response's `Content-Type` header to match the content type of the response payload. |
 | Note | This is done correctly by default in Flask and must be explicitly set incorrectly. |
 
@@ -224,13 +224,13 @@ flash('Invalid username or password.')
 
 | Vulnerability | Cross-Site Request Forgery (CSRF) for privilege escalation. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: Lack of CSRF protection for the `admin_users` view. |
+| Location | `pwnedhub/views/core.py`: Lack of CSRF protection for the `admin_users` view. |
 | Remediation | Implement anti-CSRF controls on the `admin_users` view. |
 | Note | Requires refactoring the `admin_users` view to use `POST`, or passing the token as a header that must be processed and returned by the client. |
 
 | Vulnerability | Cross-Site Request Forgery (CSRF) for lateral authorization bypass. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: Lack of CSRF protection for the `profile_change` view. |
+| Location | `pwnedhub/views/core.py`: Lack of CSRF protection for the `profile_change` view. |
 | Remediation | Implement anti-CSRF controls on the `profile_change` view. |
 
 ```
@@ -261,7 +261,7 @@ def profile_change():
 
 | Vulnerability | Cross-Site Request Forgery (CSRF) of a REST web service. |
 | :-- | :-- |
-| Location | `pwnedhub/templates/views.py`: The `api_messages` view parses JSON from requests with mismatched content types, allowing the request to bypass preflighted CORS checks. |
+| Location | `pwnedhub/views/api.py`: The `messages` view parses JSON from requests with mismatched content types, allowing the request to bypass preflighted CORS checks. |
 | Remediation | Set the JSON parser to only parse requests with the proper JSON content type. |
 | Note | This is done correctly by default in Flask and must be explicitly set incorrectly. |
 
@@ -271,17 +271,17 @@ jsonobj = request.get_json()
 
 | Vulnerability | Method Interchange to simplify CSRF attacks against users' profiles. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: `method` parameter of the route decorator for the `profile_change` view. |
+| Location | `pwnedhub/views/core.py`: `method` parameter of the route decorator for the `profile_change` view. |
 | Remediation | Remove `GET` from the list of allowed methods on the route decorator. |
 
 | Vulnerability | Arbitrary file upload. |
 | :-- | :-- |
-| Location | `pwnedhub/validators.py`: `is_valid_filename` function.<br>`pwnedhub/views.py`: `is_valid_mimetype` function call from the `artifacts_save` view. |
+| Location | `pwnedhub/validators.py`: `is_valid_filename` function.<br>`pwnedhub/views/core.py`: `is_valid_mimetype` function call from the `artifacts_save` view. |
 | Remediation | Enhance the validator to properly validate the file extension, and validate the MIME-type via the file content's magic bytes rather than the untrusted `Content-Type` header. |
 
 | Vulnerability | Path Traversal to upload files to any writable location. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `os.path.join` function in the `artifacts_save` view allows for path traversal. |
+| Location | `pwnedhub/views/core.py`: The `os.path.join` function in the `artifacts_save` view allows for path traversal. |
 | Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or validate input to prevent malicious characters. |
 
 ```
@@ -292,7 +292,7 @@ if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
 
 | Vulnerability | Path Traversal to delete arbitrary files. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `os.path.join` function in the `artifacts_delete` view allows for path traversal. |
+| Location | `pwnedhub/views/core.py`: The `os.path.join` function in the `artifacts_delete` view allows for path traversal. |
 | Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or validate input to prevent malicious characters. |
 
 ```
@@ -303,7 +303,7 @@ if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
 
 | Vulnerability | Path Traversal to read arbitrary files. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `os.path.join` function in the `artifacts_view` view allows for path traversal. |
+| Location | `pwnedhub/views/core.py`: The `os.path.join` function in the `artifacts_view` view allows for path traversal. |
 | Remediation | Use the `os.path.abspath` function to validate the final calculated path, create an indirect mapping for all files, or validate input to prevent malicious characters. |
 
 ```
@@ -314,12 +314,12 @@ if os.path.abspath(unsafe_path).startswith(session.get('upload_folder')):
 
 | Vulnerability | Weak input validation allowing arbitrary access to the operating system. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `admin_tools_add` view doesn't limit the commands available for configuration. |
+| Location | `pwnedhub/views/core.py`: The `admin_tools_add` view doesn't limit the commands available for configuration. |
 | Remediation | Apply a whitelist filter of eligible commands. |
 
 | Vulnerability | Open Redirect |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `login` view redirects to `request.args.get('next')`. |
+| Location | `pwnedhub/views/auth.py`: The `login` view redirects to `request.args.get('next')`. |
 | Remediation | Validate the path of the `next` parameter and/or create an indirect mapping for specific resources. |
 
 ```
@@ -348,7 +348,7 @@ def is_safe_url(url, origin):
 
 | Vulnerability | XML External Entity (XXE) processing enabled. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `api_artifacts` view doesn't explicitly disable DTD processing. |
+| Location | `pwnedhub/views/api.py`: The `artifacts` view doesn't explicitly disable DTD processing. |
 | Remediation | Explicitly disable DTD processing by setting the `resolve_entities=False` argument when instantiating the `XMLParser`. |
 
 ```
@@ -357,7 +357,7 @@ parser = etree.XMLParser(resolve_entities=False)
 
 | Vulnerability | Server-Side Request Forgery (SSRF). |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `api_unfurl` view doesn't validate the provided `uri` as safe to unfurl. |
+| Location | `pwnedhub/views/api.py`: The `unfurl` view doesn't validate the provided `uri` as safe to unfurl. |
 | Remediation | On the Application layer, disallow non-HTTP protocol handlers, disable redirects, and validate the provided `uri` to prevent the use of RFC 1918 addresses. Resolve hostnames to dot-decimal notation IP addresses prior to validation. Ensure that inconsistencies between URL parsers, DNS checkers, and URL requesters don't allow for the injection of CR-LF characters. On the Network layer, restrict inbound traffic from the server. |
 
 ---
@@ -367,18 +367,18 @@ parser = etree.XMLParser(resolve_entities=False)
 | Vulnerability | Missing Function Level Access Control (MFLAC) to escalate/revoke other users' privileges (no self-modification allowed). |
 | :-- | :-- |
 | Note | Basic users are redirected and receive a 403 after successful exploitation. |
-| Location | `pwnedhub/views.py`: Missing decorator for the `admin_users_modify` view. |
+| Location | `pwnedhub/views/core.py`: Missing decorator for the `admin_users_modify` view. |
 | Remediation | Add the `@roles_required('admin')` decorator to the `admin_users_modify` view. |
 
 | Vulnerability | Missing Function Level Access Control (MFLAC) to enable/disable other users' profiles. |
 | :-- | :-- |
 | Note | Basic users are redirected and receive a 403 after successful exploitation. |
-| Location | `pwnedhub/views.py`: Missing decorator for the `admin_users_modify` view. |
+| Location | `pwnedhub/views/core.py`: Missing decorator for the `admin_users_modify` view. |
 | Remediation | Add the `@roles_required('admin')` decorator to the `admin_users_modify` view. |
 
 | Vulnerability | Insecure Direct Object Reference (IDOR) to read other users' mail. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: Lack of receiver validation in the `mail_view` view. |
+| Location | `pwnedhub/views/core.py`: Lack of receiver validation in the `mail_view` view. |
 | Remediation | Ensure that the provided mail `id` belongs to the owner of the session by comparing the current user to the mail's receiver. |
 
 ```
@@ -389,7 +389,7 @@ if mail and mail.receiver == g.user:
 
 | Vulnerability | Insecure Direct Object Reference (IDOR) to delete other users' mail. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: Lack of receiver validation in the `mail_view` view. |
+| Location | `pwnedhub/views/core.py`: Lack of receiver validation in the `mail_view` view. |
 | Remediation | Ensure that the provided mail `id` belongs to the owner of the session by comparing the current user to the mail's receiver. |
 
 ```
@@ -400,7 +400,7 @@ if mail and mail.receiver == g.user:
 
 | Vulnerability | No re-authentication required for state-changing operations. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: No logic in the `profile_change` view requiring the user to authenticate prior to processing the request. |
+| Location | `pwnedhub/views/core.py`: No logic in the `profile_change` view requiring the user to authenticate prior to processing the request. |
 | Remediation | Add a password field that must be validated against the target profile before processing the request. |
 
 ---
@@ -419,12 +419,12 @@ if mail and mail.receiver == g.user:
 
 | Vulnerability | User Enumeration to validate possible usernames. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `register` view responds with a unique error for existing usernames. |
+| Location | `pwnedhub/views/auth.py`: The `register` view responds with a unique error for existing usernames. |
 | Remediation | Create a registration system that uses the email address as the unique key (username) and requires out-of-band verification. |
 
 | Vulnerability | User Enumeration to validate possible usernames. |
 | :-- | :-- |
-| Location | `pwnedhub/views.py`: The `reset_init` view responds with a unique error for existing usernames. |
+| Location | `pwnedhub/views/auth.py`: The `reset_init` view responds with a unique error for existing usernames. |
 | Remediation | Create a reset system that requires out-of-band verification instead of security questions, and responds with a generic message. |
 
 | Vulnerability | Weak password complexity requirement. |
@@ -457,7 +457,7 @@ if any(word.lower() in password.lower() for word in blacklist):
 | Vulnerability | Logic flaw to reset arbitrary users' passwords. |
 | :-- | :-- |
 | Note | Once an attacker submits a valid username in the first step of the password reset flow, they can directly request the reset password endpoint to bypass the security question step. |
-| Location | `pwnedhub/views.py`: The `reset_password` view doesn't enforce flow control. |
+| Location | `pwnedhub/views/auth.py`: The `reset_password` view doesn't enforce flow control. |
 | Remediation | Incorporate better flow control to ensure that the next step is not available until the previous step is complete. |
 
 ```

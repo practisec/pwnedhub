@@ -13,7 +13,7 @@ def login_required(func):
         location = parsed_url.path
         if parsed_url.query:
             location += '?{}'.format(parsed_url.query)
-        return redirect(url_for('ph_bp.login', next=location))
+        return redirect(url_for('auth.login', next=location))
     return wrapped
 
 def roles_required(*roles):

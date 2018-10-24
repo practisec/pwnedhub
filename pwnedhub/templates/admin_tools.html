@@ -2,7 +2,7 @@
 {% block body %}
     <div class="row">
         <div class="u-full-width center-content">
-            <form action="{{ url_for('ph_bp.admin_tools_add') }}" method="post">
+            <form action="{{ url_for('core.admin_tools_add') }}" method="post">
                 <table class="center">
                     <thead>
                         <tr><th>name</th><th>path</th><th>description</th><th>action</th></tr>
@@ -20,7 +20,7 @@
                             <td>{{ tool.path }}</td>
                             <td>{{ tool.description }}</td>
                             <td>
-                                <input type="button" onclick="window.location='{{ url_for('ph_bp.admin_tools_remove', id=tool.id) }}'" value="remove" />
+                                <input type="button" onclick="window.location='{{ url_for('core.admin_tools_remove', id=tool.id) }}'" value="remove" />
                             </td>
                         </tr>
                     {% endfor %}

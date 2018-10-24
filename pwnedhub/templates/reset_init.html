@@ -3,7 +3,7 @@
     <div class="row">
         <div class="four columns offset-by-four">
             <h4>enter your username</h4>
-            <form action="{{ url_for('ph_bp.reset_init') }}" method="post">
+            <form action="{{ url_for('auth.reset_init') }}" method="post">
                 <label for="username">username</label>
                 <input class="u-full-width" name="username" type="text" value="" />
                 <input class="u-full-width" type="submit" value="submit" onclick="this.form.submit();" />

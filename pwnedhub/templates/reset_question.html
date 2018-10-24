@@ -3,7 +3,7 @@
     <div class="row">
         <div class="four columns offset-by-four">
             <h4>answer the question</h4>
-            <form action="{{ url_for('ph_bp.reset_question') }}" method="post">
+            <form action="{{ url_for('auth.reset_question') }}" method="post">
                 <label for="answer">{{ question }}</label>
                 <input class="u-full-width" name="answer" type="text" value="" />
                 <input class="u-full-width" type="submit" value="submit" onclick="this.form.submit();" />

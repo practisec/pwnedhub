@@ -25,7 +25,7 @@ function execute() {
     var args = document.getElementById("args").value;
     // execute the command
     $.ajax({
-        url: "{{ url_for('ph_bp.tools_execute') }}",
+        url: "{{ url_for('core.tools_execute') }}",
         type: "POST",
         data: {
             tool: id,
@@ -42,7 +42,7 @@ function info(e) {
     var tid = e.options[e.selectedIndex].value;
     // get the description
     $.ajax({
-        url: "{{ url_for('ph_bp.tools_info') }}",
+        url: "{{ url_for('core.tools_info') }}",
         type: "POST",
         data: {
             tid: tid,
@@ -59,7 +59,7 @@ function save_artifact() {
     var content = document.getElementById("output").innerHTML;
     if (confirm("Save as an artifact?") == true) {
         $.ajax({
-            url: "{{ url_for('ph_bp.api_artifacts') }}",
+            url: "{{ url_for('api.artifacts') }}",
             type: "POST",
             data: "<xml><filename>"+filename+"</filename><content>"+content+"</content></xml>",
             contentType: 'application/xml',

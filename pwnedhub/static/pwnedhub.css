@@ -261,7 +261,6 @@ section {
 
 .about {
     text-align: justify;
-    margin-top: 10rem;
 }
 
 .admin {}
@@ -388,9 +387,7 @@ input[type="button"].save-as {
     background-color: #ffffff;
 }
 
-.error {
-    margin-top: 10rem;
-}
+.error {}
 
 .traceback {
     padding: 1rem 1.5rem;
