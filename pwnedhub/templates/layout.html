@@ -34,11 +34,6 @@
                                     <li><a href="{{ url_for('ph_bp.messages') }}">messages</a></li>
                                 </ul>
                             </li>
-                            <li><a href="#">social</a>
-                                <ul class="rounded shaded">
-                                    <li><a href="{{ url_for('ph_bp.games') }}">games</a></li>
-                                </ul>
-                            </li>
                         {% if g.user.is_admin %}
                             <li><a href="#">admin</a>
                                 <ul class="rounded shaded">

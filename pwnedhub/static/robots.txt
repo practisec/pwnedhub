@@ -2,7 +2,6 @@ User-agent: *
 Disallow: /admin/tools
 Disallow: /admin/users
 Disallow: /artifacts
-Disallow: /games
 Disallow: /home
 Disallow: /messages
 Disallow: /notes

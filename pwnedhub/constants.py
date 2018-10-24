@@ -26,8 +26,6 @@ DEFAULT_NOTE = '''Welcome to PwnedHub! A collaborative space to conduct security
 
 * Leverage popular security testing tools right from your browser on the tools space.
 
-* Take a break from the action in the games space.
-
 Happy testing!
 
 - The PwnedHub Team
