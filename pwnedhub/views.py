@@ -4,7 +4,7 @@ from pwnedhub import db
 from models import Mail, Message, Score, Tool, User
 from constants import QUESTIONS, DEFAULT_NOTE
 from decorators import login_required, roles_required
-from utils import xor_encrypt, detect_user_agent, unfurl
+from utils import xor_encrypt, unfurl
 from validators import is_valid_quantity, is_valid_password, is_valid_filename, is_valid_mimetype
 from service import ToolsInfo
 from datetime import datetime
@@ -19,15 +19,10 @@ import traceback
 
 ph_bp = Blueprint('ph_bp', __name__)
 
-# monkey patch flask.render_template()
-_render_template = render_template
-def _my_render_template(*args, **kwargs):
-    message = detect_user_agent(request.user_agent.string)
-    if message:
-        args = ('alternate.html',)
-        kwargs = {'message': message}
-    return _render_template(*args, **kwargs)
-render_template = _my_render_template
+@ph_bp.before_request
+def render_mobile():
+    if any(x in request.user_agent.string.lower() for x in ['android', 'iphone', 'ipad']):
+        return render_template('mobile.html')
 
 @ph_bp.before_request
 def load_user():
