@@ -1,3 +1,12 @@
+// add the format method to the String object to add string formatting behavior
+String.prototype.format = function() {
+    a = this;
+    for (k in arguments) {
+        a = a.replace("{" + k + "}", arguments[k])
+    }
+    return a
+}
+
 function show_flash(msg) {
     flash = document.getElementById("flash");
     flash.innerHTML = msg;

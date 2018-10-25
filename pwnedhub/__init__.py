@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_spyne import Spyne
 from flask_session import Session
 from datetime import datetime
+from urllib import unquote
 
 db = SQLAlchemy()
 spyne = Spyne()
@@ -19,9 +20,12 @@ def create_app(config='Development'):
     spyne.init_app(app)
     sess.init_app(app)
 
-    # register new jinja global for the current date
+    # custom jinja global for the current date
     # used in the layout to keep the current year
     app.jinja_env.globals['date'] = datetime.now()
+
+    # custom jinja filter to decode urls
+    app.jinja_env.filters['urldecode'] = lambda s: unquote(s)
 
     from views.core import core
     from views.auth import auth
