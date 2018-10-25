@@ -16,14 +16,13 @@ notes.onblur = function() {
     localStorage.setItem(key, this.value);
     // sync the notes
     $.ajax({
-        url: "{{ url_for('core.notes') }}",
-        type: "POST",
+        url: "{{ url_for('api.notes') }}",
+        type: "PUT",
         async: false,
-        data: {
-            notes: this.value,
-        },
+        data: JSON.stringify({notes: this.value}),
+        contentType: "application/json",
         success: function(data){
-            console.log(data.message)
+            this.value = data.notes;
         }
     });
 };

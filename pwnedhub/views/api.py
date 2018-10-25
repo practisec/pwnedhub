@@ -12,6 +12,15 @@ import subprocess
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
+@api.route('/notes', methods=['PUT'])
+@login_required
+def notes():
+    if request.method == 'PUT':
+        g.user.notes = request.json.get('notes')
+        db.session.add(g.user)
+        db.session.commit()
+        return jsonify(notes=g.user.notes)
+
 # create artifact
 @api.route('/artifacts', methods=['POST'])
 @login_required

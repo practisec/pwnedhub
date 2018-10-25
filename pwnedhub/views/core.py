@@ -247,14 +247,9 @@ def messages_delete(mid):
         flash('Invalid message ID.')
     return redirect(url_for('core.messages'))
 
-@core.route('/notes', methods=['GET', 'POST'])
+@core.route('/notes')
 @login_required
 def notes():
-    if request.method == 'POST':
-        g.user.notes = request.form['notes']
-        db.session.add(g.user)
-        db.session.commit()
-        return jsonify(message='Notes saved.')
     notes = g.user.notes or DEFAULT_NOTE
     return render_template('notes.html', notes=notes)
 
