@@ -1,16 +1,18 @@
 from flask import Blueprint, Response, request, session, g, jsonify
 from sqlalchemy import desc
 from pwnedhub import db
-from pwnedhub.models import Message
+from pwnedhub.models import Message, Tool
 from pwnedhub.decorators import login_required
 from pwnedhub.utils import unfurl_uri
+from pwnedhub.validators import is_valid_command
 from datetime import datetime
 from lxml import etree
 import os
+import subprocess
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
-# create new artifacts (XML)
+# create artifact
 @api.route('/artifacts', methods=['POST'])
 @login_required
 def artifacts():
@@ -36,19 +38,38 @@ def artifacts():
     xml = '<xml><message>{}</message></xml>'.format(msg)
     return Response(xml, mimetype='application/xml')
 
-# get specific tool information (JSON)
+# fetch tool
 @api.route('/tools/<string:tid>')
 @login_required
 def tools(tid):
     query = "SELECT * FROM tools WHERE id={}"
     try:
-        tools = db.session.execute(query.format(tid))
+        tool = db.session.execute(query.format(tid)).first() or {}
     except:
-        tools = ()
-    return jsonify(tools=[dict(t) for t in tools])
+        tool = {}
+    return jsonify(**dict(tool))
 
-# get, create or delete messages (JSON)
+# execute tool
+@api.route('/tools/<string:tid>/execute', methods=['POST'])
+@login_required
+def tools_execute(tid):
+    tool = Tool.query.get(tid)
+    path = tool.path
+    args = request.json.get('args')
+    cmd = '{} {}'.format(path, args)
+    if is_valid_command(cmd):
+        env = os.environ.copy()
+        env['PATH'] = os.pathsep.join(('/usr/bin', env["PATH"]))
+        p = subprocess.Popen([cmd, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=env)
+        out, err = p.communicate()
+        output = out + err
+    else:
+        output = 'Command contains invalid characters.'
+    return jsonify(cmd=cmd, output=output)
+
+# fetch messages
 @api.route('/messages', methods=['GET', 'POST'])
+# create or delete message
 @api.route('/messages/<int:mid>', methods=['DELETE'])
 @login_required
 def messages(mid=None):
@@ -77,7 +98,7 @@ def messages(mid=None):
     resp.mimetype = 'text/html'
     return resp
 
-# fetch and parse remote resources (JSON)
+# fetch and parse remote resource
 @api.route('/unfurl', methods=['POST'])
 def unfurl():
     uri = request.json.get('uri')

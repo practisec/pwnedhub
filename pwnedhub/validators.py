@@ -18,6 +18,11 @@ def is_valid_password(password):
         return False
     return True
 
+def is_valid_command(cmd):
+    if re.search(r'[;&|]', cmd):
+        return False
+    return True
+
 def is_valid_filename(filename):
     # validate that the filename includes an allowed extension
     for ext in current_app.config['ALLOWED_EXTENSIONS']:

@@ -6,8 +6,6 @@ from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE
 from pwnedhub.decorators import login_required, roles_required
 from pwnedhub.validators import is_valid_password, is_valid_filename, is_valid_mimetype
 import os
-import re
-import subprocess
 import traceback
 
 core = Blueprint('core', __name__)
@@ -317,21 +315,6 @@ def artifacts_view():
 def tools():
     tools = Tool.query.all()
     return render_template('tools.html', tools=tools)
-
-@core.route('/tools/execute', methods=['POST'])
-@login_required
-def tools_execute():
-    tool = Tool.query.get(request.form['tool'])
-    path = tool.path
-    args = request.form['args']
-    cmd = '{} {}'.format(path, args)
-    cmd = re.sub('[;&|]', '', cmd)
-    env = os.environ.copy()
-    env['PATH'] = os.pathsep.join(('/usr/bin',env["PATH"]))
-    p = subprocess.Popen([cmd, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=env)
-    out, err = p.communicate()
-    output = out + err
-    return jsonify(cmd=cmd, output=output)
 
 # error handling controllers
 
