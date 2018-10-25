@@ -20,7 +20,7 @@
                             <td>{{ tool.path }}</td>
                             <td>{{ tool.description }}</td>
                             <td>
-                                <input type="button" onclick="window.location='{{ url_for('core.admin_tools_remove', id=tool.id) }}'" value="remove" />
+                                <input type="button" onclick="window.location='{{ url_for('core.admin_tools_remove', tid=tool.id) }}'" value="remove" />
                             </td>
                         </tr>
                     {% endfor %}

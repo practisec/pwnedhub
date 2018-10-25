@@ -25,7 +25,7 @@
         {% if message.user == g.user or g.user.is_admin %}
             <div>
                 <div name="action_{{ message.id }}" class="delete">
-                    <a href="{{ url_for('core.messages_delete', id=message.id) }}">
+                    <a href="{{ url_for('core.messages_delete', mid=message.id) }}">
                         <img src="{{ url_for('static', filename='images/trash.png') }}" />
                     </a>
                 </div>
