@@ -337,6 +337,15 @@ section {
     text-align: right;
 }
 
+.pagination span {
+    cursor: pointer;
+}
+
+.pagination span[disabled] {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
 .delete {
     float: right;
     font-size: 1.25rem;

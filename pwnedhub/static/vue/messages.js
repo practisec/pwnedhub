@@ -1,24 +1,3 @@
-
-/*
-{% if pages %}
-    <div class="pagination">
-    {% for page in range(0, pages) %}
-    {% if page == current_page %}
-        <b class="red">{{ page }}</b>
-    {% else %}
-        <a href="{{ url_for('core.messages_page', page=page) }}">{{ page }}</a>
-    {% endif %}
-    {% endfor %}
-    </div>
-{% endif %}
-
-{% else %}
-    <div class="center-content">
-        no messages
-    </div>
-{% endif %}
-*/
-
 Vue.component("messages", {
     template: `
         <div>
@@ -117,7 +96,10 @@ Vue.component("show-messages", {
     },
     template: `
         <div>
-            <div v-for="message in messages" v-bind:key="message.id" v-bind:message="message">
+            <div class="center-content" v-if="messages.length === 0">
+                no messages
+            </div>
+            <div v-else v-for="message in paginatedMessages" v-bind:key="message.id" v-bind:message="message">
                 <div v-if="isEditable(message) === true" v-bind:name="'action_'+message.id" class="delete">
                     <a v-on:click="deleteMessage(message)">
                         <img v-bind:src="URL_IMG_TRASH" />
@@ -125,14 +107,31 @@ Vue.component("show-messages", {
                 </div>
                 <div v-bind:style="isAuthor(message) ? { fontWeight: 'bold' } : ''">
                     <p class="name"><span class="red">{{ message.author.name }}</span> <span style="font-size: .75em">({{ message.author.username }})</span></p>
-                    <p class="message" ref="message">{{ message.comment }}</p>
+                    <p class="message" ref="message" v-html="message.comment"></p>
                     <scroll v-bind:message="message"></scroll>
                     <p class="timestamp">{{ message.created }}</p>
                 </div>
             </div>
+            <div class="pagination">
+                <span v-on:click="prevPage" v-bind:disabled="pageNumber === 0">prev</span>
+                |
+                <span v-on:click="nextPage" v-bind:disabled="pageNumber >= pageCount">next</span>
+            </div>
         </div>
     `,
+    data: function() {
+        return {
+            pageNumber: 0,
+            size: 5,
+        }
+    },
     methods: {
+        nextPage: function() {
+            this.pageNumber++;
+        },
+        prevPage: function() {
+            this.pageNumber--;
+        },
         isAuthor: function(message) {
             user = JSON.parse(window.sessionStorage.getItem("userInfo"));
             return (user.id === message.author.id) ? true : false;
@@ -150,6 +149,18 @@ Vue.component("show-messages", {
                 // update the messages with the response
                 this.$emit('click', json.messages);
             });
+        },
+    },
+    computed: {
+        pageCount() {
+            let l = this.messages.length
+            let s = this.size;
+            return Math.floor(l/s);
+        },
+        paginatedMessages() {
+            const start = this.pageNumber * this.size;
+            const end = start + this.size;
+            return this.messages.slice(start, end);
         },
     },
 });

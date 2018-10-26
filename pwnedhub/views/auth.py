@@ -1,6 +1,6 @@
 from flask import Blueprint, current_app, request, session, redirect, url_for, render_template, flash
 from pwnedhub import db
-from pwnedhub.models import User
+from pwnedhub.models import Mail, User
 from pwnedhub.constants import QUESTIONS
 from pwnedhub.decorators import login_required
 from pwnedhub.utils import xor_encrypt
