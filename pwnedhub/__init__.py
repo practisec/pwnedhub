@@ -32,9 +32,11 @@ def create_app(config='Development'):
     from views.core import core
     from views.auth import auth
     from views.api import api
+    from views.errors import errors
     app.register_blueprint(core)
     app.register_blueprint(auth)
     app.register_blueprint(api)
+    app.register_blueprint(errors)
 
     from views.service import ToolsInfo
 

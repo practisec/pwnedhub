@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, render_template_string, jsonify, flash, send_file, __version__
+from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, flash, send_file, __version__
 from sqlalchemy import asc, desc
 from pwnedhub import db
 from pwnedhub.models import Mail, Message, Tool, User
@@ -6,7 +6,6 @@ from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE
 from pwnedhub.decorators import login_required, roles_required
 from pwnedhub.validators import is_valid_password, is_valid_filename, is_valid_mimetype
 import os
-import traceback
 
 core = Blueprint('core', __name__)
 
@@ -314,21 +313,3 @@ def artifacts_view():
 def tools():
     tools = Tool.query.all()
     return render_template('tools.html', tools=tools)
-
-# error handling controllers
-
-@core.app_errorhandler(404)
-def page_not_found(e):
-    template = '''{% extends "layout.html" %}
-{% block body %}
-    <div class="center-content error">
-        <h1>Oops! That page doesn't exist.</h1>
-        <h3>'''+request.url+'''</h3>
-    </div>
-{% endblock %}'''
-    return render_template_string(template), 404
-
-@core.app_errorhandler(500)
-def internal_error(e):
-    message = traceback.format_exc()
-    return render_template('500.html', message=message), 500
