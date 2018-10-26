@@ -23,9 +23,11 @@ def create_app(config='Development'):
     # custom jinja global for the current date
     # used in the layout to keep the current year
     app.jinja_env.globals['date'] = datetime.now()
-
     # custom jinja filter to decode urls
     app.jinja_env.filters['urldecode'] = lambda s: unquote(s)
+    # misc jinja configuration variables
+    app.jinja_env.trim_blocks = True
+    app.jinja_env.lstrip_blocks = True
 
     from views.core import core
     from views.auth import auth
