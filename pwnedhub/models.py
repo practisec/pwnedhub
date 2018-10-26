@@ -30,7 +30,11 @@ class Message(db.Model):
             'id': self.id,
             'created': self.created_as_string, 
             'comment': self.comment,
-            'user': self.user.name,
+            'author': {
+                'id': self.user.id,
+                'name': self.user.name,
+                'username': self.user.username,
+            },
         }
 
     def __repr__(self):
@@ -117,6 +121,15 @@ class User(db.Model):
     @staticmethod
     def get_by_username(username):
         return User.query.filter_by(username=username).first()
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'created': self.created_as_string,
+            'username': self.username,
+            'name': self.name,
+            'role': self.role_as_string,
+        }
 
     def __repr__(self):
         return "<User '{}'>".format(self.username)

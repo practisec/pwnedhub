@@ -16,13 +16,13 @@ def get_token(n=40):
 from lxml import etree
 import urllib2
 
-def unfurl_uri(uri, headers={}):
+def unfurl_url(url, headers={}):
     # request resource
-    request = urllib2.Request(uri, headers=headers)
+    request = urllib2.Request(url, headers=headers)
     content = urllib2.urlopen(request).read()
     # parse meta tags
     html = etree.HTML(content)
-    data = {}
+    data = {'url': url}
     for kw in ('site_name', 'title', 'description'):
         # standard
         prop = kw

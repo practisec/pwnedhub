@@ -310,17 +310,17 @@ section {
     margin-bottom: .5rem;
 }
 
-.messages .unfurl a,
-.messages .unfurl a:link,
-.messages .unfurl a:visited,
-.messages .unfurl a:hover,
-.messages .unfurl a:active {
+.messages .scroll a,
+.messages .scroll a:link,
+.messages .scroll a:visited,
+.messages .scroll a:hover,
+.messages .scroll a:active {
     color: inherit;
     text-decoration: inherit;
     font-weight: inherit;
 }
 
-.messages .unfurl p {
+.messages .scroll p {
     font-size: 1.25rem;
     border-left: 2px solid red;
     padding-left: .5rem;

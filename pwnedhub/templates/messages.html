@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-{% if react %}
-    <script src="{{ url_for('static', filename='react/react.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='react/react-dom.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='react/browser.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='react/axios.min.js') }}"></script>
-    <script type="text/babel" src="{{ url_for('static', filename='react/messages.js') }}"></script>
-    <div id="react-container"></div>
+{% if spa %}
+    <div id="app">
+        <messages></messages>
+    </div>
+    <script src="{{ url_for('static', filename='vue/vue.js') }}"></script>
+    <script src="{{ url_for('core.js_constants') }}"></script>
+    <script src="{{ url_for('static', filename='vue/messages.js') }}"></script>
 {% else %}
     <div class="row">
         <div class="ten columns offset-by-one center-content">
@@ -33,7 +33,7 @@
                 <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
                     <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
                     <p class="message">{{ message.comment|safe }}</p>
-                    <div class="unfurl"></div>
+                    <div class="scroll"></div>
                     <p class="timestamp">{{ message.created_as_string }}</p>
                 </div>
         {% if message.user == g.user %}
@@ -59,13 +59,13 @@
         </div>
     </div>
     <script>
-function buildUnfurl(uri, data) {
+function buildUnfurl(url, data) {
     // build array of values in specific order
     var values = [];
     var keys = ["site_name", "title", "description"];
     for (var k in keys) {
-        if (data.unfurl[keys[k]] !== null) {
-            values.push(data.unfurl[keys[k]]);
+        if (data[keys[k]] !== null) {
+            values.push(data[keys[k]]);
         }
     }
     // return nothing if there are no values
@@ -77,7 +77,7 @@ function buildUnfurl(uri, data) {
     p.textContent = values.join(" | ");
     // create unfurl link (root)
     var a = document.createElement("a");
-    a.href = uri;
+    a.href = url;
     // append content to link
     a.append(p);
     // return the root element
@@ -91,16 +91,16 @@ for (var i = 0; i < messages.length; i++) {
     matches = content.match(pattern);
     if (matches !== null) {
         for (var x = 0; x < matches.length; x++) {
-            var uri = matches[x];
+            var url = matches[x];
             // closure required to localize parameters
-            (function(i, uri) {
+            (function(i, url) {
                 $.ajax({
                     url: "{{ url_for('api.unfurl') }}",
                     type: "POST",
-                    data: JSON.stringify({uri: uri}),
+                    data: JSON.stringify({url: url}),
                     contentType: "application/json",
                     success: function(data){
-                        var content = buildUnfurl(uri, data);
+                        var content = buildUnfurl(url, data);
                         // append content to unfurl div
                         messages[i].nextElementSibling.append(content);
                     },
@@ -108,7 +108,7 @@ for (var i = 0; i < messages.length; i++) {
                         //console.log(xhr);
                     }
                 });
-            })(i, uri);
+            })(i, url);
         }
     }
 }

@@ -24,7 +24,7 @@ function info(e) {
     var tid = e.options[e.selectedIndex].value;
     // get the description
     $.ajax({
-        url: "{{ url_for('api.tools', tid='{0}') | urldecode }}".format(tid),
+        url: "{{ url_for('api.tools-get', tid='{0}') | urldecode }}".format(tid),
         success: function(data){
             // update the textarea with the description
             document.getElementById("output").innerHTML = data.description;
@@ -53,7 +53,7 @@ function save_artifact() {
     var content = document.getElementById("output").innerHTML;
     if (confirm("Save as an artifact?") == true) {
         $.ajax({
-            url: "{{ url_for('api.artifacts') }}",
+            url: "{{ url_for('api.artifacts-post') }}",
             type: "POST",
             data: "<xml><filename>"+filename+"</filename><content>"+content+"</content></xml>",
             contentType: 'application/xml',

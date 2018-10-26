@@ -41,6 +41,10 @@ def home():
 def about():
     return render_template('about.html')
 
+@core.route('/constants.js')
+def js_constants():
+    return render_template('constants.js')
+
 # admin controllers
 
 @core.route('/admin/tools')
@@ -207,10 +211,10 @@ def mail_delete(mid):
     return redirect(url_for('core.mail'))
 
 # has no XSS, pagination, or user enumeration
-@core.route('/messages.react')
+@core.route('/messages/spa')
 @login_required
-def messages_react():
-    return render_template('messages.html', react=True)
+def messages_spa():
+    return render_template('messages.html', spa=True)
 
 @core.route('/messages', methods=['GET', 'POST'])
 @login_required
