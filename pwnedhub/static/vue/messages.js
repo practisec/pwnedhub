@@ -115,7 +115,7 @@ Vue.component("show-messages", {
             <div class="pagination">
                 <span v-on:click="prevPage" v-bind:disabled="pageNumber === 0">prev</span>
                 |
-                <span v-on:click="nextPage" v-bind:disabled="pageNumber >= pageCount">next</span>
+                <span v-on:click="nextPage" v-bind:disabled="pageNumber >= pageCount-1">next</span>
             </div>
         </div>
     `,
@@ -158,7 +158,7 @@ Vue.component("show-messages", {
         pageCount() {
             let l = this.messages.length
             let s = this.size;
-            return Math.floor(l/s);
+            return Math.ceil(l/s);
         },
         paginatedMessages() {
             const start = this.pageNumber * this.size;

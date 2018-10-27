@@ -20,42 +20,34 @@
     </div>
     <div class="row">
         <div class="ten columns offset-by-one messages">
-        {% if messages|length > 0 %}
+        {% if messages|length == 0 %}
+            <div class="center-content">
+                no messages
+            </div>
+        {% else %}
         {% for message in messages %}
-        {% if message.user == g.user or g.user.is_admin %}
             <div>
+            {% if message.user == g.user or g.user.is_admin %}
                 <div name="action_{{ message.id }}" class="delete">
                     <a href="{{ url_for('core.messages_delete', mid=message.id) }}">
                         <img src="{{ url_for('static', filename='images/trash.png') }}" />
                     </a>
                 </div>
-        {% endif %}
+            {% endif %}
                 <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
                     <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
                     <p class="message">{{ message.comment|safe }}</p>
                     <div class="scroll"></div>
                     <p class="timestamp">{{ message.created_as_string }}</p>
                 </div>
-        {% if message.user == g.user %}
             </div>
-        {% endif %}
         {% endfor %}
-        {% if pages %}
+        {% endif %}
             <div class="pagination">
-            {% for page in range(0, pages) %}
-            {% if page == current_page %}
-                <b class="red">{{ page }}</b>
-            {% else %}
-                <a href="{{ url_for('core.messages_page', page=page) }}">{{ page }}</a>
-            {% endif %}
-            {% endfor %}
+                <span onclick="window.location='{{ url_for('core.messages_page', page=current_page-1) }}'"{% if current_page == 0 %} disabled="disabled"{% endif %}>prev</span>
+                |
+                <span onclick="window.location='{{ url_for('core.messages_page', page=current_page+1) }}'"{% if current_page >= pages-1 %} disabled="disabled"{% endif %}>next</span>
             </div>
-        {% endif %}
-        {% else %}
-            <div class="center-content">
-                no messages
-            </div>
-        {% endif %}
         </div>
     </div>
     <script>
