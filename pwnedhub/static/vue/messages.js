@@ -79,8 +79,8 @@ Vue.component("create-message", {
             })
             .then(response => response.json())
             .then(json => {
-                // update the messages with the response
-                this.$emit('click', json.messages);
+                // update messages with the response
+                this.$emit("click", json.messages);
                 // reset the form
                 Object.keys(this.messageForm).forEach((k) => {
                     this.messageForm[k] = "";
@@ -146,8 +146,11 @@ Vue.component("show-messages", {
             })
             .then(response => response.json())
             .then(json => {
-                // update the messages with the response
-                this.$emit('click', json.messages);
+                // update messages with the response
+                this.$emit("click", json.messages);
+                // must use the global flash function as the
+                // flash div is outside the Vue app anchor
+                show_flash("Message deleted.");
             });
         },
     },
@@ -207,7 +210,7 @@ Vue.component("scroll", {
     },
 });
 
-// define tha vue app
+// define the vue app
 var app = new Vue({
     el: "#app",
 });
