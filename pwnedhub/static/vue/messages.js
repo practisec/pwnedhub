@@ -107,7 +107,7 @@ Vue.component("show-messages", {
                 </div>
                 <div v-bind:style="isAuthor(message) ? { fontWeight: 'bold' } : ''">
                     <p class="name"><span class="red">{{ message.author.name }}</span> <span style="font-size: .75em">({{ message.author.username }})</span></p>
-                    <p class="message" ref="message" v-html="message.comment"></p>
+                    <p class="message" ref="message">{{ message.comment }}</p>
                     <scroll v-bind:message="message"></scroll>
                     <p class="timestamp">{{ message.created }}</p>
                 </div>
