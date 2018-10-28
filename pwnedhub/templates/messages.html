@@ -1,13 +1,5 @@
 {% extends "layout.html" %}
 {% block body %}
-{% if spa %}
-    <div id="app">
-        <messages></messages>
-    </div>
-    <script src="{{ url_for('static', filename='vue/vue.js') }}"></script>
-    <script src="{{ url_for('core.js_constants') }}"></script>
-    <script src="{{ url_for('static', filename='vue/messages.js') }}"></script>
-{% else %}
     <div class="row">
         <div class="ten columns offset-by-one center-content">
             <form action="{{ url_for('core.messages') }}" method="post">
@@ -105,5 +97,4 @@ for (var i = 0; i < messages.length; i++) {
     }
 }
     </script>
-{% endif %}
 {% endblock %}

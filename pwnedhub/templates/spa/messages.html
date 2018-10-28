@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div id="app">
+        <messages></messages>
+    </div>
+    <script src="{{ url_for('static', filename='vue/vue.js') }}"></script>
+    <script src="{{ url_for('core.js_constants') }}"></script>
+    <script src="{{ url_for('static', filename='vue/messages.js') }}"></script>
+{% endblock %}

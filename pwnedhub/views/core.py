@@ -209,12 +209,6 @@ def mail_delete(mid):
         flash('Invalid mail ID.')
     return redirect(url_for('core.mail'))
 
-# has no XSS, pagination, or user enumeration
-@core.route('/messages/spa')
-@login_required
-def messages_spa():
-    return render_template('messages.html', spa=True)
-
 @core.route('/messages', methods=['GET', 'POST'])
 @login_required
 def messages():
