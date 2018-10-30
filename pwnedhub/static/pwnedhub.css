@@ -183,7 +183,7 @@ header {
     margin-left: -4.5rem;
     width: 8rem;
     padding: .5rem;
-    background: #ffffff;
+    background: #fff;
     border: 1px solid #bbb;
 }
 
@@ -279,7 +279,7 @@ section {
     width: 100%;
     min-height: 40rem;
     padding: 1rem 1.5rem;
-    border: 1px solid #bbbbbb;
+    border: 1px solid #bbb;
     margin-bottom: 0;
 }
 
@@ -380,7 +380,7 @@ section {
     position: relative;
     min-height: 40rem;
     padding: 1rem 1.5rem;
-    border: 1px solid #bbbbbb;
+    border: 1px solid #bbb;
 }
 
 .output pre {
@@ -393,14 +393,14 @@ input[type="button"].save-as {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background-color: #ffffff;
+    background-color: #fff;
 }
 
 .error {}
 
 .traceback {
     padding: 1rem 1.5rem;
-    border: 1px solid #bbbbbb;
+    border: 1px solid #bbb;
 }
 
 .traceback pre {
@@ -442,6 +442,11 @@ footer {}
     -webkit-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+}
+
+.bordered {
+    border: 1px solid #bbb;
+    padding: 0.5rem 1rem;
 }
 
 .black {

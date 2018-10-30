@@ -3,11 +3,11 @@
     <div class="row">
         <div class="ten columns offset-by-one mail">
             <label for="sender">from:</label>
-            <input name="sender" type="text" value="{{ mail.sender.name }}" disabled/><br>
+            <div class="u-full-width" name="sender">{{ mail.sender.name }}</div><br>
             <label for="subject">subject:</label>
-            <input class="u-full-width" name="subject" type="text" value="{{ mail.subject }}" disabled/><br>
+            <div class="u-full-width" name="subject"><h5>{{ mail.subject }}<h5></div>
             <label for="content">content:</label>
-            <textarea class="u-full-width" name="content" disabled>{{ mail.content }}</textarea><br>
+            <div class="u-full-width bordered rounded" name="content">{{ mail.content|safe }}</div><br>
             <div class="u-full-width right-content">
                 <input type="button" value="inbox" onclick="window.location='{{ url_for('core.mail') }}'" />
                 <input type="button" value="reply" onclick="window.location='{{ url_for('core.mail_reply', mid=mail.id) }}'" />
