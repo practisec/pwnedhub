@@ -14,26 +14,10 @@ api = Blueprint('api', __name__, url_prefix='/api')
 
 # RESTful API controllers
 
-# fetch user
-@api.route('/users/me', methods=['GET'], endpoint='users-get')
+# create an artifact
+@api.route('/artifacts', methods=['POST'])
 @login_required
-def users():
-    return jsonify(**g.user.serialize())
-
-# update note
-@api.route('/notes', methods=['PUT'], endpoint='notes-put')
-@login_required
-def notes():
-    if request.method == 'PUT':
-        g.user.notes = request.json.get('notes')
-        db.session.add(g.user)
-        db.session.commit()
-        return jsonify(notes=g.user.notes)
-
-# create artifact
-@api.route('/artifacts', methods=['POST'], endpoint='artifacts-post')
-@login_required
-def artifacts():
+def artifact_create():
     xml = request.data
     parser = etree.XMLParser()
     doc = etree.fromstring(str(xml), parser)
@@ -56,10 +40,10 @@ def artifacts():
     xml = '<xml><message>{}</message></xml>'.format(msg)
     return Response(xml, mimetype='application/xml')
 
-# fetch tool
-@api.route('/tools/<string:tid>', methods=['GET'], endpoint='tools-get')
+# get a tool
+@api.route('/tools/<string:tid>', methods=['GET'])
 @login_required
-def tools(tid):
+def tool_read(tid):
     query = "SELECT * FROM tools WHERE id={}"
     try:
         tool = db.session.execute(query.format(tid)).first() or {}
@@ -67,61 +51,111 @@ def tools(tid):
         tool = {}
     return jsonify(**dict(tool))
 
-# fetch mail
-@api.route('/mail', methods=['GET'], endpoint='mail-get')
-# fetch letter
-@api.route('/mail/<string:mid>', methods=['GET'], endpoint='letter-get')
+# get all mail
+@api.route('/mail', methods=['GET'])
 @login_required
-def mail(mid=None):
-    if mid and request.method == 'GET':
-        letter = Mail.query.get(mid)
-        if not letter:
-            abort(404)
-        # mark letter as read
-        if letter.read == 0:
-            letter.read = 1
-            db.session.add(letter)
-            db.session.commit()
-        letter = letter.serialize()
-        resp = jsonify(**letter)
-        return resp
-    # catch all and default response
+def mailbox_read():
     mail = [m.serialize() for m in g.user.received_mail.order_by(Mail.created.desc()).all()]
-    resp = jsonify(mail=mail)
+    return jsonify(mail=mail)
+
+# get a piece of mail
+@api.route('/mail/<string:mid>', methods=['GET'])
+@login_required
+def mail_read(mid):
+    mail = Mail.query.get(mid)
+    if mail:
+        # mark mail as read
+        if mail.read == 0:
+            mail.read = 1
+            db.session.add(mail)
+            db.session.commit()
+        # [vuln] no authz check
+        mail = mail.serialize()
+        resp = jsonify(**mail)
+    else:
+        abort(404)
     return resp
 
-# fetch messages
-@api.route('/messages', methods=['GET'], endpoint='messages-get')
-# create message
-@api.route('/messages', methods=['POST'], endpoint='messages-post')
-# delete message
-@api.route('/messages/<string:mid>', methods=['DELETE'], endpoint='messages-delete')
+# delete a piece of mail
+@api.route('/mail/<string:mid>', methods=['DELETE'])
 @login_required
-def messages(mid=None):
-    if request.method == 'POST':
-        jsonobj = request.get_json(force=True)
-        message = jsonobj.get('message')
-        if message:
-            msg = Message(comment=message, user=g.user)
-            db.session.add(msg)
+def mail_delete(mid):
+    mail = Mail.query.get(mid)
+    if mail:
+        if mail.receiver == g.user:
+            db.session.delete(mail)
             db.session.commit()
-    if mid and request.method == 'DELETE':
-        message = Message.query.get(mid)
-        if message and (message.user == g.user or g.user.is_admin):
-            db.session.delete(message)
-            db.session.commit()
-    # catch all and default response
+            mail = [m.serialize() for m in g.user.received_mail.order_by(Mail.created.desc()).all()]
+            resp = jsonify(mail=mail)
+        else:
+            abort(403)
+    else:
+        abort(404)
+    return resp
+
+# get all messages
+@api.route('/messages', methods=['GET'])
+@login_required
+def messages_read():
     messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
     resp = jsonify(messages=messages)
+    # [vuln] responds with mismatched content type
     resp.mimetype = 'text/html'
+    return resp
+
+# create a message
+@api.route('/messages', methods=['POST'])
+@login_required
+def message_create():
+    # [vuln] accepts mismatched content type
+    jsonobj = request.get_json(force=True)
+    message = jsonobj.get('message')
+    if message:
+        msg = Message(comment=message, user=g.user)
+        db.session.add(msg)
+        db.session.commit()
+    messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
+    return jsonify(messages=messages)
+
+# delete a message
+@api.route('/messages/<string:mid>', methods=['DELETE'])
+@login_required
+def message_delete(mid):
+    message = Message.query.get(mid)
+    if message:
+        if message.user == g.user or g.user.is_admin:
+            db.session.delete(message)
+            db.session.commit()
+            messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
+            resp = jsonify(messages=messages)
+        else:
+            abort(403)
+    else:
+        abort(404)
     return resp
 
 # RESTless API controllers
 
-# execute tool
+# get the current user
+@api.route('/users/me', methods=['GET'])
+@login_required
+def user_read():
+    return jsonify(**g.user.serialize())
+
+# update the current user's notes
+@api.route('/notes', methods=['PUT'])
+@login_required
+def note_update():
+    if request.method == 'PUT':
+        g.user.notes = request.json.get('notes')
+        db.session.add(g.user)
+        db.session.commit()
+        return jsonify(notes=g.user.notes)
+
+# execute a tool
 @api.route('/tools/<string:tid>/execute', methods=['POST'])
 @login_required
-def tools_execute(tid):
+def tool_execute(tid):
     tool = Tool.query.get(tid)
     path = tool.path
     args = request.json.get('args')
@@ -136,7 +170,7 @@ def tools_execute(tid):
         output = 'Command contains invalid characters.'
     return jsonify(cmd=cmd, output=output)
 
-# fetch remote resource
+# get a remote resource
 @api.route('/unfurl', methods=['POST'])
 def unfurl():
     url = request.json.get('url')
