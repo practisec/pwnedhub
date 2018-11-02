@@ -4,7 +4,7 @@ from pwnedhub.decorators import login_required
 spa = Blueprint('spa', __name__, url_prefix='/spa')
 
 # no XSS to better support other demos
-@spa.route('/<string:component>')
+@spa.route('/')
 @login_required
-def messages(component):
-    return render_template('spa/component.html', component=component)
+def default():
+    return render_template('spa.html')

@@ -1,9 +1,0 @@
-{% extends "layout.html" %}
-{% block body %}
-    <div id="app">
-        <{{ component }}></{{ component }}>
-    </div>
-    <script src="{{ url_for('static', filename='vue/vue.js') }}"></script>
-    <script src="{{ url_for('core.js_constants') }}"></script>
-    <script src="{{ url_for('static', filename='vue/'+component+'.js') }}"></script>
-{% endblock %}
