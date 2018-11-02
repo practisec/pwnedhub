@@ -1,4 +1,4 @@
-Vue.component("messages", {
+var Messages = Vue.component("messages", {
     template: `
         <div>
             <div class="row">
@@ -18,7 +18,6 @@ Vue.component("messages", {
             messages: [],
         }
     },
-    evtSource: false,
     methods: {
         getUserInfo: function() {
             fetch(this.URL_API_USERS_GET)
@@ -39,13 +38,11 @@ Vue.component("messages", {
         },
     },
     created: function() {
-        // preload user
         this.getUserInfo();
-        // preload messages
         this.getMessages();
     },
     mounted: function() {
-        // maintain messages
+        // poll for messages
         /*setInterval(function () {
             this.getMessages();
         }.bind(this), 30*1000);*/
@@ -155,12 +152,12 @@ Vue.component("show-messages", {
         },
     },
     computed: {
-        pageCount() {
+        pageCount: function() {
             let l = this.messages.length
             let s = this.size;
             return Math.ceil(l/s);
         },
-        paginatedMessages() {
+        paginatedMessages: function() {
             const start = this.pageNumber * this.size;
             const end = start + this.size;
             return this.messages.slice(start, end);
@@ -208,9 +205,4 @@ Vue.component("scroll", {
     mounted: function() {
         this.doUnfurl(this.message);
     },
-});
-
-// define the vue app
-var app = new Vue({
-    el: "#app",
 });
