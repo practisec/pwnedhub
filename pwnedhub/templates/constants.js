@@ -8,12 +8,13 @@
 Vue.mixin({
     data: function() {
         return {
-            get URL_API_USERS_GET() { return "{{ url_for('api.users-get') }}" },
-            get URL_API_MAIL_GET() { return "{{ url_for('api.mail-get') }}" },
-            get URL_API_LETTER_GET() { return "{{ url_for('api.letter-get', mid='{0}') | urldecode }}" },
-            get URL_API_MESSAGES_GET() { return "{{ url_for('api.messages-get') }}" },
-            get URL_API_MESSAGES_POST() { return "{{ url_for('api.messages-post') }}" },
-            get URL_API_MESSAGES_DELETE() { return "{{ url_for('api.messages-delete', mid='{0}') | urldecode }}"; },
+            get URL_API_USER_READ() { return "{{ url_for('api.user_read') }}" },
+            get URL_API_MAILBOX_READ() { return "{{ url_for('api.mailbox_read') }}" },
+            get URL_API_MAIL_READ() { return "{{ url_for('api.mail_read', mid='{0}') | urldecode }}" },
+            get URL_API_MAIL_DELETE() { return "{{ url_for('api.mail_delete', mid='{0}') | urldecode }}" },
+            get URL_API_MESSAGES_READ() { return "{{ url_for('api.messages_read') }}" },
+            get URL_API_MESSAGE_CREATE() { return "{{ url_for('api.message_create') }}" },
+            get URL_API_MESSAGE_DELETE() { return "{{ url_for('api.message_delete', mid='{0}') | urldecode }}"; },
             get URL_API_UNFURL() { return "{{ url_for('api.unfurl') }}" },
             get URL_IMG_TRASH() { return "{{ url_for('static', filename='images/trash.png') }}"; },
         }

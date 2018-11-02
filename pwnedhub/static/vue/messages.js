@@ -20,7 +20,7 @@ var Messages = Vue.component("messages", {
     },
     methods: {
         getUserInfo: function() {
-            fetch(this.URL_API_USERS_GET)
+            fetch(this.URL_API_USER_READ)
             .then(response => response.json())
             .then(json => {
                 window.sessionStorage.setItem("userInfo", JSON.stringify(json));
@@ -30,7 +30,7 @@ var Messages = Vue.component("messages", {
             this.messages = messages;
         },
         getMessages: function(event) {
-            fetch(this.URL_API_MESSAGES_GET)
+            fetch(this.URL_API_MESSAGES_READ)
             .then(response => response.json())
             .then(json => {
                 this.updateMessages(json.messages);
@@ -69,7 +69,7 @@ Vue.component("create-message", {
     },
     methods: {
         createMessage: function(event) {
-            fetch(this.URL_API_MESSAGES_POST, {
+            fetch(this.URL_API_MESSAGE_CREATE, {
                 method: "POST",
                 body: JSON.stringify(this.messageForm),
                 headers:{"Content-Type": "application/json"}
@@ -138,7 +138,7 @@ Vue.component("show-messages", {
             return (this.isAuthor(message) || user.role === "admin") ? true : false;
         },
         deleteMessage: function(message) {
-            fetch(this.URL_API_MESSAGES_DELETE.format(message.id), {
+            fetch(this.URL_API_MESSAGE_DELETE.format(message.id), {
                 method: "DELETE",
             })
             .then(response => response.json())

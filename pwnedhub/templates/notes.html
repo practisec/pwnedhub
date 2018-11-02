@@ -16,7 +16,7 @@ notes.onblur = function() {
     localStorage.setItem(key, this.value);
     // sync the notes
     $.ajax({
-        url: "{{ url_for('api.notes-put') }}",
+        url: "{{ url_for('api.note_update') }}",
         type: "PUT",
         async: false,
         data: JSON.stringify({notes: this.value}),
@@ -42,7 +42,7 @@ function save_artifact() {
     var content = notes.innerHTML;
     if (confirm("Save as an artifact?") == true) {
         $.ajax({
-            url: "{{ url_for('api.artifacts-post') }}",
+            url: "{{ url_for('api.artifact_create') }}",
             type: "POST",
             data: "<xml><filename>"+filename+"</filename><content>"+content+"</content></xml>",
             contentType: 'application/xml',
