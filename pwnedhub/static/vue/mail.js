@@ -17,7 +17,7 @@ var Mail = Vue.component("mail", {
                             <tr v-if="mail.length === 0">
                                 <td colspan="4" class="center-content">you have no mail</td>
                             </tr>
-                            <envelope v-else v-for="envelope in mail" v-bind:key="envelope.id" v-bind:envelope="envelope"></envelope>
+                            <envelope v-else v-for="envelope in mail" v-bind:key="envelope.id" v-bind:envelope="envelope" v-on:click="updateMail"></envelope>
                         </tbody>
                     </table>
                 </div>
@@ -34,8 +34,7 @@ var Mail = Vue.component("mail", {
             this.mail = mail;
         },
         getMail: function() {
-            // [vuln] api returns all data and relies on client-side authz
-            fetch(this.URL_API_MAIL_GET)
+            fetch(this.URL_API_MAILBOX_READ)
             .then(response => response.json())
             .then(json => {
                 this.updateMail(json.mail);
@@ -57,12 +56,26 @@ Vue.component("envelope", {
             <td class="left-content">{{ envelope.subject }}</td>
             <td>{{ envelope.created }}</td>
             <td>
-                <router-link tag="button" v-bind:to="{ name: 'Letter', params: { envelopeId: envelope.id }}">view</router-link>
+                <input type="button" value="view" v-on:click="openEnvelope" />
                 <input type="button" value="reply" onclick="" />
-                <input type="button" value="delete" onclick="" />
+                <input type="button" value="delete" v-on:click="deleteEnvelope" />
             </td>
         </tr>
     `,
+    methods: {
+        openEnvelope: function() {
+            this.$router.push({ name: 'Letter', params: { envelopeId: this.envelope.id } });
+        },
+        deleteEnvelope: function() {
+            fetch(this.URL_API_MAIL_DELETE.format(this.envelope.id), {
+                method: "DELETE",
+            })
+            .then(response => response.json())
+            .then(json => {
+                this.$emit("click", json.mail);
+            });
+        },
+    },
 });
 
 var Letter = Vue.component("letter", {
@@ -79,9 +92,9 @@ var Letter = Vue.component("letter", {
                 <label for="content">content:</label>
                 <div class="u-full-width bordered rounded" name="content">{{ envelope.content }}</div><br>
                 <div class="u-full-width right-content">
-                    <router-link tag="button" v-bind:to="{ name: 'Mail' }">inbox</router-link>
+                    <input type="button" value="inbox" v-on:click="gotoMailbox" />
                     <input type="button" value="reply" onclick="" />
-                    <input type="button" value="delete" onclick="" />
+                    <input type="button" value="delete" v-on:click="deleteEnvelope" />
                 </div>
             </div>
         </div>
@@ -92,11 +105,23 @@ var Letter = Vue.component("letter", {
         }
     },
     methods: {
+        gotoMailbox: function() {
+            this.$router.push({ name: 'Mail' });
+        },
         getEnvelope: function() {
-            fetch(this.URL_API_LETTER_GET.format(this.envelopeId))
+            fetch(this.URL_API_MAIL_READ.format(this.envelopeId))
             .then(response => response.json())
             .then(json => {
                 this.envelope = json;
+            });
+        },
+        deleteEnvelope: function() {
+            fetch(this.URL_API_MAIL_DELETE.format(this.envelope.id), {
+                method: "DELETE",
+            })
+            .then(response => response.json())
+            .then(json => {
+                this.$router.push({ name: "Mail" });
             });
         },
     },
