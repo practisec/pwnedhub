@@ -10,15 +10,15 @@
                     </thead>
                     <tbody>
                     {% if mail|length > 0 %}
-                    {% for item in mail %}
-                        <tr{% if item.read == 0 %} style="font-weight: bold;"{% endif %}>
-                            <td class="left-content">{{ item.sender.name }}</td>
-                            <td class="left-content">{{ item.subject }}</td>
-                            <td>{{ item.created_as_string }}</td>
+                    {% for letter in mail %}
+                        <tr{% if letter.read == 0 %} style="font-weight: bold;"{% endif %}>
+                            <td class="left-content">{{ letter.sender.name }}</td>
+                            <td class="left-content">{{ letter.subject }}</td>
+                            <td>{{ letter.created_as_string }}</td>
                             <td>
-                                <input name="action_{{ item.id }}" type="button" value="view" onclick="window.location='{{ url_for('core.mail_view', mid=item.id) }}'" />
-                                <input name="action_{{ item.id }}" type="button" value="reply" onclick="window.location='{{ url_for('core.mail_reply', mid=item.id) }}'" />
-                                <input name="action_{{ item.id }}" type="button" value="delete" onclick="window.location='{{ url_for('core.mail_delete', mid=item.id) }}'" />
+                                <input name="action_{{ letter.id }}" type="button" value="view" onclick="window.location='{{ url_for('core.mail_view', mid=letter.id) }}'" />
+                                <input name="action_{{ letter.id }}" type="button" value="reply" onclick="window.location='{{ url_for('core.mail_reply', mid=letter.id) }}'" />
+                                <input name="action_{{ letter.id }}" type="button" value="delete" onclick="window.location='{{ url_for('core.mail_delete', mid=letter.id) }}'" />
                             </td>
                         </tr>
                     {% endfor %}

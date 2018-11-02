@@ -163,14 +163,14 @@ def mail_compose():
         if content:
             receiver = User.query.get(request.form['receiver'])
             subject = request.form['subject']
-            mail = Mail(content=content, subject=subject, sender=g.user, receiver=receiver)
-            db.session.add(mail)
+            letter = Mail(content=content, subject=subject, sender=g.user, receiver=receiver)
+            db.session.add(letter)
             db.session.commit()
             # generate automated Administrator response
             if receiver.id == 1:
                 content = "I would be more than happy to help you with that. Unforunately, the person respsonsible for that is unavailable at the moment. We'll get back with you soon. Thanks."
-                mail = Mail(content=content, subject='RE:'+subject, sender=receiver, receiver=g.user)
-                db.session.add(mail)
+                letter = Mail(content=content, subject='RE:'+subject, sender=receiver, receiver=g.user)
+                db.session.add(letter)
                 db.session.commit()
             flash('Mail sent.')
             return redirect(url_for('core.mail'))
@@ -180,29 +180,29 @@ def mail_compose():
 @core.route('/mail/reply/<int:mid>')
 @login_required
 def mail_reply(mid=0):
-    mail = Mail.query.filter(Mail.id == mid).first()
-    return render_template('mail_reply.html', mail=mail)
+    letter = Mail.query.filter(Mail.id == mid).first()
+    return render_template('mail_reply.html', letter=letter)
 
 @core.route('/mail/view/<int:mid>')
 @login_required
 def mail_view(mid):
-    mail = Mail.query.get(mid)
-    if mail:
-        if mail.read == 0:
-            mail.read = 1
-            db.session.add(mail)
+    letter = Mail.query.get(mid)
+    if letter:
+        if letter.read == 0:
+            letter.read = 1
+            db.session.add(letter)
             db.session.commit()
     else:
         flash('Invalid mail ID.')
         return redirect(url_for('core.mail'))
-    return render_template('mail_view.html', mail=mail)
+    return render_template('mail_view.html', letter=letter)
 
 @core.route('/mail/delete/<int:mid>')
 @login_required
 def mail_delete(mid):
-    mail = Mail.query.get(mid)
-    if mail:
-        db.session.delete(mail)
+    letter = Mail.query.get(mid)
+    if letter:
+        db.session.delete(letter)
         db.session.commit()
         flash('Mail deleted.')
     else:

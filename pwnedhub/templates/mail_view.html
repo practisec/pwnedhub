@@ -3,15 +3,15 @@
     <div class="row">
         <div class="ten columns offset-by-one mail">
             <label for="sender">from:</label>
-            <div class="u-full-width" name="sender">{{ mail.sender.name }}</div><br>
+            <div class="u-full-width" name="sender">{{ letter.sender.name }}</div><br>
             <label for="subject">subject:</label>
-            <div class="u-full-width" name="subject"><h5>{{ mail.subject }}<h5></div>
+            <div class="u-full-width" name="subject"><h5>{{ letter.subject }}</h5></div>
             <label for="content">content:</label>
-            <div class="u-full-width bordered rounded" name="content">{{ mail.content|safe }}</div><br>
+            <div class="u-full-width bordered rounded" name="content">{{ letter.content|safe }}</div><br>
             <div class="u-full-width right-content">
                 <input type="button" value="inbox" onclick="window.location='{{ url_for('core.mail') }}'" />
-                <input type="button" value="reply" onclick="window.location='{{ url_for('core.mail_reply', mid=mail.id) }}'" />
-                <input type="button" value="delete" onclick="window.location='{{ url_for('core.mail_delete', mid=mail.id) }}'" />
+                <input type="button" value="reply" onclick="window.location='{{ url_for('core.mail_reply', mid=letter.id) }}'" />
+                <input type="button" value="delete" onclick="window.location='{{ url_for('core.mail_delete', mid=letter.id) }}'" />
             </div>
         </div>
     </div>

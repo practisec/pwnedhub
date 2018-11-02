@@ -4,11 +4,11 @@
         <div class="ten columns offset-by-one mail">
             <form action="{{ url_for('core.mail_compose') }}" method="post">
                 <label for="receiver-show">to:</label>
-                <div class="u-full-width" name="receiver-show">{{ mail.sender.name }}</div><br>
+                <div class="u-full-width" name="receiver-show">{{ letter.sender.name }}</div><br>
                 <label for="subject-show">subject:</label>
-                <div class="u-full-width" name="subject-show"><h5>RE: {{ mail.subject }}</h5></div>
-                <input type="hidden" name="receiver" value="{{ mail.sender.id }}" />
-                <input type="hidden" name="subject" value="RE: {{ mail.subject }}" />
+                <div class="u-full-width" name="subject-show"><h5>RE: {{ letter.subject }}</h5></div>
+                <input type="hidden" name="receiver" value="{{ letter.sender.id }}" />
+                <input type="hidden" name="subject" value="RE: {{ letter.subject }}" />
                 <label for="content">content:</label>
                 <textarea class="u-full-width" name="content" placeholder="content here..."></textarea><br>
                 <div class="u-full-width right-content">
