@@ -2,10 +2,15 @@
 // requires vue.js library
 // place between vue and custom component code
 
+// can also be done using a JS object, but would
+// require importing via the "data" attribute
+
 Vue.mixin({
     data: function() {
         return {
             get URL_API_USERS_GET() { return "{{ url_for('api.users-get') }}" },
+            get URL_API_MAIL_GET() { return "{{ url_for('api.mail-get') }}" },
+            get URL_API_LETTER_GET() { return "{{ url_for('api.letter-get', mid='{0}') | urldecode }}" },
             get URL_API_MESSAGES_GET() { return "{{ url_for('api.messages-get') }}" },
             get URL_API_MESSAGES_POST() { return "{{ url_for('api.messages-post') }}" },
             get URL_API_MESSAGES_DELETE() { return "{{ url_for('api.messages-delete', mid='{0}') | urldecode }}"; },
@@ -13,4 +18,4 @@ Vue.mixin({
             get URL_IMG_TRASH() { return "{{ url_for('static', filename='images/trash.png') }}"; },
         }
     },
-})
+});

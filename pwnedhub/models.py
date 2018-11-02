@@ -28,7 +28,7 @@ class Message(db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'created': self.created_as_string, 
+            'created': self.created_as_string,
             'comment': self.comment,
             'author': {
                 'id': self.user.id,
@@ -53,6 +53,23 @@ class Mail(db.Model):
     @property
     def created_as_string(self):
         return self.created.strftime("%Y-%m-%d %H:%M:%S")
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'created': self.created_as_string,
+            'subject': self.subject,
+            'content': self.content,
+            'read': self.read,
+            'sender': {
+                'id': self.sender.id,
+                'name': self.sender.name,
+            },
+            'receiver': {
+                'id': self.receiver.id,
+                'name': self.receiver.name,
+            },
+        }
 
     def __repr__(self):
         return "<Mail '{}'>".format(self.id)

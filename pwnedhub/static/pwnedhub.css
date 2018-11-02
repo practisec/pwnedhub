@@ -49,7 +49,7 @@ th, td {
     text-align: center;
 }
 
-td input, td select {
+td input, td select, td button {
     vertical-align: middle;
     margin-top: .5rem;
     margin-bottom: .5rem;

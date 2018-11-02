@@ -1,7 +1,7 @@
 from flask import Blueprint, Response, request, session, g, abort, jsonify
 from sqlalchemy import desc
 from pwnedhub import db
-from pwnedhub.models import Message, Tool, User
+from pwnedhub.models import Mail, Message, Tool, User
 from pwnedhub.decorators import login_required
 from pwnedhub.utils import unfurl_url
 from pwnedhub.validators import is_valid_command
@@ -67,6 +67,29 @@ def tools(tid):
         tool = {}
     return jsonify(**dict(tool))
 
+# fetch mail
+@api.route('/mail', methods=['GET'], endpoint='mail-get')
+# fetch letter
+@api.route('/mail/<string:mid>', methods=['GET'], endpoint='letter-get')
+@login_required
+def mail(mid=None):
+    if mid and request.method == 'GET':
+        letter = Mail.query.get(mid)
+        if not letter:
+            abort(404)
+        # mark letter as read
+        if letter.read == 0:
+            letter.read = 1
+            db.session.add(letter)
+            db.session.commit()
+        letter = letter.serialize()
+        resp = jsonify(**letter)
+        return resp
+    # catch all and default response
+    mail = [m.serialize() for m in g.user.received_mail.order_by(Mail.created.desc()).all()]
+    resp = jsonify(mail=mail)
+    return resp
+
 # fetch messages
 @api.route('/messages', methods=['GET'], endpoint='messages-get')
 # create message
@@ -82,16 +105,13 @@ def messages(mid=None):
             msg = Message(comment=message, user=g.user)
             db.session.add(msg)
             db.session.commit()
-    if request.method == 'DELETE':
+    if mid and request.method == 'DELETE':
         message = Message.query.get(mid)
         if message and (message.user == g.user or g.user.is_admin):
             db.session.delete(message)
             db.session.commit()
-    messages = []
-    # add is_owner field to each message
-    for message in Message.query.order_by(Message.created.desc()).all():
-        message = message.serialize()
-        messages.append(message)
+    # catch all and default response
+    messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
     resp = jsonify(messages=messages)
     resp.mimetype = 'text/html'
     return resp
