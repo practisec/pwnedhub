@@ -20,7 +20,7 @@ var Messages = Vue.component("messages", {
     },
     methods: {
         getUserInfo: function() {
-            fetch(this.URL_API_USER_READ)
+            fetch(this.URL_API_USER_READ.format("me"))
             .then(response => response.json())
             .then(json => {
                 window.sessionStorage.setItem("userInfo", JSON.stringify(json));
@@ -29,7 +29,7 @@ var Messages = Vue.component("messages", {
         updateMessages: function(messages) {
             this.messages = messages;
         },
-        getMessages: function(event) {
+        getMessages: function() {
             fetch(this.URL_API_MESSAGES_READ)
             .then(response => response.json())
             .then(json => {
@@ -68,7 +68,7 @@ Vue.component("create-message", {
         }
     },
     methods: {
-        createMessage: function(event) {
+        createMessage: function() {
             fetch(this.URL_API_MESSAGE_CREATE, {
                 method: "POST",
                 body: JSON.stringify(this.messageForm),
