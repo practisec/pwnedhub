@@ -15,6 +15,17 @@ const routes = [
         component: Letter,
         props: true,
     },
+    {
+        path: '/mail/compose',
+        name: "Compose",
+        component: Compose,
+    },
+    {
+        path: '/mail/reply/:letterId',
+        name: "Reply",
+        component: Reply,
+        props: true,
+    },
 ]
 
 const router = new VueRouter({

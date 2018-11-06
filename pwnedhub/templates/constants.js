@@ -8,8 +8,10 @@
 Vue.mixin({
     data: function() {
         return {
-            get URL_API_USER_READ() { return "{{ url_for('api.user_read') }}" },
+            get URL_API_USER_READ() { return "{{ url_for('api.user_read', uid='{0}') | urldecode }}" },
+            get URL_API_USERS_READ() { return "{{ url_for('api.users_read') }}" },
             get URL_API_MAILBOX_READ() { return "{{ url_for('api.mailbox_read') }}" },
+            get URL_API_MAIL_CREATE() { return "{{ url_for('api.mail_create') }}" },
             get URL_API_MAIL_READ() { return "{{ url_for('api.mail_read', mid='{0}') | urldecode }}" },
             get URL_API_MAIL_DELETE() { return "{{ url_for('api.mail_delete', mid='{0}') | urldecode }}" },
             get URL_API_MESSAGES_READ() { return "{{ url_for('api.messages_read') }}" },

@@ -31,3 +31,5 @@ Happy testing!
 - The PwnedHub Team
 
 '''
+
+ADMIN_RESPONSE = "I would be more than happy to help you with that. Unforunately, the person respsonsible for that is unavailable at the moment. We'll get back with you soon. Thanks."

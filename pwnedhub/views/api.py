@@ -2,6 +2,7 @@ from flask import Blueprint, Response, request, session, g, abort, jsonify
 from sqlalchemy import desc
 from pwnedhub import db
 from pwnedhub.models import Mail, Message, Tool, User
+from pwnedhub.constants import ADMIN_RESPONSE
 from pwnedhub.decorators import login_required
 from pwnedhub.utils import unfurl_url
 from pwnedhub.validators import is_valid_command
@@ -13,6 +14,24 @@ import subprocess
 api = Blueprint('api', __name__, url_prefix='/api')
 
 # RESTful API controllers
+
+# get the current user
+@api.route('/users/<string:uid>', methods=['GET'])
+@login_required
+def user_read(uid):
+    if uid == 'me':
+        return jsonify(**g.user.serialize())
+    user = User.query.get(uid)
+    if not user:
+        abort(404)
+    return jsonify(**user.serialize(public=True))
+
+# get all users
+@api.route('/users', methods=['GET'])
+@login_required
+def users_read():
+    users = [u.serialize(public=True) for u in User.query.all()]
+    return jsonify(users=users)
 
 # create an artifact
 @api.route('/artifacts', methods=['POST'])
@@ -57,6 +76,24 @@ def tool_read(tid):
 def mailbox_read():
     mail = [m.serialize() for m in g.user.received_mail.order_by(Mail.created.desc()).all()]
     return jsonify(mail=mail)
+
+# create a piece of mail
+@api.route('/mail', methods=['POST'])
+@login_required
+def mail_create():
+    content = request.json.get('content')
+    receiver = User.query.get(request.json.get('receiver'))
+    subject = request.json.get('subject')
+    letter = Mail(content=content, subject=subject, sender=g.user, receiver=receiver)
+    db.session.add(letter)
+    db.session.commit()
+    # generate automated Administrator response
+    if receiver.role == 0:
+        content = ADMIN_RESPONSE
+        auto_letter = Mail(content=content, subject='RE:'+subject, sender=receiver, receiver=g.user)
+        db.session.add(auto_letter)
+        db.session.commit()
+    return jsonify(**letter.serialize())
 
 # get a piece of mail
 @api.route('/mail/<string:mid>', methods=['GET'])
@@ -136,21 +173,14 @@ def message_delete(mid):
 
 # RESTless API controllers
 
-# get the current user
-@api.route('/users/me', methods=['GET'])
-@login_required
-def user_read():
-    return jsonify(**g.user.serialize())
-
 # update the current user's notes
 @api.route('/notes', methods=['PUT'])
 @login_required
 def note_update():
-    if request.method == 'PUT':
-        g.user.notes = request.json.get('notes')
-        db.session.add(g.user)
-        db.session.commit()
-        return jsonify(notes=g.user.notes)
+    g.user.notes = request.json.get('notes')
+    db.session.add(g.user)
+    db.session.commit()
+    return jsonify(notes=g.user.notes)
 
 # execute a tool
 @api.route('/tools/<string:tid>/execute', methods=['POST'])

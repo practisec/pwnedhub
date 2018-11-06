@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, request, session, g, redirect, url_for
 from sqlalchemy import asc, desc
 from pwnedhub import db
 from pwnedhub.models import Mail, Message, Tool, User
-from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE
+from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
 from pwnedhub.decorators import login_required, roles_required
 from pwnedhub.validators import is_valid_password, is_valid_filename, is_valid_mimetype
 import os
@@ -167,8 +167,8 @@ def mail_compose():
             db.session.add(letter)
             db.session.commit()
             # generate automated Administrator response
-            if receiver.id == 1:
-                content = "I would be more than happy to help you with that. Unforunately, the person respsonsible for that is unavailable at the moment. We'll get back with you soon. Thanks."
+            if receiver.role == 0:
+                content = ADMIN_RESPONSE
                 letter = Mail(content=content, subject='RE:'+subject, sender=receiver, receiver=g.user)
                 db.session.add(letter)
                 db.session.commit()
