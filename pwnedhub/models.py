@@ -61,14 +61,8 @@ class Mail(db.Model):
             'subject': self.subject,
             'content': self.content,
             'read': self.read,
-            'sender': {
-                'id': self.sender.id,
-                'name': self.sender.name,
-            },
-            'receiver': {
-                'id': self.receiver.id,
-                'name': self.receiver.name,
-            },
+            'sender': self.sender.serialize(public=True),
+            'receiver': self.receiver.serialize(public=True),
         }
 
     def __repr__(self):
@@ -139,7 +133,12 @@ class User(db.Model):
     def get_by_username(username):
         return User.query.filter_by(username=username).first()
 
-    def serialize(self):
+    def serialize(self, public=False):
+        if public:
+            return {
+                'id': self.id,
+                'name': self.name,
+            }
         return {
             'id': self.id,
             'created': self.created_as_string,
