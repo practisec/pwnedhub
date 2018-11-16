@@ -20,11 +20,13 @@ DEFAULT_NOTE = '''Welcome to PwnedHub! A collaborative space to conduct security
 
 * This is your notes space. Keep your personal notes here.
 
-* Use the messages space to collaborate with coworkers.
+* Store artifacts from local and external tools in the artifacts space.
 
-* Store artifacts from external tools on the artifacts space.
+* Leverage popular security testing tools right from your browser in the tools space.
 
-* Leverage popular security testing tools right from your browser on the tools space.
+* Privately collaborate with coworkers in the mailbox space.
+
+* Share information and socialize in the messages space.
 
 Happy testing!
 
@@ -32,4 +34,4 @@ Happy testing!
 
 '''
 
-ADMIN_RESPONSE = "I would be more than happy to help you with that. Unforunately, the person respsonsible for that is unavailable at the moment. We'll get back with you soon. Thanks."
+ADMIN_RESPONSE = "I would be more than happy to help you with that. Unfortunately, the person responsible for that is unavailable at the moment. We'll get back with you soon. Thanks."

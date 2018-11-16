@@ -3,6 +3,7 @@ Disallow: /admin/tools
 Disallow: /admin/users
 Disallow: /artifacts
 Disallow: /home
+Disallow: /mail
 Disallow: /messages
 Disallow: /notes
 Disallow: /profile
