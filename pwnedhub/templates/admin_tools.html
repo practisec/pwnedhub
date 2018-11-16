@@ -20,7 +20,7 @@
                             <td>{{ tool.path }}</td>
                             <td>{{ tool.description }}</td>
                             <td>
-                                <input type="button" onclick="window.location='{{ url_for('core.admin_tools_remove', tid=tool.id) }}'" value="remove" />
+                                <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_tools_remove', tid=tool.id) }}'"><img src="{{ url_for('static', filename='images/delete.png') }}" title="remove" /></button>
                             </td>
                         </tr>
                     {% endfor %}

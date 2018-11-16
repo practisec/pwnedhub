@@ -346,25 +346,6 @@ section {
     opacity: 0.5;
 }
 
-.delete {
-    float: right;
-    font-size: 1.25rem;
-    color: #e1e1e1;
-    cursor: pointer;
-    cursor: hand;
-}
-
-.delete a {
-    color: inherit;
-    text-decoration: inherit;
-}
-
-.delete img {
-    opacity: 0.2;
-    width: 2rem;
-    margin: .5rem;
-}
-
 .artifacts {}
 
 .artifacts form {
@@ -387,13 +368,38 @@ section {
     margin: 0;
 }
 
-.swf {}
+/* image button baseline */
+button.img-btn {
+    height: auto;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    line-height: normal;
+}
 
-input[type="button"].save-as {
+button.img-btn img {
+    height: 3rem;
+    opacity: 0.2;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+/* image button customizations */
+button.save-as {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background-color: #fff;
+}
+
+button.delete {
+    position: absolute;
+    top: 0.5rem;
+    right: 0;
+}
+
+button.delete img {
+    height: 2rem;
 }
 
 .error {}

@@ -18,7 +18,11 @@ Vue.mixin({
             get URL_API_MESSAGE_CREATE() { return "{{ url_for('api.message_create') }}" },
             get URL_API_MESSAGE_DELETE() { return "{{ url_for('api.message_delete', mid='{0}') | urldecode }}"; },
             get URL_API_UNFURL() { return "{{ url_for('api.unfurl') }}" },
-            get URL_IMG_TRASH() { return "{{ url_for('static', filename='images/trash.png') }}"; },
+            get URL_IMG_INBOX() { return "{{ url_for('static', filename='images/inbox.png') }}"; },
+            get URL_IMG_VIEW() { return "{{ url_for('static', filename='images/view.png') }}"; },
+            get URL_IMG_REPLY() { return "{{ url_for('static', filename='images/reply.png') }}"; },
+            get URL_IMG_SEND() { return "{{ url_for('static', filename='images/send.png') }}"; },
+            get URL_IMG_DELETE() { return "{{ url_for('static', filename='images/delete.png') }}"; },
         }
     },
 });

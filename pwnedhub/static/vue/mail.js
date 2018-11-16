@@ -59,9 +59,9 @@ Vue.component("envelope", {
             <td class="left-content">{{ envelope.subject }}</td>
             <td>{{ envelope.created }}</td>
             <td>
-                <input type="button" value="view" v-on:click="openEnvelope" />
-                <input type="button" value="reply" v-on:click="draftReply" />
-                <input type="button" value="delete" v-on:click="deleteEnvelope" />
+                <button type="button" class="img-btn" v-on:click="openEnvelope"><img v-bind:src="URL_IMG_VIEW" title="view" /></button>
+                <button type="button" class="img-btn" v-on:click="draftReply"><img v-bind:src="URL_IMG_REPLY" title="reply" /></button>
+                <button type="button" class="img-btn" v-on:click="deleteEnvelope"><img v-bind:src="URL_IMG_DELETE" title="delete" /></button>
             </td>
         </tr>
     `,
@@ -99,9 +99,9 @@ var Letter = Vue.component("letter", {
                 <label for="content">content:</label>
                 <div class="u-full-width bordered rounded" name="content">{{ envelope.content }}</div><br>
                 <div class="u-full-width right-content">
-                    <input type="button" value="inbox" v-on:click="gotoMailbox" />
-                    <input type="button" value="reply" v-on:click="draftReply" />
-                    <input type="button" value="delete" v-on:click="deleteEnvelope" />
+                    <button type="button" class="img-btn" v-on:click="gotoMailbox"><img v-bind:src="URL_IMG_INBOX" title="inbox" /></button>
+                    <button type="button" class="img-btn" v-on:click="draftReply"><img v-bind:src="URL_IMG_REPLY" title="reply" /></button>
+                    <button type="button" class="img-btn" v-on:click="deleteEnvelope"><img v-bind:src="URL_IMG_DELETE" title="delete" /></button>
                 </div>
             </div>
         </div>
@@ -144,21 +144,19 @@ var Compose = Vue.component("compose", {
     template: `
         <div class="row">
             <div class="ten columns offset-by-one mail">
-                <form v-on:submit.prevent="sendLetter">
-                    <label for="receiver">to:</label>
-                    <select name="receiver" v-model="letterForm.receiver">
-                        <option value="" disabled hidden>recipient...</option>
-                        <option v-for="user in users" v-bind:key="user.id" v-bind:value="user.id">{{ user.name }}</option>
-                    </select><br>
-                    <label for="subject">subject:</label>
-                    <input class="u-full-width" name="subject" type="text" v-model="letterForm.subject" placeholder="subject here..." /><br>
-                    <label for="content">content:</label>
-                    <textarea class="u-full-width" name="content" v-model="letterForm.content" placeholder="content here..."></textarea><br>
-                    <div class="u-full-width right-content">
-                        <input type="button" value="discard" v-on:click="discardDraft" />
-                        <input type="submit" value="send" />
-                    </div>
-                </form>
+                <label for="receiver">to:</label>
+                <select name="receiver" v-model="letterForm.receiver">
+                    <option value="" disabled hidden>recipient...</option>
+                    <option v-for="user in users" v-bind:key="user.id" v-bind:value="user.id">{{ user.name }}</option>
+                </select><br>
+                <label for="subject">subject:</label>
+                <input class="u-full-width" name="subject" type="text" v-model="letterForm.subject" placeholder="subject here..." /><br>
+                <label for="content">content:</label>
+                <textarea class="u-full-width" name="content" v-model="letterForm.content" placeholder="content here..."></textarea><br>
+                <div class="u-full-width right-content">
+                    <button type="button" class="img-btn" v-on:click="sendLetter"><img v-bind:src="URL_IMG_SEND" title="send" /></button>
+                    <button type="button" class="img-btn" v-on:click="discardDraft"><img v-bind:src="URL_IMG_DELETE" title="discard" /></button>
+                </div>
             </div>
         </div>
     `,
@@ -207,18 +205,16 @@ var Reply = Vue.component("reply", {
     template: `
         <div class="row">
             <div v-if="letter" class="ten columns offset-by-one mail">
-                <form v-on:submit.prevent="sendReply">
-                    <label for="receiver-show">to:</label>
-                    <div class="u-full-width" name="receiver-show">{{ letter.sender.name }}</div><br>
-                    <label for="subject-show">subject:</label>
-                    <div class="u-full-width" name="subject-show"><h5>RE: {{ letter.subject }}</h5></div>
-                    <label for="content">content:</label>
-                    <textarea class="u-full-width" name="content" v-model="letterForm.content" placeholder="content here..."></textarea><br>
-                    <div class="u-full-width right-content">
-                        <input type="button" value="discard" v-on:click="discardDraft" />
-                        <input type="submit" value="send" />
-                    </div>
-                </form>
+                <label for="receiver-show">to:</label>
+                <div class="u-full-width" name="receiver-show">{{ letter.sender.name }}</div><br>
+                <label for="subject-show">subject:</label>
+                <div class="u-full-width" name="subject-show"><h5>RE: {{ letter.subject }}</h5></div>
+                <label for="content">content:</label>
+                <textarea class="u-full-width" name="content" v-model="letterForm.content" placeholder="content here..."></textarea><br>
+                <div class="u-full-width right-content">
+                    <button type="button" class="img-btn" v-on:click="sendReply"><img v-bind:src="URL_IMG_SEND" title="send" /></button>
+                    <button type="button" class="img-btn" v-on:click="discardDraft"><img v-bind:src="URL_IMG_DELETE" title="discard" /></button>
+                </div>
             </div>
         </div>
     `,

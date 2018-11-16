@@ -14,8 +14,8 @@
                 <label for="content">content:</label>
                 <textarea class="u-full-width" name="content" placeholder="content here..."></textarea><br>
                 <div class="u-full-width right-content">
-                    <input type="button" value="discard" onclick="window.location='{{ url_for('core.mail') }}'" />
-                    <input type="submit" value="send" onclick="this.form.submit();" />
+                    <button type="submit" class="img-btn" onclick="this.form.submit();"><img src="{{ url_for('static', filename='images/send.png') }}" title="send" /></button>
+                    <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail') }}'"><img src="{{ url_for('static', filename='images/delete.png') }}" title="discard" /></button>
                 </div>
             </form>
         </div>

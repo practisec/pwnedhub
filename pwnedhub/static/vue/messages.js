@@ -92,16 +92,12 @@ Vue.component("show-messages", {
         messages: Array,
     },
     template: `
-        <div>
+        <div style="position: relative;">
             <div class="center-content" v-if="messages.length === 0">
                 no messages
             </div>
             <div v-else v-for="message in paginatedMessages" v-bind:key="message.id" v-bind:message="message">
-                <div v-if="isEditable(message) === true" v-bind:name="'action_'+message.id" class="delete">
-                    <a v-on:click="deleteMessage(message)">
-                        <img v-bind:src="URL_IMG_TRASH" />
-                    </a>
-                </div>
+                <button type="button" class="delete img-btn" v-if="isEditable(message) === true" v-on:click="deleteMessage(message)"><img v-bind:src="URL_IMG_DELETE" title="delete" /></button>
                 <div v-bind:style="isAuthor(message) ? { fontWeight: 'bold' } : ''">
                     <p class="name"><span class="red">{{ message.author.name }}</span> <span style="font-size: .75em">({{ message.author.username }})</span></p>
                     <p class="message" ref="message">{{ message.comment }}</p>

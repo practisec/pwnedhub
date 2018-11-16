@@ -16,7 +16,7 @@
     <div class="row">
         <div class="u-full-width rounded output">
             <pre id="output"></pre>
-            <input class="save-as" type="button" onclick="save_artifact();" value="save as artifact" />
+            <button type="button" class="save-as img-btn" onclick="save_artifact();"><img src="{{ url_for('static', filename='images/save-as.png') }}" title="save as artifact" /></button>
         </div>
     </div>
     <script>

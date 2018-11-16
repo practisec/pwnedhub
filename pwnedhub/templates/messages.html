@@ -18,13 +18,9 @@
             </div>
         {% else %}
         {% for message in messages %}
-            <div>
+            <div style="position: relative;">
             {% if message.user == g.user or g.user.is_admin %}
-                <div name="action_{{ message.id }}" class="delete">
-                    <a href="{{ url_for('core.messages_delete', mid=message.id) }}">
-                        <img src="{{ url_for('static', filename='images/trash.png') }}" />
-                    </a>
-                </div>
+                <button type="button" class="delete img-btn" onclick="window.location='{{ url_for('core.messages_delete', mid=message.id) }}'"><img src="{{ url_for('static', filename='images/delete.png') }}" title="delete" /></button>
             {% endif %}
                 <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
                     <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
