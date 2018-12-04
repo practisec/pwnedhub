@@ -149,3 +149,15 @@ class User(db.Model):
 
     def __repr__(self):
         return "<User '{}'>".format(self.username)
+
+class Score(db.Model):
+    __tablename__ = 'scores'
+    id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+    player = db.Column(db.String(255), nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+    recid = db.Column(db.Integer)
+    recording = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        return "<Score '{}:{}'>".format(self.player, self.score)
