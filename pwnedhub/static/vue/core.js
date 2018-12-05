@@ -35,4 +35,16 @@ const router = new VueRouter({
 const app = new Vue({
     el: "#app",
     router,
+    methods: {
+        getUserInfo: function() {
+            fetch(this.URL_API_USER_READ.format("me"))
+            .then(response => response.json())
+            .then(json => {
+                window.sessionStorage.setItem("userInfo", JSON.stringify(json));
+            });
+        },
+    },
+    created: function() {
+        this.getUserInfo();
+    },
 });
