@@ -5,6 +5,7 @@
             <form action="{{ url_for('core.mail_compose') }}" method="post">
                 <label for="receiver">to:</label>
                 <select name="receiver">
+                    <option value="" disabled selected>recipient...</option>
                 {% for user in users %}
                     <option value="{{ user.id }}">{{ user.name }}</option>
                 {% endfor %}
