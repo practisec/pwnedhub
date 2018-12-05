@@ -147,7 +147,7 @@ var Compose = Vue.component("compose", {
                 <label for="receiver">to:</label>
                 <select name="receiver" v-model="letterForm.receiver">
                     <option value="" disabled hidden>recipient...</option>
-                    <option v-for="user in users" v-bind:key="user.id" v-bind:value="user.id">{{ user.name }}</option>
+                    <option v-for="recipient in recipients" v-bind:key="recipient.id" v-bind:value="recipient.id">{{ recipient.name }}</option>
                 </select><br>
                 <label for="subject">subject:</label>
                 <input class="u-full-width" name="subject" type="text" v-model="letterForm.subject" placeholder="subject here..." /><br>
@@ -162,7 +162,7 @@ var Compose = Vue.component("compose", {
     `,
     data: function() {
         return {
-            users: [],
+            recipients: [],
             letterForm: {
                 receiver: "",
                 subject: "",
@@ -175,7 +175,10 @@ var Compose = Vue.component("compose", {
             fetch(this.URL_API_USERS_READ)
             .then(response => response.json())
             .then(json => {
-                this.users = json.users;
+                this.recipients = json.users.filter(function(user) {
+                    var currentUser = JSON.parse(window.sessionStorage.getItem("userInfo"));
+                    return user.id !== currentUser.id;
+                });
             });
         },
         discardDraft: function() {
@@ -187,9 +190,13 @@ var Compose = Vue.component("compose", {
                 body: JSON.stringify(this.letterForm),
                 headers:{"Content-Type": "application/json"}
             })
+            .then(handleErrors)
             .then(response => {
                 this.$router.push({ name: "Mail" });
                 show_flash("Mail sent.");
+            })
+            .catch(error => {
+                show_flash("Error sending mail.");
             });
         },
     },
