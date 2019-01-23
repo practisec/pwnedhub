@@ -378,7 +378,7 @@ button.img-btn {
 }
 
 button.img-btn img {
-    height: 3rem;
+    height: 2rem;
     opacity: 0.2;
     padding: 0;
     margin: 0;
@@ -396,10 +396,6 @@ button.delete {
     position: absolute;
     top: 0.5rem;
     right: 0;
-}
-
-button.delete img {
-    height: 2rem;
 }
 
 .error {}
