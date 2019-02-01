@@ -51,10 +51,10 @@ def login():
     if session.get('user_id'):
         return redirect(url_for('core.home'))
     if request.method == 'POST':
-        query = "SELECT * FROM users WHERE username='{}' AND password_hash='{}'"
         username = request.form['username']
         password_hash = xor_encrypt(request.form['password'], current_app.config['PW_ENC_KEY'])
-        user = db.session.execute(query.format(username, password_hash)).first()
+        query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
+        user = db.session.execute(query).first()
         if user and user['status'] == 1:
             session['user_id'] = user.id
             path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user.id)).hexdigest())
