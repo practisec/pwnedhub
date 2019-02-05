@@ -1,31 +1,35 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="row">
-        <div class="u-full-width center-content">
+<div class="row">
+    <div class="col-xs-12">
+        <div class="center-content">
             <form action="{{ url_for('core.artifacts_save', method='file') }}" enctype="multipart/form-data" method="post">
                 <input name="file" type="file" />
                 <input type="submit" value="upload" onclick="this.form.submit();" />
             </form>
         </div>
     </div>
-    <div class="row">
-        <div class="u-full-width center-content artifacts">
+</div>
+<div class="row">
+    <div class="col-xs-8 col-xs-offset-2">
+        <div class="artifacts">
             <table class="center">
                 <thead>
-                    <tr><th>file</th><th>action</th></tr>
+                    <tr><th>file</th><th>created</th><th>action</th></tr>
                 </thead>
                 <tbody>
                 {% if artifacts|length > 0 %}
                 {% for artifact in artifacts %}
                     <tr>
-                        <td>{{ artifact }}</td>
+                        <td>{{ artifact.filename }}</td>
+                        <td>{{ artifact.modified }}</td>
                         <td>
                             <form action="{{ url_for('core.artifacts_view') }}" method="post">
-                                <input type="hidden" name="filename" value="{{ artifact }}" />
+                                <input type="hidden" name="filename" value="{{ artifact.filename }}" />
                                 <button type="submit" class="img-btn" onclick="this.form.submit();"><img src="{{ url_for('static', filename='images/view.png') }}" title="view" /></button>
                             </form>
                             <form action="{{ url_for('core.artifacts_delete') }}" method="post">
-                                <input type="hidden" name="filename" value="{{ artifact }}" />
+                                <input type="hidden" name="filename" value="{{ artifact.filename }}" />
                                 <button type="submit" class="img-btn" onclick="if (confirm('Delete the artifact?') == true) { this.form.submit(); }; return false;"><img src="{{ url_for('static', filename='images/delete.png') }}" title="delete" /></button>
                             </form>
                         </td>
@@ -38,4 +42,5 @@
             </table>
         </div>
     </div>
+</div>
 {% endblock %}

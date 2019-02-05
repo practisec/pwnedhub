@@ -5,6 +5,7 @@ from pwnedhub.models import Mail, Message, Tool, User, Score
 from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
 from pwnedhub.decorators import login_required, roles_required
 from pwnedhub.validators import is_valid_password, is_valid_filename, is_valid_mimetype
+from datetime import datetime
 from urllib import urlencode
 import math
 import os
@@ -256,8 +257,13 @@ def notes():
 @core.route('/artifacts')
 @login_required
 def artifacts():
+    artifacts = []
     for (dirpath, dirnames, filenames) in os.walk(session.get('upload_folder')):
-        artifacts = [f for f in filenames if is_valid_filename(f)]
+        valid_filenames = [f for f in filenames if is_valid_filename(f)]
+        for filename in valid_filenames:
+            modified_ts = os.path.getmtime(os.path.join(dirpath, filename))
+            modified = datetime.fromtimestamp(modified_ts).strftime('%Y-%m-%d %H:%M:%S')
+            artifacts.append({'filename': filename, 'modified': modified})
         break
     return render_template('artifacts.html', artifacts=artifacts)
 
