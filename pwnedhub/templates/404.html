@@ -1,7 +1,11 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="center-content error">
-        <h1>Oops! That page doesn't exist.</h1>
-        <h3>{{ message|safe }}</h3>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="error center-content">
+            <h1>Oops! That page doesn't exist.</h1>
+            <h3>{{ message|safe }}</h3>
+        </div>
     </div>
+</div>
 {% endblock %}

@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="row">
-        <div class="ten columns offset-by-one center-content">
+<div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+        <div class="center-content">
             <form action="{{ url_for('core.messages') }}" method="post">
                 <input style="float: right;" type="submit" value="submit" onclick="this.form.submit();" />
                 <span style="display: block; overflow: hidden; padding-right: 10px">
@@ -10,8 +11,10 @@
             </form>
         </div>
     </div>
-    <div class="row">
-        <div class="ten columns offset-by-one messages">
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="messages">
         {% if messages|length == 0 %}
             <div class="center-content">
                 no messages
@@ -38,7 +41,8 @@
             </div>
         </div>
     </div>
-    <script>
+</div>
+<script>
 function buildUnfurl(url, data) {
     // build array of values in specific order
     var values = [];
@@ -92,5 +96,5 @@ for (var i = 0; i < messages.length; i++) {
         }
     }
 }
-    </script>
+</script>
 {% endblock %}

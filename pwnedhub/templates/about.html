@@ -1,9 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="about">
-        <h3>Welcome to Pwned<span class="red"><b>Hub</b></span>!</h3>
-        <p>The ability to consolidate and organize testing tools and results during client engagements is key for consultants dealing with short timelines and high expectations. Unfortunately, today's options for cloud resourced security testing are poorly designed and fail to support even the most basic needs. PwnedHub attempts to solve this problem by providing a space to share knowledge, execute test cases, store results, and take a break when things get tense.</p>
-        <p>Developed by child prodigies Cooper ("Cooperman"), Taylor ("Babygirl#1"), and Tanner ("Hack3rPrincess"), PwnedHub was designed based on experience gained through years of security testing. The PwnedHub team is ambitions, talented, and so confident in their product, if you don't like it, they'll issue a full refund. No questions asked.</p>
-        <p>So what are you waiting for? Click <a href="{{ url_for('auth.login') }}">here</a> and get to work!</p>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="about">
+            <h3>Welcome to Pwned<span class="red"><b>Hub</b></span>!</h3>
+            <p>The ability to consolidate and organize testing tools and results during client engagements is key for consultants dealing with short timelines and high expectations. Unfortunately, today's options for cloud resourced security testing are poorly designed and fail to support even the most basic needs. PwnedHub attempts to solve this problem by providing a space to share knowledge, execute test cases, store results, and take a break when things get tense.</p>
+            <p>Developed by child prodigies Cooper ("Cooperman"), Taylor ("Babygirl#1"), and Tanner ("Hack3rPrincess"), PwnedHub was designed based on experience gained through years of security testing. The PwnedHub team is ambitions, talented, and so confident in their product, if you don't like it, they'll issue a full refund. No questions asked.</p>
+            <p>So what are you waiting for? Click <a href="{{ url_for('auth.login') }}">here</a> and get to work!</p>
+        </div>
     </div>
+</div>
 {% endblock %}

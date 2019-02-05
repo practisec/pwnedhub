@@ -5,45 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="{{ url_for('static', filename='jquery-1.6.2.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='common.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='skeleton.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='skeleton-flexbox.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pwnedhub.css') }}">
 </head>
 <body>
     <div id="flash" class="flash center-content rounded shaded">{{ get_flashed_messages()|join(', ') }}</div>
-    <header class="shaded">
+    <header>
         <div class="container">
             <div class="row">
-                <div class="u-full-width header">
-                    <div class="brand">
-                        <a href="{{ url_for('core.index') }}">Pwned<span class="red"><b>Hub</b></span></a>
-                    </div>
-                    <div class="nav">
+                <div class="col-xs-12">
+                    <nav>
+                        <div class="brand">
+                            <a href="{{ url_for('core.index') }}">Pwned<span class="red"><b>Hub</b></span></a>
+                        </div>
                         <ul>
                         {% if g.user %}
                             <li><a href="#">testing</a>
-                                <ul class="rounded shaded">
+                                <ul>
                                     <li><a href="{{ url_for('core.notes') }}">notes</a></li>
                                     <li><a href="{{ url_for('core.artifacts') }}">artifacts</a></li>
                                     <li><a href="{{ url_for('core.tools') }}">tools</a></li>
                                 </ul>
                             </li>
                             <li><a href="#">collaboration</a>
-                                <ul class="rounded shaded">
+                                <ul>
                                     <li><a href="{{ url_for('core.mail') }}">mailbox</a></li>
                                     <li><a href="{{ url_for('core.messages') }}">messages</a></li>
                                 </ul>
                             </li>
                         {% if g.user.is_admin %}
                             <li><a href="#">admin</a>
-                                <ul class="rounded shaded">
+                                <ul>
                                     <li><a href="{{ url_for('core.admin_tools') }}">tools</a></li>
                                     <li><a href="{{ url_for('core.admin_users') }}">users</a></li>
                                 </ul>
                             </li>
                         {% endif %}
                             <li class="user"><a href="#">{{ g.user.name }}</a>
-                                <ul class="rounded shaded">
+                                <ul>
                                     <li><a href="{{ url_for('core.profile') }}">profile</a></li>
                                     <li><a href="{{ url_for('auth.logout') }}">logout</a></li>
                                 </ul>
@@ -53,26 +52,26 @@
                             <li><a href="{{ url_for('auth.login') }}">log in</a></li>
                         {% endif %}
                         </ul>
-                    </div>
+                    </nav>
                 </div>
             </div>
         </div>
     </header>
     <section>
         <div class="container">
-            <div class="content rounded shaded">
-                {% block body %}{% endblock %}
-            </div>
+            {% block body %}{% endblock %}
         </div>
     </section>
     <footer>
         <div class="container">
             <div class="row">
-                <div class="footer center-content">
-                    <a href="{{ url_for('core.index') }}">home</a>
-                    |
-                    <a href="{{ url_for('core.about') }}">about</a><br>
-                    &copy; {{ date.year }} PwnedHub. All rights reserved.
+                <div class="col-xs-12">
+                    <div class="footer center-content">
+                        <a href="{{ url_for('core.index') }}">home</a>
+                        |
+                        <a href="{{ url_for('core.about') }}">about</a><br>
+                        &copy; {{ date.year }} PwnedHub. All rights reserved.
+                    </div>
                 </div>
             </div>
         </div>

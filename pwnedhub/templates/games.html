@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="row">
-        <div class="u-full-width center-content rounded swf">
+<div class="row">
+    <div class="col-xs-12">
+        <div class="swf center-content">
             <h4>Snake Classic</h4>
             <object type="application/x-shockwave-flash" data="{{ url_for('static', filename='snake.swf') }}" width="720" height="520">
                 <param name="movie" value="snake.swf" />
@@ -22,4 +23,5 @@
             </object>
         </div>
     </div>
+</div>
 {% endblock %}

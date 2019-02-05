@@ -1,8 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
-    {% if users|length > 0 %}
-    <div class="row">
-        <div class="u-full-width center-content">
+{% if users|length > 0 %}
+<div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+        <div class="admin">
             <table class="center">
                 <thead>
                     <tr><th>created</th><th>username</th><th>role</th><th>status</th><th>action</th></tr>
@@ -32,5 +33,6 @@
             </table>
         </div>
     </div>
-    {% endif %}
+</div>
+{% endif %}
 {% endblock %}

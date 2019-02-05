@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="row">
-        <div class="ten columns offset-by-one mail">
+<div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+        <div class="mail">
             <form action="{{ url_for('core.mail_compose') }}" method="post">
                 <label for="receiver">to:</label>
                 <select name="receiver">
@@ -14,6 +15,7 @@
                 <input class="u-full-width" name="subject" type="text" placeholder="subject here..." /><br>
                 <label for="content">content:</label>
                 <textarea class="u-full-width" name="content" placeholder="content here..."></textarea><br>
+                <hr>
                 <div class="u-full-width right-content">
                     <button type="submit" class="img-btn" onclick="this.form.submit();"><img src="{{ url_for('static', filename='images/send.png') }}" title="send" /></button>
                     <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail') }}'"><img src="{{ url_for('static', filename='images/delete.png') }}" title="discard" /></button>
@@ -21,4 +23,5 @@
             </form>
         </div>
     </div>
+</div>
 {% endblock %}

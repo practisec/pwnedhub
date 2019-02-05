@@ -4,32 +4,35 @@
     <title>PwnedHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='normalize.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='skeleton.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='skeleton-flexbox.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pwnedhub.css') }}">
 </head>
 <body>
     <section>
         <div class="container">
-            <div class="content rounded shaded">
-                <div class="row">
-                    <div class="u-full-width">
-                        <div class="center-content">
-                            <h1>Pwned<span class="red"><b>Hub</b></span></h1>
-                        </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="center-content">
+                        <h1>Pwned<span class="red"><b>Hub</b></span></h1>
+                        <p>Download our mobile application for an enhanced mobile experience!</p>
                     </div>
-                </div>                    
-                <div class="row">
-                    <div class="four columns offset-by-four">
-                        <div class="center-content">
-                            <p>Download our mobile application for an enhanced mobile experience!</p>
-                            <a href="https://play.google.com/store">
-                                <img style="max-width: 80%;" src="{{ url_for('static', filename='images/play-store.png') }}" />
-                            </a>
-                            <br>
-                            <a href="https://www.apple.com/ios/app-store/">
-                                <img style="max-width: 80%;" src="{{ url_for('static', filename='images/app-store.png') }}" />
-                            </a>
-                        </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="center-content">
+                        <a href="https://play.google.com/store">
+                            <img style="width: 80%; max-width: 250px;" src="{{ url_for('static', filename='images/play-store.png') }}" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="center-content">
+                        <a href="https://www.apple.com/ios/app-store/">
+                            <img style="width: 80%; max-width: 250px;" src="{{ url_for('static', filename='images/app-store.png') }}" />
+                        </a>
                     </div>
                 </div>
             </div>

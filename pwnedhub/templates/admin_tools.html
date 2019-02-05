@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="row">
-        <div class="u-full-width center-content">
+<div class="row">
+    <div class="col-xs-12">
+        <div class="admin">
             <form action="{{ url_for('core.admin_tools_add') }}" method="post">
                 <table class="center">
                     <thead>
@@ -29,4 +30,5 @@
             </form>
         </div>
     </div>
+</div>
 {% endblock %}

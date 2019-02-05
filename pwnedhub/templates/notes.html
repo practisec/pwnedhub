@@ -1,12 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="row">
-        <div class="u-full-width notes">
+<div class="row grow">
+    <div class="col-xs-12">
+        <div class="notes">
             <textarea name="notes" id="notes">{{ notes }}</textarea>
             <button type="button" class="save-as img-btn" onclick="save_artifact();"><img src="{{ url_for('static', filename='images/save-as.png') }}" title="save as artifact" /></button>
         </div>
     </div>
-    <script>
+</div>
+<script>
 var notes = document.getElementById("notes")
 var key = "{{ g.user.username|safe }}-notes";
 
@@ -52,5 +54,5 @@ function save_artifact() {
         });
     }
 }
-    </script>
+</script>
 {% endblock %}

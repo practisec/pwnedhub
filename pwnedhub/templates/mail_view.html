@@ -1,13 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="row">
-        <div class="ten columns offset-by-one mail">
-            <label for="sender">from:</label>
-            <div class="u-full-width" name="sender">{{ letter.sender.name }}</div><br>
-            <label for="subject">subject:</label>
+<div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+        <div class="mail">
             <div class="u-full-width" name="subject"><h5>{{ letter.subject }}</h5></div>
-            <label for="content">content:</label>
-            <div class="u-full-width bordered rounded" name="content">{{ letter.content|safe }}</div><br>
+            <div class="u-full-width" name="sender"><b>From {{ letter.sender.name }} @ {{ letter.created_as_string }}</b></div><br>
+            <div class="u-full-width" name="content">{{ letter.content|safe }}</div><br>
+            <hr>
             <div class="u-full-width right-content">
                 <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail') }}'"><img src="{{ url_for('static', filename='images/inbox.png') }}" title="inbox" /></button>
                 <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail_reply', mid=letter.id) }}'"><img src="{{ url_for('static', filename='images/reply.png') }}" title="reply" /></button>
@@ -15,4 +14,5 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

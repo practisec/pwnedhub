@@ -1,12 +1,28 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="center-content banner">
-        <h3>A <span class="red">secure</span> space to conduct <span class="red">security</span> assessments.</h3>
-        <input type="button" onclick="window.location='{{ url_for('auth.login') }}';" value="get started" />
+<div class="row">
+    <div class="col-xs-12">
+        <div class="banner center-content">
+            <h3>A <span class="red">secure</span> space to conduct <span class="red">security</span> assessments.</h3>
+            <input type="button" onclick="window.location='{{ url_for('auth.login') }}';" value="get started" />
+        </div>
     </div>
-    <div class="row center-content">
-        <div class="four columns panel rounded"><h5>Expose <span class="red">flaws</span>.</h5></div>
-        <div class="four columns panel rounded"><h5>Gather <span class="red">evidence</span>.</h5></div>
-        <div class="four columns panel rounded"><h5>Win <span class="red">engagements</span>.</h5></div>
+</div>
+<div class="row">
+    <div class="col-xs-4">
+        <div class="panel center-content">
+            <h5>Expose <span class="red">flaws</span>.</h5>
+        </div>
     </div>
+    <div class="col-xs-4">
+        <div class="panel center-content">
+            <h5>Gather <span class="red">evidence</span>.</h5>
+        </div>
+    </div>
+    <div class="col-xs-4">
+        <div class="panel center-content">
+            <h5>Win <span class="red">engagements</span>.</h5>
+        </div>
+    </div>
+</div>
 {% endblock %}
