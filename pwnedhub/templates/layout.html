@@ -3,10 +3,11 @@
 <head>
     <title>PwnedHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script type="text/javascript" src="{{ url_for('static', filename='jquery-1.6.2.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='common.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='skeleton-flexbox.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pwnedhub.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.6.2.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fontawesome.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton-flexbox.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub.css') }}">
 </head>
 <body>
     <div id="flash" class="flash center-content rounded shaded">{{ get_flashed_messages()|join(', ') }}</div>

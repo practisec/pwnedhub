@@ -17,14 +17,14 @@
                         <td>{{ user.status_as_string }}</td>
                         <td>
                         {% if user.is_admin %}
-                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='demote', uid=user.id) }}'"><img src="{{ url_for('static', filename='images/demote.png') }}" title="demote" /></button>
+                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='demote', uid=user.id) }}'"><i class="fas fa-user-minus" title="demote"></i></button>
                         {% else %}
-                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='promote', uid=user.id) }}'"><img src="{{ url_for('static', filename='images/promote.png') }}" title="promote" /></button>
+                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='promote', uid=user.id) }}'"><i class="fas fa-user-plus" title="promote"></i></button>
                         {% endif %}
                         {% if user.is_enabled %}
-                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='disable', uid=user.id) }}'"><img src="{{ url_for('static', filename='images/disable.png') }}" title="disable" /></button>
+                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='disable', uid=user.id) }}'"><i class="fas fa-user-slash" title="disable"></i></button>
                         {% else %}
-                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='enable', uid=user.id) }}'"><img src="{{ url_for('static', filename='images/enable.png') }}" title="enable" /></button>
+                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='enable', uid=user.id) }}'"><i class="fas fa-user" title="enable"></i></button>
                         {% endif %}
                         </td>
                     </tr>

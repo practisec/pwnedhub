@@ -8,9 +8,9 @@
             <div class="u-full-width" name="content">{{ letter.content|safe }}</div><br>
             <hr>
             <div class="u-full-width right-content">
-                <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail') }}'"><img src="{{ url_for('static', filename='images/inbox.png') }}" title="inbox" /></button>
-                <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail_reply', mid=letter.id) }}'"><img src="{{ url_for('static', filename='images/reply.png') }}" title="reply" /></button>
-                <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail_delete', mid=letter.id) }}'"><img src="{{ url_for('static', filename='images/delete.png') }}" title="delete" /></button>
+                <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail') }}'"><i class="fas fa-inbox" title="inbox"></i></button>
+                <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail_reply', mid=letter.id) }}'"><i class="fas fa-reply" title="reply"></i></button>
+                <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail_delete', mid=letter.id) }}'"><i class="fas fa-trash" title="delete"></i></button>
             </div>
         </div>
     </div>

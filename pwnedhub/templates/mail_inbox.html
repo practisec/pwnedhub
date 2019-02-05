@@ -16,8 +16,8 @@
                         <td class="left-content">{{ letter.subject }}</td>
                         <td>{{ letter.created_as_string }}</td>
                         <td>
-                            <button type="button" class="img-btn" onclick="event.stopPropagation(); window.location='{{ url_for('core.mail_reply', mid=letter.id) }}'"><img src="{{ url_for('static', filename='images/reply.png') }}" title="reply" /></button>
-                            <button type="button" class="img-btn" onclick="event.stopPropagation(); window.location='{{ url_for('core.mail_delete', mid=letter.id) }}'"><img src="{{ url_for('static', filename='images/delete.png') }}" title="delete" /></button>
+                            <button type="button" class="img-btn" onclick="event.stopPropagation(); window.location='{{ url_for('core.mail_reply', mid=letter.id) }}'"><i class="fas fa-reply" title="reply"></i></button>
+                            <button type="button" class="img-btn" onclick="event.stopPropagation(); window.location='{{ url_for('core.mail_delete', mid=letter.id) }}'"><i class="fas fa-trash" title="delete"></i></button>
                         </td>
                     </tr>
                 {% endfor %}

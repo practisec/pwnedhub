@@ -23,7 +23,7 @@
         {% for message in messages %}
             <div style="position: relative;">
             {% if message.user == g.user or g.user.is_admin %}
-                <button type="button" class="delete img-btn" onclick="window.location='{{ url_for('core.messages_delete', mid=message.id) }}'"><img src="{{ url_for('static', filename='images/delete.png') }}" title="delete" /></button>
+                <button type="button" class="delete img-btn" onclick="window.location='{{ url_for('core.messages_delete', mid=message.id) }}'"><i class="fas fa-trash" title="delete"></i></button>
             {% endif %}
                 <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
                     <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>

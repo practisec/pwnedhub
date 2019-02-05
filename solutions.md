@@ -488,7 +488,7 @@ session['recovery_state'] = <new state>
 | Remediation | Update the jQuery library and associated import statement in `pwnedhub/templates/layout.html`. |
 
 ```
-<script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-latest.min.js') }}"></script>
 ```
 
 | Vulnerability | Systemic User Interface Redressing. |

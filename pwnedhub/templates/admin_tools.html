@@ -21,7 +21,7 @@
                             <td>{{ tool.path }}</td>
                             <td>{{ tool.description }}</td>
                             <td>
-                                <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_tools_remove', tid=tool.id) }}'"><img src="{{ url_for('static', filename='images/delete.png') }}" title="remove" /></button>
+                                <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_tools_remove', tid=tool.id) }}'"><i class="fas fa-trash" title="remove"></i></button>
                             </td>
                         </tr>
                     {% endfor %}

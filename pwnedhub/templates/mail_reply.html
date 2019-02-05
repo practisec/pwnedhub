@@ -14,8 +14,8 @@
                 <textarea class="u-full-width" name="content" placeholder="content here..."></textarea><br>
                 <hr>
                 <div class="u-full-width right-content">
-                    <button type="submit" class="img-btn" onclick="this.form.submit();"><img src="{{ url_for('static', filename='images/send.png') }}" title="send" /></button>
-                    <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail') }}'"><img src="{{ url_for('static', filename='images/delete.png') }}" title="discard" /></button>
+                    <button type="submit" class="img-btn" onclick="this.form.submit();"><i class="fas fa-paper-plane" title="send"></i></button>
+                    <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail') }}'"><i class="fas fa-trash" title="discard"></i></button>
                 </div>
             </form>
         </div>
