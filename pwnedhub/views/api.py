@@ -190,6 +190,7 @@ def tool_execute(tid):
     path = tool.path
     args = request.json.get('args')
     cmd = '{} {}'.format(path, args)
+    error = False
     if is_valid_command(cmd):
         env = os.environ.copy()
         env['PATH'] = os.pathsep.join(('/usr/bin', env["PATH"]))
@@ -198,7 +199,8 @@ def tool_execute(tid):
         output = out + err
     else:
         output = 'Command contains invalid characters.'
-    return jsonify(cmd=cmd, output=output)
+        error = True
+    return jsonify(cmd=cmd, output=output, error=error)
 
 # get a remote resource
 @api.route('/unfurl', methods=['POST'])

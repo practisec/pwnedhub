@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div class="row">
-        <div class="ten columns offset-by-one center-content">
+<div class="row">
+    <div class="col-xs-10 col-xs-offset-1">
+        <div class="center-content">
             <select style="float: left;" id="tool" onchange="info(this);">
             {% for tool in tools %}
                 <option value="{{ tool.id }}">{{ tool.name }}</option>
@@ -13,13 +14,17 @@
             </span>
         </div>
     </div>
-    <div class="row">
-        <div class="u-full-width rounded output">
+</div>
+<div class="row grow">
+    <div class="col-xs-12">
+        <div class="output rounded">
             <pre id="output"></pre>
             <button type="button" class="save-as img-btn" onclick="save_artifact();"><img src="{{ url_for('static', filename='images/save-as.png') }}" title="save as artifact" /></button>
+            <div id="spinner" class="spinner"></div>
         </div>
     </div>
-    <script>
+</div>
+<script>
 function info(e) {
     var tid = e.options[e.selectedIndex].value;
     // get the description
@@ -33,6 +38,8 @@ function info(e) {
 }
 
 function execute() {
+    var spinner = document.getElementById("spinner");
+    spinner.style.visibility = "visible";
     var tid = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].value;
     var args = document.getElementById("args").value;
     // execute the command
@@ -42,8 +49,14 @@ function execute() {
         data: JSON.stringify({args: args}),
         contentType: "application/json",
         success: function(data){
-            // update the textarea with the command output
-            document.getElementById("output").innerHTML = data.output;
+            spinner.style.visibility = "hidden";
+            if (data.error === true) {
+                // flash error message
+                show_flash(data.output);
+            } else {
+                // update the textarea with the command output
+                document.getElementById("output").innerHTML = "$ {0}\n{1}".format(data.cmd, data.output);
+            }
         }
     });
 }
@@ -66,5 +79,5 @@ function save_artifact() {
 
 // populate the default tool's description onload
 document.getElementById("tool").onchange()
-    </script>
+</script>
 {% endblock %}
