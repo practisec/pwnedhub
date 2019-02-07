@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="row">
+<div class="row flex-no-shrink">
     <div class="col-xs-10 col-xs-offset-1">
         <div class="center-content">
             <select style="float: left;" id="tool" onchange="info(this);">
@@ -15,8 +15,9 @@
         </div>
     </div>
 </div>
-<div class="row grow">
-    <div class="col-xs-12">
+<!-- https://stackoverflow.com/a/52506205 -->
+<div class="row flex-both flex-no-basis" style="min-height: 0">
+    <div class="col-xs-12" style="max-height: 100%;">
         <div class="output rounded">
             <pre id="output"></pre>
             <button type="button" class="save-as img-btn" onclick="save_artifact();"><i class="fas fa-save" title="save as artifact"></i></button>

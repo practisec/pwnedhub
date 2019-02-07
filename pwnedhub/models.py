@@ -1,4 +1,4 @@
-from flask import current_app
+from flask import current_app, url_for
 from pwnedhub import db
 from constants import ROLES, QUESTIONS, STATUSES
 from utils import xor_encrypt, xor_decrypt
@@ -74,6 +74,8 @@ class User(db.Model):
     created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
     username = db.Column(db.String(255), nullable=False, unique=True)
     name = db.Column(db.String(255), nullable=False)
+    avatar = db.Column(db.Text)
+    signature = db.Column(db.Text)
     password_hash = db.Column(db.String(255))
     question = db.Column(db.Integer, nullable=False)
     answer = db.Column(db.String(255), nullable=False)
@@ -111,6 +113,10 @@ class User(db.Model):
     @password.setter
     def password(self, password):
         self.password_hash = xor_encrypt(password, current_app.config['PW_ENC_KEY'])
+
+    @property
+    def avatar_or_default(self):
+        return self.avatar or url_for('static', filename='images/avatars/default.png')
 
     @property
     def is_admin(self):

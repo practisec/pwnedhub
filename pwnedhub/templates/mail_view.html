@@ -3,9 +3,9 @@
 <div class="row">
     <div class="col-xs-10 col-xs-offset-1">
         <div class="mail">
-            <div class="u-full-width" name="subject"><h5>{{ letter.subject }}</h5></div>
-            <div class="u-full-width" name="sender"><b>From {{ letter.sender.name }} @ {{ letter.created_as_string }}</b></div><br>
-            <div class="u-full-width" name="content">{{ letter.content|safe }}</div><br>
+            <div class="u-full-width"><h5>{{ letter.subject }}</h5></div>
+            <div class="u-full-width sender"><a href="{{ url_for('core.profile_view', uid=letter.sender.id) }}"><img class="avatar circular bordered-dark" src="{{ letter.sender.avatar_or_default|safe }}" title="avatar" /></a><b>{{ letter.sender.name }} @ {{ letter.created_as_string }}</b></div><br>
+            <div class="u-full-width">{{ letter.content|safe }}</div><br>
             <hr>
             <div class="u-full-width right-content">
                 <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail') }}'"><i class="fas fa-inbox" title="inbox"></i></button>

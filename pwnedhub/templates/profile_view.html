@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="row">
+    <div class="col-xs-6 col-xs-offset-3">
+        <div class="profile">
+            <img class="center avatar circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="avatar" />
+            <div class="u-full-width center-content"><h3>{{ user.name }}</h3></div>
+            <div class="u-full-width center-content"><blockquote>{{ user.signature }}</blockquote></div>
+            <div class="u-full-width center-content"><h6>Member since: {{ user.created_as_string[:-9] }}</h6></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

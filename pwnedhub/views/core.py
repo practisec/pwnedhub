@@ -132,6 +132,12 @@ def admin_users_modify(action, uid):
 def profile():
     return render_template('profile.html', user=g.user, questions=QUESTIONS)
 
+@core.route('/profile/view/<int:uid>')
+@login_required
+def profile_view(uid):
+    user = User.query.get_or_404(uid)
+    return render_template('profile_view.html', user=user)
+
 @core.route('/profile/change', methods=['GET', 'POST'])
 @login_required
 def profile_change():
@@ -142,7 +148,9 @@ def profile_change():
             name = request.values['name']
             question = request.values['question']
             answer = request.values['answer']
+            avatar = request.values['avatar']
             user.name = name
+            user.avatar = avatar
             user.password = password
             user.question = question
             user.answer = answer

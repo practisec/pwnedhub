@@ -61,23 +61,19 @@ body {
     flex-direction: column;
 }
 
-header {
-    flex-shrink: 0;
-}
-
 section {
-    flex: 1 0 auto;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 
 section > .container {
-    flex: 1 0 auto;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 
-footer {
+header, section, footer {
     flex-shrink: 0;
 }
 
@@ -166,6 +162,23 @@ a:hover {
 /* selected link */
 a:active {
     color: inherit;
+}
+
+blockquote {
+    font-style: italic;
+    margin-left: 0;
+    margin-right: 0;
+    quotes: "\201C""\201D""\2018""\2019";
+}
+
+blockquote:before {
+  color: #bbb;
+  font-family: Arial;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
 }
 
 hr {
@@ -316,10 +329,10 @@ nav ul li:hover ul {
 .notes textarea {
     width: 100%;
     height: 100%;
-    min-height: 40rem;
     padding: 1rem 1.5rem;
     border: 1px solid #bbb;
     margin-bottom: 0;
+    resize: none;
 }
 
 .artifacts {}
@@ -338,7 +351,6 @@ nav ul li:hover ul {
     background-color: #000;
     color: white;
     position: relative;
-    min-height: 40rem;
     padding: 1rem 1.5rem;
     border: 1px solid #bbb;
 }
@@ -368,16 +380,39 @@ nav ul li:hover ul {
     height: 15rem;
 }
 
+.mail .sender {
+    display: flex;
+    align-items: center;
+}
+
+.mail .sender .avatar {
+    display: block;
+    height: 4rem;
+    margin-right: 1rem;
+}
+
 .messages {
     border-top: 1px solid #e1e1e1;
 }
 
-.messages .name {
+.messages .message {
+    position: relative;
+    display: flex;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.messages .message .avatar {
+    display: block;
+    height: 4rem;
+    margin: 1rem;
+}
+
+.messages .message .name {
     font-size: 1.75rem;
     margin-bottom: .5rem;
 }
 
-.messages .message {
+.messages .message .comment {
     margin-bottom: .5rem;
 }
 
@@ -401,7 +436,6 @@ nav ul li:hover ul {
 .messages .timestamp {
     font-size: 1rem;
     margin-bottom: 0;
-    border-bottom: 1px solid #e1e1e1;
 }
 
 .pagination {
@@ -420,6 +454,12 @@ nav ul li:hover ul {
 .admin {}
 
 .profile {}
+
+.profile .avatar {
+    display: block;
+    max-width: 20rem;
+    width: 100%;
+}
 
 .profile input[type="submit"] {
     margin-bottom: 0;
@@ -478,8 +518,17 @@ button.delete {
 
 /* utility styles */
 
-.grow {
-    flex: 1;
+.flex-no-basis {
+    flex-basis: 0;
+}
+
+.flex-both {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.flex-no-shrink {
+    flex-shrink: 0;
 }
 
 .center {
@@ -488,15 +537,15 @@ button.delete {
 }
 
 .center-content {
-    text-align: center;
+    text-align: center !important;
 }
 
 .left-content {
-    text-align: left;
+    text-align: left !important;
 }
 
 .right-content {
-    text-align: right;
+    text-align: right !important;
 }
 
 .clear {
@@ -506,7 +555,13 @@ button.delete {
 .rounded {
     -webkit-border-radius: .5rem;
     -moz-border-radius: .5rem;
-    border-radius: .5rem;    
+    border-radius: .5rem;
+}
+
+.circular {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
 }
 
 .shaded {
@@ -515,9 +570,12 @@ button.delete {
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
 }
 
-.bordered {
+.bordered-light {
     border: 1px solid #bbb;
-    padding: 0.5rem 1rem;
+}
+
+.bordered-dark {
+    border: 1px solid #222;
 }
 
 .black {

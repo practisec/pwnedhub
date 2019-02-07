@@ -21,13 +21,14 @@
             </div>
         {% else %}
         {% for message in messages %}
-            <div style="position: relative;">
+            <div class="message">
             {% if message.user == g.user or g.user.is_admin %}
                 <button type="button" class="delete img-btn" onclick="window.location='{{ url_for('core.messages_delete', mid=message.id) }}'"><i class="fas fa-trash" title="delete"></i></button>
             {% endif %}
+                <a href="{{ url_for('core.profile_view', uid=message.user.id) }}"><img class="avatar circular bordered-dark" src="{{ message.user.avatar_or_default|safe }}" title="avatar" /></a>
                 <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
                     <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
-                    <p class="message">{{ message.comment|safe }}</p>
+                    <p class="comment">{{ message.comment|safe }}</p>
                     <div class="scroll"></div>
                     <p class="timestamp">{{ message.created_as_string }}</p>
                 </div>
@@ -68,7 +69,7 @@ function buildUnfurl(url, data) {
     return a;
 }
 
-var messages = document.getElementsByClassName("message");
+var messages = document.getElementsByClassName("comment");
 var pattern = /\w+:(\/?\/?)[^\s]+/gi;
 for (var i = 0; i < messages.length; i++) {
     var content = messages[i].innerHTML;

@@ -3,7 +3,12 @@
 <div class="row">
     <div class="col-xs-6 col-xs-offset-3">
         <div class="profile">
+            <img class="center avatar circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="avatar" />
             <form action="{{ url_for('core.profile_change') }}" method="post">
+                <label for="avatar">avatar url</label>
+                <input class="u-full-width" name="avatar" type="text" value="{{ user.avatar or '' }}" />
+                <label for="signature">signature</label>
+                <textarea class="u-full-width" name="signature">{{ user.signature }}</textarea>
                 <label for="username">username</label>
                 <input class="u-full-width" name="username" type="text" value="{{ user.username }}" disabled/>
                 <label for="name">display name</label>
