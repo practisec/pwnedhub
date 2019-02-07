@@ -31,7 +31,7 @@ def register():
                     sender = User.query.get(1)
                     receiver = user
                     subject = 'Welcome to PwnedHub!'
-                    content = "We're glad you've chosen PwnedHub to help you take your next step in becoming a more efficient security consultant. We're here to help. If you have any questions or concerns, please don't hesitate to reach out to this account for assistance. Together, we can make seurity testing great again!"
+                    content = "We're glad you've chosen PwnedHub to help you take your next step in becoming a more efficient security consultant. We're here to help. If you have any questions or concerns, please don't hesitate to reach out to this account for assistance. Together, we can make security testing great again!"
                     mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
                     db.session.add(mail)
                     db.session.commit()
