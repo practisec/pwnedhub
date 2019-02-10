@@ -1,46 +1,38 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="row">
-    <div class="col-xs-12">
-        <div class="center-content">
-            <form action="{{ url_for('core.artifacts_save', method='file') }}" enctype="multipart/form-data" method="post">
-                <input name="file" type="file" />
-                <input type="submit" value="upload" onclick="this.form.submit();" />
-            </form>
-        </div>
-    </div>
+<div class="flex-column flex-align-center">
+    <form class="flex-row flex-align-center" action="{{ url_for('core.artifacts_save', method='file') }}" enctype="multipart/form-data" method="post">
+        <input name="file" type="file" />
+        <input type="submit" value="upload" onclick="this.form.submit();" />
+    </form>
 </div>
-<div class="row">
-    <div class="col-xs-8 col-xs-offset-2">
-        <div class="artifacts">
-            <table class="center">
-                <thead>
-                    <tr><th>file</th><th>created</th><th>action</th></tr>
-                </thead>
-                <tbody>
-                {% if artifacts|length > 0 %}
-                {% for artifact in artifacts %}
-                    <tr>
-                        <td>{{ artifact.filename }}</td>
-                        <td>{{ artifact.modified }}</td>
-                        <td>
-                            <form action="{{ url_for('core.artifacts_view') }}" method="post">
-                                <input type="hidden" name="filename" value="{{ artifact.filename }}" />
-                                <button type="submit" class="img-btn" onclick="this.form.submit();"><i class="fas fa-file" title="view"></i></button>
-                            </form>
-                            <form action="{{ url_for('core.artifacts_delete') }}" method="post">
-                                <input type="hidden" name="filename" value="{{ artifact.filename }}" />
-                                <button type="submit" class="img-btn" onclick="if (confirm('Delete the artifact?') == true) { this.form.submit(); }; return false;"><i class="fas fa-trash" title="delete"></i></button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-                {% else %}
-                    <tr><td colspan="3" class="center-content">no artifacts</td></tr>
-                {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="flex-width-8 flex-offset-2 artifacts flex-column">
+    <table class="center">
+        <thead>
+            <tr><th>file</th><th>created</th><th>action</th></tr>
+        </thead>
+        <tbody>
+        {% if artifacts|length > 0 %}
+        {% for artifact in artifacts %}
+            <tr>
+                <td>{{ artifact.filename }}</td>
+                <td>{{ artifact.modified }}</td>
+                <td>
+                    <form action="{{ url_for('core.artifacts_view') }}" method="post">
+                        <input type="hidden" name="filename" value="{{ artifact.filename }}" />
+                        <button type="submit" class="img-btn" onclick="this.form.submit();"><i class="fas fa-file" title="view"></i></button>
+                    </form>
+                    <form action="{{ url_for('core.artifacts_delete') }}" method="post">
+                        <input type="hidden" name="filename" value="{{ artifact.filename }}" />
+                        <button type="submit" class="img-btn" onclick="if (confirm('Delete the artifact?') == true) { this.form.submit(); }; return false;"><i class="fas fa-trash" title="delete"></i></button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        {% else %}
+            <tr><td colspan="3" class="center-content">no artifacts</td></tr>
+        {% endif %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

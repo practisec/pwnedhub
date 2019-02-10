@@ -21,14 +21,10 @@ def not_found(e):
     else:
         template = '''{% extends "layout.html" %}
 {% block body %}
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="error center-content">
-                <h1>Oops! That page doesn't exist.</h1>
-                <h3>'''+request.url+'''</h3>
-            </div>
-        </div>
-    </div>
+<div class="error center-content flex-column">
+    <h1>Oops! That page doesn't exist.</h1>
+    <h3>'''+request.url+'''</h3>
+</div>
 {% endblock %}'''
         return render_template_string(template), 404
 

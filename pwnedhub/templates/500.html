@@ -1,13 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="row">
-    <div class="col-xs-12">
-        <div class="error center-content">
-            <h1>Oops! Somethin' broke.</h1>
-            <div class="traceback left-content rounded">
-                <pre>{{ message }}</pre>
-            </div>
-        </div>
+<div class="error center-content flex-column">
+    <h1>Oops! Somethin' broke.</h1>
+    <div class="traceback left-content rounded">
+        <pre>{{ message }}</pre>
     </div>
 </div>
 {% endblock %}

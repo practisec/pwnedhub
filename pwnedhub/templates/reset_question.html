@@ -1,13 +1,11 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="row">
-    <div class="col-xs-6 col-xs-offset-3">
-        <h4>answer the question</h4>
-        <form action="{{ url_for('auth.reset_question') }}" method="post">
-            <label for="answer">{{ question }}</label>
-            <input class="u-full-width" name="answer" type="text" value="" />
-            <input class="u-full-width" type="submit" value="submit" onclick="this.form.submit();" />
-        </form>
-    </div>
+<div class="flex-width-4 flex-offset-4 flex-column">
+    <h4>answer the question</h4>
+    <form class="flex-no-shrink flex-column" action="{{ url_for('auth.reset_question') }}" method="post">
+        <label for="answer">{{ question }}</label>
+        <input name="answer" type="text" value="" />
+        <input type="submit" value="submit" onclick="this.form.submit();" />
+    </form>
 </div>
 {% endblock %}

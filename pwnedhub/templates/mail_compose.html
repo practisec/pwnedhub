@@ -1,27 +1,23 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="row">
-    <div class="col-xs-10 col-xs-offset-1">
-        <div class="mail">
-            <form action="{{ url_for('core.mail_compose') }}" method="post">
-                <label for="receiver">to:</label>
-                <select name="receiver">
-                    <option value="" disabled selected>recipient...</option>
-                {% for user in users %}
-                    <option value="{{ user.id }}">{{ user.name }}</option>
-                {% endfor %}
-                </select><br>
-                <label for="subject">subject:</label>
-                <input class="u-full-width" name="subject" type="text" placeholder="subject here..." /><br>
-                <label for="content">content:</label>
-                <textarea class="u-full-width" name="content" placeholder="content here..."></textarea><br>
-                <hr>
-                <div class="u-full-width right-content">
-                    <button type="submit" class="img-btn" onclick="this.form.submit();"><i class="fas fa-paper-plane" title="send"></i></button>
-                    <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail') }}'"><i class="fas fa-trash" title="discard"></i></button>
-                </div>
-            </form>
+<div class="flex-width-10 flex-offset-1 mail flex-column">
+    <form class="flex-no-shrink flex-column" action="{{ url_for('core.mail_compose') }}" method="post">
+        <label for="receiver">to:</label>
+        <select name="receiver">
+            <option value="" disabled selected>recipient...</option>
+        {% for user in users %}
+            <option value="{{ user.id }}">{{ user.name }}</option>
+        {% endfor %}
+        </select>
+        <label for="subject">subject:</label>
+        <input name="subject" type="text" />
+        <label for="content">content:</label>
+        <textarea name="content"></textarea>
+        <hr>
+        <div class="right-content">
+            <button type="submit" class="img-btn" onclick="this.form.submit();"><i class="fas fa-paper-plane" title="send"></i></button>
+            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.mail') }}'"><i class="fas fa-trash" title="discard"></i></button>
         </div>
-    </div>
+    </form>
 </div>
 {% endblock %}

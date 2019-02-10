@@ -56,25 +56,140 @@ html, body {
     height: 100%;
 }
 
-body {
+/*
+flex item default = flex: 0 1 auto
+*/
+
+.flex-row {
+    display: flex;
+}
+
+.flex-column {
     display: flex;
     flex-direction: column;
 }
 
-section {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+.flex-no-basis {
+    flex-basis: 0;
 }
 
-section > .container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-header, section, footer {
+.flex-no-shrink {
     flex-shrink: 0;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.flex-shrink {
+    flex-shrink: 1;
+}
+
+.flex-both {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.flex-align-center {
+    align-items: center;
+}
+
+.flex-justify-center {
+    justify-content: center;
+}
+
+.flex-justify-space-between {
+    justify-content: space-between;
+}
+
+.flex-justify-space-around {
+    justify-content: space-around;
+}
+
+.flex-justify-space-evenly {
+    justify-content: space-evenly;
+}
+
+.flex-width-10 {
+    max-width: 83.33333333%;
+}
+
+.flex-basis-10 {
+    flex-basis: 83.33333333%;
+}
+
+.flex-offset-1 {
+    margin-left: 8.33333333%;
+}
+
+.flex-width-8 {
+    max-width: 66.66666667%;
+}
+
+.flex-basis-8  {
+    flex-basis: 66.66666667%;
+}
+
+.flex-offset-2 {
+    margin-left: 16.66666667%;
+}
+
+.flex-width-6 {
+    max-width: 50%;
+}
+
+.flex-basis-6 {
+    flex-basis: 50%;
+}
+
+.flex-offset-3 {
+    margin-left: 25%;
+}
+
+.flex-width-4 {
+    max-width: 33.33333333%;
+}
+
+.flex-basis-4 {
+    flex-basis: 33.33333333%;
+}
+
+.flex-offset-4 {
+    margin-left: 33.33333333%;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.gutter-right {
+    margin-right: 1rem;
+}
+
+.gutter-half-right {
+    margin-right: 0.5;
+}
+
+.gutter-left {
+    margin-left: 1rem;
+}
+
+.gutter-half-left {
+    margin-left: 0.5;
+}
+
+/* only works when the parent doesn't already
+assign margins i.e. flex-basis rules above.
+also, doesn't allow for a border when using
+border box. use a wrapper to fix these */
+.gutter-parent {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+.gutter-child {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
 }
 
 /* end */
@@ -135,7 +250,7 @@ td input, td select, td button {
 
 button, input[type="submit"], input[type="reset"], input[type="button"] {
     padding: 0 1rem;
-    background-color: white;
+    background-color: #fff;
 }
 
 select:disabled {
@@ -182,8 +297,7 @@ blockquote:before {
 }
 
 hr {
-    margin-top: 0;
-    margin-bottom: 1rem;
+    margin: 0 0 1rem 0;
 }
 
 i {
@@ -196,7 +310,6 @@ i {
 /* navigation */
 
 nav {
-    width: 100%;
     height: 5rem; /* critical to nav height 1/3 */
     text-align: right;
     position: relative;
@@ -206,13 +319,6 @@ nav .brand {
     float: left;
     font-size: 3rem;
     padding-left: 1rem;
-    /*height: 100%;
-    padding: 1.5rem;*/
-}
-
-nav .brand img {
-    height: 100%;
-    width: auto;
 }
 
 nav .brand a {
@@ -238,7 +344,7 @@ nav > ul {
 
 nav ul li {
     display: inline-block;
-    line-height: 0; /* removes odd whitespace */
+    /*line-height: 0;*/ /* removes odd whitespace */
     height: 100%;
     margin: 0;
     padding: 0;
@@ -251,8 +357,8 @@ nav ul li:hover {
 nav ul li a {
     display: block;
     height: 100%;
-    font-size: 1.25rem;
     line-height: 5rem; /* critical to nav height 2/3 */
+    font-size: 1.25rem;
     letter-spacing: 0.1rem;
     text-transform: uppercase;
     font-weight: bold;
@@ -287,6 +393,11 @@ nav ul li:hover ul {
 /* end */
 
 /* classes */
+
+.container-fluid {
+    max-width: 100rem;
+    min-width: 0;
+}
 
 .flash {
     position: absolute;
@@ -335,8 +446,6 @@ nav ul li:hover ul {
     resize: none;
 }
 
-.artifacts {}
-
 .artifacts form {
     display: inline;
 }
@@ -347,16 +456,15 @@ nav ul li:hover ul {
 }
 
 .output {
-    height: 100%;
+    min-height: 0; /* Firefox */
     background-color: #000;
-    color: white;
+    color: #fff;
     position: relative;
     padding: 1rem 1.5rem;
     border: 1px solid #bbb;
 }
 
 .output pre {
-    height: 100%;
     margin: 0;
     overflow: scroll;
 }
@@ -366,29 +474,28 @@ nav ul li:hover ul {
     opacity: 0.6;
 }
 
-.inbox {}
-
 .inbox td {
     padding-top: 0;
     padding-bottom: 0;
 }
-
-.mail {}
 
 .mail textarea {
     width: 100%;
     height: 15rem;
 }
 
-.mail .sender {
-    display: flex;
-    align-items: center;
+.mail .sender .avatar {
+    margin-right: 1rem;
 }
 
-.mail .sender .avatar {
+.mail .sender .avatar img {
     display: block;
     height: 4rem;
-    margin-right: 1rem;
+}
+
+.mail .content {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
 }
 
 .messages {
@@ -397,14 +504,16 @@ nav ul li:hover ul {
 
 .messages .message {
     position: relative;
-    display: flex;
     border-bottom: 1px solid #e1e1e1;
 }
 
 .messages .message .avatar {
+    margin: 1rem;
+}
+
+.messages .message .avatar img {
     display: block;
     height: 4rem;
-    margin: 1rem;
 }
 
 .messages .message .name {
@@ -451,10 +560,6 @@ nav ul li:hover ul {
     opacity: 0.5;
 }
 
-.admin {}
-
-.profile {}
-
 .profile .avatar {
     display: block;
     max-width: 20rem;
@@ -465,9 +570,9 @@ nav ul li:hover ul {
     margin-bottom: 0;
 }
 
-.swf {}
-
-.error {}
+.error {
+    overflow-wrap: break-word;
+}
 
 .traceback {
     padding: 1rem 1.5rem;
@@ -518,19 +623,6 @@ button.delete {
 
 /* utility styles */
 
-.flex-no-basis {
-    flex-basis: 0;
-}
-
-.flex-both {
-    flex-grow: 1;
-    flex-shrink: 1;
-}
-
-.flex-no-shrink {
-    flex-shrink: 0;
-}
-
 .center {
     margin-left: auto;
     margin-right: auto;
@@ -579,7 +671,7 @@ button.delete {
 }
 
 .black {
-    color: black;
+    color: #000;
 }
 
 .red {
@@ -630,14 +722,5 @@ button.delete {
     from {transform: rotate(0deg);}
     to {transform: rotate(359deg);}
 }
-
-/* end */
-
-/* additional media queries */
-
-@media only screen and (min-width: 100em) {
-    .container {
-        width: 101rem;
-    }
 
 /* end */

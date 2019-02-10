@@ -1,20 +1,18 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="row">
-    <div class="col-xs-6 col-xs-offset-3">
-        <h4>log in</h4>
-        <form action="" method="post">
-            <label for="username">username</label>
-            <input class="u-full-width" name="username" type="text" />
-            <label for="password">password</label>
-            <div style="position: relative;">
-                <input class="u-full-width" id="password" name="password" type="password" />
-                <input type="button" class="show" onclick="toggle_show();" value="show" />
-            </div>
-            <p><a href="{{ url_for('auth.reset_init') }}">forget your password?</a></p>
-            <input class="u-full-width" type="submit" value="login" onclick="protectedSubmit(this);" />
-        </form>
-    </div>
+<div class="flex-width-4 flex-offset-4 flex-column">
+    <h4>log in</h4>
+    <form class="flex-no-shrink flex-column" action="{{ url_for('auth.login') }}" method="post">
+        <label for="username">username</label>
+        <input name="username" type="text" />
+        <label for="password">password</label>
+        <div class="flex-column" style="position: relative;">
+            <input id="password" name="password" type="password" />
+            <input type="button" class="show" onclick="toggle_show();" value="show" />
+        </div>
+        <p><a href="{{ url_for('auth.reset_init') }}">forget your password?</a></p>
+        <input type="submit" value="login" />
+    </form>
 </div>
 <style>
 input.show {

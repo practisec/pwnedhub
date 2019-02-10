@@ -9,70 +9,64 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton-flexbox.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub.css') }}">
 </head>
-<body>
+<body class="flex-column">
     <div id="flash" class="flash center-content rounded shaded">{{ get_flashed_messages()|join(', ') }}</div>
-    <header>
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <nav>
-                        <div class="brand">
-                            <a href="{{ url_for('core.index') }}">Pwned<span class="red"><b>Hub</b></span></a>
-                        </div>
-                        <ul>
-                        {% if g.user %}
-                            <li><a href="#">testing</a>
-                                <ul>
-                                    <li><a href="{{ url_for('core.notes') }}">notes</a></li>
-                                    <li><a href="{{ url_for('core.artifacts') }}">artifacts</a></li>
-                                    <li><a href="{{ url_for('core.tools') }}">tools</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#">collaboration</a>
-                                <ul>
-                                    <li><a href="{{ url_for('core.mail') }}">mailbox</a></li>
-                                    <li><a href="{{ url_for('core.messages') }}">messages</a></li>
-                                </ul>
-                            </li>
-                        {% if g.user.is_admin %}
-                            <li><a href="#">admin</a>
-                                <ul>
-                                    <li><a href="{{ url_for('core.admin_tools') }}">tools</a></li>
-                                    <li><a href="{{ url_for('core.admin_users') }}">users</a></li>
-                                </ul>
-                            </li>
-                        {% endif %}
-                            <li class="user"><a href="#">{{ g.user.name }}</a>
-                                <ul>
-                                    <li><a href="{{ url_for('core.profile') }}">profile</a></li>
-                                    <li><a href="{{ url_for('auth.logout') }}">logout</a></li>
-                                </ul>
-                            </li>
-                        {% else %}
-                            <li><a href="{{ url_for('auth.register') }}">register</a></li>
-                            <li><a href="{{ url_for('auth.login') }}">log in</a></li>
-                        {% endif %}
-                        </ul>
-                    </nav>
+    <header class="flex-no-shrink flex-row">
+        <div class="flex-grow container-fluid flex-column">
+            <nav class="flex-row flex-align-center">
+                <div class="brand">
+                    <a href="{{ url_for('core.index') }}">Pwned<span class="red"><b>Hub</b></span></a>
                 </div>
-            </div>
+                <ul class="flex-grow">
+                {% if g.user %}
+                    <li><a href="#">testing</a>
+                        <ul>
+                            <li><a href="{{ url_for('core.notes') }}">notes</a></li>
+                            <li><a href="{{ url_for('core.artifacts') }}">artifacts</a></li>
+                            <li><a href="{{ url_for('core.tools') }}">tools</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">collaboration</a>
+                        <ul>
+                            <li><a href="{{ url_for('core.mail') }}">mailbox</a></li>
+                            <li><a href="{{ url_for('core.messages') }}">messages</a></li>
+                        </ul>
+                    </li>
+                {% if g.user.is_admin %}
+                    <li><a href="#">admin</a>
+                        <ul>
+                            <li><a href="{{ url_for('core.admin_tools') }}">tools</a></li>
+                            <li><a href="{{ url_for('core.admin_users') }}">users</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+                    <li class="user"><a href="#">{{ g.user.name }}</a>
+                        <ul>
+                            <li><a href="{{ url_for('core.profile') }}">profile</a></li>
+                            <li><a href="{{ url_for('auth.logout') }}">logout</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">log in</a></li>
+                {% endif %}
+                </ul>
+            </nav>
         </div>
     </header>
-    <section>
-        <div class="container">
+    <section class="flex-grow flex-no-shrink flex-row">
+        <div class="flex-grow container-fluid flex-column">
             {% block body %}{% endblock %}
         </div>
     </section>
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="footer center-content">
-                        <a href="{{ url_for('core.index') }}">home</a>
-                        |
-                        <a href="{{ url_for('core.about') }}">about</a><br>
-                        &copy; {{ date.year }} PwnedHub. All rights reserved.
-                    </div>
+    <footer class="flex-no-shrink flex-row">
+        <div class="flex-grow container-fluid flex-columns">
+            <div class="flex-row flex-justify-center">
+                <div class="footer center-content">
+                    <a href="{{ url_for('core.index') }}">home</a>
+                    |
+                    <a href="{{ url_for('core.about') }}">about</a><br>
+                    &copy; {{ date.year }} PwnedHub. All rights reserved.
                 </div>
             </div>
         </div>

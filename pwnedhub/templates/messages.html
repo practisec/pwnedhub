@@ -1,46 +1,34 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="row">
-    <div class="col-xs-10 col-xs-offset-1">
-        <div class="center-content">
-            <form action="{{ url_for('core.messages') }}" method="post">
-                <input style="float: right;" type="submit" value="submit" onclick="this.form.submit();" />
-                <span style="display: block; overflow: hidden; padding-right: 10px">
-                    <input style="width: 100%;" name="message" type="text" placeholder="message here..." />
-                </span>
-            </form>
+<form class="flex-width-10 flex-offset-1 flex-row" action="{{ url_for('core.messages') }}" method="post">
+    <input class="flex-grow gutter-right" name="message" type="text" placeholder="message here..." />
+    <input type="submit" value="submit" onclick="this.form.submit();" />
+</form>
+<div class="messages flex-column">
+{% if messages|length == 0 %}
+    <div class="center-content">
+        no messages
+    </div>
+{% else %}
+{% for message in messages %}
+    <div class="message flex-row">
+    {% if message.user == g.user or g.user.is_admin %}
+        <button type="button" class="delete img-btn" onclick="window.location='{{ url_for('core.messages_delete', mid=message.id) }}'"><i class="fas fa-trash" title="delete"></i></button>
+    {% endif %}
+        <div class="avatar"><a href="{{ url_for('core.profile_view', uid=message.user.id) }}"><img class="circular bordered-dark" src="{{ message.user.avatar_or_default|safe }}" title="avatar" /></a></div>
+        <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
+            <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
+            <p class="comment">{{ message.comment|safe }}</p>
+            <div class="scroll"></div>
+            <p class="timestamp">{{ message.created_as_string }}</p>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-xs-12">
-        <div class="messages">
-        {% if messages|length == 0 %}
-            <div class="center-content">
-                no messages
-            </div>
-        {% else %}
-        {% for message in messages %}
-            <div class="message">
-            {% if message.user == g.user or g.user.is_admin %}
-                <button type="button" class="delete img-btn" onclick="window.location='{{ url_for('core.messages_delete', mid=message.id) }}'"><i class="fas fa-trash" title="delete"></i></button>
-            {% endif %}
-                <a href="{{ url_for('core.profile_view', uid=message.user.id) }}"><img class="avatar circular bordered-dark" src="{{ message.user.avatar_or_default|safe }}" title="avatar" /></a>
-                <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
-                    <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
-                    <p class="comment">{{ message.comment|safe }}</p>
-                    <div class="scroll"></div>
-                    <p class="timestamp">{{ message.created_as_string }}</p>
-                </div>
-            </div>
-        {% endfor %}
-        {% endif %}
-            <div class="pagination">
-                <span onclick="window.location='{{ url_for('core.messages_page', page=current_page-1) }}'"{% if current_page == 0 %} disabled="disabled"{% endif %}>prev</span>
-                |
-                <span onclick="window.location='{{ url_for('core.messages_page', page=current_page+1) }}'"{% if current_page >= pages-1 %} disabled="disabled"{% endif %}>next</span>
-            </div>
-        </div>
+{% endfor %}
+{% endif %}
+    <div class="pagination">
+        <span onclick="window.location='{{ url_for('core.messages_page', page=current_page-1) }}'"{% if current_page == 0 %} disabled="disabled"{% endif %}>prev</span>
+        |
+        <span onclick="window.location='{{ url_for('core.messages_page', page=current_page+1) }}'"{% if current_page >= pages-1 %} disabled="disabled"{% endif %}>next</span>
     </div>
 </div>
 <script>

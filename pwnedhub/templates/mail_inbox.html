@@ -1,32 +1,32 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="row">
-    <div class="col-xs-10 col-xs-offset-1">
+<div class="flex-width-10 flex-offset-1 flex-column">
+    <div>
         <input type="button" onclick="window.location='{{ url_for('core.mail_compose') }}'" value="compose" />
-        <div class="inbox">
-            <table class="center">
-                <thead>
-                    <tr><th>from</th><th>subject</th><th>date</th><th>action</th></tr>
-                </thead>
-                <tbody>
-                {% if mail|length > 0 %}
-                {% for letter in mail %}
-                    <tr style="cursor: pointer;{% if letter.read == 0 %} font-weight: bold;{% endif %}" onclick="window.location='{{ url_for('core.mail_view', mid=letter.id) }}'">
-                        <td class="left-content">{{ letter.sender.name }}</td>
-                        <td class="left-content">{{ letter.subject }}</td>
-                        <td>{{ letter.created_as_string }}</td>
-                        <td>
-                            <button type="button" class="img-btn" onclick="event.stopPropagation(); window.location='{{ url_for('core.mail_reply', mid=letter.id) }}'"><i class="fas fa-reply" title="reply"></i></button>
-                            <button type="button" class="img-btn" onclick="event.stopPropagation(); window.location='{{ url_for('core.mail_delete', mid=letter.id) }}'"><i class="fas fa-trash" title="delete"></i></button>
-                        </td>
-                    </tr>
-                {% endfor %}
-                {% else %}
-                    <tr><td colspan="4" class="center-content">you have no mail</td></tr>
-                {% endif %}
-                </tbody>
-            </table>
-        </div>
+    </div>
+    <div class="inbox">
+        <table class="center">
+            <thead>
+                <tr><th>from</th><th>subject</th><th>date</th><th>action</th></tr>
+            </thead>
+            <tbody>
+            {% if mail|length > 0 %}
+            {% for letter in mail %}
+                <tr style="cursor: pointer;{% if letter.read == 0 %} font-weight: bold;{% endif %}" onclick="window.location='{{ url_for('core.mail_view', mid=letter.id) }}'">
+                    <td class="left-content">{{ letter.sender.name }}</td>
+                    <td class="left-content">{{ letter.subject }}</td>
+                    <td>{{ letter.created_as_string }}</td>
+                    <td>
+                        <button type="button" class="img-btn" onclick="event.stopPropagation(); window.location='{{ url_for('core.mail_reply', mid=letter.id) }}'"><i class="fas fa-reply" title="reply"></i></button>
+                        <button type="button" class="img-btn" onclick="event.stopPropagation(); window.location='{{ url_for('core.mail_delete', mid=letter.id) }}'"><i class="fas fa-trash" title="delete"></i></button>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% else %}
+                <tr><td colspan="4" class="center-content">you have no mail</td></tr>
+            {% endif %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

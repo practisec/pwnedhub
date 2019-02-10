@@ -1,12 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="row flex-both">
-    <div class="col-xs-12">
-        <div class="notes">
-            <textarea name="notes" id="notes">{{ notes }}</textarea>
-            <button type="button" class="save-as img-btn" onclick="save_artifact();"><i class="fas fa-save" title="save as artifact"></i></button>
-        </div>
-    </div>
+<div class="notes flex-column">
+    <textarea name="notes" id="notes">{{ notes }}</textarea>
+    <button type="button" class="save-as img-btn" onclick="save_artifact();"><i class="fas fa-save" title="save as artifact"></i></button>
 </div>
 <script>
 var notes = document.getElementById("notes")

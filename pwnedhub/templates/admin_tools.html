@@ -1,34 +1,30 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="row">
-    <div class="col-xs-12">
-        <div class="admin">
-            <form action="{{ url_for('core.admin_tools_add') }}" method="post">
-                <table class="center">
-                    <thead>
-                        <tr><th>name</th><th>path</th><th>description</th><th>action</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="text" name="name" placeholder="name" /></td>
-                            <td><input type="text" name="path" placeholder="path" /></td>
-                            <td><input type="text" name="description" placeholder="description" /></td>
-                            <td><input type="submit" value="add" onclick="this.form.submit();" /></td>
-                        </tr>
-                    {% for tool in tools %}
-                        <tr>
-                            <td>{{ tool.name }}</td>
-                            <td>{{ tool.path }}</td>
-                            <td>{{ tool.description }}</td>
-                            <td>
-                                <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_tools_remove', tid=tool.id) }}'"><i class="fas fa-trash" title="remove"></i></button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </form>
-        </div>
-    </div>
+<div class="admin flex-column">
+    <form action="{{ url_for('core.admin_tools_add') }}" method="post">
+        <table class="center">
+            <thead>
+                <tr><th>name</th><th>path</th><th>description</th><th>action</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" name="name" placeholder="name" /></td>
+                    <td><input type="text" name="path" placeholder="path" /></td>
+                    <td><input type="text" name="description" placeholder="description" /></td>
+                    <td><input type="submit" value="add" onclick="this.form.submit();" /></td>
+                </tr>
+            {% for tool in tools %}
+                <tr>
+                    <td>{{ tool.name }}</td>
+                    <td>{{ tool.path }}</td>
+                    <td>{{ tool.description }}</td>
+                    <td>
+                        <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_tools_remove', tid=tool.id) }}'"><i class="fas fa-trash" title="remove"></i></button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </form>
 </div>
 {% endblock %}

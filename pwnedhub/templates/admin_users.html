@@ -1,38 +1,34 @@
 {% extends "layout.html" %}
 {% block body %}
 {% if users|length > 0 %}
-<div class="row">
-    <div class="col-xs-10 col-xs-offset-1">
-        <div class="admin">
-            <table class="center">
-                <thead>
-                    <tr><th>created</th><th>username</th><th>role</th><th>status</th><th>action</th></tr>
-                </thead>
-                <tbody>
-                {% for user in users %}
-                    <tr>
-                        <td>{{ user.created_as_string }}</td>
-                        <td>{{ user.username }}</td>
-                        <td>{{ user.role_as_string }}</td>
-                        <td>{{ user.status_as_string }}</td>
-                        <td>
-                        {% if user.is_admin %}
-                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='demote', uid=user.id) }}'"><i class="fas fa-user-minus" title="demote"></i></button>
-                        {% else %}
-                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='promote', uid=user.id) }}'"><i class="fas fa-user-plus" title="promote"></i></button>
-                        {% endif %}
-                        {% if user.is_enabled %}
-                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='disable', uid=user.id) }}'"><i class="fas fa-user-slash" title="disable"></i></button>
-                        {% else %}
-                            <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='enable', uid=user.id) }}'"><i class="fas fa-user" title="enable"></i></button>
-                        {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="flex-width-10 flex-offset-1 admin flex-column">
+    <table class="center">
+        <thead>
+            <tr><th>created</th><th>username</th><th>role</th><th>status</th><th>action</th></tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.created_as_string }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.role_as_string }}</td>
+                <td>{{ user.status_as_string }}</td>
+                <td>
+                {% if user.is_admin %}
+                    <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='demote', uid=user.id) }}'"><i class="fas fa-user-minus" title="demote"></i></button>
+                {% else %}
+                    <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='promote', uid=user.id) }}'"><i class="fas fa-user-plus" title="promote"></i></button>
+                {% endif %}
+                {% if user.is_enabled %}
+                    <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='disable', uid=user.id) }}'"><i class="fas fa-user-slash" title="disable"></i></button>
+                {% else %}
+                    <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_users_modify', action='enable', uid=user.id) }}'"><i class="fas fa-user" title="enable"></i></button>
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endif %}
 {% endblock %}

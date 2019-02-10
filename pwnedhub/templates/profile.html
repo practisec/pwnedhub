@@ -1,37 +1,27 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="row">
-    <div class="col-xs-6 col-xs-offset-3">
-        <div class="profile">
-            <img class="center avatar circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="avatar" />
-            <form action="{{ url_for('core.profile_change') }}" method="post">
-                <label for="avatar">avatar url</label>
-                <input class="u-full-width" name="avatar" type="text" value="{{ user.avatar or '' }}" />
-                <label for="signature">signature</label>
-                <textarea class="u-full-width" name="signature">{{ user.signature }}</textarea>
-                <label for="username">username</label>
-                <input class="u-full-width" name="username" type="text" value="{{ user.username }}" disabled/>
-                <label for="name">display name</label>
-                <input class="u-full-width" name="name" type="text" value="{{ user.name }}" />
-                <label for="password">password</label>
-                <input class="u-full-width" name="password" type="password" value="{{ user.password_as_string }}" />
-                <div class="row">
-                    <div class="col-xs-6">
-                        <label for="question">question</label>
-                        <select class="u-full-width" name="question">
-                        {% for question in questions %}
-                            <option value="{{ question }}"{% if question == user.question %} selected{% endif %}>{{ questions[question] }}</option>
-                        {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-xs-6">
-                        <label for="answer">answer</label>
-                        <input class="u-full-width" name="answer" type="text" value="{{ user.answer }}" />
-                    </div>
-                </div>
-                <input class="u-full-width" type="submit" value="submit" onclick="this.form.submit();" />
-            </form>
-        </div>
-    </div>
+<div class="flex-width-4 flex-offset-4 profile flex-column">
+    <img class="center avatar circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="avatar" />
+    <form class="flex-no-shrink flex-column" action="{{ url_for('core.profile_change') }}" method="post">
+        <label for="avatar">avatar url</label>
+        <input name="avatar" type="text" value="{{ user.avatar or '' }}" />
+        <label for="signature">signature</label>
+        <textarea name="signature">{{ user.signature }}</textarea>
+        <label for="username">username</label>
+        <input name="username" type="text" value="{{ user.username }}" disabled/>
+        <label for="name">display name</label>
+        <input name="name" type="text" value="{{ user.name }}" />
+        <label for="password">password</label>
+        <input name="password" type="password" value="{{ user.password_as_string }}" />
+        <label for="question">question</label>
+        <select name="question">
+        {% for question in questions %}
+            <option value="{{ question }}"{% if question == user.question %} selected{% endif %}>{{ questions[question] }}</option>
+        {% endfor %}
+        </select>
+        <label for="answer">answer</label>
+        <input name="answer" type="text" value="{{ user.answer }}" />
+        <input type="submit" value="submit" onclick="this.form.submit();" />
+    </form>
 </div>
 {% endblock %}
