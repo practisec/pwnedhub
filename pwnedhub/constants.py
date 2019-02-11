@@ -3,9 +3,45 @@ ROLES = {
     1: 'user',
 }
 
-STATUSES = {
+USER_STATUSES = {
     0: 'disabled',
     1: 'enabled',
+}
+
+BUG_STATUSES = {
+    0: 'submitted',
+    # anything below is considered validated
+    1: 'rejected',
+    2: 'confirmed',
+    3: 'fixed',
+}
+
+VULNERABILITIES = {
+    0: ('Server Security Misconfiguration', 100),
+    1: ('Server-Side Injection', 500),
+    2: ('Broken Authentication and Session Management', 300),
+    3: ('Sensitive Data Exposure', 100),
+    4: ('Cross-Site Scripting (XSS)', 200),
+    5: ('Broken Access Control (BAC)', 400),
+    6: ('Cross-Site Request Forgery (CSRF)', 200),
+    7: ('Application-Level Denial-of-Service (DoS)', 100),
+    8: ('Unvalidated Redirects and Forwards', 100),
+    9: ('External Behavior', 100),
+    10: ('Insufficient Security Configurability', 100),
+    11: ('Using Components with Known Vulnerabilities', 200),
+    12: ('Insecure Data Storage', 100),
+    13: ('Insecure Data Transport', 300),
+    14: ('Broken Cryptography', 100),
+    15: ('Privacy Concerns', 100),
+    16: ('Other', 100),
+}
+
+SEVERITY = {
+    0: 'informational',
+    1: 'low',
+    2: 'medium',
+    3: 'high',
+    4: 'critical',
 }
 
 QUESTIONS = {

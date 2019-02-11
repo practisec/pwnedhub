@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="submission-view flex-column">
+    <div><h4><div class="severity rounded bordered-dark {{ submission.severity_as_string }}">{{ submission.severity_as_string|first }}</div> {{ submission.title }}</h4></div>
+    <table>
+        <tbody>
+            <tr>
+                <td>status</td>
+                <td>{{ submission.status_as_string }}</td>
+                <td>severity</td>
+                <td class="{{ submission.severity_as_string }}">{{ submission.severity_as_string }}</td>
+            </tr>
+            <tr>
+                <td>disclosed</td>
+                <td>{{ submission.created_as_string }}</td>
+                <td>reported by</td>
+                <td>
+                    <div class="submitter flex-row flex-align-center">
+                        <div class="avatar"><a href="{{ url_for('core.profile_view', uid=submission.submitter.id) }}"><img class="circular bordered-dark" src="{{ submission.submitter.avatar_or_default|safe }}" title="avatar" /></a></div>
+                        <div>{{ submission.submitter.name }}</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>vulnerability</td>
+                <td>{{ submission.vulnerability_as_string }}</td>
+                <td>reviewed by</td>
+                <td>
+                    <div class="submitter flex-row flex-align-center">
+                        <div class="avatar"><a href="{{ url_for('core.profile_view', uid=submission.reviewer.id) }}"><img class="circular bordered-dark" src="{{ submission.reviewer.avatar_or_default|safe }}" title="avatar" /></a></div>
+                        <div>{{ submission.reviewer.name }}</div>
+                    </div>
+            </tr>
+            <tr>
+                <td>bounty</td>
+                <td>{{ submission.bounty }}</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="summary">
+        <div class="center-content">
+            <h5>Summary</h5>
+        </div>
+    {% if submission.is_validated or submission.reviewer == g.user or submission.submitter == g.user %}
+        <b>Description:</b>
+        <br>
+        {{ submission.description }}
+        <br><br>
+        <b>Impact:</b>
+        <br>
+        {{ submission.impact }}
+    {% else %}
+        [<em>Disclosure pending validation.</em>]
+    {% endif %}
+    </div>
+    {% if not submission.is_validated and submission.reviewer == g.user %}
+    <hr>
+    <div class="right-content">
+        <button type="button" class="img-btn" onclick="confirmRedirect('{{ url_for('core.submissions_action', action='confirm', bid=submission.id) }}')"><i class="fas fa-check-circle" title="confirm"></i></button>
+        <button type="button" class="img-btn" onclick="confirmRedirect('{{ url_for('core.submissions_action', action='reject', bid=submission.id) }}')"><i class="fas fa-times-circle" title="reject"></i></button>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

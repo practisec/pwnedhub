@@ -19,6 +19,13 @@
                 </div>
                 <ul class="flex-grow">
                 {% if g.user %}
+                    <li><a href="#">bugs</a>
+                        <ul>
+                            <li><a href="{{ url_for('core.scoreboard') }}">scoreboard</a></li>
+                            <li><a href="{{ url_for('core.submissions') }}">submissions</a></li>
+                            <li><a href="{{ url_for('core.submissions_new') }}">new submission</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#">testing</a>
                         <ul>
                             <li><a href="{{ url_for('core.notes') }}">notes</a></li>

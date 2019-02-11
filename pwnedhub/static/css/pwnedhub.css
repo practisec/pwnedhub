@@ -432,6 +432,138 @@ nav ul li:hover ul {
     text-align: justify;
 }
 
+.scoreboard .score-panel {
+    margin-bottom: 1rem;
+}
+
+.scoreboard .score-panel h5 {
+    margin-bottom: 0;
+}
+
+.scoreboard .score-panel > .wrapper {
+    padding: 0 0.5rem;
+    background-color: #fff;
+    border: 1px solid #bbb;
+}
+
+.scoreboard .score-panel > .wrapper > * {
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.scoreboard .score-panel .score > * {
+    padding: 1rem 0.5rem;
+}
+
+.scoreboard .score-panel .score .avatar img {
+    display: block;
+    height: 4rem;
+}
+
+.scoreboard .score-panel .score .trophy {
+    color: transparent;
+}
+
+.scoreboard .score-panel .score .trophy i {
+    opacity: 1;
+}
+
+.scoreboard .score-panel .score .position-1 {
+    color: gold;
+}
+
+.scoreboard .score-panel .score .position-2 {
+    color: silver;
+}
+
+.scoreboard .score-panel .score .position-3 {
+    color: #8c7853; /* bronze */
+}
+
+.submissions {
+    border-top: 1px solid #e1e1e1;
+}
+
+.submissions .submission-preview {
+    padding: 1rem;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.submissions .submission-preview h5 {
+    margin-bottom: 0;
+}
+
+.submissions .submission-preview .title a {
+    text-decoration: inherit;
+}
+
+.submissions .submission-preview .info span {
+    color: #999;
+}
+
+.submissions .submission-preview .avatar {
+    margin-right: 2rem;
+}
+
+.submissions .submission-preview .avatar img {
+    display: block;
+    height: 4rem;
+}
+
+.submission-new textarea {
+    min-height: 20rem;
+}
+
+.submission-view table,
+.submission-view caption,
+.submission-view tbody,
+.submission-view tfoot,
+.submission-view thead,
+.submission-view tr,
+.submission-view th,
+.submission-view td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+}
+
+.submission-view table {
+    margin-bottom: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid #e1e1e1;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.submission-view td {
+    padding: 0.5rem;
+    vertical-align: middle;
+}
+
+.submission-view td:nth-child(odd) {
+    text-align: right;
+    color: #999;
+}
+
+.submission-view td:nth-child(even) {
+    text-align: left;
+}
+
+.submission-view .submitter .avatar {
+    margin-right: 1rem;
+}
+
+.submission-view .submitter .avatar img {
+    display: block;
+    height: 4rem;
+}
+
+.submission-view .summary {
+    margin-bottom: 1rem;
+}
+
 .notes {
     position: relative;
     height: 100%
@@ -676,6 +808,33 @@ button.delete {
 
 .red {
     color: red;
+}
+
+.severity {
+    display: inline-block;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 0 0.25em;
+}
+
+.severity.informational {
+    background-color: #e0fde0;
+}
+
+.severity.low {
+    background-color: #bbdefb;
+}
+
+.severity.medium {
+    background-color: #ffe0b2;
+}
+
+.severity.high {
+    background-color: #ffcdd2;
+}
+
+.severity.critical {
+    background-color: #E1BEE7;
 }
 
 /* end */

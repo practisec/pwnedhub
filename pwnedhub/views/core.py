@@ -1,8 +1,9 @@
 from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, flash, send_file, __version__
 from sqlalchemy import asc, desc
+from sqlalchemy.sql import func
 from pwnedhub import db
-from pwnedhub.models import Mail, Message, Tool, User, Score
-from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
+from pwnedhub.models import Mail, Message, Tool, Bug, User, Score
+from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES
 from pwnedhub.decorators import login_required, roles_required
 from pwnedhub.validators import is_valid_password, is_valid_filename, is_valid_mimetype
 from datetime import datetime
@@ -149,14 +150,16 @@ def profile_change():
             question = request.values['question']
             answer = request.values['answer']
             avatar = request.values['avatar']
+            signature = request.values['signature']
             user.name = name
             user.avatar = avatar
+            user.signature = signature
             user.password = password
             user.question = question
             user.answer = answer
             db.session.add(user)
             db.session.commit()
-            flash('Account information successfully changed.')
+            flash('Account information changed.')
         else:
             flash('Password does not meet complexity requirements.')
     return redirect(url_for('core.profile'))
@@ -181,7 +184,7 @@ def mail_compose():
             # generate automated Administrator response
             if receiver.role == 0:
                 content = ADMIN_RESPONSE
-                letter = Mail(content=content, subject='RE:'+subject, sender=receiver, receiver=g.user)
+                letter = Mail(content=content, subject='RE: '+subject, sender=receiver, receiver=g.user)
                 db.session.add(letter)
                 db.session.commit()
             flash('Mail sent.')
@@ -324,6 +327,83 @@ def artifacts_view():
 def tools():
     tools = Tool.query.all()
     return render_template('tools.html', tools=tools)
+
+@core.route('/submissions')
+@login_required
+def submissions():
+    submissions = Bug.query.all()
+    return render_template('submissions.html', submissions=submissions)
+
+@core.route('/submissions/new', methods=['GET', 'POST'])
+@login_required
+def submissions_new():
+    if request.method == 'POST':
+        title = request.form['title']
+        vuln_id = request.form['vuln_id']
+        severity = request.form['severity']
+        description = request.form['description']
+        impact = request.form['impact']
+        if all((title, vuln_id, severity, description, impact)):
+            submission = Bug(
+                title=title,
+                vuln_id=vuln_id,
+                severity=severity,
+                description=description,
+                impact=impact,
+                submitter=g.user,
+                reviewer=User.query.filter(
+                    User.id.isnot(g.user.id),
+                    User.status.is_(1),
+                    User.role.is_(1)
+                ).order_by(func.random()).first(),
+            )
+            db.session.add(submission)
+            db.session.commit()
+            # create default welcome message
+            #sender = User.query.get(1)
+            #receiver = user
+            #subject = 'Welcome to PwnedHub!'
+            #content = "We're glad you've chosen PwnedHub to help you take your next step in becoming a more efficient security consultant. We're here to help. If you have any questions or concerns, please don't hesitate to reach out to this account for assistance. Together, we can make security testing great again!"
+            #mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
+            #db.session.add(mail)
+            #db.session.commit()
+            flash('Submission created.')
+            return redirect(url_for('core.submissions_view', bid=submission.id))
+        else:
+            flash('Required field(s) missing.')
+    return render_template('submissions_new.html', vulnerabilities=VULNERABILITIES, severity=SEVERITY)
+
+@core.route('/submissions/view/<int:bid>')
+@login_required
+def submissions_view(bid):
+    submission = Bug.query.get_or_404(bid)
+    return render_template('submissions_view.html', submission=submission)
+
+@core.route('/submissions/<string:action>/<int:bid>')
+@login_required
+def submissions_action(action, bid):
+    submission = Bug.query.get_or_404(bid)
+    if not submission.is_validated and submission.reviewer == g.user:
+        if [status for status in BUG_STATUSES.itervalues() if status.startswith(action)]:
+            # passing previous check guarantees at least one result
+            submission.status = [aid for aid, status in BUG_STATUSES.iteritems() if status.startswith(action)][0]
+            db.session.add(submission)
+            db.session.commit()
+            flash('Bug status changed.')
+        else:
+            flash('Invalid action.')
+    else:
+        flash('Invalid bug ID.')
+    return redirect(url_for('core.submissions_view', bid=bid))
+
+@core.route('/scoreboard')
+@login_required
+def scoreboard():
+    users = User.query.all()
+    reputation_data = sorted(users, key=lambda user: user.reputation, reverse=True)[:5]
+    bug_data = sorted(users, key=lambda user: user.bugs.count(), reverse=True)[:5]
+    validation_data = sorted(users, key=lambda user: len(user.completed_validations), reverse=True)[:5]
+    return render_template('scoreboard.html', reputation_data=reputation_data, bug_data=bug_data, validation_data=validation_data)
 
 @core.route('/games/')
 @login_required

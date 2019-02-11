@@ -14,6 +14,12 @@ function show_flash(msg) {
     setTimeout(function() { flash.style.visibility = "hidden"; }, 5000);
 }
 
+function confirmRedirect(url) {
+    if (confirm("Are you sure?")) {
+        window.location = url;
+    }
+}
+
 function toggle_visibility(name){
    var els = document.getElementsByName(name);
    for(var i=0; i<els.length; ++i){
