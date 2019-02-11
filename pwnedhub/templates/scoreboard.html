@@ -18,7 +18,7 @@
     <div class="flex-grow score-panel rounded gutter-child flex-no-basis flex-column">
         <div class="flex-column wrapper rounded">
             <div class="header center-content"><h5>Top 5 Submitters<h5></div>
-        {% for user in reputation_data %}
+        {% for user in bug_data %}
             <div class="score flex-row flex-align-center flex-justify-space-between">
                 <div class="position"><b>{{ loop.index }}</b></div>
                 <div class="trophy position-{{ loop.index }}"><i class="fas fa-trophy" title="trophy"></i></div>
