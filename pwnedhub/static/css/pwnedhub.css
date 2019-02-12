@@ -513,6 +513,14 @@ nav ul li:hover ul {
     min-height: 20rem;
 }
 
+.submission-view .title .severity {
+    margin: 1rem;
+}
+
+.submission-view .title h4 {
+    margin: 0;
+}
+
 .submission-view table,
 .submission-view caption,
 .submission-view tbody,
@@ -811,7 +819,6 @@ button.delete {
 }
 
 .severity {
-    display: inline-block;
     font-weight: bold;
     text-transform: uppercase;
     padding: 0 0.25em;

@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="submission-view flex-column">
-    <div><h4><div class="severity rounded bordered-dark {{ submission.severity_as_string }}">{{ submission.severity_as_string|first }}</div> {{ submission.title }}</h4></div>
+    <div class="title flex-row flex-align-center">
+        <div class="severity rounded bordered-dark {{ submission.severity_as_string }}">#{{ '{:05d}'.format(submission.id) }}</div>
+        <div><h4>{{ submission.title }}</h4></div>
+    </div>
     <table>
         <tbody>
             <tr>
