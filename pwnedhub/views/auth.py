@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, request, session, redirect, url_for, r
 from pwnedhub import db
 from pwnedhub.models import Mail, User
 from pwnedhub.constants import QUESTIONS
-from pwnedhub.decorators import login_required
+from pwnedhub.decorators import login_required, validate
 from pwnedhub.utils import xor_encrypt
 from pwnedhub.validators import is_valid_password
 from hashlib import md5
@@ -13,6 +13,7 @@ auth = Blueprint('auth', __name__)
 # authenticaton controllers
 
 @auth.route('/register', methods=['GET', 'POST'])
+@validate(['username', 'name', 'password', 'confirm_password', 'question', 'answer'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -46,6 +47,7 @@ def register():
     return render_template('register.html', questions=QUESTIONS)
 
 @auth.route('/login', methods=['GET', 'POST'])
+@validate(['username', 'password'])
 def login():
     # redirect to home if already logged in
     if session.get('user_id'):
@@ -75,6 +77,7 @@ def logout():
 # password recovery flow controllers
 
 @auth.route('/reset', methods=['GET', 'POST'])
+@validate(['username'])
 def reset_init():
     if request.method == 'POST':
         query = "SELECT * FROM users WHERE username='{}'"
@@ -92,6 +95,7 @@ def reset_init():
     return render_template('reset_init.html')
 
 @auth.route('/reset/question', methods=['GET', 'POST'])
+@validate(['answer'])
 def reset_question():
     # enforce flow control
     if not session.get('reset_id'):
@@ -107,6 +111,7 @@ def reset_question():
     return render_template('reset_question.html', question=user.question_as_string)
 
 @auth.route('/reset/password', methods=['GET', 'POST'])
+@validate(['password', 'confirm_password'])
 def reset_password():
     # enforce flow control
     if not session.get('reset_id'):

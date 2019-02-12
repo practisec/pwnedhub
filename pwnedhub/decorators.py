@@ -1,8 +1,27 @@
-from flask import g, request, redirect, url_for, abort, make_response
+from flask import g, request, redirect, url_for, abort, make_response, flash
 from constants import ROLES
 from functools import wraps
 from threading import Thread
 from urlparse import urlparse
+
+def validate(params, method='POST'):
+    def wrapper(func):
+        @wraps(func)
+        def wrapped(*args, **kwargs):
+            if request.method == method:
+                for param in params:
+                    valid = None
+                    # iterate through all request inputs
+                    for attr in ('args', 'form', 'files'):
+                        valid = getattr(request, attr).get(param)
+                        if valid:
+                            break
+                    if not valid:
+                        flash('Required field(s) missing.')
+                        return redirect(request.referrer)
+            return func(*args, **kwargs)
+        return wrapped
+    return wrapper
 
 def login_required(func):
     @wraps(func)

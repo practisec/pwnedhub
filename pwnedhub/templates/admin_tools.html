@@ -17,7 +17,7 @@
                 <tr>
                     <td>{{ tool.name }}</td>
                     <td>{{ tool.path }}</td>
-                    <td>{{ tool.description }}</td>
+                    <td class="left-content">{{ tool.description }}</td>
                     <td>
                         <button type="button" class="img-btn" onclick="window.location='{{ url_for('core.admin_tools_remove', tid=tool.id) }}'"><i class="fas fa-trash" title="remove"></i></button>
                     </td>

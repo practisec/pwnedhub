@@ -4,7 +4,7 @@ from sqlalchemy.sql import func
 from pwnedhub import db
 from pwnedhub.models import Mail, Message, Tool, Bug, User, Score
 from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES, REVIEW_NOTIFICATION, BUG_NOTIFICATIONS
-from pwnedhub.decorators import login_required, roles_required
+from pwnedhub.decorators import login_required, roles_required, validate
 from pwnedhub.validators import is_valid_password, is_valid_filename, is_valid_mimetype
 from datetime import datetime
 from urllib import urlencode
@@ -61,6 +61,7 @@ def admin_tools():
 @core.route('/admin/tools/add', methods=['POST'])
 @login_required
 @roles_required('admin')
+@validate(['name', 'path', 'description'])
 def admin_tools_add():
     tool = Tool(
         name=request.form['name'],
@@ -141,27 +142,27 @@ def profile_view(uid):
 
 @core.route('/profile/change', methods=['GET', 'POST'])
 @login_required
+@validate(['name', 'password', 'question', 'answer'])
 def profile_change():
     user = g.user
-    if set(['password', 'question', 'answer']).issubset(request.values):
-        password = request.values['password']
-        if is_valid_password(password):
-            name = request.values['name']
-            question = request.values['question']
-            answer = request.values['answer']
-            avatar = request.values['avatar']
-            signature = request.values['signature']
-            user.name = name
-            user.avatar = avatar
-            user.signature = signature
-            user.password = password
-            user.question = question
-            user.answer = answer
-            db.session.add(user)
-            db.session.commit()
-            flash('Account information changed.')
-        else:
-            flash('Password does not meet complexity requirements.')
+    password = request.values['password']
+    if is_valid_password(password):
+        name = request.values['name']
+        question = request.values['question']
+        answer = request.values['answer']
+        avatar = request.values['avatar']
+        signature = request.values['signature']
+        user.name = name
+        user.avatar = avatar
+        user.signature = signature
+        user.password = password
+        user.question = question
+        user.answer = answer
+        db.session.add(user)
+        db.session.commit()
+        flash('Account information changed.')
+    else:
+        flash('Password does not meet complexity requirements.')
     return redirect(url_for('core.profile'))
 
 @core.route('/mail')
@@ -172,11 +173,12 @@ def mail():
 
 @core.route('/mail/compose', methods=['GET', 'POST'])
 @login_required
+@validate(['receiver', 'subject', 'content'])
 def mail_compose():
     if request.method == 'POST':
-        content = request.form['content']
-        if content:
-            receiver = User.query.get(request.form['receiver'])
+        receiver = User.query.get(request.form['receiver'])
+        if receiver:
+            content = request.form['content']
             subject = request.form['subject']
             letter = Mail(content=content, subject=subject, sender=g.user, receiver=receiver)
             db.session.add(letter)
@@ -189,6 +191,8 @@ def mail_compose():
                 db.session.commit()
             flash('Mail sent.')
             return redirect(url_for('core.mail'))
+        else:
+            flash('Invalid recipient')
     users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
     return render_template('mail_compose.html', users=users)
 
@@ -239,12 +243,12 @@ def messages(page=0):
 
 @core.route('/messages/create', methods=['POST'])
 @login_required
+@validate(['message'])
 def messages_create():
     message = request.form['message']
-    if message:
-        msg = Message(comment=message, user=g.user)
-        db.session.add(msg)
-        db.session.commit()
+    msg = Message(comment=message, user=g.user)
+    db.session.add(msg)
+    db.session.commit()
     return redirect(url_for('core.messages'))
 
 @core.route('/messages/delete/<int:mid>')
@@ -280,6 +284,7 @@ def artifacts():
 
 @core.route('/artifacts/save', methods=['POST'])
 @login_required
+@validate(['file'])
 def artifacts_save():
     file = request.files['file']
     if is_valid_filename(file.filename):
@@ -300,6 +305,7 @@ def artifacts_save():
 
 @core.route('/artifacts/delete', methods=['POST'])
 @login_required
+@validate(['filename'])
 def artifacts_delete():
     filename = request.form['filename']
     try:
@@ -311,6 +317,7 @@ def artifacts_delete():
 
 @core.route('/artifacts/view', methods=['POST'])
 @login_required
+@validate(['filename'])
 def artifacts_view():
     filename = request.form['filename']
     try:
@@ -340,6 +347,7 @@ def submissions(page=0):
 
 @core.route('/submissions/new', methods=['GET', 'POST'])
 @login_required
+@validate(['title', 'vuln_id', 'severity', 'description', 'impact'])
 def submissions_new():
     if request.method == 'POST':
         title = request.form['title']
@@ -347,36 +355,32 @@ def submissions_new():
         severity = request.form['severity']
         description = request.form['description']
         impact = request.form['impact']
-        if all((title, vuln_id, severity, description, impact)):
-            reviewer = User.query.filter(
-                User.id.isnot(g.user.id),
-                User.status.is_(1),
-                User.role.is_(1)
-            ).order_by(func.random()).first()
-            submission = Bug(
-                title=title,
-                vuln_id=vuln_id,
-                severity=severity,
-                description=description,
-                impact=impact,
-                submitter=g.user,
-                reviewer=reviewer
-            )
-            db.session.add(submission)
-            db.session.commit()
-            # send message to reviewer
-            sender = User.query.get(1)
-            receiver = reviewer
-            subject = 'New Submission for Review'
-            bug_href = url_for('core.submissions_view', bid=submission.id, _external=True)
-            content = REVIEW_NOTIFICATION.format(bug_href, submission.id)
-            mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
-            db.session.add(mail)
-            db.session.commit()
-            flash('Submission created.')
-            return redirect(url_for('core.submissions_view', bid=submission.id))
-        else:
-            flash('Required field(s) missing.')
+        reviewer = User.query.filter(
+            User.id.isnot(g.user.id),
+            User.status.is_(1),
+            User.role.is_(1)
+        ).order_by(func.random()).first()
+        submission = Bug(
+            title=title,
+            vuln_id=vuln_id,
+            severity=severity,
+            description=description,
+            impact=impact,
+            submitter=g.user,
+            reviewer=reviewer
+        )
+        # send message to reviewer
+        sender = User.query.get(1)
+        receiver = reviewer
+        subject = 'New Submission for Review'
+        bug_href = url_for('core.submissions_view', bid=submission.id, _external=True)
+        content = REVIEW_NOTIFICATION.format(bug_href, submission.id)
+        mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
+        db.session.add(submission)
+        db.session.add(mail)
+        db.session.commit()
+        flash('Submission created.')
+        return redirect(url_for('core.submissions_view', bid=submission.id))
     return render_template('submissions_new.html', vulnerabilities=VULNERABILITIES, severity=SEVERITY)
 
 @core.route('/submissions/view/<int:bid>')
