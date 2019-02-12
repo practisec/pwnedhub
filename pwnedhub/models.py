@@ -197,6 +197,13 @@ class User(BaseModel):
             return True
         return False
 
+    @property
+    def has_unread_mail(self):
+        for letter in self.received_mail:
+            if letter.read == 0:
+                return True
+        return False
+
     def check_password(self, password):
         if self.password_hash == xor_encrypt(password, current_app.config['PW_ENC_KEY']):
             return True

@@ -33,9 +33,9 @@
                             <li><a href="{{ url_for('core.tools') }}">tools</a></li>
                         </ul>
                     </li>
-                    <li><a href="#">collaboration</a>
+                    <li><a href="#">{% if g.user.has_unread_mail %}*{% endif %}collaboration</a>
                         <ul>
-                            <li><a href="{{ url_for('core.mail') }}">mailbox</a></li>
+                            <li><a href="{{ url_for('core.mail') }}">{% if g.user.has_unread_mail %}*{% endif %}pwnmail</a></li>
                             <li><a href="{{ url_for('core.messages') }}">messages</a></li>
                         </ul>
                     </li>
