@@ -2,16 +2,16 @@
 {% block body %}
 <div class="flex-width-10 flex-offset-1 mail flex-column">
     <form class="flex-no-shrink flex-column" action="{{ url_for('core.mail_compose') }}" method="post">
-        <label for="receiver">to:</label>
+        <label for="receiver">to: *</label>
         <select name="receiver">
             <option value="" disabled selected>recipient...</option>
         {% for user in users %}
             <option value="{{ user.id }}">{{ user.name }}</option>
         {% endfor %}
         </select>
-        <label for="subject">subject:</label>
+        <label for="subject">subject: *</label>
         <input name="subject" type="text" />
-        <label for="content">content:</label>
+        <label for="content">content: *</label>
         <textarea name="content"></textarea>
         <hr>
         <div class="right-content">

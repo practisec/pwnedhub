@@ -715,7 +715,7 @@ nav ul li:hover ul {
     opacity: 0.5;
 }
 
-.profile .avatar {
+.profile .avatar img {
     display: block;
     max-width: 20rem;
     width: 100%;

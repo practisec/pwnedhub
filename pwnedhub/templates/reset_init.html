@@ -3,7 +3,7 @@
 <div class="flex-width-4 flex-offset-4 flex-column">
     <h4>enter your username</h4>
     <form class="flex-no-shrink flex-column" action="{{ url_for('auth.reset_init') }}" method="post">
-        <label for="username">username</label>
+        <label for="username">username:</label>
         <input name="username" type="text" value="" />
         <input type="submit" value="submit" onclick="this.form.submit();" />
     </form>

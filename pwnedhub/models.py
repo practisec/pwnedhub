@@ -33,7 +33,7 @@ class Tool(BaseModel):
 
 class Message(BaseModel):
     __tablename__ = 'messages'
-    comment = db.Column(db.Text)
+    comment = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     def serialize(self):
@@ -53,8 +53,8 @@ class Message(BaseModel):
 
 class Mail(BaseModel):
     __tablename__ = 'mail'
-    subject = db.Column(db.Text)
-    content = db.Column(db.Text)
+    subject = db.Column(db.Text, nullable=False)
+    content = db.Column(db.Text, nullable=False)
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     read = db.Column(db.Integer, nullable=False, default=0)
@@ -75,7 +75,7 @@ class Mail(BaseModel):
 
 class Bug(BaseModel):
     __tablename__ = 'bugs'
-    title = db.Column(db.String(255))
+    title = db.Column(db.String(255), nullable=False)
     vuln_id = db.Column(db.Integer, nullable=False, default=0)
     severity = db.Column(db.Integer, nullable=False, default=0)
     description = db.Column(db.Text, nullable=False)

@@ -3,25 +3,25 @@
 <div class="flex-width-4 flex-offset-4 flex-column">
     <h4>register a profile</h4>
     <form class="flex-no-shrink flex-column" action="{{ url_for('auth.register') }}" method="post">
-        <label for="username">username</label>
+        <label for="username">username: *</label>
         <input name="username" type="text" />
-        <label for="name">display name</label>
+        <label for="name">display name: *</label>
         <input name="name" type="text" />
-        <label for="avatar">avatar url</label>
+        <label for="avatar">avatar url:</label>
         <input name="avatar" type="text" />
-        <label for="signature">signature</label>
+        <label for="signature">signature:</label>
         <textarea name="signature"></textarea>
-        <label for="password">password</label>
+        <label for="password">password: *</label>
         <input name="password" type="password" />
-        <label for="confirm_password">confirm password</label>
+        <label for="confirm_password">confirm password: *</label>
         <input name="confirm_password" type="password" />
-        <label for="question">question</label>
+        <label for="question">question: *</label>
         <select name="question">
         {% for question in questions %}
             <option value="{{ question }}">{{ questions[question] }}</option>
         {% endfor %}
         </select>
-        <label for="answer">answer</label>
+        <label for="answer">answer: *</label>
         <input name="answer" type="text" />
         <input type="submit" value="register" onclick="this.form.submit();" />
     </form>

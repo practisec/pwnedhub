@@ -4,9 +4,9 @@
     <form class="flex-no-shrink flex-column" action="{{ url_for('core.mail_compose') }}" method="post">
         <div><h5>{{ letter.sender.name }}</h5></div>
         <input type="hidden" name="receiver" value="{{ letter.sender.id }}" />
-        <label for="subject">subject:</label>
+        <label for="subject">subject: *</label>
         <input name="subject" type="text" value="RE: {{ letter.subject }}" />
-        <label for="content">content:</label>
+        <label for="content">content: *</label>
         <textarea name="content"></textarea>
         <hr>
         <div class="right-content">
