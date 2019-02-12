@@ -98,6 +98,10 @@ flex item default = flex: 0 1 auto
     justify-content: center;
 }
 
+.flex-justify-right {
+    justify-content: flex-end;
+}
+
 .flex-justify-space-between {
     justify-content: space-between;
 }
@@ -688,14 +692,25 @@ nav ul li:hover ul {
 }
 
 .pagination {
-    text-align: right;
+    margin-top: 1rem;
 }
 
-.pagination span {
-    cursor: pointer;
+.pagination a {
+    padding: 0.25rem 1rem;
+    text-decoration: none;
 }
 
-.pagination span[disabled] {
+.pagination a.active {
+  background-color: #e1e1e1;
+  color: inherit;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #bbb;
+    color: inherit;
+}
+
+.pagination a[disabled] {
     pointer-events: none;
     opacity: 0.5;
 }

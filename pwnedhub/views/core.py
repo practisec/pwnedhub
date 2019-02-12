@@ -224,28 +224,28 @@ def mail_delete(mid):
         flash('Invalid mail ID.')
     return redirect(url_for('core.mail'))
 
-@core.route('/messages', methods=['GET', 'POST'])
-@login_required
-def messages():
-    if request.method == 'POST':
-        message = request.form['message']
-        if message:
-            msg = Message(comment=message, user=g.user)
-            db.session.add(msg)
-            db.session.commit()
-    return redirect(url_for('core.messages_page', page=0))
-
+@core.route('/messages')
 @core.route('/messages/page/<int:page>')
 @login_required
-def messages_page(page):
-    per_page = 5
+def messages(page=0):
+    count = 5
     messages = Message.query.order_by(Message.created.desc()).all()
-    subsets = [messages[i:i + per_page] for i in xrange(0, len(messages), per_page)]
+    subsets = [messages[i:i + count] for i in xrange(0, len(messages), count)]
     try:
         subset = subsets[page]
     except IndexError:
         subset = []
-    return render_template('messages.html', messages=subset, current_page=page, pages=len(subsets))
+    return render_template('messages.html', messages=subset, current_page=page, page_count=len(subsets))
+
+@core.route('/messages/create', methods=['POST'])
+@login_required
+def messages_create():
+    message = request.form['message']
+    if message:
+        msg = Message(comment=message, user=g.user)
+        db.session.add(msg)
+        db.session.commit()
+    return redirect(url_for('core.messages'))
 
 @core.route('/messages/delete/<int:mid>')
 @login_required

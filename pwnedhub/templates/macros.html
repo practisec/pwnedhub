@@ -1,0 +1,9 @@
+{% macro pagination(route, current_page, page_count) %}
+<div class="pagination flex-row flex-align-center flex-justify-right">
+    <a href="{{ url_for(route, page=current_page-1) }}"{% if current_page == 0 %} disabled="disabled"{% endif %}>&laquo;</a>
+{% for page in range(0, page_count) %}
+    <a href="{{ url_for(route, page=page) }}"{% if current_page == page %} class="active"{% endif %}>{{ page }}</a>
+{% endfor %}
+    <a href="{{ url_for(route, page=current_page+1) }}"{% if current_page >= page_count-1 %} disabled="disabled"{% endif %}>&raquo;</a>
+</div>
+{% endmacro %}

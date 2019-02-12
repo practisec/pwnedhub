@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<form class="flex-width-10 flex-offset-1 flex-row" action="{{ url_for('core.messages') }}" method="post">
+<form class="flex-width-10 flex-offset-1 flex-row" action="{{ url_for('core.messages_create') }}" method="post">
     <input class="flex-grow gutter-right" name="message" type="text" placeholder="message here..." />
     <input type="submit" value="submit" onclick="this.form.submit();" />
 </form>
@@ -25,11 +25,8 @@
     </div>
 {% endfor %}
 {% endif %}
-    <div class="pagination">
-        <span onclick="window.location='{{ url_for('core.messages_page', page=current_page-1) }}'"{% if current_page == 0 %} disabled="disabled"{% endif %}>prev</span>
-        |
-        <span onclick="window.location='{{ url_for('core.messages_page', page=current_page+1) }}'"{% if current_page >= pages-1 %} disabled="disabled"{% endif %}>next</span>
-    </div>
+{% from "macros.html" import pagination %}
+{{ pagination('core.messages', current_page, page_count) }}
 </div>
 <script>
 function buildUnfurl(url, data) {
