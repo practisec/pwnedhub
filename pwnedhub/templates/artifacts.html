@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="flex-column flex-align-center">
-    <form class="flex-row flex-align-center" action="{{ url_for('core.artifacts_save', method='file') }}" enctype="multipart/form-data" method="post">
+    <form class="flex-row flex-align-center" action="{{ url_for('core.artifacts_save') }}" enctype="multipart/form-data" method="post">
         <input name="file" type="file" />
         <input type="submit" value="upload" onclick="this.form.submit();" />
     </form>

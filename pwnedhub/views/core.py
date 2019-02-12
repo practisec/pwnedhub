@@ -281,24 +281,21 @@ def artifacts():
 @core.route('/artifacts/save', methods=['POST'])
 @login_required
 def artifacts_save():
-    file = request.files.get('file')
-    if file:
-        if is_valid_filename(file.filename):
-            if is_valid_mimetype(file.mimetype):
-                path = os.path.join(session.get('upload_folder'), file.filename)
-                if not os.path.isfile(path):
-                    try:
-                        file.save(path)
-                    except IOError:
-                        flash('Unable to save the artifact.')
-                else:
-                    flash('An artifact with that name already exists.')
+    file = request.files['file']
+    if is_valid_filename(file.filename):
+        if is_valid_mimetype(file.mimetype):
+            path = os.path.join(session.get('upload_folder'), file.filename)
+            if not os.path.isfile(path):
+                try:
+                    file.save(path)
+                except IOError:
+                    flash('Unable to save the artifact.')
             else:
-                flash('Invalid file type. Only {} types allowed.'.format(', '.join(current_app.config['ALLOWED_MIMETYPES'])))
+                flash('An artifact with that name already exists.')
         else:
-            flash('Invalid file extension. Only {} extensions allowed.'.format(', '.join(current_app.config['ALLOWED_EXTENSIONS'])))
+            flash('Invalid file type. Only {} types allowed.'.format(', '.join(current_app.config['ALLOWED_MIMETYPES'])))
     else:
-        flash('Invalid request.')
+        flash('Invalid file extension. Only {} extensions allowed.'.format(', '.join(current_app.config['ALLOWED_EXTENSIONS'])))
     return redirect(url_for('core.artifacts'))
 
 @core.route('/artifacts/delete', methods=['POST'])
