@@ -1,0 +1,126 @@
+/* baseline */
+
+html, body {
+    height: 100%;
+}
+
+/*
+flex item default = flex: 0 1 auto
+*/
+
+/* flex classes */
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-no-basis {
+    flex-basis: 0;
+}
+
+.flex-no-shrink {
+    flex-shrink: 0;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.flex-shrink {
+    flex-shrink: 1;
+}
+
+.flex-both {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.flex-align-center {
+    align-items: center;
+}
+
+.flex-justify-center {
+    justify-content: center;
+}
+
+.flex-justify-right {
+    justify-content: flex-end;
+}
+
+.flex-justify-space-between {
+    justify-content: space-between;
+}
+
+.flex-justify-space-around {
+    justify-content: space-around;
+}
+
+.flex-justify-space-evenly {
+    justify-content: space-evenly;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+/* grid 1/10/1 */
+
+.flex-width-10 {
+    max-width: 83.33333333%;
+}
+
+.flex-basis-10 {
+    flex-basis: 83.33333333%;
+}
+
+.flex-offset-1 {
+    margin-left: 8.33333333%;
+}
+
+/* grid 2/8/8 */
+
+.flex-width-8 {
+    max-width: 66.66666667%;
+}
+
+.flex-basis-8  {
+    flex-basis: 66.66666667%;
+}
+
+.flex-offset-2 {
+    margin-left: 16.66666667%;
+}
+
+/* grid 3/6/4 */
+
+.flex-width-6 {
+    max-width: 50%;
+}
+
+.flex-basis-6 {
+    flex-basis: 50%;
+}
+
+.flex-offset-3 {
+    margin-left: 25%;
+}
+
+/* grid 4/4/4 */
+
+.flex-width-4 {
+    max-width: 33.33333333%;
+}
+
+.flex-basis-4 {
+    flex-basis: 33.33333333%;
+}
+
+.flex-offset-4 {
+    margin-left: 33.33333333%;
+}

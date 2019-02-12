@@ -50,154 +50,6 @@ html {
   box-sizing: inherit;
 }
 
-/* basic structure */
-
-html, body {
-    height: 100%;
-}
-
-/*
-flex item default = flex: 0 1 auto
-*/
-
-.flex-row {
-    display: flex;
-}
-
-.flex-column {
-    display: flex;
-    flex-direction: column;
-}
-
-.flex-no-basis {
-    flex-basis: 0;
-}
-
-.flex-no-shrink {
-    flex-shrink: 0;
-}
-
-.flex-grow {
-    flex-grow: 1;
-}
-
-.flex-shrink {
-    flex-shrink: 1;
-}
-
-.flex-both {
-    flex-grow: 1;
-    flex-shrink: 1;
-}
-
-.flex-align-center {
-    align-items: center;
-}
-
-.flex-justify-center {
-    justify-content: center;
-}
-
-.flex-justify-right {
-    justify-content: flex-end;
-}
-
-.flex-justify-space-between {
-    justify-content: space-between;
-}
-
-.flex-justify-space-around {
-    justify-content: space-around;
-}
-
-.flex-justify-space-evenly {
-    justify-content: space-evenly;
-}
-
-.flex-width-10 {
-    max-width: 83.33333333%;
-}
-
-.flex-basis-10 {
-    flex-basis: 83.33333333%;
-}
-
-.flex-offset-1 {
-    margin-left: 8.33333333%;
-}
-
-.flex-width-8 {
-    max-width: 66.66666667%;
-}
-
-.flex-basis-8  {
-    flex-basis: 66.66666667%;
-}
-
-.flex-offset-2 {
-    margin-left: 16.66666667%;
-}
-
-.flex-width-6 {
-    max-width: 50%;
-}
-
-.flex-basis-6 {
-    flex-basis: 50%;
-}
-
-.flex-offset-3 {
-    margin-left: 25%;
-}
-
-.flex-width-4 {
-    max-width: 33.33333333%;
-}
-
-.flex-basis-4 {
-    flex-basis: 33.33333333%;
-}
-
-.flex-offset-4 {
-    margin-left: 33.33333333%;
-}
-
-.flex-wrap {
-    flex-wrap: wrap;
-}
-
-.gutter-right {
-    margin-right: 1rem;
-}
-
-.gutter-half-right {
-    margin-right: 0.5;
-}
-
-.gutter-left {
-    margin-left: 1rem;
-}
-
-.gutter-half-left {
-    margin-left: 0.5;
-}
-
-/* only works when the parent doesn't already
-assign margins i.e. flex-basis rules above.
-also, doesn't allow for a border when using
-border box. use a wrapper to fix these */
-.gutter-parent {
-    margin-left: -0.5rem;
-    margin-right: -0.5rem;
-}
-
-.gutter-child {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-}
-
-/* end */
-
 /* tags */
 
 body {
@@ -255,6 +107,28 @@ td input, td select, td button {
 button, input[type="submit"], input[type="reset"], input[type="button"] {
     padding: 0 1rem;
     background-color: #fff;
+}
+
+/* image button baseline */
+button.img-btn {
+    height: auto;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    line-height: normal;
+}
+
+/* image button customizations */
+button.save-as {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+button.delete {
+    position: absolute;
+    top: 0.5rem;
+    right: 0;
 }
 
 select:disabled {
@@ -744,44 +618,9 @@ nav ul li:hover ul {
     font-size: 1.25rem;
 }
 
-/* image button baseline */
-button.img-btn {
-    height: auto;
-    padding: 0;
-    border: 0;
-    background-color: transparent;
-    line-height: normal;
-}
-
-/*button.img-btn img {
-    height: 2rem;
-    opacity: 0.2;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
-}*/
-
-/* image button customizations */
-button.save-as {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-}
-
-button.delete {
-    position: absolute;
-    top: 0.5rem;
-    right: 0;
-}
-
 /* end */
 
 /* utility styles */
-
-.center {
-    margin-left: auto;
-    margin-right: auto;
-}
 
 .center-content {
     text-align: center !important;
@@ -793,28 +632,6 @@ button.delete {
 
 .right-content {
     text-align: right !important;
-}
-
-.clear {
-    clear: both;
-}
-
-.rounded {
-    -webkit-border-radius: .5rem;
-    -moz-border-radius: .5rem;
-    border-radius: .5rem;
-}
-
-.circular {
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
-}
-
-.shaded {
-    -webkit-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
 }
 
 .bordered-light {

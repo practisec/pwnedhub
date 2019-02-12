@@ -1,0 +1,73 @@
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center-content {
+    text-align: center;
+}
+
+.left-content {
+    text-align: left;
+}
+
+.right-content {
+    text-align: right;
+}
+
+.clear {
+    clear: both;
+}
+
+.rounded {
+    -webkit-border-radius: .5rem;
+    -moz-border-radius: .5rem;
+    border-radius: .5rem;
+}
+
+.circular {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.shaded {
+    -webkit-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+}
+
+.gutter-right {
+    margin-right: 1rem;
+}
+
+.gutter-half-right {
+    margin-right: 0.5;
+}
+
+.gutter-left {
+    margin-left: 1rem;
+}
+
+.gutter-half-left {
+    margin-left: 0.5;
+}
+
+/*
+The following:
+* Creates issues when the parent already has assigned margins.
+* Doesn't allow for a border when using border box.
+
+Both of these can be fixed by using a wrapper between the
+parent and child and making the wrapper the parent.
+*/
+
+.gutter-parent {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+.gutter-child {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
