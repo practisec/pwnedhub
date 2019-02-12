@@ -16,6 +16,14 @@ BUG_STATUSES = {
     3: 'fixed',
 }
 
+BUG_NOTIFICATIONS = {
+    1: "We regret to inform you that your submission (<a href='{}'>bug ID #{:05d}</a>) has been rejected. If you believe a modified submission will increase the chances of a successful review, please submit again. Thank you for your participation.",
+    2: "Congratulations! Your submission (<a href='{}'>bug ID #{:05d}</a>) has been confirmed as a valid bug. The bug has been disclosed to the public and your profile has been awarded {} reputation points. Thank you for being a valuable member of the PwnedHub community!",
+    3: "This is a courtesy email to inform you that your submission (<a href='{}'>bug ID #{:05d}</a>) has been fixed. Thank you again for being a valuable member of the PwnedHub community!",
+}
+
+REVIEW_NOTIFICATION = "You've been randomly selected to review a bug bounty submission. That means that you are eligible to receive 25% of the bounty allotted for an accepted review of this bug! Please visit the submission page for <a href='{}'>bug ID #{:05d}</a> to review the submission and accept/reject accordingly. Thank you for being a valuable member of the PwnedHub community!"
+
 VULNERABILITIES = {
     0: ('Server Security Misconfiguration', 100),
     1: ('Server-Side Injection', 500),

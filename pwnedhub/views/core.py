@@ -3,7 +3,7 @@ from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from pwnedhub import db
 from pwnedhub.models import Mail, Message, Tool, Bug, User, Score
-from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES
+from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES, REVIEW_NOTIFICATION, BUG_NOTIFICATIONS
 from pwnedhub.decorators import login_required, roles_required
 from pwnedhub.validators import is_valid_password, is_valid_filename, is_valid_mimetype
 from datetime import datetime
@@ -331,7 +331,7 @@ def tools():
 @core.route('/submissions')
 @login_required
 def submissions():
-    submissions = Bug.query.all()
+    submissions = Bug.query.order_by(Bug.created.desc()).all()
     return render_template('submissions.html', submissions=submissions)
 
 @core.route('/submissions/new', methods=['GET', 'POST'])
@@ -344,6 +344,11 @@ def submissions_new():
         description = request.form['description']
         impact = request.form['impact']
         if all((title, vuln_id, severity, description, impact)):
+            reviewer = User.query.filter(
+                User.id.isnot(g.user.id),
+                User.status.is_(1),
+                User.role.is_(1)
+            ).order_by(func.random()).first()
             submission = Bug(
                 title=title,
                 vuln_id=vuln_id,
@@ -351,22 +356,19 @@ def submissions_new():
                 description=description,
                 impact=impact,
                 submitter=g.user,
-                reviewer=User.query.filter(
-                    User.id.isnot(g.user.id),
-                    User.status.is_(1),
-                    User.role.is_(1)
-                ).order_by(func.random()).first(),
+                reviewer=reviewer
             )
             db.session.add(submission)
             db.session.commit()
-            # create default welcome message
-            #sender = User.query.get(1)
-            #receiver = user
-            #subject = 'Welcome to PwnedHub!'
-            #content = "We're glad you've chosen PwnedHub to help you take your next step in becoming a more efficient security consultant. We're here to help. If you have any questions or concerns, please don't hesitate to reach out to this account for assistance. Together, we can make security testing great again!"
-            #mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
-            #db.session.add(mail)
-            #db.session.commit()
+            # send message to reviewer
+            sender = User.query.get(1)
+            receiver = reviewer
+            subject = 'New Submission for Review'
+            bug_href = url_for('core.submissions_view', bid=submission.id, _external=True)
+            content = REVIEW_NOTIFICATION.format(bug_href, submission.id)
+            mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
+            db.session.add(mail)
+            db.session.commit()
             flash('Submission created.')
             return redirect(url_for('core.submissions_view', bid=submission.id))
         else:
@@ -387,7 +389,20 @@ def submissions_action(action, bid):
         if [status for status in BUG_STATUSES.itervalues() if status.startswith(action)]:
             # passing previous check guarantees at least one result
             submission.status = [aid for aid, status in BUG_STATUSES.iteritems() if status.startswith(action)][0]
+            # send message to submitter
+            sender = User.query.get(1)
+            receiver = submission.submitter
+            subject = 'Submission #{:05d} {}'.format(submission.id, BUG_STATUSES[submission.status].title())
+            bug_href = url_for('core.submissions_view', bid=submission.id, _external=True)
+            if submission.status == 1:
+                content = BUG_NOTIFICATIONS[submission.status].format(bug_href, submission.id)
+            if submission.status == 2:
+                content = BUG_NOTIFICATIONS[submission.status].format(bug_href, submission.id, submission.bounty)
+            if submission.status == 3:
+                content = BUG_NOTIFICATIONS[submission.status].format(bug_href, submission.id)
+            mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
             db.session.add(submission)
+            db.session.add(mail)
             db.session.commit()
             flash('Bug status changed.')
         else:
