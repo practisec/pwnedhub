@@ -329,10 +329,17 @@ def tools():
     return render_template('tools.html', tools=tools)
 
 @core.route('/submissions')
+@core.route('/submissions/page/<int:page>')
 @login_required
-def submissions():
+def submissions(page=0):
+    count = 10
     submissions = Bug.query.order_by(Bug.created.desc()).all()
-    return render_template('submissions.html', submissions=submissions)
+    subsets = [submissions[i:i + count] for i in xrange(0, len(submissions), count)]
+    try:
+        subset = subsets[page]
+    except IndexError:
+        subset = []
+    return render_template('submissions.html', submissions=subset, current_page=page, page_count=len(subsets))
 
 @core.route('/submissions/new', methods=['GET', 'POST'])
 @login_required

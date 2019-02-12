@@ -21,5 +21,7 @@
     </div>
 {% endfor %}
 {% endif %}
+{% from "macros.html" import pagination %}
+{{ pagination('core.submissions', current_page, page_count) }}
 </div>
 {% endblock %}
