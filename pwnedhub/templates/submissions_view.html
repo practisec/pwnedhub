@@ -43,6 +43,17 @@
             </tr>
         </tbody>
     </table>
+    {% if not submission.is_validated and submission.submitter == g.user %}
+    <div class="right-content">
+        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.submissions_edit', bid=submission.id) }}')"><i class="fas fa-edit" title="edit"></i></a>
+    </div>
+    {% endif %}
+    {% if not submission.is_validated and submission.reviewer == g.user %}
+    <div class="right-content">
+        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='confirm', bid=submission.id) }}')"><i class="fas fa-check-circle green" title="confirm"></i></a>
+        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='reject', bid=submission.id) }}')"><i class="fas fa-times-circle red" title="reject"></i></a>
+    </div>
+    {% endif %}
     <div class="flex-tabs">
         <!-- first -->
         <input id="tab-one" type="radio" name="grp" checked="checked"/>
@@ -65,12 +76,5 @@
         {% endif %}
         </div>
     </div>
-    {% if not submission.is_validated and submission.reviewer == g.user %}
-    <hr>
-    <div class="right-content">
-        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='confirm', bid=submission.id) }}')"><i class="fas fa-check-circle" title="confirm"></i></a>
-        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='reject', bid=submission.id) }}')"><i class="fas fa-times-circle" title="reject"></i></a>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}

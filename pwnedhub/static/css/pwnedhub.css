@@ -403,6 +403,7 @@ nav ul li:hover ul {
 
 .submission-view .title .severity {
     margin: 1rem;
+    margin-left: 0;
 }
 
 .submission-view .title h4 {
@@ -456,6 +457,10 @@ nav ul li:hover ul {
     height: 4rem;
 }
 
+.submission-view i {
+    opacity: 1;
+}
+
 .submission-view .summary h5 {
     margin-bottom: 0;
 }
@@ -479,8 +484,8 @@ nav ul li:hover ul {
 }
 
 .artifacts td {
-    padding-top: 0;
-    padding-bottom: 0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 .output {
@@ -503,8 +508,8 @@ nav ul li:hover ul {
 }
 
 .inbox td {
-    padding-top: 0;
-    padding-bottom: 0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 .mail textarea {
@@ -665,12 +670,16 @@ nav ul li:hover ul {
     border: 1px solid #222;
 }
 
-.black {
-    color: #000;
-}
-
 .red {
     color: red;
+}
+
+.green {
+    color: green;
+}
+
+.blue {
+    color: blue;
 }
 
 .severity {

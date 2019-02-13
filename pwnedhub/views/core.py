@@ -1,9 +1,9 @@
-from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, flash, send_file, __version__
+from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, flash, send_file, abort, __version__
 from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from pwnedhub import db
 from pwnedhub.models import Mail, Message, Tool, Bug, User, Score
-from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES, REVIEW_NOTIFICATION, BUG_NOTIFICATIONS
+from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES, REVIEW_NOTIFICATION, UPDATE_NOTIFICATION, BUG_NOTIFICATIONS
 from pwnedhub.decorators import login_required, roles_required, validate
 from pwnedhub.validators import is_valid_password, is_valid_filename, is_valid_mimetype
 from datetime import datetime
@@ -147,17 +147,12 @@ def profile_change():
     user = g.user
     password = request.values['password']
     if is_valid_password(password):
-        name = request.values['name']
-        question = request.values['question']
-        answer = request.values['answer']
-        avatar = request.values['avatar']
-        signature = request.values['signature']
-        user.name = name
-        user.avatar = avatar
-        user.signature = signature
+        user.name = request.values['name']
+        user.avatar = request.values['avatar']
+        user.signature = request.values['signature']
         user.password = password
-        user.question = question
-        user.answer = answer
+        user.question = request.values['question']
+        user.answer = request.values['answer']
         db.session.add(user)
         db.session.commit()
         flash('Account information changed.')
@@ -383,6 +378,33 @@ def submissions_new():
         return redirect(url_for('core.submissions_view', bid=submission.id))
     return render_template('submissions_new.html', vulnerabilities=VULNERABILITIES, severity=SEVERITY)
 
+@core.route('/submissions/edit/<int:bid>', methods=['GET', 'POST'])
+@login_required
+@validate(['title', 'vuln_id', 'severity', 'description', 'impact'])
+def submissions_edit(bid):
+    submission = Bug.query.get_or_404(bid)
+    if submission.is_validated or submission.submitter != g.user:
+        abort(403)
+    if request.method == 'POST':
+        submission.title = request.form['title']
+        submission.vuln_id = request.form['vuln_id']
+        submission.severity = request.form['severity']
+        submission.description = request.form['description']
+        submission.impact = request.form['impact']
+        # send message to reviewer
+        sender = User.query.get(1)
+        receiver = submission.reviewer
+        subject = 'Submission Updated'
+        bug_href = url_for('core.submissions_view', bid=submission.id, _external=True)
+        content = UPDATE_NOTIFICATION.format(bug_href, submission.id)
+        mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
+        db.session.add(submission)
+        db.session.add(mail)
+        db.session.commit()
+        flash('Submission created.')
+        return redirect(url_for('core.submissions_view', bid=submission.id))
+    return render_template('submissions_edit.html', submission=submission, vulnerabilities=VULNERABILITIES, severity=SEVERITY)
+
 @core.route('/submissions/view/<int:bid>')
 @login_required
 def submissions_view(bid):
@@ -393,30 +415,29 @@ def submissions_view(bid):
 @login_required
 def submissions_action(action, bid):
     submission = Bug.query.get_or_404(bid)
-    if not submission.is_validated and submission.reviewer == g.user:
-        if [status for status in BUG_STATUSES.itervalues() if status.startswith(action)]:
-            # passing previous check guarantees at least one result
-            submission.status = [aid for aid, status in BUG_STATUSES.iteritems() if status.startswith(action)][0]
-            # send message to submitter
-            sender = User.query.get(1)
-            receiver = submission.submitter
-            subject = 'Submission #{:05d} {}'.format(submission.id, BUG_STATUSES[submission.status].title())
-            bug_href = url_for('core.submissions_view', bid=submission.id, _external=True)
-            if submission.status == 1:
-                content = BUG_NOTIFICATIONS[submission.status].format(bug_href, submission.id)
-            if submission.status == 2:
-                content = BUG_NOTIFICATIONS[submission.status].format(bug_href, submission.id, submission.bounty)
-            if submission.status == 3:
-                content = BUG_NOTIFICATIONS[submission.status].format(bug_href, submission.id)
-            mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
-            db.session.add(submission)
-            db.session.add(mail)
-            db.session.commit()
-            flash('Bug status changed.')
-        else:
-            flash('Invalid action.')
+    if submission.is_validated or submission.reviewer != g.user:
+        abort(403)
+    if [status for status in BUG_STATUSES.itervalues() if status.startswith(action)]:
+        # passing previous check guarantees at least one result
+        submission.status = [aid for aid, status in BUG_STATUSES.iteritems() if status.startswith(action)][0]
+        # send message to submitter
+        sender = User.query.get(1)
+        receiver = submission.submitter
+        subject = 'Submission #{:05d} {}'.format(submission.id, BUG_STATUSES[submission.status].title())
+        bug_href = url_for('core.submissions_view', bid=submission.id, _external=True)
+        if submission.status == 1:
+            content = BUG_NOTIFICATIONS[submission.status].format(bug_href, submission.id)
+        if submission.status == 2:
+            content = BUG_NOTIFICATIONS[submission.status].format(bug_href, submission.id, submission.bounty)
+        if submission.status == 3:
+            content = BUG_NOTIFICATIONS[submission.status].format(bug_href, submission.id)
+        mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
+        db.session.add(submission)
+        db.session.add(mail)
+        db.session.commit()
+        flash('Bug status changed.')
     else:
-        flash('Invalid bug ID.')
+        flash('Invalid action.')
     return redirect(url_for('core.submissions_view', bid=bid))
 
 @core.route('/bounty/scoreboard')
