@@ -106,28 +106,6 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     background-color: #fff;
 }
 
-/* image button baseline */
-button.img-btn {
-    height: auto;
-    padding: 0;
-    border: 0;
-    background-color: transparent;
-    line-height: normal;
-}
-
-/* image button customizations */
-button.save-as {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-}
-
-button.delete {
-    position: absolute;
-    top: 0.5rem;
-    right: 0;
-}
-
 select:disabled {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -156,6 +134,25 @@ a:hover {
 /* selected link */
 a:active {
     color: inherit;
+}
+
+a.img-btn {
+    color: inherit;
+    text-decoration: inherit;
+    cursor: pointer;
+}
+
+/* image button customizations */
+a.save-as {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+a.delete {
+    position: absolute;
+    top: 0.5rem;
+    right: 0;
 }
 
 hr {
@@ -464,7 +461,7 @@ nav ul li:hover ul {
     overflow: scroll;
 }
 
-.output button.img-btn i {
+.output a.img-btn i {
     color: #fff;
     opacity: 0.6;
 }

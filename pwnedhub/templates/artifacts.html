@@ -20,11 +20,11 @@
                 <td>
                     <form action="{{ url_for('core.artifacts_view') }}" method="post">
                         <input type="hidden" name="filename" value="{{ artifact.filename }}" />
-                        <button type="submit" class="img-btn" onclick="this.form.submit();"><i class="fas fa-file" title="view"></i></button>
+                        <a class="img-btn" onclick="cleanSubmit(event, document.forms[1])"><i class="fas fa-file" title="view"></i></a>
                     </form>
                     <form action="{{ url_for('core.artifacts_delete') }}" method="post">
                         <input type="hidden" name="filename" value="{{ artifact.filename }}" />
-                        <button type="submit" class="img-btn" onclick="if (confirm('Delete the artifact?') == true) { this.form.submit(); }; return false;"><i class="fas fa-trash" title="delete"></i></button>
+                        <a class="img-btn" onclick="confirmSubmit(event, document.forms[2])"><i class="fas fa-trash" title="delete"></i></a>
                     </form>
                 </td>
             </tr>

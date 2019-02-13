@@ -12,13 +12,13 @@
             <tbody>
             {% if mail|length > 0 %}
             {% for letter in mail %}
-                <tr style="cursor: pointer;{% if letter.read == 0 %} font-weight: bold;{% endif %}" onclick="window.location='{{ url_for('core.mail_view', mid=letter.id) }}'">
+                <tr style="cursor: pointer;{% if letter.read == 0 %} font-weight: bold;{% endif %}" onclick="cleanRedirect(event, '{{ url_for('core.mail_view', mid=letter.id) }}')">
                     <td class="left-content">{{ letter.sender.name }}</td>
                     <td class="left-content">{{ letter.subject }}</td>
                     <td>{{ letter.created_as_string }}</td>
                     <td>
-                        <button type="button" class="img-btn" onclick="event.stopPropagation(); window.location='{{ url_for('core.mail_reply', mid=letter.id) }}'"><i class="fas fa-reply" title="reply"></i></button>
-                        <button type="button" class="img-btn" onclick="event.stopPropagation(); window.location='{{ url_for('core.mail_delete', mid=letter.id) }}'"><i class="fas fa-trash" title="delete"></i></button>
+                        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.mail_reply', mid=letter.id) }}')"><i class="fas fa-reply" title="reply"></i></a>
+                        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.mail_delete', mid=letter.id) }}')"><i class="fas fa-trash" title="delete"></i></a>
                     </td>
                 </tr>
             {% endfor %}

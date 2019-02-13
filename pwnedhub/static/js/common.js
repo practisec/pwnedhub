@@ -14,9 +14,27 @@ function show_flash(msg) {
     setTimeout(function() { flash.style.visibility = "hidden"; }, 5000);
 }
 
-function confirmRedirect(url) {
+function cleanRedirect(event, url) {
+    event.preventDefault();
+    event.stopPropagation();
+    window.location = url;
+}
+
+function confirmRedirect(event, url) {
     if (confirm("Are you sure?")) {
-        window.location = url;
+        cleanRedirect(event, url);
+    }
+}
+
+function cleanSubmit(event, form) {
+    event.preventDefault();
+    event.stopPropagation();
+    form.submit();
+}
+
+function confirmSubmit(event, form) {
+    if (confirm("Are you sure?")) {
+        cleanSubmit(event, form);
     }
 }
 

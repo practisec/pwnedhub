@@ -9,9 +9,9 @@
     <input class="flex-grow gutter-right" type="text" id="args" placeholder="command arguments..." />
     <input type="button" onclick="execute();" value="execute" />
 </div>
-<div class="flex-grow output rounded flex-column flex-no-basis" style="min-height: 0">
+<div class="flex-grow output flex-column flex-no-basis" style="min-height: 0">
     <pre id="output"></pre>
-    <button type="button" class="save-as img-btn" onclick="save_artifact();"><i class="fas fa-save" title="save as artifact"></i></button>
+    <a class="save-as img-btn" onclick="save_artifact();"><i class="fas fa-save" title="save as artifact"></i></a>
     <div id="spinner" class="spinner"></div>
 </div>
 <script>

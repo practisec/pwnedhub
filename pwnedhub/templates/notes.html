@@ -2,7 +2,7 @@
 {% block body %}
 <div class="notes flex-column">
     <textarea name="notes" id="notes">{{ notes }}</textarea>
-    <button type="button" class="save-as img-btn" onclick="save_artifact();"><i class="fas fa-save" title="save as artifact"></i></button>
+    <a class="save-as img-btn" onclick="save_artifact(event);"><i class="fas fa-save" title="save as artifact"></i></a>
 </div>
 <script>
 var notes = document.getElementById("notes")
@@ -35,7 +35,9 @@ if (localStorage.getItem(key)) {
     // success and error handlers to do it right
 }
 
-function save_artifact() {
+function save_artifact(event) {
+    event.preventDefault();
+    event.stopPropagation();
     var filename = "Notes";
     var content = notes.innerHTML;
     if (confirm("Save as an artifact?") == true) {
