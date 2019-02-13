@@ -306,7 +306,8 @@ nav ul li:hover ul {
     margin-bottom: 0;
 }
 
-.about {
+.about,
+.info {
     text-align: justify;
 }
 

@@ -419,14 +419,19 @@ def submissions_action(action, bid):
         flash('Invalid bug ID.')
     return redirect(url_for('core.submissions_view', bid=bid))
 
-@core.route('/scoreboard')
+@core.route('/bounty/scoreboard')
 @login_required
-def scoreboard():
+def bounty_scoreboard():
     users = User.query.all()
     reputation_data = sorted(users, key=lambda user: user.reputation, reverse=True)[:5]
     bug_data = sorted(users, key=lambda user: user.bugs.count(), reverse=True)[:5]
     validation_data = sorted(users, key=lambda user: len(user.completed_validations), reverse=True)[:5]
-    return render_template('scoreboard.html', reputation_data=reputation_data, bug_data=bug_data, validation_data=validation_data)
+    return render_template('bounty_scoreboard.html', reputation_data=reputation_data, bug_data=bug_data, validation_data=validation_data)
+
+@core.route('/bounty/info')
+@login_required
+def bounty_info():
+    return render_template('bounty_info.html')
 
 @core.route('/games/')
 @login_required
