@@ -1,18 +1,21 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="banner flex-column flex-align-center">
-    <div class="center-content"><h3>A <span class="red">secure</span> space to conduct <span class="red">security</span> assessments.</h3></div>
-    <div><input type="button" onclick="window.location='{{ url_for('auth.login') }}';" value="get started" /></div>
-</div>
-<div class="flex-row flex-wrap">
-    <div class="flex-grow flex-no-basis panel center-content">
-        <h5>Expose <span class="red">flaws</span>.</h5>
-    </div>
-    <div class="flex-grow flex-no-basis panel center-content">
-        <h5>Gather <span class="red">evidence</span>.</h5>
-    </div>
-    <div class="flex-grow flex-no-basis panel center-content">
-        <h5>Win <span class="red">engagements</span>.</h5>
+<div class="flex-grow banner flex-column flex-justify-space-evenly">
+    <div class="center-content"><h3>A consolidated <span class="red">bug bounty</span> and <span class="red">hosted scanning</span> platform.</h3></div>
+    <div class="center-content"><input type="button" onclick="window.location='{{ url_for('auth.login') }}';" value="get started" /></div>
+    <div class="flex-row flex-wrap">
+        <div class="flex-grow flex-no-basis center-content">
+            <h5>Find <span class="red">flaws</span>.</h5>
+            <i class="fas fa-search" title="find"></i>
+        </div>
+        <div class="flex-grow flex-no-basis center-content">
+            <h5>Submit <span class="red">bugs</span>.</h5>
+            <i class="fas fa-bug" title="bug"></i>
+        </div>
+        <div class="flex-grow flex-no-basis center-content">
+            <h5>Collect <span class="red">bounties</span>.</h5>
+            <i class="fas fa-dollar-sign" title="bounty"></i>
+        </div>
     </div>
 </div>
 {% endblock %}

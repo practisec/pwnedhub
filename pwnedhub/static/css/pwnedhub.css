@@ -292,18 +292,10 @@ nav ul li:hover ul {
     opacity: 0.8;
 }
 
-.banner {
-    margin-top: 15rem;
-    margin-bottom: 5rem;
-}
-
-.panel {
-    padding: 2rem 2rem;
-    margin-bottom: 5rem;
-}
-
-.panel h5 {
-    margin-bottom: 0;
+.banner i {
+    font-size: 10rem;
+    color: #bbb;
+    opacity: 1;
 }
 
 .about,
