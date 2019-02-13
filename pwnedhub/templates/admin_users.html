@@ -4,12 +4,13 @@
 <div class="flex-width-10 flex-offset-1 admin flex-column">
     <table class="center">
         <thead>
-            <tr><th>created</th><th>username</th><th>role</th><th>status</th><th>action</th></tr>
+            <tr><th>created</th><th>display name</th><th>username</th><th>role</th><th>status</th><th>action</th></tr>
         </thead>
         <tbody>
         {% for user in users %}
             <tr>
                 <td>{{ user.created_as_string }}</td>
+                <td>{{ user.name }}</td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.role_as_string }}</td>
                 <td>{{ user.status_as_string }}</td>
