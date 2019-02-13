@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="scoreboard flex-row flex-wrap">
-    <div class="flex-grow score-panel rounded gutter-child flex-no-basis flex-column">
-        <div class="flex-column wrapper rounded">
+    <div class="flex-grow score-panel gutter-child flex-no-basis flex-column">
+        <div class="flex-column wrapper">
             <div class="header center-content"><h5>Top 5 Reputation<h5></div>
         {% for user in reputation_data %}
             <div class="score flex-row flex-align-center flex-justify-space-between">
@@ -15,8 +15,8 @@
         {% endfor %}
         </div>
     </div>
-    <div class="flex-grow score-panel rounded gutter-child flex-no-basis flex-column">
-        <div class="flex-column wrapper rounded">
+    <div class="flex-grow score-panel gutter-child flex-no-basis flex-column">
+        <div class="flex-column wrapper">
             <div class="header center-content"><h5>Top 5 Submitters<h5></div>
         {% for user in bug_data %}
             <div class="score flex-row flex-align-center flex-justify-space-between">
@@ -29,8 +29,8 @@
         {% endfor %}
         </div>
     </div>
-    <div class="flex-grow score-panel rounded gutter-child flex-no-basis flex-column">
-        <div class="flex-column wrapper rounded">
+    <div class="flex-grow score-panel gutter-child flex-no-basis flex-column">
+        <div class="flex-column wrapper">
             <div class="header center-content"><h5>Top 5 Validators<h5></div>
         {% for user in validation_data %}
             <div class="score flex-row flex-align-center flex-justify-space-between">

@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub.css') }}">
 </head>
 <body class="flex-column">
-    <div id="flash" class="flash center-content rounded shaded">{{ get_flashed_messages()|join(', ') }}</div>
+    <div id="flash" class="flash center-content shaded">{{ get_flashed_messages()|join(', ') }}</div>
     <header class="flex-no-shrink flex-row">
         <div class="flex-grow container-fluid flex-column">
             <nav class="flex-row flex-align-center">

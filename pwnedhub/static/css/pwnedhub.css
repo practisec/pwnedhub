@@ -80,9 +80,6 @@ table {
     background-color: #fff;
     border-collapse: separate;
     border: 1px solid #bbb;
-    -webkit-border-radius: .5rem;
-    -moz-border-radius: .5rem;
-    border-radius: .5rem;
     padding: 1rem;
 }
 
@@ -137,6 +134,10 @@ select:disabled {
     appearance: none;
 }
 
+a {
+    color: inherit;
+}
+
 /* unvisited link */
 a:link {
     color: inherit;
@@ -155,23 +156,6 @@ a:hover {
 /* selected link */
 a:active {
     color: inherit;
-}
-
-blockquote {
-    font-style: italic;
-    margin-left: 0;
-    margin-right: 0;
-    quotes: "\201C""\201D""\2018""\2019";
-}
-
-blockquote:before {
-  color: #bbb;
-  font-family: Arial;
-  content: open-quote;
-  font-size: 4em;
-  line-height: 0.1em;
-  margin-right: 0.25em;
-  vertical-align: -0.4em;
 }
 
 hr {
@@ -247,7 +231,7 @@ nav ul li.user > a {
     color: red;
 }
 
-nav ul li:hover > a{
+nav ul li:hover > a {
     color:#fff;
 }
 
@@ -453,7 +437,7 @@ nav ul li:hover ul {
     height: 100%;
     padding: 1rem 1.5rem;
     border: 1px solid #bbb;
-    margin-bottom: 0;
+    margin: 0;
     resize: none;
 }
 
@@ -536,11 +520,7 @@ nav ul li:hover ul {
     margin-bottom: .5rem;
 }
 
-.messages .scroll a,
-.messages .scroll a:link,
-.messages .scroll a:visited,
-.messages .scroll a:hover,
-.messages .scroll a:active {
+.messages .scroll a {
     color: inherit;
     text-decoration: inherit;
     font-weight: inherit;
@@ -568,8 +548,8 @@ nav ul li:hover ul {
 }
 
 .pagination a.active {
-  background-color: #e1e1e1;
-  color: inherit;
+    background-color: #e1e1e1;
+    color: inherit;
 }
 
 .pagination a:hover:not(.active) {
@@ -582,14 +562,31 @@ nav ul li:hover ul {
     opacity: 0.5;
 }
 
+.profile input[type="submit"] {
+    margin-bottom: 0;
+}
+
+.profile blockquote {
+    font-style: italic;
+    margin-left: 0;
+    margin-right: 0;
+    quotes: "\201C""\201D""\2018""\2019";
+}
+
+.profile blockquote:before {
+  color: #bbb;
+  font-family: Arial;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+
 .profile .avatar img {
     display: block;
     max-width: 20rem;
     width: 100%;
-}
-
-.profile input[type="submit"] {
-    margin-bottom: 0;
 }
 
 .error {
