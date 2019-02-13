@@ -29,6 +29,15 @@ def create_app(config='Development'):
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
 
+    @app.template_filter('markdown')
+    def markdown_filter(data):
+        '''
+        Use: {{ comment.content|markdown }}
+        '''
+        from flask import Markup
+        from markdown import markdown
+        return Markup(markdown(data or '', extensions=app.config['MARKDOWN_EXTENSIONS']))
+
     from views.core import core
     from views.auth import auth
     from views.api import api

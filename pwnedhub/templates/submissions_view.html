@@ -2,7 +2,7 @@
 {% block body %}
 <div class="submission-view flex-column">
     <div class="title flex-row flex-align-center">
-        <div class="severity rounded bordered-dark {{ submission.severity_as_string }}">#{{ '{:05d}'.format(submission.id) }}</div>
+        <div class="severity bordered-dark {{ submission.severity_as_string }}">#{{ '{:05d}'.format(submission.id) }}</div>
         <div><h4>{{ submission.title }}</h4></div>
     </div>
     <table>
@@ -43,27 +43,33 @@
             </tr>
         </tbody>
     </table>
-    <div class="summary">
-        <div class="center-content">
-            <h5>Summary</h5>
+    <div class="flex-tabs">
+        <!-- first -->
+        <input id="tab-one" type="radio" name="grp" checked="checked"/>
+        <label for="tab-one">Description</label>
+        <div class="markdown">
+        {% if submission.is_validated or submission.reviewer == g.user or submission.submitter == g.user %}
+            {{ submission.description|markdown }}
+        {% else %}
+            <p>[<em>Disclosure pending validation.</em>]</p>
+        {% endif %}
         </div>
-    {% if submission.is_validated or submission.reviewer == g.user or submission.submitter == g.user %}
-        <b>Description:</b>
-        <br>
-        {{ submission.description }}
-        <br><br>
-        <b>Impact:</b>
-        <br>
-        {{ submission.impact }}
-    {% else %}
-        [<em>Disclosure pending validation.</em>]
-    {% endif %}
+        <!-- second -->
+        <input id="tab-two" type="radio" name="grp" />
+        <label for="tab-two">Impact</label>
+        <div class="markdown">
+        {% if submission.is_validated or submission.reviewer == g.user or submission.submitter == g.user %}
+            {{ submission.impact|markdown }}
+        {% else %}
+            <p>[<em>Disclosure pending validation.</em>]</p>
+        {% endif %}
+        </div>
     </div>
     {% if not submission.is_validated and submission.reviewer == g.user %}
     <hr>
     <div class="right-content">
-        <button type="button" class="img-btn" onclick="confirmRedirect('{{ url_for('core.submissions_action', action='confirm', bid=submission.id) }}')"><i class="fas fa-check-circle" title="confirm"></i></button>
-        <button type="button" class="img-btn" onclick="confirmRedirect('{{ url_for('core.submissions_action', action='reject', bid=submission.id) }}')"><i class="fas fa-times-circle" title="reject"></i></button>
+        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='confirm', bid=submission.id) }}')"><i class="fas fa-check-circle" title="confirm"></i></a>
+        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='reject', bid=submission.id) }}')"><i class="fas fa-times-circle" title="reject"></i></a>
     </div>
     {% endif %}
 </div>

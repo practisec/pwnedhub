@@ -249,6 +249,42 @@ nav ul li:hover ul {
     display: block;
 }
 
+.flex-tabs {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex-tabs > label {
+  background-color: #eee;
+  border: 1px solid #e1e1e1;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.flex-tabs > div {
+  order: 1; /* places div last in line */
+  width: 100%; /* makes div wrap to second line */
+  margin-top: -1px; /* overlaps the border of the lab */
+  background-color: #fff;
+  border: 1px solid #e1e1e1;
+}
+
+.flex-tabs > input[type=radio],
+.flex-tabs > div {
+  display: none;
+}
+
+.flex-tabs > input[type=radio]:checked + label {
+  background: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+.flex-tabs > input[type=radio]:checked + label + div {
+  display: block;
+}
+
 /* end */
 
 /* classes */
@@ -420,8 +456,8 @@ nav ul li:hover ul {
     height: 4rem;
 }
 
-.submission-view .summary {
-    margin-bottom: 1rem;
+.submission-view .summary h5 {
+    margin-bottom: 0;
 }
 
 .notes {
@@ -661,6 +697,15 @@ nav ul li:hover ul {
 
 .severity.critical {
     background-color: #E1BEE7;
+}
+
+.markdown {
+    padding: 2rem 3rem;
+    border: 1px solid #e1e1e1;
+}
+
+.markdown li {
+    margin-bottom: 0;
 }
 
 /* end */

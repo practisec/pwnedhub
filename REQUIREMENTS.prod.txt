@@ -3,3 +3,4 @@ Flask-SQLAlchemy
 Flask-Spyne
 Flask-MySQLdb
 gunicorn
+Markdown
