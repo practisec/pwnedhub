@@ -1,15 +1,35 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="notes flex-column">
-    <textarea name="notes" id="notes">{{ notes }}</textarea>
     <a class="save-as img-btn" onclick="save_artifact(event);"><i class="fas fa-save" title="save as artifact"></i></a>
+    <div class="tabs">
+        <input id="tab-one" type="radio" name="grp" value="#pane-1" checked="checked"/>
+        <label for="tab-one">Edit</label>
+        <input id="tab-two" type="radio" name="grp" value="#pane-2" />
+        <label for="tab-two">View</label>
+    </div>
+    <div class="flex-grow tab-content flex-column">
+        <div id="pane-1" class="flex-grow flex-row active">
+            <textarea class="flex-grow" name="notes" id="notes">{{ notes }}</textarea>
+        </div>
+        <div id="pane-2" class="markdown"></div>
+    </div>
 </div>
 <script>
 var notes = document.getElementById("notes")
+var view = document.getElementById("tab-two")
 var key = "{{ g.user.username|safe }}-notes";
+var mdConverter = new showdown.Converter();
+
+// register an event to render the notes in the view tab when clicked
+view.addEventListener("click", function() {
+    var text = notes.value;
+    var html = mdConverter.makeHtml(text);
+    document.getElementById("pane-2").innerHTML = html;
+});
 
 // register an event to save the notes when focus is lost
-notes.onblur = function() {
+notes.addEventListener("blur", function() {
     // persist notes locally in case of a failed sync
     localStorage.setItem(key, this.value);
     // sync the notes
@@ -23,14 +43,14 @@ notes.onblur = function() {
             this.value = data.notes;
         }
     });
-};
+});
 
 // load the local version of the notes as they will
 // be the most recent in the event of a sync failure
 if (localStorage.getItem(key)) {
     notes.value = localStorage.getItem(key);
     // force an attempt to sync the notes to the server
-    notes.onblur();
+    notes.dispatchEvent(new Event('blur'));
     // should move most of this logic into the AJAX call's
     // success and error handlers to do it right
 }

@@ -62,30 +62,30 @@ QUESTIONS = {
     4: 'First employer?',
 }
 
-DEFAULT_NOTE = '''Welcome to PwnedHub! A consolidated bug bounty and hosted scanning platform.
+DEFAULT_NOTE = '''##### Welcome to PwnedHub!
 
-Below are some things you can do here:
+A consolidated bug bounty and hosted scanning platform. Below are some things you can do here:
 
-# Find flaws.
+**Find flaws.**
 
 * This is your notes space. Keep your personal notes here.
 * Store artifacts from local and external tools in the artifacts space.
 * Leverage popular security testing tools right from your browser in the tools space.
 
-# Submit bugs.
+**Submit bugs.**
 
 * Check your position in one of several categories in the scoreboard space.
 * Review bugs for validation or perusal in the submissions space.
 * Submit new bugs for bounties in the new submission space.
 
-# Collect bounties.
+**Collect bounties.**
 
 * Privately discuss submissions with submitters and reviewers in the pwnmail space.
 * Share public information and socialize in the messages space.
 
 Happy hunting!
 
-- The PwnedHub Team
+\- The PwnedHub Team
 
 '''
 
