@@ -1,18 +1,20 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-width-10 flex-offset-1 flex-row">
-    <select class="gutter-right" id="tool" onchange="info(this);">
-    {% for tool in tools %}
-        <option value="{{ tool.id }}">{{ tool.name }}</option>
-    {% endfor %}
-    </select>
-    <input class="flex-grow gutter-right" type="text" id="args" placeholder="command arguments..." />
-    <input type="button" onclick="execute();" value="execute" />
-</div>
-<div class="flex-grow output flex-column flex-no-basis" style="min-height: 0">
-    <pre id="output"></pre>
-    <a class="save-as img-btn" onclick="save_artifact();"><i class="fas fa-save" title="save as artifact"></i></a>
-    <div id="spinner" class="spinner"></div>
+<div class="flex-grow tools flex-column">
+    <div class="flex-width-10 flex-offset-1 flex-row flex-align-center">
+        <select class="gutter-right" id="tool" onchange="info(this);">
+        {% for tool in tools %}
+            <option value="{{ tool.id }}">{{ tool.name }}</option>
+        {% endfor %}
+        </select>
+        <input class="flex-grow gutter-right" type="text" id="args" placeholder="command arguments..." />
+        <input type="button" onclick="execute();" value="execute" />
+    </div>
+    <div class="flex-grow output flex-column flex-no-basis">
+        <pre id="output"></pre>
+        <a class="save-as img-btn" onclick="save_artifact();"><i class="fas fa-save" title="save as artifact"></i></a>
+        <div id="spinner" class="spinner"></div>
+    </div>
 </div>
 <script>
 function info(e) {

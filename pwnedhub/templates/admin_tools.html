@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="admin flex-column">
+<div class="flex-grow admin flex-row flex-justify-center">
     <form action="{{ url_for('core.admin_tools_add') }}" method="post">
-        <table class="center">
+        <table>
             <thead>
                 <tr><th>name</th><th>path</th><th>description</th><th>action</th></tr>
             </thead>

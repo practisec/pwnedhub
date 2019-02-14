@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-width-10 flex-offset-1 mail flex-column">
-    <form class="flex-no-shrink flex-column" action="{{ url_for('core.mail_compose') }}" method="post">
+<div class="flex-width-10 flex-offset-1 flex-basis-10 mail">
+    <form class="flex-column" action="{{ url_for('core.mail_compose') }}" method="post">
         <div><h5>{{ letter.sender.name }}</h5></div>
         <input type="hidden" name="receiver" value="{{ letter.sender.id }}" />
         <label for="subject">subject: *</label>

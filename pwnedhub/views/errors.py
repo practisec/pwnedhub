@@ -21,7 +21,7 @@ def not_found(e):
     else:
         template = '''{% extends "layout.html" %}
 {% block body %}
-<div class="error center-content flex-column">
+<div class="flex-grow error center-content">
     <h1>Oops! That page doesn't exist.</h1>
     <h3>'''+request.url+'''</h3>
 </div>

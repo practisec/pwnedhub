@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-width-10 flex-offset-1 submission-new flex-column">
-    <form class="flex-no-shrink flex-column" action="{{ url_for('core.submissions_edit', bid=submission.id) }}" method="post">
+<div class="flex-width-10 flex-offset-1 flex-basis-10 submission-new">
+    <form class="flex-column" action="{{ url_for('core.submissions_edit', bid=submission.id) }}" method="post">
         <label for="title">title: *</label>
         <input name="title" type="text" value="{{ submission.title }}" />
         <label for="vuln_id">vulnerability type: *</label>

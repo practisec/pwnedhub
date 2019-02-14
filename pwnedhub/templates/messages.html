@@ -1,32 +1,34 @@
 {% extends "layout.html" %}
 {% block body %}
-<form class="flex-width-10 flex-offset-1 flex-row" action="{{ url_for('core.messages_create') }}" method="post">
-    <input class="flex-grow gutter-right" name="message" type="text" placeholder="message here..." />
-    <input type="submit" value="submit" onclick="this.form.submit();" />
-</form>
-<div class="messages flex-column">
-{% if messages|length == 0 %}
-    <div class="center-content">
-        no messages
-    </div>
-{% else %}
-{% for message in messages %}
-    <div class="message flex-row">
-    {% if message.user == g.user or g.user.is_admin %}
-        <a class="delete img-btn" onclick="cleanRedirect(event, '{{ url_for('core.messages_delete', mid=message.id) }}')"><i class="fas fa-trash" title="delete"></i></a>
-    {% endif %}
-        <div class="avatar"><a href="{{ url_for('core.profile_view', uid=message.user.id) }}"><img class="circular bordered-dark" src="{{ message.user.avatar_or_default|safe }}" title="avatar" /></a></div>
-        <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
-            <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
-            <p class="comment">{{ message.comment|safe }}</p>
-            <div class="scroll"></div>
-            <p class="timestamp">{{ message.created_as_string }}</p>
+<div class="flex-grow">
+    <form class="flex-width-10 flex-offset-1 flex-row flex-align-center" action="{{ url_for('core.messages_create') }}" method="post">
+        <input class="flex-grow gutter-right" name="message" type="text" placeholder="message here..." />
+        <input type="submit" value="submit" onclick="this.form.submit();" />
+    </form>
+    <div class="messages flex-column">
+    {% if messages|length == 0 %}
+        <div class="center-content">
+            no messages
         </div>
+    {% else %}
+    {% for message in messages %}
+        <div class="message flex-row">
+        {% if message.user == g.user or g.user.is_admin %}
+            <a class="delete img-btn" onclick="cleanRedirect(event, '{{ url_for('core.messages_delete', mid=message.id) }}')"><i class="fas fa-trash" title="delete"></i></a>
+        {% endif %}
+            <div class="avatar"><a href="{{ url_for('core.profile_view', uid=message.user.id) }}"><img class="circular bordered-dark" src="{{ message.user.avatar_or_default|safe }}" title="avatar" /></a></div>
+            <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
+                <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
+                <p class="comment">{{ message.comment|safe }}</p>
+                <div class="scroll"></div>
+                <p class="timestamp">{{ message.created_as_string }}</p>
+            </div>
+        </div>
+    {% endfor %}
+    {% endif %}
+    {% from "macros.html" import pagination %}
+    {{ pagination('core.messages', current_page, page_count) }}
     </div>
-{% endfor %}
-{% endif %}
-{% from "macros.html" import pagination %}
-{{ pagination('core.messages', current_page, page_count) }}
 </div>
 <script>
 function buildUnfurl(url, data) {

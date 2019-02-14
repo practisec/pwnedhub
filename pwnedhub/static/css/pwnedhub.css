@@ -76,7 +76,6 @@ form, table {
 }
 
 table {
-    width: 100%;
     background-color: #fff;
     border-collapse: separate;
     border: 1px solid #bbb;
@@ -170,12 +169,10 @@ i {
 
 nav {
     height: 5rem; /* critical to nav height 1/3 */
-    text-align: right;
     position: relative;
 }
 
 nav .brand {
-    float: left;
     font-size: 3rem;
     padding-left: 1rem;
 }
@@ -203,7 +200,6 @@ nav > ul {
 
 nav ul li {
     display: inline-block;
-    /*line-height: 0;*/ /* removes odd whitespace */
     height: 100%;
     margin: 0;
     padding: 0;
@@ -314,6 +310,11 @@ nav ul li:hover ul {
     font-size: 10rem;
     color: #bbb;
     opacity: 1;
+}
+
+.banner .panel {
+    min-width: 20rem;
+    margin-bottom: 5rem;
 }
 
 .about,
@@ -429,6 +430,7 @@ nav ul li:hover ul {
 }
 
 .submission-view table {
+    width: 100%;
     margin-bottom: 1rem;
     padding: 1rem 0;
     border-top: 1px solid #e1e1e1;
@@ -468,7 +470,6 @@ nav ul li:hover ul {
 
 .notes {
     position: relative;
-    height: 100%
 }
 
 .notes textarea {
@@ -488,7 +489,11 @@ nav ul li:hover ul {
     padding-bottom: 0.5rem;
 }
 
-.output {
+.tools {
+    min-width: 0;
+}
+
+.tools .output {
     min-height: 0; /* Firefox */
     background-color: #000;
     color: #fff;
@@ -497,12 +502,13 @@ nav ul li:hover ul {
     border: 1px solid #bbb;
 }
 
-.output pre {
+.tools .output pre {
+    height: 100%; /* keep scrollbar at bottom */
     margin: 0;
     overflow: scroll;
 }
 
-.output a.img-btn i {
+.tools .output a.img-btn i {
     color: #fff;
     opacity: 0.6;
 }
@@ -628,10 +634,13 @@ nav ul li:hover ul {
 }
 
 .error {
+    min-width: 0;
     overflow-wrap: break-word;
 }
 
 .traceback {
+    background-color: #000;
+    color: #fff;
     padding: 1rem 1.5rem;
     border: 1px solid #bbb;
 }
