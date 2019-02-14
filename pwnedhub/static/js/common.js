@@ -38,15 +38,7 @@ function confirmSubmit(event, form) {
     }
 }
 
-function toggle_visibility(name){
-   var els = document.getElementsByName(name);
-   for(var i=0; i<els.length; ++i){
-      var s = els[i].style;
-      s.visibility = s.visibility==='visible' ? 'hidden' : 'visible';
-   };
-}
-
-window.onload = function() {
+window.addEventListener("load", function() {
     // flash on load if needed
     flash = document.getElementById("flash");
     var msg = flash.innerHTML
@@ -57,4 +49,16 @@ window.onload = function() {
     if (msg.length > 0) {
         show_flash(msg);
     }
-}
+
+    // event handler for tab navigation
+    var tabs = document.querySelectorAll(".tabs > input[type='radio']")
+    var panes = document.querySelectorAll(".tab-content > div")
+    tabs.forEach(function(tab) {
+        tab.addEventListener("click", function(evt) {
+            panes.forEach(function(pane) {
+                pane.classList.remove("active");
+            });
+            document.querySelector(evt.target.value).classList.add("active");
+        });
+    });
+});
