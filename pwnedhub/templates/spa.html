@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-    <div id="app">
+    <div class="flex-grow flex-row" id="app">
         <router-view></router-view>
     </div>
     <script src="{{ url_for('static', filename='vue/vue.js') }}"></script>

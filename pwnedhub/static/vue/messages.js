@@ -1,16 +1,8 @@
 var Messages = Vue.component("messages", {
     template: `
-        <div>
-            <div class="row">
-                <div class="ten columns offset-by-one center-content">
-                    <create-message v-on:click="updateMessages"></create-message>
-                </div>
-            </div>
-            <div class="row">
-                <div class="ten columns offset-by-one messages">
-                    <show-messages v-on:click="updateMessages" v-bind:messages="messages"></show-messages>
-                </div>
-            </div>
+        <div class="flex-grow">
+            <create-message v-on:click="updateMessages"></create-message>
+            <show-messages v-on:click="updateMessages" v-bind:messages="messages"></show-messages>
         </div>
     `,
     data: function() {
@@ -43,14 +35,10 @@ var Messages = Vue.component("messages", {
 
 Vue.component("create-message", {
     template: `
-        <div>
-            <form v-on:submit.prevent="createMessage">
-                <button style="float: right;" type="submit">submit</button>
-                <span style="display: block; overflow: hidden; padding-right: 10px">
-                    <input type="text" v-model="messageForm.message" style="width: 100%;" placeholder="message here..." />
-                </span>
-            </form>
-        </div>
+        <form class="flex-width-10 flex-offset-1 flex-row flex-align-center" v-on:submit.prevent="createMessage">
+            <input class="flex-grow gutter-right" type="text" v-model="messageForm.message" placeholder="message here..." />
+            <input type="submit" value="submit" />
+        </form>
     `,
     data: function() {
         return {
@@ -84,23 +72,27 @@ Vue.component("show-messages", {
         messages: Array,
     },
     template: `
-        <div>
-            <div class="center-content" v-if="messages.length === 0">
-                no messages
-            </div>
-            <div v-else v-for="message in paginatedMessages" v-bind:key="message.id" v-bind:message="message" style="position: relative;">
-                <button type="button" class="delete img-btn" v-if="isEditable(message) === true" v-on:click="deleteMessage(message)"><img v-bind:src="URL_IMG_DELETE" title="delete" /></button>
+        <div class="messages flex-column">
+            <div class="message flex-row" v-if="messages.length > 0" v-for="message in paginatedMessages" v-bind:key="message.id" v-bind:message="message">
+                <a class="img-btn" v-if="isEditable(message) === true" v-on:click="deleteMessage(message)">
+                    <i class="fas fa-trash" title="delete"></i>
+                </a>
+                <div class="avatar">
+                    <a href="#">
+                        <img class="circular bordered-dark" v-bind:src="message.author.avatar" title="avatar" />
+                    </a>
+                </div>
                 <div v-bind:style="isAuthor(message) ? { fontWeight: 'bold' } : ''">
                     <p class="name"><span class="red">{{ message.author.name }}</span> <span style="font-size: .75em">({{ message.author.username }})</span></p>
-                    <p class="message" ref="message">{{ message.comment }}</p>
+                    <p class="comment" ref="message">{{ message.comment }}</p>
                     <scroll v-bind:message="message"></scroll>
                     <p class="timestamp">{{ message.created }}</p>
                 </div>
             </div>
-            <div class="pagination">
-                <span v-on:click="prevPage" v-bind:disabled="pageNumber === 0">prev</span>
-                |
-                <span v-on:click="nextPage" v-bind:disabled="pageNumber >= pageCount-1">next</span>
+            <div class="pagination flex-row flex-align-center flex-justify-right" v-if="messages.length > 0" >
+                <a v-on:click="prevPage" v-bind:disabled="pageNumber === 0">&laquo;</a>
+                <a v-for="(page, index) in pageCount" v-bind:key="page" v-on:click="gotoPage(index)" v-bind:class="pageNumber === index ? 'active' : ''">{{ index }}</a>
+                <a v-on:click="nextPage" v-bind:disabled="pageNumber >= pageCount-1">&raquo;</a>
             </div>
         </div>
     `,
@@ -116,6 +108,9 @@ Vue.component("show-messages", {
         },
         prevPage: function() {
             this.pageNumber--;
+        },
+        gotoPage: function(page) {
+            this.pageNumber = page;
         },
         isAuthor: function(message) {
             user = JSON.parse(window.sessionStorage.getItem("userInfo"));

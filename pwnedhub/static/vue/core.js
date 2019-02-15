@@ -4,7 +4,7 @@ const routes = [
         name: "Messages",
         component: Messages,
     },
-    {
+    /*{
         path: '/mail',
         name: "Mail",
         component: Mail,
@@ -25,7 +25,7 @@ const routes = [
         name: "Reply",
         component: Reply,
         props: true,
-    },
+    },*/
 ]
 
 const router = new VueRouter({

@@ -45,6 +45,7 @@ class Message(BaseModel):
                 'id': self.user.id,
                 'name': self.user.name,
                 'username': self.user.username,
+                'avatar': self.user.avatar_or_default,
             },
         }
 
