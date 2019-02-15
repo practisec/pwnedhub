@@ -2,27 +2,27 @@
 {% block body %}
 <div class="flex-width-10 flex-offset-1 flex-basis-10 submission-new">
     <form class="flex-column" action="{{ url_for('core.submissions_new') }}" method="post">
-        <label for="title">title: *</label>
+        <label for="title">Title: *</label>
         <input name="title" type="text" />
-        <label for="vuln_id">vulnerability type: *</label>
+        <label for="vuln_id">Vulnerability Type: *</label>
         <select id="vuln" name="vuln_id" onchange="estimateBounty();">
         {% for id, data in vulnerabilities.iteritems() %}
             <option value="{{ id }}" data-bounty="{{ data[1] }}">{{ data[0] }}</option>
         {% endfor %}
         </select>
-        <label for="severity">severity: *</label>
+        <label for="severity">Severity: *</label>
         <select id="severity" name="severity" onchange="estimateBounty();">
         {% for id, name in severity.iteritems() %}
             <option value="{{ id }}">{{ name }}</option>
         {% endfor %}
         </select>
-        <div><b>projected bounty: </b><h3 id="bounty">0</h3></div>
-        <label for="description">description: *</label>
-        <textarea name="description" placeholder="description of the vulnerbility including replication steps and a proof of concept"></textarea>
-        <label for="impact">impact: *</label>
-        <textarea name="impact" placeholder="description of the impact"></textarea>
+        <div><b>Projected Bounty: </b><h3 id="bounty">0</h3></div>
+        <label for="description">Description: *</label>
+        <textarea name="description" placeholder="Description of the vulnerbility including replication steps and a proof of concept."></textarea>
+        <label for="impact">Impact: *</label>
+        <textarea name="impact" placeholder="Impact of the vulnerablity on the affected application, its owner, and its users."></textarea>
         <div class="right-content">
-            <input type="submit" value="submit" onclick="this.form.submit();" />
+            <input type="submit" value="Submit" onclick="this.form.submit();" />
         </div>
     </form>
 </div>

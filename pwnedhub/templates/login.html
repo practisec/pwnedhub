@@ -1,17 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="flex-width-4 flex-offset-4 flex-basis-4">
-    <h4>log in</h4>
     <form class="flex-column" action="" method="post">
-        <label for="username">username:</label>
+        <label for="username">Username:</label>
         <input name="username" type="text" />
-        <label for="password">password:</label>
+        <label for="password">Password:</label>
         <div class="flex-column" style="position: relative;">
             <input id="password" name="password" type="password" />
             <input type="button" class="show" onclick="toggle_show();" value="show" />
         </div>
-        <p><a href="{{ url_for('auth.reset_init') }}">forget your password?</a></p>
-        <input type="submit" value="login" />
+        <p><a href="{{ url_for('auth.reset_init') }}">Forget your password?</a></p>
+        <input type="submit" value="Login" />
     </form>
 </div>
 <style>

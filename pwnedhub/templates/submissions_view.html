@@ -29,14 +29,14 @@
                 <td>submitter</td>
                 <td>
                     <div class="submitter flex-row flex-align-center">
-                        <div class="avatar"><a href="{{ url_for('core.profile_view', uid=submission.submitter.id) }}"><img class="circular bordered-dark" src="{{ submission.submitter.avatar_or_default|safe }}" title="avatar" /></a></div>
+                        <div class="avatar"><a href="{{ url_for('core.profile_view', uid=submission.submitter.id) }}"><img class="circular bordered-dark" src="{{ submission.submitter.avatar_or_default|safe }}" title="Avatar" /></a></div>
                         <div>{{ submission.submitter.name }}</div>
                     </div>
                 </td>
                 <td>reviewer</td>
                 <td>
                     <div class="submitter flex-row flex-align-center">
-                        <div class="avatar"><a href="{{ url_for('core.profile_view', uid=submission.reviewer.id) }}"><img class="circular bordered-dark" src="{{ submission.reviewer.avatar_or_default|safe }}" title="avatar" /></a></div>
+                        <div class="avatar"><a href="{{ url_for('core.profile_view', uid=submission.reviewer.id) }}"><img class="circular bordered-dark" src="{{ submission.reviewer.avatar_or_default|safe }}" title="Avatar" /></a></div>
                         <div>{{ submission.reviewer.name }}</div>
                     </div>
                 </td>
@@ -45,13 +45,13 @@
     </table>
     {% if not submission.is_validated and submission.submitter == g.user %}
     <div class="right-content">
-        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.submissions_edit', bid=submission.id) }}')"><i class="fas fa-edit" title="edit"></i></a>
+        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.submissions_edit', bid=submission.id) }}')"><i class="fas fa-edit" title="Edit"></i></a>
     </div>
     {% endif %}
     {% if not submission.is_validated and submission.reviewer == g.user %}
     <div class="right-content">
-        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='confirm', bid=submission.id) }}')"><i class="fas fa-check-circle green" title="confirm"></i></a>
-        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='reject', bid=submission.id) }}')"><i class="fas fa-times-circle red" title="reject"></i></a>
+        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='confirm', bid=submission.id) }}')"><i class="fas fa-check-circle green" title="Confirm"></i></a>
+        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='reject', bid=submission.id) }}')"><i class="fas fa-times-circle red" title="Reject"></i></a>
     </div>
     {% endif %}
     <div class="tabs">

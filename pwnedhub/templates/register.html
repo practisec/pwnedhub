@@ -1,29 +1,28 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="flex-width-4 flex-offset-4 flex-basis-4">
-    <h4>register a profile</h4>
     <form class="flex-column" action="{{ url_for('auth.register') }}" method="post">
-        <label for="username">username: *</label>
+        <label for="username">Username: *</label>
         <input name="username" type="text" />
-        <label for="name">display name: *</label>
+        <label for="name">Display Name: *</label>
         <input name="name" type="text" />
-        <label for="avatar">avatar url:</label>
+        <label for="avatar">Avatar URL:</label>
         <input name="avatar" type="text" />
-        <label for="signature">signature:</label>
+        <label for="signature">Signature:</label>
         <textarea name="signature"></textarea>
-        <label for="password">password: *</label>
+        <label for="password">Password: *</label>
         <input name="password" type="password" />
-        <label for="confirm_password">confirm password: *</label>
+        <label for="confirm_password">Confirm Password: *</label>
         <input name="confirm_password" type="password" />
-        <label for="question">question: *</label>
+        <label for="question">Question: *</label>
         <select name="question">
         {% for question in questions %}
             <option value="{{ question }}">{{ questions[question] }}</option>
         {% endfor %}
         </select>
-        <label for="answer">answer: *</label>
+        <label for="answer">Answer: *</label>
         <input name="answer" type="text" />
-        <input type="submit" value="register" onclick="this.form.submit();" />
+        <input type="submit" value="Register" onclick="this.form.submit();" />
     </form>
 </div>
 {% endblock %}

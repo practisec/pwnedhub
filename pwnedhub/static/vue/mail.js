@@ -2,7 +2,7 @@ var Mail = Vue.component("mail", {
     template: `
         <div class="row">
             <div class="ten columns offset-by-one">
-                <input type="button" value="compose" v-on:click="draftLetter" />
+                <input type="button" value="Compose" v-on:click="draftLetter" />
                 <div class="inbox">
                     <table class="u-full-width center">
                         <thead>
@@ -59,9 +59,9 @@ Vue.component("envelope", {
             <td class="left-content">{{ envelope.subject }}</td>
             <td>{{ envelope.created }}</td>
             <td>
-                <button type="button" class="img-btn" v-on:click="openEnvelope"><img v-bind:src="URL_IMG_VIEW" title="view" /></button>
-                <button type="button" class="img-btn" v-on:click="draftReply"><img v-bind:src="URL_IMG_REPLY" title="reply" /></button>
-                <button type="button" class="img-btn" v-on:click="deleteEnvelope"><img v-bind:src="URL_IMG_DELETE" title="delete" /></button>
+                <button type="button" class="img-btn" v-on:click="openEnvelope"><img v-bind:src="URL_IMG_VIEW" title="View" /></button>
+                <button type="button" class="img-btn" v-on:click="draftReply"><img v-bind:src="URL_IMG_REPLY" title="Reply" /></button>
+                <button type="button" class="img-btn" v-on:click="deleteEnvelope"><img v-bind:src="URL_IMG_DELETE" title="Delete" /></button>
             </td>
         </tr>
     `,
@@ -92,16 +92,16 @@ var Letter = Vue.component("letter", {
     template: `
         <div class="row">
             <div v-if="envelope" class="ten columns offset-by-one mail">
-                <label for="sender">from:</label>
+                <label for="sender">From:</label>
                 <div class="u-full-width" name="sender">{{ envelope.sender.name }}</div><br>
-                <label for="subject">subject:</label>
+                <label for="subject">Subject:</label>
                 <div class="u-full-width" name="subject"><h5>{{ envelope.subject }}</h5></div>
-                <label for="content">content:</label>
+                <label for="content">Content:</label>
                 <div class="u-full-width bordered rounded" name="content">{{ envelope.content }}</div><br>
                 <div class="u-full-width right-content">
-                    <button type="button" class="img-btn" v-on:click="gotoMailbox"><img v-bind:src="URL_IMG_INBOX" title="inbox" /></button>
-                    <button type="button" class="img-btn" v-on:click="draftReply"><img v-bind:src="URL_IMG_REPLY" title="reply" /></button>
-                    <button type="button" class="img-btn" v-on:click="deleteEnvelope"><img v-bind:src="URL_IMG_DELETE" title="delete" /></button>
+                    <button type="button" class="img-btn" v-on:click="gotoMailbox"><img v-bind:src="URL_IMG_INBOX" title="Inbox" /></button>
+                    <button type="button" class="img-btn" v-on:click="draftReply"><img v-bind:src="URL_IMG_REPLY" title="Reply" /></button>
+                    <button type="button" class="img-btn" v-on:click="deleteEnvelope"><img v-bind:src="URL_IMG_DELETE" title="Delete" /></button>
                 </div>
             </div>
         </div>
@@ -144,18 +144,18 @@ var Compose = Vue.component("compose", {
     template: `
         <div class="row">
             <div class="ten columns offset-by-one mail">
-                <label for="receiver">to:</label>
+                <label for="receiver">To:</label>
                 <select name="receiver" v-model="letterForm.receiver">
                     <option value="" disabled hidden>recipient...</option>
                     <option v-for="recipient in recipients" v-bind:key="recipient.id" v-bind:value="recipient.id">{{ recipient.name }}</option>
                 </select><br>
-                <label for="subject">subject:</label>
-                <input class="u-full-width" name="subject" type="text" v-model="letterForm.subject" placeholder="subject here..." /><br>
-                <label for="content">content:</label>
-                <textarea class="u-full-width" name="content" v-model="letterForm.content" placeholder="content here..."></textarea><br>
+                <label for="subject">Subject:</label>
+                <input class="u-full-width" name="subject" type="text" v-model="letterForm.subject" placeholder="Subject here..." /><br>
+                <label for="content">Content:</label>
+                <textarea class="u-full-width" name="content" v-model="letterForm.content" placeholder="Content here..."></textarea><br>
                 <div class="u-full-width right-content">
-                    <button type="button" class="img-btn" v-on:click="sendLetter"><img v-bind:src="URL_IMG_SEND" title="send" /></button>
-                    <button type="button" class="img-btn" v-on:click="discardDraft"><img v-bind:src="URL_IMG_DELETE" title="discard" /></button>
+                    <button type="button" class="img-btn" v-on:click="sendLetter"><img v-bind:src="URL_IMG_SEND" title="Send" /></button>
+                    <button type="button" class="img-btn" v-on:click="discardDraft"><img v-bind:src="URL_IMG_DELETE" title="Discard" /></button>
                 </div>
             </div>
         </div>
@@ -212,15 +212,15 @@ var Reply = Vue.component("reply", {
     template: `
         <div class="row">
             <div v-if="letter" class="ten columns offset-by-one mail">
-                <label for="receiver-show">to:</label>
+                <label for="receiver-show">To:</label>
                 <div class="u-full-width" name="receiver-show">{{ letter.sender.name }}</div><br>
-                <label for="subject-show">subject:</label>
+                <label for="subject-show">Subject:</label>
                 <div class="u-full-width" name="subject-show"><h5>RE: {{ letter.subject }}</h5></div>
-                <label for="content">content:</label>
-                <textarea class="u-full-width" name="content" v-model="letterForm.content" placeholder="content here..."></textarea><br>
+                <label for="content">Content:</label>
+                <textarea class="u-full-width" name="content" v-model="letterForm.content" placeholder="Content here..."></textarea><br>
                 <div class="u-full-width right-content">
-                    <button type="button" class="img-btn" v-on:click="sendReply"><img v-bind:src="URL_IMG_SEND" title="send" /></button>
-                    <button type="button" class="img-btn" v-on:click="discardDraft"><img v-bind:src="URL_IMG_DELETE" title="discard" /></button>
+                    <button type="button" class="img-btn" v-on:click="sendReply"><img v-bind:src="URL_IMG_SEND" title="Send" /></button>
+                    <button type="button" class="img-btn" v-on:click="discardDraft"><img v-bind:src="URL_IMG_DELETE" title="Discard" /></button>
                 </div>
             </div>
         </div>

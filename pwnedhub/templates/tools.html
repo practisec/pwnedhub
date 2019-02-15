@@ -7,12 +7,12 @@
             <option value="{{ tool.id }}">{{ tool.name }}</option>
         {% endfor %}
         </select>
-        <input class="flex-grow gutter-right" type="text" id="args" placeholder="command arguments..." />
-        <input type="button" onclick="execute();" value="execute" />
+        <input class="flex-grow gutter-right" type="text" id="args" placeholder="Command arguments..." />
+        <input type="button" onclick="execute();" value="Execute" />
     </div>
     <div class="flex-grow output flex-column flex-no-basis">
         <pre id="output"></pre>
-        <a class="img-btn" onclick="save_artifact();"><i class="fas fa-save" title="save as artifact"></i></a>
+        <a class="img-btn" onclick="save_artifact();"><i class="fas fa-save" title="Save as artifact"></i></a>
         <div id="spinner" class="spinner"></div>
     </div>
 </div>

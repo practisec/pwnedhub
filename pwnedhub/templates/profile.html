@@ -1,26 +1,26 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="flex-width-4 flex-offset-4 flex-basis-4 profile flex-column">
-    <div class="center avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="avatar" /></a></div>
+    <div class="center avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
     <div class="center"><h3>{{ user.username }}</h3></div>
     <form class="flex-column" action="{{ url_for('core.profile_change') }}" method="post">
-        <label for="avatar">avatar url:</label>
+        <label for="avatar">Avatar URL:</label>
         <input name="avatar" type="text" value="{{ user.avatar or '' }}" />
-        <label for="signature">signature:</label>
+        <label for="signature">Signature:</label>
         <textarea name="signature">{{ user.signature }}</textarea>
-        <label for="name">display name: *</label>
+        <label for="name">Display Name: *</label>
         <input name="name" type="text" value="{{ user.name }}" />
-        <label for="password">password: *</label>
+        <label for="password">Password: *</label>
         <input name="password" type="password" value="{{ user.password_as_string }}" />
-        <label for="question">question: *</label>
+        <label for="question">Question: *</label>
         <select name="question">
         {% for question in questions %}
             <option value="{{ question }}"{% if question == user.question %} selected{% endif %}>{{ questions[question] }}</option>
         {% endfor %}
         </select>
-        <label for="answer">answer: *</label>
+        <label for="answer">Answer: *</label>
         <input name="answer" type="text" value="{{ user.answer }}" />
-        <input type="submit" value="submit" onclick="this.form.submit();" />
+        <input type="submit" value="Submit" onclick="this.form.submit();" />
     </form>
 </div>
 {% endblock %}

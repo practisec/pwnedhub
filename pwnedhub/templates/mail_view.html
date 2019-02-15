@@ -3,15 +3,15 @@
 <div class="flex-width-10 flex-offset-1 mail">
     <div><h5>{{ letter.subject }}</h5></div>
     <div class="sender flex-row flex-align-center">
-        <div class="avatar"><a href="{{ url_for('core.profile_view', uid=letter.sender.id) }}"><img class="circular bordered-dark" src="{{ letter.sender.avatar_or_default|safe }}" title="avatar" /></a></div>
+        <div class="avatar"><a href="{{ url_for('core.profile_view', uid=letter.sender.id) }}"><img class="circular bordered-dark" src="{{ letter.sender.avatar_or_default|safe }}" title="Avatar" /></a></div>
         <div><b>{{ letter.sender.name }} @ {{ letter.created_as_string }}</b></div>
     </div>
     <div class="content">{{ letter.content|safe }}</div>
     <hr>
     <div class="right-content">
-        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.mail') }}')"><i class="fas fa-inbox" title="inbox"></i></a>
-        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.mail_reply', mid=letter.id) }}')"><i class="fas fa-reply" title="reply"></i></a>
-        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.mail_delete', mid=letter.id) }}')"><i class="fas fa-trash" title="delete"></i></a>
+        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.mail') }}')"><i class="fas fa-inbox" title="Inbox"></i></a>
+        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.mail_reply', mid=letter.id) }}')"><i class="fas fa-reply" title="Reply"></i></a>
+        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.mail_delete', mid=letter.id) }}')"><i class="fas fa-trash" title="Delete"></i></a>
     </div>
 </div>
 {% endblock %}

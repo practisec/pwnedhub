@@ -3,7 +3,7 @@
 <div class="flex-grow flex-column">
     <form class="flex-row flex-align-center flex-justify-center" action="{{ url_for('core.artifacts_save') }}" enctype="multipart/form-data" method="post">
         <input name="file" type="file" />
-        <input type="submit" value="upload" onclick="this.form.submit();" />
+        <input type="submit" value="Upload" onclick="this.form.submit();" />
     </form>
     <div class="artifacts flex-row flex-justify-center">
         <table>
@@ -19,17 +19,17 @@
                     <td>
                         <form name="form{{ loop.index }}1" action="{{ url_for('core.artifacts_view') }}" method="post">
                             <input type="hidden" name="filename" value="{{ artifact.filename }}" />
-                            <a class="img-btn" onclick="cleanSubmit(event, document.form{{ loop.index }}1)"><i class="fas fa-file" title="view"></i></a>
+                            <a class="img-btn" onclick="cleanSubmit(event, document.form{{ loop.index }}1)"><i class="fas fa-file" title="View"></i></a>
                         </form>
                         <form name="form{{ loop.index }}2" action="{{ url_for('core.artifacts_delete') }}" method="post">
                             <input type="hidden" name="filename" value="{{ artifact.filename }}" />
-                            <a class="img-btn" onclick="confirmSubmit(event, document.form{{ loop.index }}2)"><i class="fas fa-trash" title="delete"></i></a>
+                            <a class="img-btn" onclick="confirmSubmit(event, document.form{{ loop.index }}2)"><i class="fas fa-trash" title="Delete"></i></a>
                         </form>
                     </td>
                 </tr>
             {% endfor %}
             {% else %}
-                <tr><td colspan="3" class="center-content"><i class="fas fa-exclamation-circle medium" title="empty"></i></td></tr>
+                <tr><td colspan="3" class="center-content"><i class="fas fa-exclamation-circle medium" title="Empty"></i></td></tr>
             {% endif %}
             </tbody>
         </table>

@@ -7,8 +7,8 @@
         {% for user in reputation_data %}
             <div class="score flex-row flex-align-center flex-justify-space-between">
                 <div class="position"><b>{{ loop.index }}</b></div>
-                <div class="trophy position-{{ loop.index }}"><i class="fas fa-trophy" title="trophy"></i></div>
-                <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="avatar" /></a></div>
+                <div class="trophy position-{{ loop.index }}"><i class="fas fa-trophy" title="Trophy"></i></div>
+                <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
                 <div class="flex-grow"><b>{{ user.name }}</b></div>
                 <div><h5>{{ user.reputation }}</h5></div>
             </div>
@@ -21,8 +21,8 @@
         {% for user in bug_data %}
             <div class="score flex-row flex-align-center flex-justify-space-between">
                 <div class="position"><b>{{ loop.index }}</b></div>
-                <div class="trophy position-{{ loop.index }}"><i class="fas fa-trophy" title="trophy"></i></div>
-                <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="avatar" /></a></div>
+                <div class="trophy position-{{ loop.index }}"><i class="fas fa-trophy" title="Trophy"></i></div>
+                <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
                 <div class="flex-grow"><b>{{ user.name }}</b></div>
                 <div><h5>{{ user.bugs.count() }}</h5></div>
             </div>
@@ -35,8 +35,8 @@
         {% for user in validation_data %}
             <div class="score flex-row flex-align-center flex-justify-space-between">
                 <div class="position"><b>{{ loop.index }}</b></div>
-                <div class="trophy position-{{ loop.index }}"><i class="fas fa-trophy" title="trophy"></i></div>
-                <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="avatar" /></a></div>
+                <div class="trophy position-{{ loop.index }}"><i class="fas fa-trophy" title="Trophy"></i></div>
+                <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
                 <div class="flex-grow"><b>{{ user.name }}</b></div>
                 <div><h5>{{ user.completed_validations|length }}</h5></div>
             </div>

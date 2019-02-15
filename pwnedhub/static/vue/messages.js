@@ -36,8 +36,8 @@ var Messages = Vue.component("messages", {
 Vue.component("create-message", {
     template: `
         <form class="flex-width-10 flex-offset-1 flex-row flex-align-center" v-on:submit.prevent="createMessage">
-            <input class="flex-grow gutter-right" type="text" v-model="messageForm.message" placeholder="message here..." />
-            <input type="submit" value="submit" />
+            <input class="flex-grow gutter-right" type="text" v-model="messageForm.message" placeholder="Message here..." />
+            <input type="submit" value="Submit" />
         </form>
     `,
     data: function() {
@@ -75,11 +75,11 @@ Vue.component("show-messages", {
         <div class="messages flex-column">
             <div class="message flex-row" v-if="messages.length > 0" v-for="message in paginatedMessages" v-bind:key="message.id" v-bind:message="message">
                 <a class="img-btn" v-if="isEditable(message) === true" v-on:click="deleteMessage(message)">
-                    <i class="fas fa-trash" title="delete"></i>
+                    <i class="fas fa-trash" title="Delete"></i>
                 </a>
                 <div class="avatar">
                     <a href="#">
-                        <img class="circular bordered-dark" v-bind:src="message.author.avatar" title="avatar" />
+                        <img class="circular bordered-dark" v-bind:src="message.author.avatar" title="Avatar" />
                     </a>
                 </div>
                 <div v-bind:style="isAuthor(message) ? { fontWeight: 'bold' } : ''">
