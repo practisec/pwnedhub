@@ -772,3 +772,12 @@ nav ul li:hover ul {
 }
 
 /* end */
+
+/* FOUC fix */
+
+html {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* end */
