@@ -77,13 +77,10 @@ def admin_tools_add():
 @login_required
 @roles_required('admin')
 def admin_tools_remove(tid):
-    tool = Tool.query.get(tid)
-    if tool:
-        db.session.delete(tool)
-        db.session.commit()
-        flash('Tool removed.')
-    else:
-        flash('Invalid tool ID.')
+    tool = Tool.query.get_or_404(tid)
+    db.session.delete(tool)
+    db.session.commit()
+    flash('Tool removed.')
     return redirect(url_for('core.admin_tools'))
 
 @core.route('/admin/users')
@@ -96,35 +93,32 @@ def admin_users():
 @core.route('/admin/users/<string:action>/<int:uid>')
 @login_required
 def admin_users_modify(action, uid):
-    user = User.query.get(uid)
-    if user:
-        if user != g.user:
-            if action == 'promote':
-                user.role = 0
-                db.session.add(user)
-                db.session.commit()
-                flash('User promoted.')
-            elif action == 'demote':
-                user.role = 1
-                db.session.add(user)
-                db.session.commit()
-                flash('User demoted.')
-            elif action == 'enable':
-                user.status = 1
-                db.session.add(user)
-                db.session.commit()
-                flash('User enabled.')
-            elif action == 'disable':
-                user.status = 0
-                db.session.add(user)
-                db.session.commit()
-                flash('User disabled.')
-            else:
-                flash('Invalid user action.')
+    user = User.query.get_or_404(uid)
+    if user != g.user:
+        if action == 'promote':
+            user.role = 0
+            db.session.add(user)
+            db.session.commit()
+            flash('User promoted.')
+        elif action == 'demote':
+            user.role = 1
+            db.session.add(user)
+            db.session.commit()
+            flash('User demoted.')
+        elif action == 'enable':
+            user.status = 1
+            db.session.add(user)
+            db.session.commit()
+            flash('User enabled.')
+        elif action == 'disable':
+            user.status = 0
+            db.session.add(user)
+            db.session.commit()
+            flash('User disabled.')
         else:
-            flash('Self-modification denied.')
+            flash('Invalid user action.')
     else:
-        flash('Invalid user ID.')
+        flash('Self-modification denied.')
     return redirect(url_for('core.admin_users'))
 
 # user controllers
@@ -172,55 +166,50 @@ def mail():
 def mail_compose():
     if request.method == 'POST':
         receiver = User.query.get(request.form['receiver'])
-        if receiver:
-            content = request.form['content']
-            subject = request.form['subject']
-            letter = Mail(content=content, subject=subject, sender=g.user, receiver=receiver)
+        if not receiver:
+            abort(400, 'Invalid receiver.')
+        content = request.form['content']
+        subject = request.form['subject']
+        letter = Mail(content=content, subject=subject, sender=g.user, receiver=receiver)
+        db.session.add(letter)
+        db.session.commit()
+        # generate automated Administrator response
+        if receiver.role == 0:
+            content = ADMIN_RESPONSE
+            letter = Mail(content=content, subject='RE: '+subject, sender=receiver, receiver=g.user)
             db.session.add(letter)
             db.session.commit()
-            # generate automated Administrator response
-            if receiver.role == 0:
-                content = ADMIN_RESPONSE
-                letter = Mail(content=content, subject='RE: '+subject, sender=receiver, receiver=g.user)
-                db.session.add(letter)
-                db.session.commit()
-            flash('Mail sent.')
-            return redirect(url_for('core.mail'))
-        else:
-            flash('Invalid recipient')
+        flash('Mail sent.')
+        return redirect(url_for('core.mail'))
     users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
     return render_template('mail_compose.html', users=users)
 
 @core.route('/mail/reply/<int:mid>')
 @login_required
 def mail_reply(mid=0):
-    letter = Mail.query.filter(Mail.id == mid).first()
+    letter = Mail.query.get_or_404(mid)
+    # [vuln] doesn't vaidate that the user was the original receiver
     return render_template('mail_reply.html', letter=letter)
 
 @core.route('/mail/view/<int:mid>')
 @login_required
 def mail_view(mid):
-    letter = Mail.query.get(mid)
-    if letter:
-        if letter.read == 0:
-            letter.read = 1
-            db.session.add(letter)
-            db.session.commit()
-    else:
-        flash('Invalid mail ID.')
-        return redirect(url_for('core.mail'))
+    letter = Mail.query.get_or_404(mid)
+    # [vuln] doesn't vaidate that the user is the owner
+    if letter.read == 0:
+        letter.read = 1
+        db.session.add(letter)
+        db.session.commit()
     return render_template('mail_view.html', letter=letter)
 
 @core.route('/mail/delete/<int:mid>')
 @login_required
 def mail_delete(mid):
-    letter = Mail.query.get(mid)
-    if letter:
-        db.session.delete(letter)
-        db.session.commit()
-        flash('Mail deleted.')
-    else:
-        flash('Invalid mail ID.')
+    letter = Mail.query.get_or_404(mid)
+    # [vuln] doesn't vaidate that the user is the owner
+    db.session.delete(letter)
+    db.session.commit()
+    flash('Mail deleted.')
     return redirect(url_for('core.mail'))
 
 @core.route('/messages')
@@ -249,13 +238,13 @@ def messages_create():
 @core.route('/messages/delete/<int:mid>')
 @login_required
 def messages_delete(mid):
-    message = Message.query.get(mid)
-    if message and (message.user == g.user or g.user.is_admin):
+    message = Message.query.get_or_404(mid)
+    if message.user == g.user or g.user.is_admin:
         db.session.delete(message)
         db.session.commit()
         flash('Message deleted.')
     else:
-        flash('Invalid message ID.')
+        abort(403)
     return redirect(url_for('core.messages'))
 
 @core.route('/notes')

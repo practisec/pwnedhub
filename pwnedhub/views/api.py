@@ -21,9 +21,7 @@ api = Blueprint('api', __name__, url_prefix='/api')
 def user_read(uid):
     if uid == 'me':
         return jsonify(**g.user.serialize())
-    user = User.query.get(uid)
-    if not user:
-        abort(404)
+    user = User.query.get_or_404(uid)
     return jsonify(**user.serialize(public=True))
 
 # get all users
@@ -81,9 +79,11 @@ def mailbox_read():
 @api.route('/mail', methods=['POST'])
 @login_required
 def mail_create():
-    content = request.json.get('content')
     receiver = User.query.get(request.json.get('receiver'))
+    if not receiver:
+        abort(400, 'Invalid receiver.')
     subject = request.json.get('subject')
+    content = request.json.get('content')
     letter = Mail(content=content, subject=subject, sender=g.user, receiver=receiver)
     db.session.add(letter)
     db.session.commit()
@@ -99,35 +99,29 @@ def mail_create():
 @api.route('/mail/<string:mid>', methods=['GET'])
 @login_required
 def mail_read(mid):
-    mail = Mail.query.get(mid)
-    if mail:
-        # mark mail as read
-        if mail.read == 0:
-            mail.read = 1
-            db.session.add(mail)
-            db.session.commit()
-        # [vuln] no authz check
-        mail = mail.serialize()
-        resp = jsonify(**mail)
-    else:
-        abort(404)
+    mail = Mail.query.get_or_404(mid)
+    # mark mail as read
+    if mail.read == 0:
+        mail.read = 1
+        db.session.add(mail)
+        db.session.commit()
+    # [vuln] no authz check
+    mail = mail.serialize()
+    resp = jsonify(**mail)
     return resp
 
 # delete a piece of mail
 @api.route('/mail/<string:mid>', methods=['DELETE'])
 @login_required
 def mail_delete(mid):
-    mail = Mail.query.get(mid)
-    if mail:
-        if mail.receiver == g.user:
-            db.session.delete(mail)
-            db.session.commit()
-            mail = [m.serialize() for m in g.user.received_mail.order_by(Mail.created.desc()).all()]
-            resp = jsonify(mail=mail)
-        else:
-            abort(403)
+    mail = Mail.query.get_or_404(mid)
+    if mail.receiver == g.user:
+        db.session.delete(mail)
+        db.session.commit()
+        mail = [m.serialize() for m in g.user.received_mail.order_by(Mail.created.desc()).all()]
+        resp = jsonify(mail=mail)
     else:
-        abort(404)
+        abort(403)
     return resp
 
 # get all messages
@@ -158,17 +152,14 @@ def message_create():
 @api.route('/messages/<string:mid>', methods=['DELETE'])
 @login_required
 def message_delete(mid):
-    message = Message.query.get(mid)
-    if message:
-        if message.user == g.user or g.user.is_admin:
-            db.session.delete(message)
-            db.session.commit()
-            messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
-            resp = jsonify(messages=messages)
-        else:
-            abort(403)
+    message = Message.query.get_or_404(mid)
+    if message.user == g.user or g.user.is_admin:
+        db.session.delete(message)
+        db.session.commit()
+        messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
+        resp = jsonify(messages=messages)
     else:
-        abort(404)
+        abort(403)
     return resp
 
 # RESTless API controllers
@@ -186,7 +177,7 @@ def note_update():
 @api.route('/tools/<string:tid>/execute', methods=['POST'])
 @login_required
 def tool_execute(tid):
-    tool = Tool.query.get(tid)
+    tool = Tool.query.get_or_404(tid)
     path = tool.path
     args = request.json.get('args')
     cmd = '{} {}'.format(path, args)
