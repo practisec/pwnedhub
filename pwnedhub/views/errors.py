@@ -7,6 +7,13 @@ API_PREFIX = '/api/'
 
 # error handling controllers
 
+@errors.app_errorhandler(400)
+def bad_request(e):
+    if request.path.startswith(API_PREFIX):
+        response = jsonify(status=400, message=e.description), 400
+    else:
+        return e
+
 @errors.app_errorhandler(403)
 def forbidden(e):
     if request.path.startswith(API_PREFIX):
