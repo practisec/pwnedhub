@@ -141,26 +141,21 @@ a.img-btn {
     cursor: pointer;
 }
 
-/* image button customizations */
-a.save-as {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-}
-
-a.delete {
-    position: absolute;
-    top: 0.5rem;
-    right: 0;
-}
-
 hr {
     margin: 0 0 1rem 0;
 }
 
 i {
     font-size: 2rem;
-    opacity: 0.2;
+    color: #bbb;
+}
+
+i.medium {
+    font-size: 6rem;
+}
+
+i.large {
+    font-size: 10rem;
 }
 
 /* end */
@@ -306,12 +301,6 @@ nav ul li:hover ul {
     opacity: 0.8;
 }
 
-.banner i {
-    font-size: 10rem;
-    color: #bbb;
-    opacity: 1;
-}
-
 .banner .panel {
     min-width: 20rem;
     margin-bottom: 5rem;
@@ -351,10 +340,6 @@ nav ul li:hover ul {
 
 .scoreboard .score-panel .score .trophy {
     color: transparent;
-}
-
-.scoreboard .score-panel .score .trophy i {
-    opacity: 1;
 }
 
 .scoreboard .score-panel .score .position-1 {
@@ -460,10 +445,6 @@ nav ul li:hover ul {
     height: 4rem;
 }
 
-.submission-view i {
-    opacity: 1;
-}
-
 .submission-view .summary h5 {
     margin-bottom: 0;
 }
@@ -478,6 +459,12 @@ nav ul li:hover ul {
     border: 1px solid #bbb;
     margin: 1rem;
     resize: none;
+}
+
+.notes a.img-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
 }
 
 .artifacts form {
@@ -508,9 +495,10 @@ nav ul li:hover ul {
     overflow: scroll;
 }
 
-.tools .output a.img-btn i {
-    color: #fff;
-    opacity: 0.6;
+.tools .output a.img-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
 }
 
 .inbox td {
@@ -562,6 +550,12 @@ nav ul li:hover ul {
 
 .messages .message .comment {
     margin-bottom: .5rem;
+}
+
+.messages .message a.img-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0;
 }
 
 .messages .scroll a {
