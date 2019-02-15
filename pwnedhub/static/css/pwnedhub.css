@@ -388,6 +388,10 @@ nav ul li:hover ul {
     min-height: 20rem;
 }
 
+.submission-view {
+    min-width: 0;
+}
+
 .submission-view .title .severity {
     margin: 1rem;
     margin-left: 0;
@@ -718,6 +722,10 @@ nav ul li:hover ul {
 
 .markdown li {
     margin-bottom: 0;
+}
+
+.markdown code {
+    overflow: scroll;
 }
 
 /* end */
