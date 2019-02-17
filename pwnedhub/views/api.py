@@ -61,9 +61,9 @@ def artifact_create():
 @api.route('/tools/<string:tid>', methods=['GET'])
 @login_required
 def tool_read(tid):
-    query = "SELECT * FROM tools WHERE id={}"
+    query = 'SELECT * FROM tools WHERE id='+tid
     try:
-        tool = db.session.execute(query.format(tid)).first() or {}
+        tool = db.session.execute(query).first() or {}
     except:
         tool = {}
     return jsonify(**dict(tool))
@@ -100,12 +100,13 @@ def mail_create():
 @login_required
 def mail_read(mid):
     mail = Mail.query.get_or_404(mid)
+    if mail.receiver != g.user:
+        abort(403)
     # mark mail as read
     if mail.read == 0:
         mail.read = 1
         db.session.add(mail)
         db.session.commit()
-    # [vuln] no authz check
     mail = mail.serialize()
     resp = jsonify(**mail)
     return resp
@@ -115,13 +116,12 @@ def mail_read(mid):
 @login_required
 def mail_delete(mid):
     mail = Mail.query.get_or_404(mid)
-    if mail.receiver == g.user:
-        db.session.delete(mail)
-        db.session.commit()
-        mail = [m.serialize() for m in g.user.received_mail.order_by(Mail.created.desc()).all()]
-        resp = jsonify(mail=mail)
-    else:
+    if mail.receiver != g.user:
         abort(403)
+    db.session.delete(mail)
+    db.session.commit()
+    mail = [m.serialize() for m in g.user.received_mail.order_by(Mail.created.desc()).all()]
+    resp = jsonify(mail=mail)
     return resp
 
 # get all messages
@@ -130,7 +130,6 @@ def mail_delete(mid):
 def messages_read():
     messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
     resp = jsonify(messages=messages)
-    # [vuln] responds with mismatched content type
     resp.mimetype = 'text/html'
     return resp
 
@@ -138,7 +137,6 @@ def messages_read():
 @api.route('/messages', methods=['POST'])
 @login_required
 def message_create():
-    # [vuln] accepts mismatched content type
     jsonobj = request.get_json(force=True)
     message = jsonobj.get('message')
     if message:
@@ -184,7 +182,7 @@ def tool_execute(tid):
     error = False
     if is_valid_command(cmd):
         env = os.environ.copy()
-        env['PATH'] = os.pathsep.join(('/usr/bin', env["PATH"]))
+        env['PATH'] = os.pathsep.join(('/usr/bin', env['PATH']))
         p = subprocess.Popen([cmd, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=env)
         out, err = p.communicate()
         output = out + err

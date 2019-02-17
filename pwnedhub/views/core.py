@@ -188,14 +188,12 @@ def mail_compose():
 @login_required
 def mail_reply(mid=0):
     letter = Mail.query.get_or_404(mid)
-    # [vuln] doesn't vaidate that the user was the original receiver
     return render_template('mail_reply.html', letter=letter)
 
 @core.route('/mail/view/<int:mid>')
 @login_required
 def mail_view(mid):
     letter = Mail.query.get_or_404(mid)
-    # [vuln] doesn't vaidate that the user is the owner
     if letter.read == 0:
         letter.read = 1
         db.session.add(letter)
@@ -206,7 +204,6 @@ def mail_view(mid):
 @login_required
 def mail_delete(mid):
     letter = Mail.query.get_or_404(mid)
-    # [vuln] doesn't vaidate that the user is the owner
     db.session.delete(letter)
     db.session.commit()
     flash('Mail deleted.')

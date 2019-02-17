@@ -10,10 +10,10 @@ class ToolsInfo(spyne.Service):
 
     @spyne.rpc(Unicode, _returns=Iterable(AnyDict))
     def info(ctx, tid):
-        query = "SELECT * FROM tools WHERE id={}"
+        query = "SELECT * FROM tools WHERE id="+tid
         with ctx.udc['_spyne_ctx'].app.app_context():
             try:
-                tools = db.session.execute(query.format(tid))
+                tools = db.session.execute(query)
             except:
                 tools = ()
             for tool in tools:
