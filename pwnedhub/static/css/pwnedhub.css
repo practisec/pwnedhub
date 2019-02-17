@@ -625,9 +625,18 @@ nav ul li:hover ul {
   vertical-align: -0.4em;
 }
 
-.profile .avatar img {
+.profile .avatar a {
     display: block;
     max-width: 20rem;
+}
+
+.profile .avatar img {
+    display: block;
+    width: 100%;
+}
+
+.profile-view .avatar img {
+    max-width: 30rem;
     width: 100%;
 }
 

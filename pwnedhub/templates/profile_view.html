@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-width-6 flex-offset-3 flex-basis-6 profile center-content">
-    <img class="avatar circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" />
+<div class="flex-width-6 flex-offset-3 flex-basis-6 profile-view center-content">
+    <div class="avatar"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></div>
     <div><h3>{{ user.name }}</h3></div>
     <div><h6>Member since: {{ user.created_as_string[:-9] }}</h6></div>
     <div><blockquote>{{ user.signature }}</blockquote></div>
