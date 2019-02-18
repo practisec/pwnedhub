@@ -482,8 +482,7 @@ if any(word.lower() in password.lower() for word in blacklist):
 
 | Vulnerability | Flow control weakness allows for reset of arbitrary users' passwords. |
 | :-- | :-- |
-| Note | Once an attacker submits a valid username in the first step of the password reset flow, they can directly request the reset password endpoint to bypass the security question step. |
-| Location | `pwnedhub/views/auth.py`: `reset_password` controller doesn't enforce flow control. |
+| Location | `pwnedhub/views/auth.py`: Once an attacker submits a valid username in the first step of the password reset flow, they can directly request the reset password endpoint to bypass the security question step because the `reset_password` controller doesn't enforce flow control. |
 | Remediation | Incorporate better flow control to ensure that the next step is not available until the previous step is complete. |
 
 ```
@@ -504,10 +503,21 @@ session['recovery_state'] = <new state>
 ...
 ```
 
-| Vulnerability | Business logic weakness allow for manipulation of the bounty scoring system. |
+| Vulnerability | Manipulation of the bounty scoring system via bypassing data similarity checks. |
 | :-- | :-- |
-| Location | The nature of the bug bounty system allows for several opportunities to manipulate the scoring system and gain unearned reputation. First, a reviewer can resubmit a valid bug and have it accepted by another reviewer without them accepting it for the original submitter. Second, any user can create a dummy account and submit the same invalid bug repeatedly from their real account until it gets randomly assigned to the dummy account where it can be accepted for points. |
-| Remediation | Completely redesign the system to use internal reviewers. |
+| Location | The application uses a data similarity check to prevent reviewers from resubmitting assigned bugs in an effort to have them accepted by another reviewer without accepting the bug for the original submitter. However, the data similarity check uses a Jaccard similarity algorithm that can be bypassed by adding a bunch of random words to the submission to lower the similarity score. |
+| Remediation | Educate reviewers about the danger of anything out of place in a submission, such as groups of random words. Use a better algorithm to conduct similarity checks. |
+
+| Vulnerability | Manipulation of the bounty scoring system via bypassing data similarity checks. |
+| :-- | :-- |
+| Location | The application uses a data similarity check to prevent reviewers from resubmitting assigned bugs in an effort to have them accepted by another reviewer without accepting the bugs for the original submitters. However, the data similarity check only occurs when a bug is submitted, and not when it is edited. Therefore, a reviewer may still conduct this attack by submitting garbage to bypass the new submission data similarity check, then quickly modify the submission to be a copy of the valid bug before the new reviewer sees it. |
+| Remediation | Conduct data similarity checks for edited submissions in addition to new submissions. |
+
+| Vulnerability | Manipulation of the bounty scoring system via open registration. |
+| :-- | :-- |
+| Location | Any user can create dummy accounts, submit invalid bugs repeatedly from their real account, and accept any bugs that get randomly assigned to a dummy account for review. |
+| Remediation | Penalize rejections, validate new users as unique before allowing them to contribute to the bug bounty system, or replace the self-registration system with an invite only system. |
+| Note | Exploitation requires avoiding data similarity checks, but this should be trivial since the submissions are junk data. |
 
 ---
 
