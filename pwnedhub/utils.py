@@ -13,6 +13,12 @@ import os
 def get_token(n=40):
     return binascii.hexlify(os.urandom(n))
 
+def get_jaccard_sim(str1, str2):
+    a = set(str1.split())
+    b = set(str2.split())
+    c = a.intersection(b)
+    return float(len(c)) / (len(a) + len(b) - len(c))
+
 from lxml import etree
 import urllib2
 

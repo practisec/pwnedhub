@@ -336,32 +336,36 @@ def submissions_new():
         severity = request.form['severity']
         description = request.form['description']
         impact = request.form['impact']
-        reviewer = User.query.filter(
-            User.id.isnot(g.user.id),
-            User.status.is_(1),
-            User.role.is_(1)
-        ).order_by(func.random()).first()
-        submission = Bug(
-            title=title,
-            vuln_id=vuln_id,
-            severity=severity,
-            description=description,
-            impact=impact,
-            submitter=g.user,
-            reviewer=reviewer
-        )
-        # send message to reviewer
-        sender = User.query.get(1)
-        receiver = reviewer
-        subject = 'New Submission for Review'
-        bug_href = url_for('core.submissions_view', bid=submission.id, _external=True)
-        content = REVIEW_NOTIFICATION.format(bug_href, submission.id)
-        mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
-        db.session.add(submission)
-        db.session.add(mail)
-        db.session.commit()
-        flash('Submission created.')
-        return redirect(url_for('core.submissions_view', bid=submission.id))
+        signature = ' '.join((title, description, impact))
+        if Bug.is_unique(signature):
+            reviewer = User.query.filter(
+                User.id.isnot(g.user.id),
+                User.status.is_(1),
+                User.role.is_(1)
+            ).order_by(func.random()).first()
+            submission = Bug(
+                title=title,
+                vuln_id=vuln_id,
+                severity=severity,
+                description=description,
+                impact=impact,
+                submitter=g.user,
+                reviewer=reviewer
+            )
+            # send message to reviewer
+            sender = User.query.get(1)
+            receiver = reviewer
+            subject = 'New Submission for Review'
+            bug_href = url_for('core.submissions_view', bid=submission.id, _external=True)
+            content = REVIEW_NOTIFICATION.format(bug_href, submission.id)
+            mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
+            db.session.add(submission)
+            db.session.add(mail)
+            db.session.commit()
+            flash('Submission created.')
+            return redirect(url_for('core.submissions_view', bid=submission.id))
+        else:
+            flash('Similar submission already exists.')
     return render_template('submissions_new.html', vulnerabilities=VULNERABILITIES, severity=SEVERITY)
 
 @core.route('/submissions/edit/<int:bid>', methods=['GET', 'POST'])

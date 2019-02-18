@@ -1,7 +1,7 @@
 from flask import current_app, url_for
 from pwnedhub import db
 from constants import ROLES, QUESTIONS, USER_STATUSES, BUG_STATUSES, VULNERABILITIES, SEVERITY
-from utils import xor_encrypt, xor_decrypt
+from utils import xor_encrypt, xor_decrypt, get_jaccard_sim
 import datetime
 
 class BaseModel(db.Model):
@@ -100,6 +100,16 @@ class Bug(BaseModel):
     @property
     def bounty(self):
         return VULNERABILITIES[self.vuln_id][1] * self.severity
+
+    @staticmethod
+    def is_unique(signature):
+        for bug in Bug.query.all():
+            s = ' '.join((bug.title, bug.description, bug.impact))
+            js = get_jaccard_sim(signature, s)
+            print js
+            if js > 0.5:
+                return False
+        return False#True
 
     @property
     def is_validated(self):
