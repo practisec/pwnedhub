@@ -109,7 +109,7 @@ class Bug(BaseModel):
             print js
             if js > 0.5:
                 return False
-        return False#True
+        return True
 
     @property
     def is_validated(self):
