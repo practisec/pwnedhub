@@ -339,9 +339,9 @@ def submissions_new():
         signature = ' '.join((title, description, impact))
         if Bug.is_unique(signature):
             reviewer = User.query.filter(
-                User.id.isnot(g.user.id),
-                User.status.is_(1),
-                User.role.is_(1)
+                User.id != g.user.id,
+                User.status == 1,
+                User.role == 1,
             ).order_by(func.random()).first()
             submission = Bug(
                 title=title,
