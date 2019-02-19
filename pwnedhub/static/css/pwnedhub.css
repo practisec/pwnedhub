@@ -527,6 +527,7 @@ nav ul li:hover ul {
 .mail .content {
     margin-top: 2rem;
     margin-bottom: 1rem;
+    white-space: pre-wrap;
 }
 
 .messages {
