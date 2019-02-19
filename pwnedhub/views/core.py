@@ -338,6 +338,7 @@ def submissions_new():
         impact = request.form['impact']
         signature = ' '.join((title, description, impact))
         if Bug.is_unique(signature):
+            # only basic users can be reviewers
             reviewer = User.query.filter(
                 User.id != g.user.id,
                 User.status == 1,
@@ -433,11 +434,12 @@ def submissions_action(action, bid):
 @core.route('/bounty/scoreboard')
 @login_required
 def bounty_scoreboard():
-    users = User.query.all()
-    reputation_data = sorted(users, key=lambda user: user.reputation, reverse=True)[:5]
-    bug_data = sorted(users, key=lambda user: user.bugs.count(), reverse=True)[:5]
-    validation_data = sorted(users, key=lambda user: len(user.completed_validations), reverse=True)[:5]
-    return render_template('bounty_scoreboard.html', reputation_data=reputation_data, bug_data=bug_data, validation_data=validation_data)
+    # only basic users populate the scoreboard
+    users = User.query.filter(User.role == 1).all()
+    bug_data = sorted(users, key=lambda user: user.bugs.count(), reverse=True)
+    validation_data = sorted(users, key=lambda user: len(user.completed_validations), reverse=True)
+    omission_data = sorted(users, key=lambda user: len(user.open_validations), reverse=True)
+    return render_template('bounty_scoreboard.html', users=users, bug_data=bug_data, validation_data=validation_data, omission_data=omission_data)
 
 @core.route('/bounty/info')
 @login_required

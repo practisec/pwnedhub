@@ -1,47 +1,84 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-grow scoreboard flex-row flex-wrap">
-    <div class="flex-grow score-panel gutter-child flex-no-basis flex-column">
-        <div class="flex-column wrapper">
-            <div class="header center-content"><h5>Top 5 Reputation<h5></div>
-        {% for user in reputation_data %}
-            <div class="score flex-row flex-align-center flex-justify-space-between">
-                <div class="position"><b>{{ loop.index }}</b></div>
-                <div class="trophy position-{{ loop.index }}"><i class="fas fa-trophy" title="Trophy"></i></div>
-                <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
-                <div class="flex-grow"><b>{{ user.name }}</b></div>
-                <div><h5>{{ user.reputation }}</h5></div>
+<div class="flex-grow scoreboard flex-column">
+    <div class="flex-row flex-wrap">
+        <div class="flex-grow flex-basis-6 score-panel gutter-child">
+            <div class="flex-column wrapper">
+                <div class="header center-content"><h5>Top 5 Reputation<h5></div>
+            {% for user in (users|sort(attribute='reputation', reverse=True))[:5] %}
+                <div class="score flex-row flex-align-center flex-justify-space-between">
+                    <div class="position"><b>{{ loop.index }}</b></div>
+                    <div><i class="fas fa-trophy position-{{ loop.index }}" title="Trophy"></i></div>
+                    <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
+                    <div class="flex-grow"><b>{{ user.name }}</b></div>
+                    <div><h5>{{ user.reputation }}</h5></div>
+                </div>
+            {% endfor %}
             </div>
-        {% endfor %}
+        </div>
+        <div class="flex-grow flex-basis-6 score-panel gutter-child">
+            <div class="flex-column wrapper">
+                <div class="header center-content"><h5>Top 5 Submitters<h5></div>
+            {% for user in bug_data[:5] %}
+                <div class="score flex-row flex-align-center flex-justify-space-between">
+                    <div class="position"><b>{{ loop.index }}</b></div>
+                    <div><i class="fas fa-trophy position-{{ loop.index }}" title="Trophy"></i></div>
+                    <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
+                    <div class="flex-grow"><b>{{ user.name }}</b></div>
+                    <div><h5>{{ user.bugs.count() }}</h5></div>
+                </div>
+            {% endfor %}
+            </div>
         </div>
     </div>
-    <div class="flex-grow score-panel gutter-child flex-no-basis flex-column">
-        <div class="flex-column wrapper">
-            <div class="header center-content"><h5>Top 5 Submitters<h5></div>
-        {% for user in bug_data %}
-            <div class="score flex-row flex-align-center flex-justify-space-between">
-                <div class="position"><b>{{ loop.index }}</b></div>
-                <div class="trophy position-{{ loop.index }}"><i class="fas fa-trophy" title="Trophy"></i></div>
-                <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
-                <div class="flex-grow"><b>{{ user.name }}</b></div>
-                <div><h5>{{ user.bugs.count() }}</h5></div>
+    <div class="flex-row flex-wrap">
+        <div class="flex-grow flex-basis-6 score-panel gutter-child">
+            <div class="flex-column wrapper">
+                <div class="header center-content"><h5>Top 5 Validators<h5></div>
+            {% for user in validation_data[:5] %}
+                <div class="score flex-row flex-align-center flex-justify-space-between">
+                    <div class="position"><b>{{ loop.index }}</b></div>
+                    <div><i class="fas fa-trophy position-{{ loop.index }}" title="Trophy"></i></div>
+                    <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
+                    <div class="flex-grow"><b>{{ user.name }}</b></div>
+                    <div><h5>{{ user.completed_validations|length }}</h5></div>
+                </div>
+            {% endfor %}
             </div>
-        {% endfor %}
+        </div>
+        <div class="flex-grow flex-basis-6 score-panel gutter-child">
+            <div class="flex-column wrapper">
+                <div class="header center-content"><h5>Top 5 Omitters<h5></div>
+            {% for user in omission_data[:5] %}
+                <div class="score flex-row flex-align-center flex-justify-space-between">
+                    <div class="position"><b>{{ loop.index }}</b></div>
+                    <div><i class="fas fa-trophy position-{{ loop.index }}" title="Trophy"></i></div>
+                    <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
+                    <div class="flex-grow"><b>{{ user.name }}</b></div>
+                    <div><h5>{{ user.open_validations|length }}</h5></div>
+                </div>
+            {% endfor %}
+            </div>
         </div>
     </div>
-    <div class="flex-grow score-panel gutter-child flex-no-basis flex-column">
-        <div class="flex-column wrapper">
-            <div class="header center-content"><h5>Top 5 Validators<h5></div>
-        {% for user in validation_data %}
-            <div class="score flex-row flex-align-center flex-justify-space-between">
-                <div class="position"><b>{{ loop.index }}</b></div>
-                <div class="trophy position-{{ loop.index }}"><i class="fas fa-trophy" title="Trophy"></i></div>
-                <div class="avatar"><a href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
-                <div class="flex-grow"><b>{{ user.name }}</b></div>
-                <div><h5>{{ user.completed_validations|length }}</h5></div>
-            </div>
-        {% endfor %}
-        </div>
+    <div class="flex-row">
+        <table class="flex-grow">
+            <thead>
+                <tr><th>display name</th><th>reputation</th><th>submissions</th><th>validations</th><th>omissions</th></tr>
+            </thead>
+            <tbody>
+            {% for user in users|sort(attribute='reputation', reverse=True) %}
+                <tr style="cursor: pointer;" onclick="cleanRedirect(event, '{{ url_for('core.profile_view', uid=user.id) }}')">
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.reputation }}</td>
+                    <td>{{ user.bugs.count() }}</td>
+                    <td>{{ user.completed_validations|length }}</td>
+                    <td>{{ user.open_validations|length }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
     </div>
 </div>
 {% endblock %}

@@ -168,6 +168,10 @@ class User(BaseModel):
         return [v for v in self.validations if v.is_validated]
 
     @property
+    def open_validations(self):
+        return [v for v in self.validations if not v.is_validated]
+
+    @property
     def role_as_string(self):
         return ROLES[self.role]
 

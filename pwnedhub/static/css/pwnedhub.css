@@ -338,19 +338,19 @@ nav ul li:hover ul {
     height: 4rem;
 }
 
-.scoreboard .score-panel .score .trophy {
+.scoreboard .score-panel .score i {
     color: transparent;
 }
 
-.scoreboard .score-panel .score .position-1 {
+.scoreboard .score-panel .score i.position-1 {
     color: gold;
 }
 
-.scoreboard .score-panel .score .position-2 {
+.scoreboard .score-panel .score i.position-2 {
     color: silver;
 }
 
-.scoreboard .score-panel .score .position-3 {
+.scoreboard .score-panel .score i.position-3 {
     color: #8c7853; /* bronze */
 }
 
