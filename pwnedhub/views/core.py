@@ -391,7 +391,7 @@ def submissions_edit(bid):
         db.session.add(submission)
         db.session.add(mail)
         db.session.commit()
-        flash('Submission created.')
+        flash('Submission updated.')
         return redirect(url_for('core.submissions_view', bid=submission.id))
     return render_template('submissions_edit.html', submission=submission, vulnerabilities=VULNERABILITIES, severity=SEVERITY)
 

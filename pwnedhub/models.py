@@ -106,7 +106,6 @@ class Bug(BaseModel):
         for bug in Bug.query.all():
             s = ' '.join((bug.title, bug.description, bug.impact))
             js = get_jaccard_sim(signature, s)
-            print js
             if js > 0.5:
                 return False
         return True
