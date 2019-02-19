@@ -1,4 +1,0 @@
-Flask
-Flask-SQLAlchemy
-Flask-Spyne
-Markdown

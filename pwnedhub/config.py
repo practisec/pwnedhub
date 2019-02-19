@@ -19,19 +19,17 @@ class BaseConfig(object):
         'markdown.extensions.attr_list',
         'markdown.extensions.fenced_code',
     ]
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:adminpass@localhost/pwnedhub'
 
 class Development(BaseConfig):
 
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'pwnedhub.db')
 
 class Test(BaseConfig):
 
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
 
 class Production(BaseConfig):
 
     SECRET_KEY = 'M>\n\xb2\xa9B\xae\x8cL~\x0b\xc4\x19\r/GR6\xca\xd1^o\xa3$'
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:adminpass@localhost/pwnedhub'
