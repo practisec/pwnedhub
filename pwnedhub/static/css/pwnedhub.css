@@ -311,6 +311,10 @@ nav ul li:hover ul {
     text-align: justify;
 }
 
+.scoreboard table {
+    width: 100%;
+}
+
 .scoreboard .score-panel {
     margin-bottom: 1rem;
 }
