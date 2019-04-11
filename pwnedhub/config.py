@@ -19,7 +19,7 @@ class BaseConfig(object):
         'markdown.extensions.attr_list',
         'markdown.extensions.fenced_code',
     ]
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:adminpass@localhost/pwnedhub'
+    SQLALCHEMY_DATABASE_URI = 'mysql://pwnedhub:dbconnectpass@localhost/pwnedhub'
 
 class Development(BaseConfig):
 

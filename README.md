@@ -29,10 +29,21 @@ PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http:/
     $ mysql -u root -p pwnedhub < pwnedhub.sql
     ```
 
-6. Start the application.
+6. Add the application's database user.
+
+    ```
+    $ mysql -h localhost -u root -padminpass
+    > CREATE USER 'pwnedhub'@'localhost' IDENTIFIED BY 'dbconnectpass';
+    > GRANT ALL PRIVILEGES ON pwnedhub.* TO 'pwnedhub'@'localhost';
+    > FLUSH PRIVILEGES;
+    > SHOW GRANTS FOR 'pwnedhub'@'localhost';
+    > exit;
+    ```
+
+7. Start the application.
 
     ```
     $ sudo gunicorn --bind 0.0.0.0:80 pwnedhub.wsgi:app
     ```
 
-7. Visit the application.
+8. Visit the application.
