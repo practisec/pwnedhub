@@ -1,3 +1,16 @@
+## Contents
+
+* **[Session Management](#session-management)**
+* **[Information Disclosure](#information-disclosure)**
+* **[Injection](#injection)**
+* **[Authorization](#authorization)**
+* **[Data Storage](#data_storage)**
+* **[Authentication](#authentication)**
+* **[Logic Flaws](#logic_flaws)**
+* **[Miscellaneous](#miscellaneous)**
+
+---
+
 ## Session Management
 
 | Vulnerability | Session token cookie missing the `HttpOnly` flag. |
@@ -148,8 +161,21 @@ def serialize(self):
 
 | Vulnerability | Mass Assignment to set the role of the registered user. |
 | :-- | :-- |
-| Location | `pwnedhub/views/auth.py`: `register` controller builds `user_dict` from `request.form`. |
-| Remediation | Build the `user_dict` using explicitly named fields rather than trust all incoming parameters. |
+| Location | `pwnedhub/views/auth.py`: `register` controller binds the `User` object directly to the `request.form` dictionary. |
+| Remediation | Explicitly bind parameters to the model object rather than trust all incoming parameters. |
+
+```
+user = User()
+user = user.username=request.form['username']
+user = user.name=request.form['name']
+user = user.avatar=request.form['avatar']
+user = user.signature=request.form['signature']
+user = user.password=request.form['password']
+user = user.question=request.form['question']
+user = user.answer=request.form['answer']
+db.add(user)
+db.commit()
+```
 
 | Vulnerability | Reflected Cross-Site Scripting (XSS) |
 | :-- | :-- |
