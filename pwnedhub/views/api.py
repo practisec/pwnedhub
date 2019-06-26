@@ -36,7 +36,7 @@ def users_read():
 @login_required
 def artifact_create():
     xml = request.data
-    parser = etree.XMLParser()
+    parser = etree.XMLParser(no_network=False)
     doc = etree.fromstring(str(xml), parser)
     content = doc.find('content').text
     filename = doc.find('filename').text
