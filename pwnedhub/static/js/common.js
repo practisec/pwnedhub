@@ -8,7 +8,7 @@ String.prototype.format = function() {
 }
 
 function show_flash(msg) {
-    flash = document.getElementById("flash");
+    var flash = document.getElementById("flash");
     flash.innerHTML = msg;
     flash.style.visibility = "visible";
     setTimeout(function() { flash.style.visibility = "hidden"; }, 5000);
@@ -40,7 +40,7 @@ function confirmSubmit(event, form) {
 
 window.addEventListener("load", function() {
     // flash on load if needed
-    flash = document.getElementById("flash");
+    var flash = document.getElementById("flash");
     var msg = flash.innerHTML
     var error = document.URL.indexOf("error=");
     if (error !== -1) {
