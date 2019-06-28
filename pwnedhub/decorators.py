@@ -1,5 +1,5 @@
 from flask import g, request, redirect, url_for, abort, make_response, flash
-from constants import ROLES
+from common.constants import ROLES
 from functools import wraps
 from threading import Thread
 from urlparse import urlparse

@@ -1,11 +1,11 @@
 from flask import Blueprint, Response, request, session, g, abort, jsonify
 from sqlalchemy import desc
 from pwnedhub import db
-from pwnedhub.models import Mail, Message, Tool, User
-from pwnedhub.constants import ADMIN_RESPONSE
+from common.models import Mail, Message, Tool, User
+from common.constants import ADMIN_RESPONSE
 from pwnedhub.decorators import login_required
-from pwnedhub.utils import unfurl_url
-from pwnedhub.validators import is_valid_command
+from common.utils import unfurl_url
+from common.validators import is_valid_command
 from datetime import datetime
 from lxml import etree
 import os

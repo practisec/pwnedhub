@@ -1,6 +1,6 @@
 from flask import g
 from pwnedhub import create_app, db
-from pwnedhub.models import User, Message
+from common.models import User, Message
 import unittest
 
 class PwnedHubTestCase(unittest.TestCase):

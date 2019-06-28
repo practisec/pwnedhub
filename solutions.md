@@ -245,7 +245,7 @@ def escapejs(value):
     """hex encode characters for use in JavaScript strings."""
     return unicode(value).translate(_js_escapes)
 
-from utils import escapejs
+from common.utils import escapejs
 app.jinja_env.filters['escapejs'] = escapejs
 ```
 

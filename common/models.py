@@ -1,7 +1,7 @@
 from flask import current_app, url_for
 from pwnedhub import db
-from constants import ROLES, QUESTIONS, USER_STATUSES, BUG_STATUSES, VULNERABILITIES, SEVERITY
-from utils import xor_encrypt, xor_decrypt, get_jaccard_sim
+from common.constants import ROLES, QUESTIONS, USER_STATUSES, BUG_STATUSES, VULNERABILITIES, SEVERITY
+from common.utils import xor_encrypt, xor_decrypt, get_jaccard_sim
 import datetime
 
 class BaseModel(db.Model):
