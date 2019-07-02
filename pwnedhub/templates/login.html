@@ -11,6 +11,10 @@
         </div>
         <p><a href="{{ url_for('auth.reset_init') }}">Forget your password?</a></p>
         <input type="submit" value="Login" />
+        <hr>
+        <div class="center-content">
+            <a href="{{ url_for('auth.oauth_login', provider='google') }}"><img style="max-width: 100%;" src="{{ url_for('static', filename='images/google_signin.png') }}" /></a>
+        </div>
     </form>
 </div>
 <style>

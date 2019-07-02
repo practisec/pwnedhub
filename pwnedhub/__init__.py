@@ -2,10 +2,10 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_spyne import Spyne
 from flask_session import Session
+from common import db
 from datetime import datetime
 from urllib import unquote
 
-db = SQLAlchemy()
 spyne = Spyne()
 sess = Session()
 

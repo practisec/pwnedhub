@@ -1,4 +1,5 @@
 import os
+import requests
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -21,6 +22,13 @@ class BaseConfig(object):
     ]
     SQLALCHEMY_DATABASE_URI = 'mysql://pwnedhub:dbconnectpass@localhost/pwnedhub'
     API_BASE_URL = 'http://api.pwnedhub.com:5001'
+    OAUTH = {
+        'google': {
+            'CLIENT_ID': '1098478339188-pvi39gpsvclmmucvu16vhrh0179sd100.apps.googleusercontent.com',
+            'CLIENT_SECRET': '5LFAbNk7rLa00PZOHceQfudp',
+            'DISCOVERY_DOC': requests.get('https://accounts.google.com/.well-known/openid-configuration').json(),
+        },
+    }
 
 class Development(BaseConfig):
 

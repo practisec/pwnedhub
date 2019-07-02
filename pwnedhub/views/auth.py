@@ -1,12 +1,14 @@
 from flask import Blueprint, current_app, request, session, redirect, url_for, render_template, flash
 from pwnedhub import db
+from pwnedhub.decorators import login_required, validate
+from pwnedhub.oauth import OAuthSignIn, OAuthCallbackError
 from common.models import Mail, User
 from common.constants import QUESTIONS
-from pwnedhub.decorators import login_required, validate
 from common.utils import xor_encrypt
 from common.validators import is_valid_password
 from hashlib import md5
 import os
+import requests
 
 auth = Blueprint('auth', __name__)
 
@@ -66,6 +68,40 @@ def logout():
     session.pop('user_id', None)
     session.clear()
     return redirect(url_for('core.index'))
+
+@auth.route('/oauth/login/<string:provider>')
+def oauth_login(provider):
+    # redirect to home if logged in
+    if session.get('user_id'):
+        return redirect(url_for('core.home'))
+    # validate the provider
+    if provider not in current_app.config['OAUTH']:
+        return redirect(url_for('auth.login'))
+    # build an authorization url
+    oauth = OAuthSignIn(provider)
+    url = oauth.authorize()
+    return redirect(url)
+
+@auth.route('/oauth/callback/<string:provider>')
+def oauth_callback(provider):
+    # validate the provider
+    if provider not in current_app.config['OAUTH']:
+        return redirect(url_for('auth.login'))
+    oauth = OAuthSignIn(provider)
+    try:
+        resp = oauth.callback(request)
+    except OAuthCallbackError as e:
+        flash(e.__str__(), category='error')
+    else:
+        # process user information
+        user = User.get_by_username(resp['email'])
+        if user:
+            # log in the user
+            session['user_id'] = user.id
+            return redirect(request.args.get('next') or url_for('core.home'))
+        else:
+            flash('User not found.', category='error')
+    return redirect(url_for('auth.login'))
 
 # password recovery flow controllers
 

@@ -6,6 +6,7 @@ gunicorn
 # website
 Flask-Spyne
 Markdown
+requests
 # api
 flask-restful
 flask-cors

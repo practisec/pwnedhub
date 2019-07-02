@@ -2,9 +2,9 @@ from flask import Blueprint, current_app, request, session, g, redirect, url_for
 from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from pwnedhub import db
+from pwnedhub.decorators import login_required, roles_required, validate
 from common.models import Mail, Message, Tool, Bug, User, Score
 from common.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES, REVIEW_NOTIFICATION, UPDATE_NOTIFICATION, BUG_NOTIFICATIONS
-from pwnedhub.decorators import login_required, roles_required, validate
 from common.validators import is_valid_password, is_valid_filename, is_valid_mimetype
 from datetime import datetime
 from urllib import urlencode
