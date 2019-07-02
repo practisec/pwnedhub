@@ -37,9 +37,16 @@ const app = new Vue({
     router,
     methods: {
         getUserInfo: function() {
-            fetch(this.URL_API_USER_READ.format("me"))
+            session = ('; ' + document.cookie).split("; " + "session" + "=").pop().split(';').shift()
+            fetch(this.URL_API_BASE+"/access-token", {
+                credentials: "include",
+                method: "POST",
+                body: JSON.stringify({session: session}),
+                headers:{"Content-Type": "application/json"}
+            })
             .then(response => response.json())
             .then(json => {
+                //[vuln] not really a vuln, but can change "user" to "admin" to see other functionality in the interface
                 window.sessionStorage.setItem("userInfo", JSON.stringify(json));
             });
         },

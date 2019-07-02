@@ -34,9 +34,12 @@ notes.addEventListener("blur", function() {
     localStorage.setItem(key, this.value);
     // sync the notes
     $.ajax({
-        url: "{{ url_for('api.note_update') }}",
-        type: "PUT",
+        url: "{{ config.API_BASE_URL }}/users/{{ g.user.id }}",
+        type: "PATCH",
         async: false,
+        xhrFields: {
+            withCredentials: true
+        },
         data: JSON.stringify({notes: this.value}),
         contentType: "application/json",
         success: function(data){
@@ -62,8 +65,11 @@ function save_artifact(event) {
     var content = notes.innerHTML;
     if (confirm("Save as an artifact?") == true) {
         $.ajax({
-            url: "{{ url_for('api.artifact_create') }}",
+            url: "{{ config.API_BASE_URL }}/artifacts",
             type: "POST",
+            xhrFields: {
+                withCredentials: true
+            },
             data: "<xml><filename>"+filename+"</filename><content>"+content+"</content></xml>",
             contentType: 'application/xml',
             success: function(data){

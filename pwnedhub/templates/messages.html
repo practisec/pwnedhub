@@ -63,7 +63,7 @@ for (var i = 0; i < messages.length; i++) {
             // closure required to localize parameters
             (function(i, url) {
                 $.ajax({
-                    url: "{{ url_for('api.unfurl') }}",
+                    url: "{{ config.API_BASE_URL }}/unfurl",
                     type: "POST",
                     data: JSON.stringify({url: url}),
                     contentType: "application/json",

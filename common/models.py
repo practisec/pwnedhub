@@ -1,5 +1,5 @@
 from flask import current_app, url_for
-from pwnedhub import db
+from common import db
 from common.constants import ROLES, QUESTIONS, USER_STATUSES, BUG_STATUSES, VULNERABILITIES, SEVERITY
 from common.utils import xor_encrypt, xor_decrypt, get_jaccard_sim
 import datetime
@@ -238,6 +238,7 @@ class User(BaseModel):
             'created': self.created_as_string,
             'username': self.username,
             'name': self.name,
+            'notes': self.notes,
             'role': self.role_as_string,
         }
 

@@ -15,7 +15,9 @@ var Messages = Vue.component("messages", {
             this.messages = messages;
         },
         getMessages: function() {
-            fetch(this.URL_API_MESSAGES_READ)
+            fetch(this.URL_API_BASE+"/messages", {
+                credentials: "include",
+            })
             .then(response => response.json())
             .then(json => {
                 this.updateMessages(json.messages);
@@ -49,7 +51,8 @@ Vue.component("create-message", {
     },
     methods: {
         createMessage: function() {
-            fetch(this.URL_API_MESSAGE_CREATE, {
+            fetch(this.URL_API_BASE+"/messages", {
+                credentials: "include",
                 method: "POST",
                 body: JSON.stringify(this.messageForm),
                 headers:{"Content-Type": "application/json"}
@@ -121,7 +124,8 @@ Vue.component("show-messages", {
             return (this.isAuthor(message) || user.role === "admin") ? true : false;
         },
         deleteMessage: function(message) {
-            fetch(this.URL_API_MESSAGE_DELETE.format(message.id), {
+            fetch(this.URL_API_BASE+"/messages/"+message.id, {
+                credentials: "include",
                 method: "DELETE",
             })
             .then(response => response.json())
@@ -173,7 +177,7 @@ Vue.component("scroll", {
         doUnfurl: function(message) {
             var urls = this.parseUrls(message);
             urls.forEach(function(value, key) {
-                fetch(this.URL_API_UNFURL, {
+                fetch(this.URL_API_BASE+"/unfurl", {
                     method: "POST",
                     body: JSON.stringify({url: value}),
                     headers:{"Content-Type": "application/json"}

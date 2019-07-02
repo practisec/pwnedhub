@@ -1,6 +1,12 @@
+# common
 Flask
 Flask-SQLAlchemy
-Flask-Spyne
 Flask-MySQLdb
 gunicorn
+# website
+Flask-Spyne
 Markdown
+# api
+flask-restful
+flask-cors
+pyjwt
