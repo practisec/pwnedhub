@@ -16,14 +16,14 @@
                 <td>{{ user.status_as_string }}</td>
                 <td>
                 {% if user.is_admin %}
-                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='demote', uid=user.id) }}')"><i class="fas fa-user-minus" title="Demote"></i></a>
+                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='demote', uid=user.id) }}');"><i class="fas fa-user-minus" title="Demote"></i></a>
                 {% else %}
-                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='promote', uid=user.id) }}')"><i class="fas fa-user-plus" title="Promote"></i></a>
+                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='promote', uid=user.id) }}');"><i class="fas fa-user-plus" title="Promote"></i></a>
                 {% endif %}
                 {% if user.is_enabled %}
-                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='disable', uid=user.id) }}')"><i class="fas fa-user-slash" title="Disable"></i></a>
+                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='disable', uid=user.id) }}');"><i class="fas fa-user-slash" title="Disable"></i></a>
                 {% else %}
-                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='enable', uid=user.id) }}')"><i class="fas fa-user" title="Enable"></i></a>
+                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='enable', uid=user.id) }}');"><i class="fas fa-user" title="Enable"></i></a>
                 {% endif %}
                 </td>
             </tr>

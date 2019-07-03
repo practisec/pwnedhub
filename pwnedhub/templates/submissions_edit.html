@@ -22,7 +22,7 @@
         <label for="impact">Impact: *</label>
         <textarea name="impact" placeholder="Impact of the vulnerablity on the affected application, its owner, and its users.">{{ submission.impact }}</textarea>
         <div class="right-content">
-            <input type="submit" value="Save" onclick="this.form.submit();" />
+            <input type="submit" value="Save" onclick="cleanSubmit(event, this.form);" />
         </div>
     </form>
 </div>

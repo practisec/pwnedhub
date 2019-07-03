@@ -3,14 +3,14 @@
 <div class="flex-grow">
     <form class="flex-width-10 flex-offset-1 flex-row flex-align-center" action="{{ url_for('core.messages_create') }}" method="post">
         <input class="flex-grow gutter-right" name="message" type="text" placeholder="Message here..." />
-        <input type="submit" value="Submit" onclick="this.form.submit();" />
+        <input type="submit" value="Submit" onclick="cleanSubmit(event, this.form);" />
     </form>
     <div class="messages flex-column">
     {% if messages|length > 0 %}
     {% for message in messages %}
         <div class="message flex-row">
         {% if message.user == g.user or g.user.is_admin %}
-            <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.messages_delete', mid=message.id) }}')"><i class="fas fa-trash" title="Delete"></i></a>
+            <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.messages_delete', mid=message.id) }}');"><i class="fas fa-trash" title="Delete"></i></a>
         {% endif %}
             <div class="avatar"><a href="{{ url_for('core.profile_view', uid=message.user.id) }}"><img class="circular bordered-dark" src="{{ message.user.avatar_or_default|safe }}" title="Avatar" /></a></div>
             <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>

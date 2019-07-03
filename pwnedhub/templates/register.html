@@ -20,7 +20,7 @@
         </select>
         <label for="answer">Answer: *</label>
         <input name="answer" type="text" />
-        <input type="submit" value="Register" onclick="this.form.submit();" />
+        <input type="submit" value="Register" onclick="cleanSubmit(event, this.form);" />
     </form>
 </div>
 {% endblock %}

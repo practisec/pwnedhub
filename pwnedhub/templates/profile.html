@@ -20,7 +20,7 @@
         </select>
         <label for="answer">Answer: *</label>
         <input name="answer" type="text" value="{{ user.answer }}" />
-        <input type="submit" value="Submit" onclick="this.form.submit();" />
+        <input type="submit" value="Submit" onclick="cleanSubmit(event, this.form);" />
     </form>
 </div>
 {% endblock %}

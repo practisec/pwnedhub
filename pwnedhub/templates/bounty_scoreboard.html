@@ -68,7 +68,7 @@
             </thead>
             <tbody>
             {% for user in users|sort(attribute='reputation', reverse=True) %}
-                <tr style="cursor: pointer;" onclick="cleanRedirect(event, '{{ url_for('core.profile_view', uid=user.id) }}')">
+                <tr style="cursor: pointer;" onclick="cleanRedirect(event, '{{ url_for('core.profile_view', uid=user.id) }}');">
                     <td>{{ user.name }}</td>
                     <td>{{ user.reputation }}</td>
                     <td>{{ user.bugs.count() }}</td>

@@ -4,7 +4,7 @@
     <form class="flex-column" action="{{ url_for('auth.reset_question') }}" method="post">
         <label for="answer">{{ question }}</label>
         <input name="answer" type="text" value="" />
-        <input type="submit" value="Submit" onclick="this.form.submit();" />
+        <input type="submit" value="Submit" onclick="cleanSubmit(event, this.form);" />
     </form>
 </div>
 {% endblock %}

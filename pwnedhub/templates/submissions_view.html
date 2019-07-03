@@ -45,13 +45,13 @@
     </table>
     {% if not submission.is_validated and submission.submitter == g.user %}
     <div class="right-content">
-        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.submissions_edit', bid=submission.id) }}')"><i class="fas fa-edit" title="Edit"></i></a>
+        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.submissions_edit', bid=submission.id) }}');"><i class="fas fa-edit" title="Edit"></i></a>
     </div>
     {% endif %}
     {% if not submission.is_validated and submission.reviewer == g.user %}
     <div class="right-content">
-        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='confirm', bid=submission.id) }}')"><i class="fas fa-check-circle green" title="Confirm"></i></a>
-        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='reject', bid=submission.id) }}')"><i class="fas fa-times-circle red" title="Reject"></i></a>
+        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='confirm', bid=submission.id) }}');"><i class="fas fa-check-circle green" title="Confirm"></i></a>
+        <a class="img-btn" onclick="confirmRedirect(event, '{{ url_for('core.submissions_action', action='reject', bid=submission.id) }}');"><i class="fas fa-times-circle red" title="Reject"></i></a>
     </div>
     {% endif %}
     <div class="tabs">
