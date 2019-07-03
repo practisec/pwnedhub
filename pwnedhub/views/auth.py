@@ -45,6 +45,14 @@ def register():
             flash('Username already exists.')
     return render_template('register.html', questions=QUESTIONS)
 
+def _init_session(user_id):
+    session['user_id'] = user_id
+    path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user_id)).hexdigest())
+    if not os.path.exists(path):
+        os.makedirs(path)
+    session['upload_folder'] = path
+    session.rotate()
+
 @auth.route('/login', methods=['GET', 'POST'])
 @validate(['username', 'password'])
 def login():
@@ -57,12 +65,7 @@ def login():
         query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
         user = db.session.execute(query).first()
         if user and user['status'] == 1:
-            session['user_id'] = user.id
-            path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user.id)).hexdigest())
-            if not os.path.exists(path):
-                os.makedirs(path)
-            session['upload_folder'] = path
-            session.rotate()
+            _init_session(user['id'])
             return redirect(request.args.get('next') or url_for('core.home'))
         return redirect(url_for('auth.login', error='Invalid username or password.'))
     return render_template('login.html')
@@ -98,13 +101,11 @@ def oauth_callback(provider):
         flash(e.__str__(), category='error')
     else:
         # process user information
-        user = User.get_by_username(resp['email'])
-        if user:
-            # log in the user
-            session['user_id'] = user.id
+        user = User.get_by_email(resp['email'])
+        if user and user.status == 1:
+            _init_session(user.id)
             return redirect(request.args.get('next') or url_for('core.home'))
-        else:
-            flash('User not found.', category='error')
+        flash('User not found.', category='error')
     return redirect(url_for('auth.login'))
 
 # password recovery flow controllers
