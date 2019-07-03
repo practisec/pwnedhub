@@ -1,16 +1,19 @@
-from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, flash, send_file, abort, __version__
+from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, flash, jsonify, Response, send_file, abort, __version__
 from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from pwnedhub import db
 from pwnedhub.decorators import login_required, roles_required, validate
 from common.models import Mail, Message, Tool, Bug, User, Score
 from common.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES, REVIEW_NOTIFICATION, UPDATE_NOTIFICATION, BUG_NOTIFICATIONS
-from common.validators import is_valid_password, is_valid_filename, is_valid_mimetype
+from common.utils import unfurl_url
+from common.validators import is_valid_password, is_valid_command, is_valid_filename, is_valid_mimetype
 from datetime import datetime
+from lxml import etree
 from urllib import urlencode
 import math
 import os
 import re
+import subprocess
 
 core = Blueprint('core', __name__)
 
@@ -244,11 +247,35 @@ def messages_delete(mid):
         abort(403)
     return redirect(url_for('core.messages'))
 
+@core.route('/messages/unfurl', methods=['POST'])
+def unfurl():
+    url = request.json.get('url')
+    headers = {'User-Agent': request.headers.get('User-Agent')}
+    if url:
+        try:
+            data = unfurl_url(url, headers)
+            status = 200
+        except Exception as e:
+            data = {'error': 'UnfurlError', 'message': str(e)}
+            status = 500
+    else:
+        data = {'error': 'RequestError', 'message': 'Invalid request.'}
+        status = 400
+    return jsonify(**data), status
+
 @core.route('/notes')
 @login_required
 def notes():
     notes = g.user.notes or DEFAULT_NOTE
     return render_template('notes.html', notes=notes)
+
+@core.route('/notes', methods=['PUT'])
+@login_required
+def notes_update():
+    g.user.notes = request.json.get('notes')
+    db.session.add(g.user)
+    db.session.commit()
+    return jsonify(notes=g.user.notes)
 
 @core.route('/artifacts')
 @login_required
@@ -284,6 +311,31 @@ def artifacts_save():
         flash('Invalid file extension. Only {} extensions allowed.'.format(', '.join(current_app.config['ALLOWED_EXTENSIONS'])))
     return redirect(url_for('core.artifacts'))
 
+@core.route('/artifacts/create', methods=['POST'])
+@login_required
+def artifacts_create():
+    xml = request.data
+    parser = etree.XMLParser(no_network=False)
+    doc = etree.fromstring(str(xml), parser)
+    content = doc.find('content').text
+    filename = doc.find('filename').text
+    if all((content, filename)):
+        filename += '-{}.txt'.format(datetime.now().strftime('%s'))
+        msg = 'Artifact created \'{}\'.'.format(filename)
+        path = os.path.join(session.get('upload_folder'), filename)
+        if not os.path.isfile(path):
+            try:
+                with open(path, 'w') as fp:
+                    fp.write(content)
+            except IOError:
+                msg = 'Unable to save as an artifact.'
+        else:
+            msg = 'An artifact with that name already exists.'
+    else:
+        msg = 'Invalid request.'
+    xml = '<xml><message>{}</message></xml>'.format(msg)
+    return Response(xml, mimetype='application/xml')
+
 @core.route('/artifacts/delete', methods=['POST'])
 @login_required
 @validate(['filename'])
@@ -312,6 +364,35 @@ def artifacts_view():
 def tools():
     tools = Tool.query.all()
     return render_template('tools.html', tools=tools)
+
+@core.route('/tools/info/<string:tid>', methods=['GET'])
+@login_required
+def tools_info(tid):
+    query = 'SELECT * FROM tools WHERE id='+tid
+    try:
+        tool = db.session.execute(query).first() or {}
+    except:
+        tool = {}
+    return jsonify(**dict(tool))
+
+@core.route('/tools/execute/<string:tid>', methods=['POST'])
+@login_required
+def tools_execute(tid):
+    tool = Tool.query.get_or_404(tid)
+    path = tool.path
+    args = request.json.get('args')
+    cmd = '{} {}'.format(path, args)
+    error = False
+    if is_valid_command(cmd):
+        env = os.environ.copy()
+        env['PATH'] = os.pathsep.join(('/usr/bin', env['PATH']))
+        p = subprocess.Popen([cmd, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=env)
+        out, err = p.communicate()
+        output = out + err
+    else:
+        output = 'Command contains invalid characters.'
+        error = True
+    return jsonify(cmd=cmd, output=output, error=error)
 
 @core.route('/submissions')
 @core.route('/submissions/page/<int:page>')

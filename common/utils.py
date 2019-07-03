@@ -20,14 +20,13 @@ def get_jaccard_sim(str1, str2):
     return float(len(c)) / (len(a) + len(b) - len(c))
 
 from lxml import etree
-import urllib2
+import requests
 
 def unfurl_url(url, headers={}):
     # request resource
-    request = urllib2.Request(url, headers=headers)
-    content = urllib2.urlopen(request).read()
+    resp = requests.get(url, headers=headers)
     # parse meta tags
-    html = etree.HTML(content)
+    html = etree.HTML(resp.content)
     data = {'url': url}
     for kw in ('site_name', 'title', 'description'):
         # standard

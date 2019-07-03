@@ -21,10 +21,7 @@ function info(e) {
     var tid = e.options[e.selectedIndex].value;
     // get the description
     $.ajax({
-        url: "{{ config.API_BASE_URL }}/tools/"+tid,
-        xhrFields: {
-            withCredentials: true
-        },
+        url: "{{ url_for('core.tools_info', tid='{0}') | urldecode }}".format(tid),
         success: function(data){
             // update the textarea with the description
             document.getElementById("output").innerHTML = data.description;
@@ -39,12 +36,9 @@ function execute() {
     var args = document.getElementById("args").value;
     // execute the command
     $.ajax({
-        url: "{{ config.API_BASE_URL }}/execute",
+        url: "{{ url_for('core.tools_execute', tid='{0}') | urldecode }}".format(tid),
         type: "POST",
-        xhrFields: {
-            withCredentials: true
-        },
-        data: JSON.stringify({tid: tid, args: args}),
+        data: JSON.stringify({args: args}),
         contentType: "application/json",
         success: function(data){
             spinner.style.visibility = "hidden";
@@ -64,11 +58,8 @@ function save_artifact() {
     var content = document.getElementById("output").innerHTML;
     if (confirm("Save as an artifact?") == true) {
         $.ajax({
-            url: "{{ config.API_BASE_URL }}/artifacts",
+            url: "{{ url_for('core.artifacts_create') }}",
             type: "POST",
-            xhrFields: {
-                withCredentials: true
-            },
             data: "<xml><filename>"+filename+"</filename><content>"+content+"</content></xml>",
             contentType: 'application/xml',
             success: function(data){
