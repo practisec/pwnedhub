@@ -15,28 +15,32 @@ auth = Blueprint('auth', __name__)
 # authenticaton controllers
 
 @auth.route('/register', methods=['GET', 'POST'])
-@validate(['username', 'name', 'password', 'question', 'answer'])
+@validate(['username', 'email', 'name', 'password', 'question', 'answer'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
         if not User.query.filter_by(username=username).first():
-            password = request.form['password']
-            if is_valid_password(password):
-                user = User(**request.form.to_dict())
-                db.session.add(user)
-                db.session.commit()
-                # create default welcome message
-                sender = User.query.get(1)
-                receiver = user
-                subject = 'Welcome to PwnedHub!'
-                content = "We're glad you've chosen PwnedHub to help you take your next step in becoming a more efficient security consultant. We're here to help. If you have any questions or concerns, please don't hesitate to reach out to this account for assistance. Together, we can make security testing great again!"
-                mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
-                db.session.add(mail)
-                db.session.commit()
-                flash('Account created. Please log in.')
-                return redirect(url_for('auth.login'))
+            email = request.form['email']
+            if not User.query.filter_by(email=email).first():
+                password = request.form['password']
+                if is_valid_password(password):
+                    user = User(**request.form.to_dict())
+                    db.session.add(user)
+                    db.session.commit()
+                    # create default welcome message
+                    sender = User.query.get(1)
+                    receiver = user
+                    subject = 'Welcome to PwnedHub!'
+                    content = "We're glad you've chosen PwnedHub to help you take your next step in becoming a more efficient security consultant. We're here to help. If you have any questions or concerns, please don't hesitate to reach out to this account for assistance. Together, we can make security testing great again!"
+                    mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
+                    db.session.add(mail)
+                    db.session.commit()
+                    flash('Account created. Please log in.')
+                    return redirect(url_for('auth.login'))
+                else:
+                    flash('Password does not meet complexity requirements.')
             else:
-                flash('Password does not meet complexity requirements.')
+                flash('Email already exists.')
         else:
             flash('Username already exists.')
     return render_template('register.html', questions=QUESTIONS)

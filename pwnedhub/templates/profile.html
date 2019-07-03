@@ -2,8 +2,11 @@
 {% block body %}
 <div class="flex-width-4 flex-offset-4 flex-basis-4 profile">
     <div class="avatar"><a class="center" href="{{ url_for('core.profile_view', uid=user.id) }}"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></a></div>
-    <div class="center-content"><h3>{{ user.username }}</h3></div>
     <form class="flex-column" action="{{ url_for('core.profile_change') }}" method="post">
+        <label for="username">Username:</label>
+        <input name="username" type="text" value="{{ user.username }}" disabled />
+        <label for="email">Email:</label>
+        <input name="email" type="text" value="{{ user.email }}" disabled />
         <label for="avatar">Avatar URL:</label>
         <input name="avatar" type="text" value="{{ user.avatar or '' }}" />
         <label for="signature">Signature:</label>

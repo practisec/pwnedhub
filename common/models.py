@@ -131,6 +131,7 @@ class Bug(BaseModel):
 class User(BaseModel):
     __tablename__ = 'users'
     username = db.Column(db.String(255), nullable=False, unique=True)
+    email = db.Column(db.String(255), nullable=False, unique=True)
     name = db.Column(db.String(255), nullable=False)
     avatar = db.Column(db.Text)
     signature = db.Column(db.Text)
@@ -227,6 +228,10 @@ class User(BaseModel):
     def get_by_username(username):
         return User.query.filter_by(username=username).first()
 
+    @staticmethod
+    def get_by_email(email):
+        return User.query.filter_by(email=email).first()
+
     def serialize(self, public=False):
         if public:
             return {
@@ -237,6 +242,7 @@ class User(BaseModel):
             'id': self.id,
             'created': self.created_as_string,
             'username': self.username,
+            'email': self.email,
             'name': self.name,
             'notes': self.notes,
             'role': self.role_as_string,
