@@ -13,7 +13,10 @@
         <label for="signature">Signature:</label>
         <textarea name="signature"></textarea>
         <label for="password">Password: *</label>
-        <input name="password" type="password" />
+        <div class="flex-column" style="position: relative;">
+            <input id="password" name="password" type="password" />
+            <input type="button" class="show" onclick="toggle_show();" value="show" />
+        </div>
         <label for="question">Question: *</label>
         <select name="question">
         {% for question in questions %}
@@ -25,4 +28,23 @@
         <input type="submit" value="Register" onclick="cleanSubmit(event, this.form);" />
     </form>
 </div>
+<style>
+input.show {
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 0;
+}
+</style>
+<script>
+function toggle_show() {
+    var el = document.getElementById("password");
+    if (el.type =="password") {
+        el.type = "text";
+    } else {
+        el.type = "password";
+    }
+}
+</script>
 {% endblock %}
