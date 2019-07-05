@@ -14,7 +14,7 @@ def create_app(config='Development'):
     db.init_app(app)
     cors.init_app(app)
 
-    from views.api import endpoints
-    app.register_blueprint(endpoints)
+    from views.api import resources
+    app.register_blueprint(resources)
 
     return app

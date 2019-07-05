@@ -18,9 +18,9 @@ try:
 except ImportError:
     import pickle
 
-endpoints = Blueprint('endpoints', __name__)
+resources = Blueprint('resources', __name__)
 api = Api()
-api.init_app(endpoints)
+api.init_app(resources)
 
 # UTILITY FUNCTIONS
 
@@ -40,7 +40,7 @@ def encode_jwt(user_id, claims={}):
 
 # PRE-REQUEST FUNCTIONS
 
-@endpoints.before_app_request
+@resources.before_app_request
 def parse_jwt():
     request.jwt = {}
     token = request.cookies.get('access_token')
@@ -50,7 +50,7 @@ def parse_jwt():
         return
     request.jwt = payload
 
-@endpoints.before_app_request
+@resources.before_app_request
 def load_user():
     g.user = None
     uid = request.jwt.get('sub')
