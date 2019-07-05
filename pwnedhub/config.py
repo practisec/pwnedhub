@@ -21,7 +21,7 @@ class BaseConfig(object):
         'markdown.extensions.fenced_code',
     ]
     SQLALCHEMY_DATABASE_URI = 'mysql://pwnedhub:dbconnectpass@localhost/pwnedhub'
-    API_BASE_URL = 'http://api.pwnedhub.com:5001'
+    API_BASE_URL = '/api'
     OAUTH = {
         'google': {
             'CLIENT_ID': '1098478339188-pvi39gpsvclmmucvu16vhrh0179sd100.apps.googleusercontent.com',
@@ -42,4 +42,4 @@ class Test(BaseConfig):
 class Production(BaseConfig):
 
     SECRET_KEY = 'M>\n\xb2\xa9B\xae\x8cL~\x0b\xc4\x19\r/GR6\xca\xd1^o\xa3$'
-    API_BASE_URL = 'http://api.pwnedhub.com'
+    API_BASE_URL = '/api'

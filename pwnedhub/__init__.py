@@ -38,16 +38,19 @@ def create_app(config='Development'):
         from markdown import markdown
         return Markup(markdown(data or '', extensions=app.config['MARKDOWN_EXTENSIONS']))
 
-    from views.core import core
-    from views.auth import auth
-    from views.spa import spa
-    from views.errors import errors
+    from pwnedapi.views.api import resources
+    app.register_blueprint(resources, url_prefix='/api')
+
+    from pwnedhub.views.core import core
+    from pwnedhub.views.auth import auth
+    from pwnedhub.views.spa import spa
+    from pwnedhub.views.errors import errors
     app.register_blueprint(core)
     app.register_blueprint(auth)
     app.register_blueprint(spa)
     app.register_blueprint(errors)
 
-    from views.service import ToolsInfo
+    from pwnedhub.views.service import ToolsInfo
 
     return app
 
