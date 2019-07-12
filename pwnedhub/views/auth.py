@@ -82,17 +82,20 @@ def oauth_login(provider):
     if session.get('user_id'):
         return redirect(url_for('core.home'))
     # validate the provider
-    if provider not in current_app.config['OAUTH']:
+    if provider not in current_app.config['OAUTH_PROVIDERS']:
         return redirect(url_for('auth.login'))
     # build an authorization url
     oauth = OAuthSignIn(provider)
+    if not oauth.doc:
+        #[vuln] D-XSS also presented here
+        return redirect(url_for('auth.login', error='OpenID Connect provider unreachable.'))
     url = oauth.authorize()
     return redirect(url)
 
 @auth.route('/oauth/callback/<string:provider>')
 def oauth_callback(provider):
     # validate the provider
-    if provider not in current_app.config['OAUTH']:
+    if provider not in current_app.config['OAUTH_PROVIDERS']:
         return redirect(url_for('auth.login'))
     oauth = OAuthSignIn(provider)
     try:

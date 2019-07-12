@@ -40,6 +40,13 @@ def validate_id_token(token, provider, client, c_time, nonce=None):
         return False
     return True
 
+def get_provider_doc(url):
+    try:
+        return requests.get(url).json()
+    except requests.exceptions.ConnectionError:
+        pass
+    return
+
 class OAuthCallbackError(Exception):
 
     def __init__(self, message):
@@ -49,9 +56,10 @@ class OAuthSignIn(object):
 
     def __init__(self, provider):
         self.provider = provider
-        self.client_id = current_app.config['OAUTH'][self.provider]['CLIENT_ID']
-        self.client_secret = current_app.config['OAUTH'][self.provider]['CLIENT_SECRET']
-        self.doc = current_app.config['OAUTH'][self.provider]['DISCOVERY_DOC']
+        p = current_app.config['OAUTH_PROVIDERS'][self.provider]
+        self.client_id = p['CLIENT_ID']
+        self.client_secret = p['CLIENT_SECRET']
+        self.doc = get_provider_doc(p['DISCOVERY_DOC'])
 
     def authorize(self):
         # create an anti-forgery state token
