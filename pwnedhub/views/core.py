@@ -50,7 +50,7 @@ def about():
 
 @core.route('/constants.js')
 def js_constants():
-    return render_template('constants.js')
+    return Response(render_template('constants.js'), mimetype='text/javascript')
 
 # admin controllers
 
