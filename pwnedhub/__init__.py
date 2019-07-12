@@ -1,12 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_spyne import Spyne
 from flask_session import Session
 from common import db
 from datetime import datetime
 from urllib import unquote
 
-spyne = Spyne()
 sess = Session()
 
 def create_app(config='Development'):
@@ -17,7 +15,6 @@ def create_app(config='Development'):
     app.config.from_object('pwnedhub.config.{}'.format(config.title()))
 
     db.init_app(app)
-    spyne.init_app(app)
     sess.init_app(app)
 
     # custom jinja global for the current date
@@ -49,8 +46,6 @@ def create_app(config='Development'):
     app.register_blueprint(auth)
     app.register_blueprint(spa)
     app.register_blueprint(errors)
-
-    from pwnedhub.views.service import ToolsInfo
 
     return app
 

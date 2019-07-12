@@ -153,12 +153,6 @@ def serialize(self):
     }
 ```
 
-| Vulnerability | Blind SQL Injection (SQLi) for data extraction via SOAP web service (integer type). |
-| :-- | :-- |
-| Note | Discoverable and exploitable from an unauthenticated perspective. |
-| Location | `pwnedhub/views/service.py`: `ToolsInfo` operation builds a raw query by concatenating user input with existing SQL. |
-| Remediation | Use the ORM as intended, or prepared statements/parameterized queries. |
-
 | Vulnerability | Mass Assignment to set the role of the registered user. |
 | :-- | :-- |
 | Location | `pwnedhub/views/auth.py`: `register` controller binds the `User` object directly to the `request.form` dictionary. |

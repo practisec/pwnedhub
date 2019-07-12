@@ -4,7 +4,6 @@ Flask-SQLAlchemy
 Flask-MySQLdb
 gunicorn
 # website
-Flask-Spyne
 Markdown
 requests
 # api
