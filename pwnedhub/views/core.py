@@ -124,6 +124,12 @@ def admin_users_modify(action, uid):
         flash('Self-modification denied.')
     return redirect(url_for('core.admin_users'))
 
+@core.route('/admin/games/')
+@login_required
+@roles_required('admin')
+def admin_games():
+    return render_template('admin_games.html')
+
 # user controllers
 
 @core.route('/profile')
@@ -526,11 +532,6 @@ def bounty_scoreboard():
 @login_required
 def bounty_info():
     return render_template('bounty_info.html')
-
-@core.route('/games/')
-@login_required
-def games():
-    return render_template('games.html')
 
 @core.route('/snake/<path:filename>')
 @login_required
