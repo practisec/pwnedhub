@@ -137,7 +137,7 @@ Vue.component("show-messages", {
                 this.$emit("click", json.messages);
                 // must use the global flash function as the
                 // flash div is outside the Vue app anchor
-                show_flash("Message deleted.");
+                showFlash("Message deleted.");
             });
         },
     },

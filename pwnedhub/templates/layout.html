@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub.css') }}">
 </head>
 <body class="flex-column">
-    <div id="flash" class="flash center-content shaded">{{ get_flashed_messages()|join(', ') }}</div>
+    <div id="flash" class="flash"></div>
     <header class="flex-no-shrink flex-row">
         <nav class="flex-grow container-fluid flex-row">
             <div class="brand">
@@ -80,5 +80,12 @@
             </div>
         </div>
     </footer>
+    {% if get_flashed_messages() %}
+    <script>
+        {% for message in get_flashed_messages() %}
+        showFlash("{{ message }}");
+        {% endfor %}
+    </script>
+    {% endif %}
 </body>
 </html>

@@ -13,8 +13,11 @@
         <textarea name="signature">{{ user.signature }}</textarea>
         <label for="name">Display Name: *</label>
         <input name="name" type="text" value="{{ user.name }}" />
-        <label for="password">Password: *</label>
-        <input name="password" type="password" value="{{ user.password_as_string }}" />
+        <label for="password">New Password:</label>
+        <div class="flex-column" style="position: relative;">
+            <input id="password" name="password" type="password" />
+            <input type="button" class="show" onclick="toggleShow();" value="show" />
+        </div>
         <label for="question">Question: *</label>
         <select name="question">
         {% for question in questions %}

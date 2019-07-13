@@ -44,7 +44,7 @@ function execute() {
             spinner.style.visibility = "hidden";
             if (data.error === true) {
                 // flash error message
-                show_flash(data.output);
+                showFlash(data.output);
             } else {
                 // update the textarea with the command output
                 document.getElementById("output").innerHTML = "$ {0}\n{1}".format(data.cmd, data.output);
@@ -63,7 +63,7 @@ function save_artifact() {
             data: "<xml><filename>"+filename+"</filename><content>"+content+"</content></xml>",
             contentType: 'application/xml',
             success: function(data){
-                show_flash($(data).find("message").text());
+                showFlash($(data).find("message").text());
             }
         });
     }

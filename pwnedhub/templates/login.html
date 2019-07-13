@@ -7,7 +7,7 @@
         <label for="password">Password:</label>
         <div class="flex-column" style="position: relative;">
             <input id="password" name="password" type="password" />
-            <input type="button" class="show" onclick="toggle_show();" value="show" />
+            <input type="button" class="show" onclick="toggleShow();" value="show" />
         </div>
         <p><a href="{{ url_for('auth.reset_init') }}">Forget your password?</a></p>
         <input type="submit" value="Login" />

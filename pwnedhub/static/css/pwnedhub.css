@@ -295,14 +295,17 @@ nav ul li:hover ul {
 }
 
 .flash {
-    position: absolute;
+    position: fixed;
     display: inline-block;
-    z-index: 100;
+    z-index: 999;
     top: 1rem;
     right: 1rem;
+}
+
+.flash div {
     padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
     font-size: 1.5rem;
-    visibility: hidden;
     background-color: red;
     color: #fff;
     border: 1px solid #bbb;

@@ -145,22 +145,23 @@ def profile_view(uid):
 
 @core.route('/profile/change', methods=['GET', 'POST'])
 @login_required
-@validate(['name', 'password', 'question', 'answer'])
+@validate(['name', 'question', 'answer'])
 def profile_change():
     user = g.user
     password = request.values['password']
-    if is_valid_password(password):
-        user.name = request.values['name']
-        user.avatar = request.values['avatar']
-        user.signature = request.values['signature']
-        user.password = password
-        user.question = request.values['question']
-        user.answer = request.values['answer']
-        db.session.add(user)
-        db.session.commit()
-        flash('Account information changed.')
-    else:
-        flash('Password does not meet complexity requirements.')
+    if password:
+        if is_valid_password(password):
+            user.password = password
+        else:
+            flash('Password does not meet complexity requirements.')
+    user.avatar = request.values['avatar']
+    user.signature = request.values['signature']
+    user.name = request.values['name']
+    user.question = request.values['question']
+    user.answer = request.values['answer']
+    db.session.add(user)
+    db.session.commit()
+    flash('Account information changed.')
     return redirect(url_for('core.profile'))
 
 @core.route('/mail')

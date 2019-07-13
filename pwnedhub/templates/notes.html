@@ -67,7 +67,7 @@ function save_artifact(event) {
             data: "<xml><filename>"+filename+"</filename><content>"+content+"</content></xml>",
             contentType: 'application/xml',
             success: function(data){
-                show_flash($(data).find("message").text());
+                showFlash($(data).find("message").text());
             }
         });
     }

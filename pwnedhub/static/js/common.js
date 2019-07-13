@@ -7,11 +7,17 @@ String.prototype.format = function() {
     return a
 }
 
-function show_flash(msg) {
+function showFlash(msg) {
+    var div = document.createElement("div");
+    div.className = "center-content rounded shaded";
+    div.innerHTML = msg;
+    var id = "flash-" + Date.now();
+    div.id = id
     var flash = document.getElementById("flash");
-    flash.innerHTML = msg;
-    flash.style.visibility = "visible";
-    setTimeout(function() { flash.style.visibility = "hidden"; }, 5000);
+    flash.appendChild(div);
+    setTimeout(function() {
+        flash.removeChild(document.getElementById(id));
+    }, 5000);
 }
 
 function cleanRedirect(event, url) {
@@ -38,7 +44,7 @@ function confirmSubmit(event, form) {
     }
 }
 
-function toggle_show() {
+function toggleShow() {
     var el = document.getElementById("password");
     if (el.type =="password") {
         el.type = "text";
@@ -49,14 +55,10 @@ function toggle_show() {
 
 window.addEventListener("load", function() {
     // flash on load if needed
-    var flash = document.getElementById("flash");
-    var msg = flash.innerHTML
     var error = document.URL.indexOf("error=");
     if (error !== -1) {
         var msg = decodeURI(document.URL.substring(error+6, document.URL.length)).replace(/\+/g, " ");
-    }
-    if (msg.length > 0) {
-        show_flash(msg);
+        showFlash(msg);
     }
 
     // event handler for tab navigation

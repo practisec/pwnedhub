@@ -81,7 +81,7 @@ Vue.component("envelope", {
             .then(response => response.json())
             .then(json => {
                 this.$emit("click", json.mail);
-                show_flash("Mail deleted.");
+                showFlash("Mail deleted.");
             });
         },
     },
@@ -135,7 +135,7 @@ var Letter = Vue.component("letter", {
             .then(handleErrors)
             .then(response => {
                 this.$router.push({ name: "Mail" });
-                show_flash("Mail deleted.");
+                showFlash("Mail deleted.");
             });
         },
     },
@@ -198,10 +198,10 @@ var Compose = Vue.component("compose", {
             .then(handleErrors)
             .then(response => {
                 this.$router.push({ name: "Mail" });
-                show_flash("Mail sent.");
+                showFlash("Mail sent.");
             })
             .catch(error => {
-                show_flash("Error sending mail.");
+                showFlash("Error sending mail.");
             });
         },
     },
@@ -263,7 +263,7 @@ var Reply = Vue.component("reply", {
             .then(handleErrors)
             .then(response => {
                 this.$router.push({ name: "Mail" });
-                show_flash("Mail sent.");
+                showFlash("Mail sent.");
             });
         },
     },
