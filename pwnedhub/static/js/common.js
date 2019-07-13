@@ -38,6 +38,15 @@ function confirmSubmit(event, form) {
     }
 }
 
+function toggle_show() {
+    var el = document.getElementById("password");
+    if (el.type =="password") {
+        el.type = "text";
+    } else {
+        el.type = "password";
+    }
+}
+
 window.addEventListener("load", function() {
     // flash on load if needed
     var flash = document.getElementById("flash");

@@ -105,6 +105,14 @@ button, input[type="submit"], input[type="reset"], input[type="button"] {
     background-color: #fff;
 }
 
+input.show {
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 0;
+}
+
 select:disabled {
     -webkit-appearance: none;
     -moz-appearance: none;

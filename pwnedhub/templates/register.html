@@ -4,7 +4,7 @@
     <form class="flex-column" action="{{ url_for('auth.register') }}" method="post">
         <label for="username">Username: *</label>
         <input name="username" type="text" />
-        <label for="email">Email: *</label>
+        <label for="email">Email (Gmail for OpenID): *</label>
         <input name="email" type="text" />
         <label for="name">Display Name: *</label>
         <input name="name" type="text" />
@@ -28,23 +28,4 @@
         <input type="submit" value="Register" onclick="cleanSubmit(event, this.form);" />
     </form>
 </div>
-<style>
-input.show {
-    background-color: transparent;
-    position: absolute;
-    right: 0;
-    top: 0;
-    border: 0;
-}
-</style>
-<script>
-function toggle_show() {
-    var el = document.getElementById("password");
-    if (el.type =="password") {
-        el.type = "text";
-    } else {
-        el.type = "password";
-    }
-}
-</script>
 {% endblock %}

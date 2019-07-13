@@ -148,7 +148,7 @@ def reset_question():
     return render_template('reset_question.html', question=user.question_as_string)
 
 @auth.route('/reset/password', methods=['GET', 'POST'])
-@validate(['password', 'confirm_password'])
+@validate(['password'])
 def reset_password():
     # enforce flow control
     if not session.get('reset_id'):
@@ -156,16 +156,13 @@ def reset_password():
         return redirect(url_for('auth.reset_init'))
     if request.method == 'POST':
         password = request.form['password']
-        if password == request.form['confirm_password']:
-            if is_valid_password(password):
-                user = User.query.get(session.pop('reset_id'))
-                user.password = password
-                db.session.add(user)
-                db.session.commit()
-                flash('Password reset. Please log in.')
-                return redirect(url_for('auth.login'))
-            else:
-                flash('Invalid password.')
+        if is_valid_password(password):
+            user = User.query.get(session.pop('reset_id'))
+            user.password = password
+            db.session.add(user)
+            db.session.commit()
+            flash('Password reset. Please log in.')
+            return redirect(url_for('auth.login'))
         else:
-            flash('Passwords do not match.')
+            flash('Invalid password. 6 or more characters required.')
     return render_template('reset_password.html')

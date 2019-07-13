@@ -17,23 +17,4 @@
         </div>
     </form>
 </div>
-<style>
-input.show {
-    background-color: transparent;
-    position: absolute;
-    right: 0;
-    top: 0;
-    border: 0;
-}
-</style>
-<script>
-function toggle_show() {
-    var el = document.getElementById("password");
-    if (el.type =="password") {
-        el.type = "text";
-    } else {
-        el.type = "password";
-    }
-}
-</script>
 {% endblock %}
