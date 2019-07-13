@@ -1,10 +1,10 @@
 User-agent: *
-Disallow: /admin/tools
-Disallow: /admin/users
+Disallow: /admin
 Disallow: /artifacts
-Disallow: /home
+Disallow: /bounty
 Disallow: /mail
 Disallow: /messages
 Disallow: /notes
 Disallow: /profile
+Disallow: /submissions
 Disallow: /tools
