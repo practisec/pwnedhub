@@ -1,8 +1,8 @@
 from flask import current_app
 import re
 
-# anything except blank
-PASSWORD_REGEX = r'.+'
+# 6 or more characters
+PASSWORD_REGEX = r'.{6,}'
 EMAIL_REGEX = r'[^@]+@[a-zA-Z\d-]+(?:\.[a-zA-Z\d-]+)+'
 
 def is_valid_quantity(quantity):

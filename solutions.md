@@ -471,7 +471,7 @@ if letter.receiver == g.user:
 | Vulnerability | Weak password complexity requirement. |
 | :-- | :-- |
 | Location | `pwnedhub/validators.py`: `is_valid_password` function. |
-| Remediation | Enhance the validator to enforce something more than a minimum length of 1 character. |
+| Remediation | Enhance the validator to enforce something more than a minimum length of 6 characters. |
 
 ```
 # 1 upper, 1 lower, 1 special, 1 number, minimum 10 chars
