@@ -6,13 +6,13 @@
         <input name="title" type="text" value="{{ submission.title }}" />
         <label for="vuln_id">Vulnerability Type: *</label>
         <select id="vuln" name="vuln_id" onchange="estimateBounty();">
-        {% for id, data in vulnerabilities.iteritems() %}
+        {% for id, data in vulnerabilities.items() %}
             <option value="{{ id }}" data-bounty="{{ data[1] }}"{% if id == submission.vuln_id %} selected{% endif %}>{{ data[0] }}</option>
         {% endfor %}
         </select>
         <label for="severity">Severity: *</label>
         <select id="severity" name="severity" onchange="estimateBounty();">
-        {% for id, name in severity.iteritems() %}
+        {% for id, name in severity.items() %}
             <option value="{{ id }}"{% if id == submission.severity %} selected{% endif %}>{{ name }}</option>
         {% endfor %}
         </select>

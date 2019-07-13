@@ -2,7 +2,7 @@ from flask import g, request, redirect, url_for, abort, make_response, flash
 from common.constants import ROLES
 from functools import wraps
 from threading import Thread
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 def validate(params, method='POST'):
     def wrapper(func):

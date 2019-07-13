@@ -2,6 +2,7 @@
 Flask
 Flask-SQLAlchemy
 Flask-MySQLdb
+lxml
 gunicorn
 # website
 Markdown

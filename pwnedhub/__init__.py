@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from common import db
 from datetime import datetime
-from urllib import unquote
+from urllib.parse import unquote
 
 sess = Session()
 
@@ -53,13 +53,13 @@ def init_db(config='Development'):
     app = create_app(config)
     with app.app_context():
         db.create_all()
-    print 'Database initialized.'
+    print('Database initialized.')
 
 def drop_db(config='Development'):
     app = create_app(config)
     with app.app_context():
         db.drop_all()
-    print 'Database dropped.'
+    print('Database dropped.')
 
 def make_admin(username, config='Development'):
     app = create_app(config)

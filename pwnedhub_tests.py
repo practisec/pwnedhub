@@ -66,10 +66,10 @@ class PwnedHubTestCase(unittest.TestCase):
 class CustomTestResult(unittest._TextTestResult):
 
     def addSuccess(self, test):
-        print '[*] {} test passed.'.format(test._testMethodName[5:])
+        print('[*] {} test passed.'.format(test._testMethodName[5:]))
 
     def addFailure(self, test, err):
-        print '[!] {} test failed!'.format(test._testMethodName[5:])
+        print('[!] {} test failed!'.format(test._testMethodName[5:]))
         unittest.TestResult.addFailure(self, test, err)
 
 class CustomTestRunner(unittest.TextTestRunner):

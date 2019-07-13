@@ -8,16 +8,13 @@ persistence, etc.
 """
 
 from datetime import datetime, timedelta
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
 from flask.sessions import SessionInterface
 from flask.sessions import SessionMixin
 from itsdangerous import want_bytes
 from werkzeug.datastructures import CallbackDict
 import binascii
 import os
+import pickle
 
 class Session(object):
     """This class is used to add server-side session to one or more Flask applications."""
@@ -59,6 +56,7 @@ class SqlAlchemySession(CallbackDict, SessionMixin):
         self._rotate = False
 
     def rotate(self):
+        """Sets a flag to signal the session interface to rotate the sid."""
         self._rotate = True
 
 class SqlAlchemySessionInterface(SessionInterface):
@@ -84,7 +82,7 @@ class SqlAlchemySessionInterface(SessionInterface):
             __tablename__ = table
 
             id = self.db.Column(self.db.Integer, primary_key=True)
-            session_id = self.db.Column(self.db.String(256), unique=True)
+            session_id = self.db.Column(self.db.String(255), unique=True)
             data = self.db.Column(self.db.LargeBinary)
             expiry = self.db.Column(self.db.DateTime)
 
@@ -100,7 +98,7 @@ class SqlAlchemySessionInterface(SessionInterface):
         self.sql_session_model = Session
 
     def _generate_sid(self):
-        return binascii.hexlify(os.urandom(16))
+        return binascii.hexlify(os.urandom(16)).decode()
 
     def open_session(self, app, request):
         sid = request.cookies.get(app.session_cookie_name)
@@ -110,23 +108,21 @@ class SqlAlchemySessionInterface(SessionInterface):
         # attempt to retrieve the session associated with the given token
         store_id = self.key_prefix + sid
         saved_session = self.sql_session_model.query.filter_by(session_id=store_id).first()
-        # create a new session if the token doesn't represent a valid session
-        if not saved_session:
-            return self.session_class(sid=self._generate_sid())
-        # create a new session if the session has expired
-        elif saved_session.expiry <= datetime.utcnow():
-            # purge the expired session
+        # check and handle expired sessions
+        if saved_session and saved_session.expiry <= datetime.utcnow():
+            # delete the expired session
             self.db.session.delete(saved_session)
             self.db.session.commit()
-            return self.session_class(sid=self._generate_sid())
+            saved_session = None
         # handle valid sessions
-        else:
+        if saved_session:
             try:
                 val = saved_session.data
                 data = self.serializer.loads(want_bytes(val))
                 return self.session_class(data, sid=sid)
             except:
-                return self.session_class(sid=sid)
+                pass
+        return self.session_class(sid=sid)
 
     def save_session(self, app, session, response):
         domain = self.get_cookie_domain(app)
@@ -146,21 +142,22 @@ class SqlAlchemySessionInterface(SessionInterface):
         expires = datetime.utcnow() + app.permanent_session_lifetime
         val = self.serializer.dumps(dict(session))
         sid = session.sid
-        session_id_changed = False
+        sid_changed = False
         # handle existing sessions
         if saved_session:
-            # rotate sessions to prevent fixation
+            # rotate sid if flagged to do so
             if session._rotate:
                 sid = self._generate_sid()
-                new_store_sid = self.key_prefix + sid
-                # update the session id
-                saved_session.session_id = new_store_sid
-                session_id_changed = True
+                saved_session.session_id = self.key_prefix + sid
+                sid_changed = True
             # update the session data
             saved_session.data = val
             # update the session expiry
             saved_session.expiry = expires
             self.db.session.commit()
+            # update the session variable to include any changes to the sid
+            # if there was no call to rotate, then it gets set back to what
+            # it was before
             session.sid = sid
         # handle new sessions
         else:
@@ -168,9 +165,9 @@ class SqlAlchemySessionInterface(SessionInterface):
             new_session = self.sql_session_model(store_id, val, expires)
             self.db.session.add(new_session)
             self.db.session.commit()
-            session_id_changed = True
+            sid_changed = True
         # handle session tokens
-        if session_id_changed:
+        if sid_changed:
             # create a permanent cookie by expiring in 10 years
             expires = datetime.utcnow() + timedelta(0, 315360000)
             response.set_cookie(

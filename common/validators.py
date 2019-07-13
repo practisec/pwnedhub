@@ -36,7 +36,7 @@ def is_valid_mimetype(mimetype):
         return True
     return False
 
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 def is_safe_url(url, origin):
     host = urlparse(origin).netloc

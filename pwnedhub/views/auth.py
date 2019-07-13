@@ -47,7 +47,7 @@ def register():
 
 def _init_session(user_id):
     session['user_id'] = user_id
-    path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user_id)).hexdigest())
+    path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user_id).encode()).hexdigest())
     if not os.path.exists(path):
         os.makedirs(path)
     session['upload_folder'] = path

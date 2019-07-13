@@ -9,7 +9,7 @@ from common.utils import unfurl_url
 from common.validators import is_valid_password, is_valid_command, is_valid_filename, is_valid_mimetype
 from datetime import datetime
 from lxml import etree
-from urllib import urlencode
+from urllib.parse import urlencode
 import math
 import os
 import re
@@ -218,7 +218,7 @@ def mail_delete(mid):
 def messages(page=0):
     count = 5
     messages = Message.query.order_by(Message.created.desc()).all()
-    subsets = [messages[i:i + count] for i in xrange(0, len(messages), count)]
+    subsets = [messages[i:i + count] for i in range(0, len(messages), count)]
     try:
         subset = subsets[page]
     except IndexError:
@@ -316,7 +316,7 @@ def artifacts_save():
 def artifacts_create():
     xml = request.data
     parser = etree.XMLParser(no_network=False)
-    doc = etree.fromstring(str(xml), parser)
+    doc = etree.fromstring(xml, parser)
     content = doc.find('content').text
     filename = doc.find('filename').text
     if all((content, filename)):
@@ -392,7 +392,7 @@ def tools_execute(tid):
     else:
         output = 'Command contains invalid characters.'
         error = True
-    return jsonify(cmd=cmd, output=output, error=error)
+    return jsonify(cmd=cmd, output=output.decode(), error=error)
 
 @core.route('/submissions')
 @core.route('/submissions/page/<int:page>')
@@ -400,7 +400,7 @@ def tools_execute(tid):
 def submissions(page=0):
     count = 10
     submissions = Bug.query.order_by(Bug.created.desc()).all()
-    subsets = [submissions[i:i + count] for i in xrange(0, len(submissions), count)]
+    subsets = [submissions[i:i + count] for i in range(0, len(submissions), count)]
     try:
         subset = subsets[page]
     except IndexError:
@@ -489,9 +489,9 @@ def submissions_action(action, bid):
     submission = Bug.query.get_or_404(bid)
     if submission.is_validated or submission.reviewer != g.user:
         abort(403)
-    if [status for status in BUG_STATUSES.itervalues() if status.startswith(action)]:
+    if [status for status in BUG_STATUSES.values() if status.startswith(action)]:
         # passing previous check guarantees at least one result
-        submission.status = [aid for aid, status in BUG_STATUSES.iteritems() if status.startswith(action)][0]
+        submission.status = [aid for aid, status in BUG_STATUSES.items() if status.startswith(action)][0]
         # send message to submitter
         sender = User.query.get(1)
         receiver = submission.submitter

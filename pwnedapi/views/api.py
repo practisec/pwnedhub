@@ -12,11 +12,8 @@ from itsdangerous import want_bytes
 from lxml import etree
 import jwt
 import os
+import pickle
 import subprocess
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
 
 resources = Blueprint('resources', __name__)
 api = Api()
@@ -30,13 +27,13 @@ def encode_jwt(user_id, claims={}):
         'iat': datetime.utcnow(),
         'sub': user_id
     }
-    for claim, value in claims.iteritems():
+    for claim, value in claims.items():
         payload[claim] = value
     return jwt.encode(
         payload,
         current_app.config['SECRET_KEY'],
         algorithm='HS256'
-    )
+    ).decode()
 
 # PRE-REQUEST FUNCTIONS
 
@@ -90,7 +87,7 @@ class TokenList(Resource):
         user = User.query.get(data['user_id'])
         # build other claims
         claims = {}
-        path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(data['user_id'])).hexdigest())
+        path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(data['user_id']).encode()).hexdigest())
         if not os.path.exists(path):
             os.makedirs(path)
         claims['upload_folder'] = path
@@ -287,7 +284,7 @@ class ExecuteList(Resource):
         else:
             output = 'Command contains invalid characters.'
             error = True
-        return {'cmd': cmd, 'output': output, 'error': error}
+        return {'cmd': cmd, 'output': output.decode(), 'error': error}
 
 api.add_resource(ExecuteList, '/execute')
 
@@ -298,7 +295,7 @@ class ArtifactsList(Resource):
     def post(self):
         xml = request.data
         parser = etree.XMLParser(no_network=False)
-        doc = etree.fromstring(str(xml), parser)
+        doc = etree.fromstring(xml, parser)
         content = doc.find('content').text
         filename = doc.find('filename').text
         if all((content, filename)):

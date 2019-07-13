@@ -1,6 +1,6 @@
 from flask import current_app, url_for, session
 from time import time
-from urllib import urlencode
+from urllib.parse import urlencode
 import base64
 import hashlib
 import json
