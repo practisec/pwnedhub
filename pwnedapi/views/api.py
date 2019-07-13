@@ -233,6 +233,7 @@ api.add_resource(MailInst, '/mail/<string:mid>')
 class UnfurlList(Resource):
 
     def post(self):
+        #[vuln] no authn required and results in SSRF
         url = request.json.get('url')
         headers = {'User-Agent': request.headers.get('User-Agent')}
         if url:

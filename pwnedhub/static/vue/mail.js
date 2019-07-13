@@ -38,6 +38,7 @@ var Mail = Vue.component("mail", {
         },
         getMail: function() {
             fetch(this.URL_API_MAILBOX_READ)
+            .then(handleErrors)
             .then(response => response.json())
             .then(json => {
                 this.updateMail(json.mail);
@@ -76,6 +77,7 @@ Vue.component("envelope", {
             fetch(this.URL_API_MAIL_DELETE.format(this.envelope.id), {
                 method: "DELETE",
             })
+            .then(handleErrors)
             .then(response => response.json())
             .then(json => {
                 this.$emit("click", json.mail);
@@ -120,6 +122,7 @@ var Letter = Vue.component("letter", {
         },
         getEnvelope: function() {
             fetch(this.URL_API_MAIL_READ.format(this.envelopeId))
+            .then(handleErrors)
             .then(response => response.json())
             .then(json => {
                 this.envelope = json;
@@ -129,6 +132,7 @@ var Letter = Vue.component("letter", {
             fetch(this.URL_API_MAIL_DELETE.format(this.envelope.id), {
                 method: "DELETE",
             })
+            .then(handleErrors)
             .then(response => {
                 this.$router.push({ name: "Mail" });
                 show_flash("Mail deleted.");
@@ -173,10 +177,11 @@ var Compose = Vue.component("compose", {
     methods: {
         getUsers: function() {
             fetch(this.URL_API_USERS_READ)
+            .then(handleErrors)
             .then(response => response.json())
             .then(json => {
                 this.recipients = json.users.filter(function(user) {
-                    var currentUser = JSON.parse(window.sessionStorage.getItem("userInfo"));
+                    var currentUser = JSON.parse(sessionStorage.getItem("userInfo"));
                     return user.id !== currentUser.id;
                 });
             });
@@ -239,6 +244,7 @@ var Reply = Vue.component("reply", {
         },
         getLetter: function() {
             fetch(this.URL_API_MAIL_READ.format(this.letterId))
+            .then(handleErrors)
             .then(response => response.json())
             .then(json => {
                 this.letter = json;
@@ -254,6 +260,7 @@ var Reply = Vue.component("reply", {
                 }),
                 headers:{"Content-Type": "application/json"}
             })
+            .then(handleErrors)
             .then(response => {
                 this.$router.push({ name: "Mail" });
                 show_flash("Mail sent.");

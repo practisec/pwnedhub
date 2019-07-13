@@ -18,6 +18,7 @@ var Messages = Vue.component("messages", {
             fetch(this.URL_API_BASE+"/messages", {
                 credentials: "include",
             })
+            .then(handleErrors)
             .then(response => response.json())
             .then(json => {
                 this.updateMessages(json.messages);
@@ -57,6 +58,7 @@ Vue.component("create-message", {
                 body: JSON.stringify(this.messageForm),
                 headers:{"Content-Type": "application/json"}
             })
+            .then(handleErrors)
             .then(response => response.json())
             .then(json => {
                 // update messages with the response
@@ -116,11 +118,11 @@ Vue.component("show-messages", {
             this.pageNumber = page;
         },
         isAuthor: function(message) {
-            user = JSON.parse(window.sessionStorage.getItem("userInfo"));
+            user = JSON.parse(sessionStorage.getItem("userInfo"));
             return (user.id === message.author.id) ? true : false;
         },
         isEditable: function(message) {
-            user = JSON.parse(window.sessionStorage.getItem("userInfo"));
+            user = JSON.parse(sessionStorage.getItem("userInfo"));
             return (this.isAuthor(message) || user.role === "admin") ? true : false;
         },
         deleteMessage: function(message) {
@@ -128,6 +130,7 @@ Vue.component("show-messages", {
                 credentials: "include",
                 method: "DELETE",
             })
+            .then(handleErrors)
             .then(response => response.json())
             .then(json => {
                 // update messages with the response
@@ -178,10 +181,12 @@ Vue.component("scroll", {
             var urls = this.parseUrls(message);
             urls.forEach(function(value, key) {
                 fetch(this.URL_API_BASE+"/unfurl", {
+                    credentials: "include",
                     method: "POST",
                     body: JSON.stringify({url: value}),
                     headers:{"Content-Type": "application/json"}
                 })
+                .then(handleErrors)
                 .then(response => response.json())
                 .then(json => {
                     this.unfurls.push(json);
