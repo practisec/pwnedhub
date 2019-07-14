@@ -1,16 +1,16 @@
 const routes = [
     {
+        path: "/login",
+        name: "login",
+        component: Login,
+    },
+    {
         path: "/messages",
         name: "messages",
         component: Messages,
         meta: {
             authRequired: true
         }
-    },
-    {
-        path: "/login",
-        name: "login",
-        component: Login,
     },
     {
         path: "*",

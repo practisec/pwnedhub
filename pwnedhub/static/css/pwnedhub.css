@@ -212,7 +212,8 @@ nav ul li:hover {
     background: red;
 }
 
-nav ul li a {
+nav ul li a,
+nav ul li span {
     display: block;
     height: 100%;
     line-height: 5rem; /* critical to nav height 2/3 */
@@ -223,12 +224,14 @@ nav ul li a {
     padding: 0 1rem;
 }
 
-nav ul li.user > a {
+nav ul li.user > a,
+nav ul li.user > span {
     color: red;
 }
 
-nav ul li:hover > a {
-    color:#fff;
+nav ul li:hover > a,
+nav ul li:hover > span {
+    color:#fff; /* only affects the user class */
 }
 
 nav ul li ul {

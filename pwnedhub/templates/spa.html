@@ -1,12 +1,50 @@
-{% extends "layout.html" %}
-{% block body %}
-    <div class="flex-grow flex-row" id="app">
-        <router-view></router-view>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>PwnedHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>html{visibility: hidden;opacity:0;}</style><!-- FOUC fix -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fontawesome.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton-flexbox.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-flex.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-utility.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub.css') }}">
+</head>
+<body>
+    <div id="flash" class="flash"></div>
+    <div class="flex-column" id="app">
+        <header class="flex-no-shrink flex-row">
+            <Navigation></Navigation>
+        </header>
+        <section class="flex-grow flex-no-shrink flex-row">
+            <div class="flex-grow container-fluid flex-row">
+                <div class="flex-grow flex-row">
+                    <router-view></router-view>
+                </div>
+            </div>
+        </section>
+        <footer class="flex-no-shrink flex-row">
+            <div class="flex-grow container-fluid flex-row flex-justify-center">
+                <div class="footer center-content">
+                    &copy; {{ date.year }} PwnedHub. All rights reserved.
+                </div>
+            </div>
+        </footer>
     </div>
     <script src="{{ url_for('static', filename='vue/vue.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/vue-router.js') }}"></script>
     <script src="{{ url_for('core.js_constants') }}"></script>
     <script src="{{ url_for('static', filename='vue/messages.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/login.js') }}"></script>
+    <script src="{{ url_for('static', filename='vue/navigation.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/app.js') }}"></script>
-{% endblock %}
+    {% if get_flashed_messages() %}
+    <script>
+        {% for message in get_flashed_messages() %}
+        showFlash("{{ message }}");
+        {% endfor %}
+    </script>
+    {% endif %}
+</body>
+</html>
