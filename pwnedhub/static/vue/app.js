@@ -13,6 +13,31 @@ const routes = [
         }
     },
     {
+        path: "/mail",
+        name: "mail",
+        component: Mail,
+        meta: {
+            authRequired: true
+        }
+    },
+    {
+        path: '/mail/view/:envelopeId',
+        name: "letter",
+        component: Letter,
+        props: true,
+    },
+    {
+        path: '/mail/compose',
+        name: "compose",
+        component: Compose,
+    },
+    {
+        path: '/mail/reply/:letterId',
+        name: "reply",
+        component: Reply,
+        props: true,
+    },
+    {
         path: "*",
         redirect: "/login"
     }

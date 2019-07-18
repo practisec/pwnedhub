@@ -23,6 +23,11 @@ var Navigation = Vue.component('navigation', {
                     text: 'Messages',
                     name: 'messages',
                 },
+                {
+                    id: 1,
+                    text: 'Mail',
+                    name: 'mail',
+                },
             ]
         }
     },

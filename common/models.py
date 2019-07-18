@@ -236,7 +236,11 @@ class User(BaseModel):
         if public:
             return {
                 'id': self.id,
+                'created': self.created_as_string,
                 'name': self.name,
+                'avatar': self.avatar,
+                'signature': self.signature,
+                'reputation': self.reputation,
             }
         return {
             'id': self.id,
@@ -244,8 +248,11 @@ class User(BaseModel):
             'username': self.username,
             'email': self.email,
             'name': self.name,
+            'avatar': self.avatar,
+            'signature': self.signature,
             'notes': self.notes,
             'role': self.role_as_string,
+            'reputation': self.reputation,
         }
 
     def __repr__(self):
