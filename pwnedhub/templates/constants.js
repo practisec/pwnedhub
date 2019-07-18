@@ -21,8 +21,11 @@ Vue.mixin({
 // global functions
 
 function handleErrors(response) {
-    if (!response.ok) {
-        throw Error(response.statusText);
+    if (response.ok) {
+        return Promise.resolve(response);
     }
-    return response;
+    return response.json().then(json => {
+        var error = new Error(json.message || response.statusText)
+        return Promise.reject(error.message)
+    });
 }
