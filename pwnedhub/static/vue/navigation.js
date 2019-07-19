@@ -1,4 +1,4 @@
-var Navigation = Vue.component('navigation', {
+var Navigation = Vue.component("navigation", {
     template: `
         <nav class="flex-grow container-fluid flex-row">
             <div class="brand">
@@ -8,7 +8,7 @@ var Navigation = Vue.component('navigation', {
                 <li><span>menu</span>
                     <ul>
                         <li v-for="route in links" v-bind:key="route.id" v-bind:route="route">
-                            <router-link v-bind:to="{ name: route.name }">{{ route.text }}</router-link>
+                            <router-link v-bind:to="{ name: route.name, params: route.params || {} }">{{ route.text }}</router-link>
                         </li>
                     </ul>
                 </li>
@@ -20,13 +20,13 @@ var Navigation = Vue.component('navigation', {
             links: [
                 {
                     id: 0,
-                    text: 'Messages',
-                    name: 'messages',
+                    text: "Messages",
+                    name: "messages",
                 },
                 {
                     id: 1,
-                    text: 'Mail',
-                    name: 'mail',
+                    text: "Mail",
+                    name: "mail",
                 },
             ]
         }

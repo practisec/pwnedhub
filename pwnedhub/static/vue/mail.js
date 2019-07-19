@@ -98,9 +98,9 @@ var Letter = Vue.component("letter", {
             </div>
             <div class="sender flex-row flex-align-center">
                 <div class="avatar">
-                    <a href="#">
+                    <router-link v-bind:to="{ name: 'profile', params: { userId: envelope.sender.id } }">
                         <img class="circular bordered-dark" v-bind:src="envelope.sender.avatar" title="Avatar" />
-                    </a>
+                    </router-link>
                 </div>
                 <div>
                     <b>{{ envelope.sender.name }} @ {{ envelope.created }}</b></div>

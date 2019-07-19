@@ -83,9 +83,9 @@ Vue.component("show-messages", {
                     <i class="fas fa-trash" title="Delete"></i>
                 </a>
                 <div class="avatar">
-                    <a href="#">
+                    <router-link v-bind:to="{ name: 'profile', params: { userId: message.author.id } }">
                         <img class="circular bordered-dark" v-bind:src="message.author.avatar" title="Avatar" />
-                    </a>
+                    </router-link>
                 </div>
                 <div v-bind:style="isAuthor(message) ? { fontWeight: 'bold' } : ''">
                     <p class="name"><span class="red">{{ message.author.name }}</span> <span style="font-size: .75em">({{ message.author.username }})</span></p>

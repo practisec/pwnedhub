@@ -9,33 +9,51 @@ const routes = [
         name: "messages",
         component: Messages,
         meta: {
-            authRequired: true
-        }
+            authRequired: true,
+        },
     },
     {
         path: "/mail",
         name: "mail",
         component: Mail,
         meta: {
-            authRequired: true
-        }
+            authRequired: true,
+        },
     },
     {
-        path: '/mail/view/:envelopeId',
+        path: "/mail/view/:envelopeId",
         name: "letter",
         component: Letter,
         props: true,
+        meta: {
+            authRequired: true,
+        },
     },
     {
-        path: '/mail/compose',
+        path: "/mail/compose",
         name: "compose",
         component: Compose,
+        meta: {
+            authRequired: true,
+        },
     },
     {
-        path: '/mail/reply/:letterId',
+        path: "/mail/reply/:letterId",
         name: "reply",
         component: Reply,
         props: true,
+        meta: {
+            authRequired: true,
+        },
+    },
+    {
+        path: "/profile/view/:userId",
+        name: "profile",
+        component: Profile,
+        props: true,
+        meta: {
+            authRequired: true,
+        },
     },
     {
         path: "*",
