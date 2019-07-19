@@ -82,6 +82,10 @@ table {
     padding: 1rem;
 }
 
+table.clickable tr:hover {
+    cursor: pointer;
+}
+
 th, th:first-child, th:last-child, td, td:first-child, td:last-child {
     text-align: center;
     padding: 1rem;
@@ -156,6 +160,8 @@ hr {
 i {
     font-size: 2rem;
     color: #bbb;
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
 }
 
 i.medium {

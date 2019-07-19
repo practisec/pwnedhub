@@ -1,7 +1,7 @@
 var Mail = Vue.component("mail", {
     template: `
         <div class="flex-grow inbox flex-row flex-justify-center">
-            <table>
+            <table class="clickable">
                 <caption class="left-content">
                     <input type="button" value="Compose" v-on:click="draftLetter" />
                 </caption>
@@ -10,7 +10,6 @@ var Mail = Vue.component("mail", {
                         <th>from</th>
                         <th>subject</th>
                         <th>date</th>
-                        <th>action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,34 +54,15 @@ Vue.component("envelope", {
         envelope: Object,
     },
     template: `
-        <tr style="cursor: pointer" v-bind:style="!envelope.read ? { fontWeight: 'bold' } : ''" v-on:click="openEnvelope">
+        <tr v-bind:style="!envelope.read ? { fontWeight: 'bold' } : ''" v-on:click="openEnvelope">
             <td class="left-content">{{ envelope.sender.name }}</td>
             <td class="left-content">{{ envelope.subject }}</td>
             <td>{{ envelope.created }}</td>
-            <td>
-                <a class="img-btn" v-on:click.stop="draftReply"><i class="fas fa-reply" title="Reply"></i></a>
-                <a class="img-btn" v-on:click.stop="deleteEnvelope"><i class="fas fa-trash" title="Delete"></i></a>
-            </td>
         </tr>
     `,
     methods: {
         openEnvelope: function() {
             this.$router.push({ name: 'letter', params: { envelopeId: this.envelope.id } });
-        },
-        draftReply: function() {
-            this.$router.push({ name: 'reply', params: { letterId: this.envelope.id } });
-        },
-        deleteEnvelope: function() {
-            fetch(this.URL_API_BASE+"/mail/"+this.envelope.id, {
-                credentials: "include",
-                method: "DELETE",
-            })
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                this.$emit("click", json.mail);
-                showFlash("Mail deleted.");
-            });
         },
     },
 });
@@ -108,7 +88,7 @@ var Letter = Vue.component("letter", {
             <div class="content" v-html="envelope.content"></div>
             <hr>
             <div class="right-content">
-                <a class="img-btn" v-on:click="gotoMailbox"><i class="fas fa-inbox" title="Inbox"></i></a>
+                <a style="float: left" class="img-btn" v-on:click="gotoMailbox"><i class="fas fa-arrow-left" title="Inbox"></i></a>
                 <a class="img-btn" v-on:click="draftReply"><i class="fas fa-reply" title="Reply"></i></a>
                 <a class="img-btn" v-on:click="deleteEnvelope"><i class="fas fa-trash" title="Delete"></i></a>
             </div>

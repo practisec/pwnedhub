@@ -11,7 +11,7 @@
         <hr>
         <div class="right-content">
             <a class="img-btn" onclick="cleanSubmit(event, document.forms[0]);"><i class="fas fa-paper-plane" title="Send"></i></a>
-            <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.mail') }}');"><i class="fas fa-trash" title="Discard"></i></a>
+            <a class="img-btn" onclick="window.history.back();"><i class="fas fa-trash" title="Discard"></i></a>
         </div>
     </form>
 </div>

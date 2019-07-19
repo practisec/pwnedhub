@@ -62,13 +62,13 @@
         </div>
     </div>
     <div class="flex-row">
-        <table>
+        <table class="clickable">
             <thead>
                 <tr><th>display name</th><th>reputation</th><th>submissions</th><th>validations</th><th>omissions</th></tr>
             </thead>
             <tbody>
             {% for user in users|sort(attribute='reputation', reverse=True) %}
-                <tr style="cursor: pointer;" onclick="cleanRedirect(event, '{{ url_for('core.profile_view', uid=user.id) }}');">
+                <tr onclick="cleanRedirect(event, '{{ url_for('core.profile_view', uid=user.id) }}');">
                     <td>{{ user.name }}</td>
                     <td>{{ user.reputation }}</td>
                     <td>{{ user.bugs.count() }}</td>
