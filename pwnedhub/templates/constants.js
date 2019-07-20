@@ -1,21 +1,60 @@
-// global constants mixin
-// requires vue.js library
-// place between vue and custom component code
+const state = {
+    apiUrl: "{{ config.API_BASE_URL }}",
+    mail: Array(),
+    messages: Array(),
+}
 
-// can also be done using a JS object, but would
-// require importing via the "data" attribute
-
-Vue.mixin({
-    data: function() {
-        return {
-            get URL_API_BASE() { return "{{ config.API_BASE_URL }}" },
-            get URL_IMG_INBOX() { return "{{ url_for('static', filename='images/inbox.png') }}"; },
-            get URL_IMG_VIEW() { return "{{ url_for('static', filename='images/view.png') }}"; },
-            get URL_IMG_REPLY() { return "{{ url_for('static', filename='images/reply.png') }}"; },
-            get URL_IMG_SEND() { return "{{ url_for('static', filename='images/send.png') }}"; },
-            get URL_IMG_DELETE() { return "{{ url_for('static', filename='images/delete.png') }}"; },
-        }
+const mutations = {
+    UPDATE_MAIL(state, payload) {
+        state.mail = payload;
     },
+    UPDATE_LETTER(state, payload) {
+        var index = state.mail.findIndex(function(letter) {
+            return letter.id === payload.id;
+        })
+        state.mail[index] = payload;
+    },
+    UPDATE_MESSAGES(state, payload) {
+        state.messages = payload;
+    },
+};
+
+const actions = {
+    updateMail(context, mail) {
+        context.commit("UPDATE_MAIL", mail);
+    },
+    updateLetter(context, letter) {
+        context.commit("UPDATE_LETTER", letter);
+    },
+    updateMessages(context, messages) {
+        context.commit("UPDATE_MESSAGES", messages);
+    },
+};
+
+const getters = {
+    getApiUrl(state) {
+        return state.apiUrl;
+    },
+    getMail(state) {
+        return state.mail;
+    },
+    getLetter(state) {
+        return function(id) {
+            return state.mail.find(function(letter) {
+                return letter.id === id;
+            });
+        };
+    },
+    getMessages(state) {
+        return state.messages;
+    },
+};
+
+const store = new Vuex.Store({
+    state,
+    mutations,
+    actions,
+    getters,
 });
 
 // global functions

@@ -1,38 +1,53 @@
 var Messages = Vue.component("messages", {
     template: `
         <div class="flex-grow">
-            <create-message v-on:click="updateMessages"></create-message>
-            <show-messages v-on:click="updateMessages" v-bind:messages="messages"></show-messages>
+            <create-message></create-message>
+            <div class="messages flex-column">
+                <show-message v-if="messages.length > 0" v-for="message in paginatedMessages" v-bind:key="message.id" v-bind:message="message"></show-message>
+            </div>
+            <pagination v-if="messages.length > 0" v-bind:pageNumber="pageNumber" v-bind:pageCount="pageCount" v-on:click="updatePageNumber"></pagination>
         </div>
     `,
     data: function() {
         return {
-            messages: [],
+            pageNumber: 0,
+            size: 5,
         }
     },
-    methods: {
-        updateMessages: function(messages) {
-            this.messages = messages;
+    computed: {
+        messages: function() {
+            return store.getters.getMessages;
         },
-        getMessages: function() {
-            fetch(this.URL_API_BASE+"/messages", {
+        paginatedMessages: function() {
+            var start = this.pageNumber * this.size;
+            var end = start + this.size;
+            return store.getters.getMessages.slice(start, end);
+        },
+        pageCount: function() {
+            var l = store.getters.getMessages.length
+            var s = this.size;
+            return Math.ceil(l/s);
+        },
+    },
+    methods: {
+        updatePageNumber: function(page) {
+            this.pageNumber = page;
+        }
+    },
+    beforeRouteEnter (to, from, next) {
+        if (store.getters.getMessages.length > 0) {
+            next();
+        } else {
+            fetch(store.getters.getApiUrl+"/messages", {
                 credentials: "include",
             })
             .then(handleErrors)
             .then(response => response.json())
             .then(json => {
-                this.updateMessages(json.messages);
+                store.dispatch("updateMessages", json.messages);
+                next();
             });
-        },
-    },
-    created: function() {
-        this.getMessages();
-    },
-    mounted: function() {
-        // poll for messages
-        /*setInterval(function () {
-            this.getMessages();
-        }.bind(this), 30*1000);*/
+        }
     },
 });
 
@@ -52,7 +67,7 @@ Vue.component("create-message", {
     },
     methods: {
         createMessage: function() {
-            fetch(this.URL_API_BASE+"/messages", {
+            fetch(store.getters.getApiUrl+"/messages", {
                 credentials: "include",
                 method: "POST",
                 body: JSON.stringify(this.messageForm),
@@ -61,9 +76,7 @@ Vue.component("create-message", {
             .then(handleErrors)
             .then(response => response.json())
             .then(json => {
-                // update messages with the response
-                this.$emit("click", json.messages);
-                // reset the form
+                store.dispatch("updateMessages", json.messages);
                 Object.keys(this.messageForm).forEach((k) => {
                     this.messageForm[k] = "";
                 });
@@ -72,13 +85,12 @@ Vue.component("create-message", {
     },
 });
 
-Vue.component("show-messages", {
+Vue.component("show-message", {
     props: {
-        messages: Array,
+        message: Object,
     },
     template: `
-        <div class="messages flex-column">
-            <div class="message flex-row" v-if="messages.length > 0" v-for="message in paginatedMessages" v-bind:key="message.id" v-bind:message="message">
+            <div class="message flex-row">
                 <a class="img-btn" v-if="isEditable(message) === true" v-on:click="deleteMessage(message)">
                     <i class="fas fa-trash" title="Delete"></i>
                 </a>
@@ -94,29 +106,8 @@ Vue.component("show-messages", {
                     <p class="timestamp">{{ message.created }}</p>
                 </div>
             </div>
-            <div class="pagination flex-row flex-align-center flex-justify-right" v-if="messages.length > 0" >
-                <a v-on:click="prevPage" v-bind:disabled="pageNumber === 0">&laquo;</a>
-                <a v-for="(page, index) in pageCount" v-bind:key="page" v-on:click="gotoPage(index)" v-bind:class="pageNumber === index ? 'active' : ''">{{ index }}</a>
-                <a v-on:click="nextPage" v-bind:disabled="pageNumber >= pageCount-1">&raquo;</a>
-            </div>
-        </div>
     `,
-    data: function() {
-        return {
-            pageNumber: 0,
-            size: 5,
-        }
-    },
     methods: {
-        nextPage: function() {
-            this.pageNumber++;
-        },
-        prevPage: function() {
-            this.pageNumber--;
-        },
-        gotoPage: function(page) {
-            this.pageNumber = page;
-        },
         isAuthor: function(message) {
             user = JSON.parse(sessionStorage.getItem("userInfo"));
             return (user.id === message.author.id) ? true : false;
@@ -126,31 +117,41 @@ Vue.component("show-messages", {
             return (this.isAuthor(message) || user.role === "admin") ? true : false;
         },
         deleteMessage: function(message) {
-            fetch(this.URL_API_BASE+"/messages/"+message.id, {
+            fetch(store.getters.getApiUrl+"/messages/"+message.id, {
                 credentials: "include",
                 method: "DELETE",
             })
             .then(handleErrors)
             .then(response => response.json())
             .then(json => {
-                // update messages with the response
-                this.$emit("click", json.messages);
-                // must use the global flash function as the
-                // flash div is outside the Vue app anchor
+                store.dispatch("updateMessages", json.messages);
                 showFlash("Message deleted.");
             });
         },
     },
-    computed: {
-        pageCount: function() {
-            let l = this.messages.length
-            let s = this.size;
-            return Math.ceil(l/s);
+});
+
+Vue.component("pagination", {
+    props: {
+        pageNumber: Number,
+        pageCount: Number,
+    },
+    template: `
+            <div class="pagination flex-row flex-align-center flex-justify-right">
+                <a v-on:click="prevPage" v-bind:disabled="pageNumber === 0">&laquo;</a>
+                <a v-for="(page, index) in pageCount" v-bind:key="page" v-on:click="gotoPage(index)" v-bind:class="pageNumber === index ? 'active' : ''">{{ index }}</a>
+                <a v-on:click="nextPage" v-bind:disabled="pageNumber >= pageCount-1">&raquo;</a>
+            </div>
+    `,
+    methods: {
+        gotoPage: function(page) {
+            this.$emit("click", page);
         },
-        paginatedMessages: function() {
-            const start = this.pageNumber * this.size;
-            const end = start + this.size;
-            return this.messages.slice(start, end);
+        nextPage: function() {
+            this.gotoPage(this.pageNumber+1);
+        },
+        prevPage: function() {
+            this.gotoPage(this.pageNumber-1);
         },
     },
 });
@@ -180,7 +181,7 @@ Vue.component("scroll", {
         doUnfurl: function(message) {
             var urls = this.parseUrls(message);
             urls.forEach(function(value, key) {
-                fetch(this.URL_API_BASE+"/unfurl", {
+                fetch(store.getters.getApiUrl+"/unfurl", {
                     credentials: "include",
                     method: "POST",
                     body: JSON.stringify({url: value}),

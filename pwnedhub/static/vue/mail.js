@@ -13,7 +13,7 @@ var Mail = Vue.component("mail", {
                     </tr>
                 </thead>
                 <tbody>
-                    <envelope v-if="mail.length > 0" v-for="envelope in mail" v-bind:key="envelope.id" v-bind:envelope="envelope" v-on:click="updateMail"></envelope>
+                    <envelope v-if="mail.length > 0" v-for="letter in mail" v-bind:key="letter.id" v-bind:letter="letter"></envelope>
                     <tr v-else>
                         <td colspan="4" class="center-content"><i class="fas fa-exclamation-circle medium" title="Empty"></i></td>
                     </tr>
@@ -21,82 +21,81 @@ var Mail = Vue.component("mail", {
             </table>
         </div>
     `,
-    data: function() {
-        return {
-            mail: [],
-        }
+    computed: {
+        mail: function() {
+            return store.getters.getMail;
+        },
     },
     methods: {
         draftLetter: function() {
             this.$router.push({ name: 'compose' });
         },
-        updateMail: function(mail) {
-            this.mail = mail;
-        },
-        getMail: function() {
-            fetch(this.URL_API_BASE+"/mail", {
+    },
+    beforeRouteEnter: function(to, from, next) {
+        if (store.getters.getMail.length > 0) {
+            next();
+        } else {
+            fetch(store.getters.getApiUrl+"/mail", {
                 credentials: "include",
             })
             .then(handleErrors)
             .then(response => response.json())
             .then(json => {
-                this.updateMail(json.mail);
+                store.dispatch("updateMail", json.mail);
+                next();
             });
-        },
-    },
-    created: function() {
-        this.getMail();
+        }
     },
 });
 
 Vue.component("envelope", {
     props: {
-        envelope: Object,
+        letter: Object,
     },
     template: `
-        <tr v-bind:style="!envelope.read ? { fontWeight: 'bold' } : ''" v-on:click="openEnvelope">
-            <td class="left-content">{{ envelope.sender.name }}</td>
-            <td class="left-content">{{ envelope.subject }}</td>
-            <td>{{ envelope.created }}</td>
+        <tr v-bind:style="!letter.read ? { fontWeight: 'bold' } : ''" v-on:click="openLetter">
+            <td class="left-content">{{ letter.sender.name }}</td>
+            <td class="left-content">{{ letter.subject }}</td>
+            <td>{{ letter.created }}</td>
         </tr>
     `,
     methods: {
-        openEnvelope: function() {
-            this.$router.push({ name: 'letter', params: { envelopeId: this.envelope.id } });
+        openLetter: function() {
+            this.$router.push({ name: 'letter', params: { letterId: this.letter.id } });
         },
     },
 });
 
 var Letter = Vue.component("letter", {
     props: {
-        envelopeId: [Number, String],
+        letterId: [Number, String],
     },
     template: `
-        <div v-if="envelope" class="flex-width-10 flex-offset-1 flex-basis-10 mail">
+        <div v-if="letter" class="flex-width-10 flex-offset-1 flex-basis-10 mail">
             <div>
-                <h5>{{ envelope.subject }}</h5>
+                <h5>{{ letter.subject }}</h5>
             </div>
             <div class="sender flex-row flex-align-center">
                 <div class="avatar">
-                    <router-link v-bind:to="{ name: 'profile', params: { userId: envelope.sender.id } }">
-                        <img class="circular bordered-dark" v-bind:src="envelope.sender.avatar" title="Avatar" />
+                    <router-link v-bind:to="{ name: 'profile', params: { userId: letter.sender.id } }">
+                        <img class="circular bordered-dark" v-bind:src="letter.sender.avatar" title="Avatar" />
                     </router-link>
                 </div>
                 <div>
-                    <b>{{ envelope.sender.name }} @ {{ envelope.created }}</b></div>
+                    <b>{{ letter.sender.name }} @ {{ letter.created }}</b></div>
             </div>
-            <div class="content" v-html="envelope.content"></div>
+            <div class="content" v-html="letter.content"></div>
             <hr>
             <div class="right-content">
                 <a style="float: left" class="img-btn" v-on:click="gotoMailbox"><i class="fas fa-arrow-left" title="Inbox"></i></a>
                 <a class="img-btn" v-on:click="draftReply"><i class="fas fa-reply" title="Reply"></i></a>
-                <a class="img-btn" v-on:click="deleteEnvelope"><i class="fas fa-trash" title="Delete"></i></a>
+                <a class="img-btn" v-on:click="deleteLetter"><i class="fas fa-trash" title="Delete"></i></a>
             </div>
         </div>
     `,
     data: function() {
         return {
-            envelope: null,
+            letter: null,
         }
     },
     methods: {
@@ -104,32 +103,36 @@ var Letter = Vue.component("letter", {
             this.$router.push({ name: 'mail' });
         },
         draftReply: function() {
-            this.$router.push({ name: 'reply', params: { letterId: this.envelope.id } });
+            this.$router.push({ name: 'reply', params: { letterId: this.letter.id } });
         },
-        getEnvelope: function() {
-            fetch(this.URL_API_BASE+"/mail/"+this.envelopeId, {
+        getLetter: function() {
+            // fetching updates the local and remote letter.read property
+            fetch(store.getters.getApiUrl+"/mail/"+this.letterId, {
                 credentials: "include",
             })
             .then(handleErrors)
             .then(response => response.json())
             .then(json => {
-                this.envelope = json;
+                store.dispatch("updateLetter", json);
+                this.letter = json;
             });
         },
-        deleteEnvelope: function() {
-            fetch(this.URL_API_BASE+"/mail/"+this.envelope.id, {
+        deleteLetter: function() {
+            fetch(store.getters.getApiUrl+"/mail/"+this.letter.id, {
                 credentials: "include",
                 method: "DELETE",
             })
             .then(handleErrors)
-            .then(response => {
+            .then(response => response.json())
+            .then(json => {
+                store.dispatch("updateMail", json.mail);
                 this.$router.push({ name: "mail" });
                 showFlash("Mail deleted.");
             });
         },
     },
     created: function() {
-        this.getEnvelope();
+        this.getLetter();
     },
 });
 
@@ -166,7 +169,7 @@ var Compose = Vue.component("compose", {
     },
     methods: {
         getUsers: function() {
-            fetch(this.URL_API_BASE+"/users", {
+            fetch(store.getters.getApiUrl+"/users", {
                 credentials: "include",
             })
             .then(handleErrors)
@@ -182,7 +185,7 @@ var Compose = Vue.component("compose", {
             router.go(-1);
         },
         sendLetter: function() {
-            fetch(this.URL_API_BASE+"/mail", {
+            fetch(store.getters.getApiUrl+"/mail", {
                 credentials: "include",
                 method: "POST",
                 body: JSON.stringify(this.letterForm),
@@ -190,6 +193,9 @@ var Compose = Vue.component("compose", {
             })
             .then(handleErrors)
             .then(response => {
+                // setting store.state.mail to an empty array
+                // will cause the mail component to refetch
+                store.dispatch("updateMail", []);
                 this.$router.push({ name: "mail" });
                 showFlash("Mail sent.");
             })
@@ -237,17 +243,10 @@ var Reply = Vue.component("reply", {
             router.go(-1);
         },
         getLetter: function() {
-            fetch(this.URL_API_BASE+"/mail/"+this.letterId, {
-                credentials: "include",
-            })
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                this.letter = json;
-            });
+            this.letter = store.getters.getLetter(this.letterId);
         },
         sendReply: function() {
-            fetch(this.URL_API_BASE+"/mail", {
+            fetch(store.getters.getApiUrl+"/mail", {
                 credentials: "include",
                 method: "POST",
                 body: JSON.stringify({
@@ -259,6 +258,7 @@ var Reply = Vue.component("reply", {
             })
             .then(handleErrors)
             .then(response => {
+                store.dispatch("updateMail", []);
                 this.$router.push({ name: "mail" });
                 showFlash("Mail sent.");
             });

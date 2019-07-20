@@ -21,7 +21,7 @@ const routes = [
         },
     },
     {
-        path: "/mail/view/:envelopeId",
+        path: "/mail/view/:letterId",
         name: "letter",
         component: Letter,
         props: true,

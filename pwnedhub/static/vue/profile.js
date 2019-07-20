@@ -19,7 +19,7 @@ var Profile = Vue.component("profile", {
     },
     methods: {
         getUser: function() {
-            fetch(this.URL_API_BASE+"/users/"+this.userId, {
+            fetch(store.getters.getApiUrl+"/users/"+this.userId, {
                 credentials: "include",
             })
             .then(handleErrors)

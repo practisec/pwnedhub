@@ -218,6 +218,15 @@ class MailInst(Resource):
         return mail.serialize()
 
     @auth_required
+    def patch(self, mid):
+        mail = Mail.query.get_or_404(mid)
+        if mail.receiver != g.user:
+            abort(403)
+        mail.update(request.json)
+        db.session.commit()
+        return mail.serialize()
+
+    @auth_required
     def delete(self, mid):
         mail = Mail.query.get_or_404(mid)
         if mail.receiver != g.user:

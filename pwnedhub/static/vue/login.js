@@ -12,7 +12,7 @@ var Login = Vue.component('login', {
     methods: {
         getUserInfo: function() {
             session = ('; ' + document.cookie).split("; " + "session" + "=").pop().split(';').shift()
-            fetch(this.URL_API_BASE+"/access-token", {
+            fetch(store.getters.getApiUrl+"/access-token", {
                 credentials: "include",
                 method: "POST",
                 body: JSON.stringify({session: session}),
