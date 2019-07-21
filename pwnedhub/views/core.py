@@ -19,8 +19,9 @@ core = Blueprint('core', __name__)
 
 @core.before_app_request
 def render_mobile():
-    if request.endpoint != 'static' and any(x in request.user_agent.string.lower() for x in ['android', 'iphone', 'ipad']):
-        return render_template('mobile.html')
+    if any(x in request.user_agent.string.lower() for x in ['android', 'iphone', 'ipad']):
+        if not request.endpoint.startswith('static'):
+            return render_template('spa.html')
 
 @core.before_app_request
 def load_user():
@@ -36,7 +37,6 @@ def add_header(response):
 # general controllers
 
 @core.route('/')
-@core.route('/index')
 def index():
     return render_template('index.html')
 
@@ -47,10 +47,6 @@ def home():
 @core.route('/about')
 def about():
     return render_template('about.html')
-
-@core.route('/constants.js')
-def js_constants():
-    return Response(render_template('constants.js'), mimetype='text/javascript')
 
 # admin controllers
 

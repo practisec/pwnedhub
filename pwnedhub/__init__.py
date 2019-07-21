@@ -39,12 +39,12 @@ def create_app(config='Development'):
     app.register_blueprint(resources, url_prefix='/api')
 
     from pwnedhub.views.core import core
+    from pwnedhub.views.static import static
     from pwnedhub.views.auth import auth
-    from pwnedhub.views.spa import spa
     from pwnedhub.views.errors import errors
     app.register_blueprint(core)
+    app.register_blueprint(static)
     app.register_blueprint(auth)
-    app.register_blueprint(spa)
     app.register_blueprint(errors)
 
     return app
