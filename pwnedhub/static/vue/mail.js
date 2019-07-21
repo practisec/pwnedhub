@@ -12,11 +12,11 @@ var Mail = Vue.component("mail", {
                         <th>date</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <envelope v-if="mail.length > 0" v-for="letter in mail" v-bind:key="letter.id" v-bind:letter="letter"></envelope>
-                    <tr v-else>
-                        <td colspan="4" class="center-content"><i class="fas fa-exclamation-circle medium" title="Empty"></i></td>
-                    </tr>
+                <tbody v-if="mail.length > 0">
+                    <envelope v-for="letter in mail" v-bind:key="letter.id" v-bind:letter="letter"></envelope>
+                </tbody>
+                <tbody v-else>
+                    <tr><td colspan="4" class="center-content"><i class="fas fa-exclamation-circle medium" title="Empty"></i></td></tr>
                 </tbody>
             </table>
         </div>
