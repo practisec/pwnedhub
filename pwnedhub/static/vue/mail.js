@@ -176,7 +176,7 @@ var Compose = Vue.component("compose", {
             .then(response => response.json())
             .then(json => {
                 this.recipients = json.users.filter(function(user) {
-                    var currentUser = JSON.parse(sessionStorage.getItem("userInfo"));
+                    var currentUser = store.getters.getUserInfo;
                     return user.id !== currentUser.id;
                 });
             });

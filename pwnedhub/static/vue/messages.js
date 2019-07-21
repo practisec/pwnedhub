@@ -109,11 +109,11 @@ Vue.component("show-message", {
     `,
     methods: {
         isAuthor: function(message) {
-            user = JSON.parse(sessionStorage.getItem("userInfo"));
+            user = store.getters.getUserInfo;
             return (user.id === message.author.id) ? true : false;
         },
         isEditable: function(message) {
-            user = JSON.parse(sessionStorage.getItem("userInfo"));
+            user = store.getters.getUserInfo;
             return (this.isAuthor(message) || user.role === "admin") ? true : false;
         },
         deleteMessage: function(message) {

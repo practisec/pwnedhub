@@ -40,7 +40,7 @@ var Login = Vue.component('login', {
                 return;
             }
             //[vuln] not really a vuln, but can change "user" to "admin" to see other functionality in the interface
-            sessionStorage.setItem("userInfo", JSON.stringify(json));
+            store.dispatch("setUserInfo", json);
             if (this.$route.params.nextUrl != null){
                 // originally requested location
                 this.$router.push(this.$route.params.nextUrl);
@@ -50,7 +50,7 @@ var Login = Vue.component('login', {
             }
         },
         loginFailed: function(error) {
-            sessionStorage.clear();
+            store.dispatch("unsetUserInfo");
             showFlash(error);
         },
     },

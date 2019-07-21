@@ -89,6 +89,11 @@ class TokenList(Resource):
                 return user.serialize(), 200, {'Set-Cookie': 'access_token='+token+'; HttpOnly'}
         return {'message': 'Invalid username or password.'}
 
+    def delete(self):
+        response = Response(None, 204)
+        response.delete_cookie('access_token')
+        return response
+
 api.add_resource(TokenList, '/access-token')
 
 

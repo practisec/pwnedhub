@@ -57,7 +57,7 @@ const routes = [
     },
     {
         path: "*",
-        redirect: "/login"
+        redirect: "/messages",
     }
 ];
 
@@ -67,7 +67,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.authRequired)) {
-        if (sessionStorage.getItem("userInfo") == null) {
+        if (!store.getters.isLoggedIn) {
             next({
                 name: "login",
                 params: { nextUrl: to.fullPath }
@@ -79,6 +79,10 @@ router.beforeEach((to, from, next) => {
         next()
     }
 });
+
+// initialize the store prior to instantiating the app to ensure
+// the router.beforeEach check gets the proper isLoggedIn value
+store.dispatch("initUserInfo");
 
 const app = new Vue({
     el: "#app",
