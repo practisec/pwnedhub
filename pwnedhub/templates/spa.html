@@ -40,12 +40,5 @@
     <script src="{{ url_for('static', filename='vue/login.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/navigation.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/app.js') }}"></script>
-    {% if get_flashed_messages() %}
-    <script>
-        {% for message in get_flashed_messages() %}
-        showFlash("{{ message }}");
-        {% endfor %}
-    </script>
-    {% endif %}
 </body>
 </html>
