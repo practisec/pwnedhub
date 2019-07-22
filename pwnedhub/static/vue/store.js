@@ -20,11 +20,11 @@ const mutations = {
     },
     SET_USER_INFO(state, value) {
       state.userInfo = value;
-      sessionStorage.setItem("userInfo", JSON.stringify(state.userInfo));
+      localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
     },
     UNSET_USER_INFO(state) {
       state.userInfo = null
-      sessionStorage.removeItem("userInfo");
+      localStorage.removeItem("userInfo");
     },
 };
 
@@ -45,7 +45,10 @@ const actions = {
         context.commit("UNSET_USER_INFO");
     },
     initUserInfo(context) {
-        context.dispatch("setUserInfo", JSON.parse(sessionStorage.getItem("userInfo") || null));
+        var user = JSON.parse(localStorage.getItem("userInfo"));
+        if (user != null) {
+            context.dispatch("setUserInfo", user);
+        }
     },
 };
 
