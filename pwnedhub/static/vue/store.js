@@ -1,5 +1,5 @@
 const state = {
-    apiUrl: "{{ config.API_BASE_URL }}",
+    apiUrl: API_BASE_URL,
     mail: Array(),
     messages: Array(),
     userInfo: null,
@@ -84,18 +84,6 @@ const store = new Vuex.Store({
     getters,
 });
 
-// global functions
-
-function handleErrors(response) {
-    if (response.ok) {
-        return Promise.resolve(response);
-    }
-    if (response.status === 401) {
-        store.dispatch("unsetUserInfo");
-        router.push("login");
-    }
-    return response.json().then(json => {
-        var error = new Error(json.message || response.statusText)
-        return Promise.reject(error.message)
-    });
-}
+// initialize the store prior to instantiating the app to ensure
+// the router.beforeEach check gets the proper isLoggedIn value
+store.dispatch("initUserInfo");

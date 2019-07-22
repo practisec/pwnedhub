@@ -1,88 +1,16 @@
-const routes = [
-    {
-        path: "/login",
-        name: "login",
-        component: Login,
-    },
-    {
-        path: "/messages",
-        name: "messages",
-        component: Messages,
-        meta: {
-            authRequired: true,
-        },
-    },
-    {
-        path: "/mail",
-        name: "mail",
-        component: Mail,
-        meta: {
-            authRequired: true,
-        },
-    },
-    {
-        path: "/mail/view/:letterId",
-        name: "letter",
-        component: Letter,
-        props: true,
-        meta: {
-            authRequired: true,
-        },
-    },
-    {
-        path: "/mail/compose",
-        name: "compose",
-        component: Compose,
-        meta: {
-            authRequired: true,
-        },
-    },
-    {
-        path: "/mail/reply/:letterId",
-        name: "reply",
-        component: Reply,
-        props: true,
-        meta: {
-            authRequired: true,
-        },
-    },
-    {
-        path: "/profile/view/:userId",
-        name: "profile",
-        component: Profile,
-        props: true,
-        meta: {
-            authRequired: true,
-        },
-    },
-    {
-        path: "*",
-        redirect: "/messages",
+function handleErrors(response) {
+    if (response.ok) {
+        return Promise.resolve(response);
     }
-];
-
-const router = new VueRouter({
-    routes: routes,
-});
-
-router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.authRequired)) {
-        if (!store.getters.isLoggedIn) {
-            next({
-                name: "login",
-                params: { nextUrl: to.fullPath }
-            })
-        } else {
-            next()
-        }
-    } else {
-        next()
+    if (response.status === 401) {
+        store.dispatch("unsetUserInfo");
+        router.push("login");
     }
-});
-
-// initialize the store prior to instantiating the app to ensure
-// the router.beforeEach check gets the proper isLoggedIn value
-store.dispatch("initUserInfo");
+    return response.json().then(json => {
+        var error = new Error(json.message || response.statusText)
+        return Promise.reject(error.message)
+    });
+}
 
 const app = new Vue({
     el: "#app",

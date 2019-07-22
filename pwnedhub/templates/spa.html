@@ -30,15 +30,19 @@
             </div>
         </footer>
     </div>
+    <script>
+        const API_BASE_URL = "{{ config.API_BASE_URL }}";
+    </script>
     <script src="{{ url_for('static', filename='vue/vue.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/vue-router.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/vuex.js') }}"></script>
-    <script src="{{ url_for('static.constants_js') }}"></script>
     <script src="{{ url_for('static', filename='vue/mail.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/messages.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/profile.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/login.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/navigation.js') }}"></script>
+    <script src="{{ url_for('static', filename='vue/router.js') }}"></script>
+    <script src="{{ url_for('static', filename='vue/store.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/app.js') }}"></script>
 </body>
 </html>
