@@ -196,6 +196,10 @@ nav a {
     text-decoration: inherit;
 }
 
+nav a:hover {
+    color: inherit;
+}
+
 nav ul {
     list-style: none;
     height: 100%;
@@ -219,26 +223,29 @@ nav ul li:hover {
 }
 
 nav ul li a,
-nav ul li span {
+nav ul li span,
+nav ul li div {
     display: block;
     height: 100%;
+    cursor: pointer;
+}
+
+nav ul li a,
+nav ul li span {
     line-height: 5rem; /* critical to nav height 2/3 */
     font-size: 1.25rem;
     letter-spacing: 0.1rem;
     text-transform: uppercase;
     font-weight: bold;
     padding: 0 1rem;
-    cursor: pointer;
 }
 
-nav ul li.user > a,
-nav ul li.user > span {
-    color: red;
+nav ul li div {
+    padding: 0.5rem;
 }
 
-nav ul li:hover > a,
-nav ul li:hover > span {
-    color:#fff; /* only affects the user class */
+nav ul li div img {
+    height: 4rem;
 }
 
 nav ul li ul {

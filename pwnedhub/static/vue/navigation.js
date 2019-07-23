@@ -5,7 +5,7 @@ var Navigation = Vue.component("navigation", {
                 Pwned<span class="red"><b>Hub</b></span>
             </div>
             <ul v-if="isLoggedIn" class="flex-grow flex-row flex-justify-right">
-                <li><span>menu</span>
+                <li><div><img class="circular bordered-dark" v-bind:src="getUserAvatar()" title="Avatar" /></div>
                     <ul>
                         <li v-for="route in links" v-bind:key="route.id" v-bind:route="route">
                             <router-link v-bind:to="{ name: route.name, params: route.params || {} }">{{ route.text }}</router-link>
@@ -40,6 +40,9 @@ var Navigation = Vue.component("navigation", {
         },
     },
     methods: {
+        getUserAvatar: function() {
+            return store.getters.getUserInfo.avatar;
+        },
         doLogout: function() {
             fetch(store.getters.getApiUrl+"/access-token", {
                 credentials: "include",
