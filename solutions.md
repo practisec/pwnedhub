@@ -245,7 +245,7 @@ app.jinja_env.filters['escapejs'] = escapejs
 
 | Vulnerability | DOM-based Cross-Site Scripting (D-XSS) |
 | :-- | :-- |
-| Location | `static/common.js`: Value of the `error` parameter parsed from `document.URL` and dynamically added to the flash element via JavaScript. |
+| Location | `static/pwnedhub.js`: Value of the `error` parameter parsed from `document.URL` and dynamically added to the flash element via JavaScript. |
 | Remediation | Use the built-in `flash` function from Flask, populate the DOM using safe JavaScript functions or properties, or properly encode the output on the client-side. |
 
 ```
