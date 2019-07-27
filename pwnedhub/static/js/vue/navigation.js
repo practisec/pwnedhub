@@ -50,9 +50,7 @@ var Navigation = Vue.component("navigation", {
             })
             .then(handleErrors)
             .then(response => this.handleLogout())
-            .catch(error => {
-                showFlash(error);
-            })
+            .catch(error => showFlash(error));
         },
         handleLogout: function() {
             store.dispatch("unsetUserInfo");

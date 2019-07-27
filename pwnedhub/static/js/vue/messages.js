@@ -46,7 +46,8 @@ var Messages = Vue.component("messages", {
             .then(json => {
                 store.dispatch("updateMessages", json.messages);
                 next();
-            });
+            })
+            .catch(error => showFlash(error));
         }
     },
 });
@@ -81,6 +82,7 @@ Vue.component("create-message", {
                     this.messageForm[k] = "";
                 });
             })
+            .catch(error => showFlash(error));
         },
     },
 });
@@ -126,7 +128,8 @@ Vue.component("show-message", {
             .then(json => {
                 store.dispatch("updateMessages", json.messages);
                 showFlash("Message deleted.");
-            });
+            })
+            .catch(error => showFlash(error));
         },
     },
 });
@@ -192,6 +195,7 @@ Vue.component("scroll", {
                 .then(json => {
                     this.unfurls.push(json);
                 })
+                .catch(error => showFlash(error));
             }.bind(this));
         },
     },

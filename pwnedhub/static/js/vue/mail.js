@@ -43,7 +43,8 @@ var Mail = Vue.component("mail", {
             .then(json => {
                 store.dispatch("updateMail", json.mail);
                 next();
-            });
+            })
+            .catch(error => showFlash(error));
         }
     },
 });
@@ -115,7 +116,8 @@ var Letter = Vue.component("letter", {
             .then(json => {
                 store.dispatch("updateLetter", json);
                 this.letter = json;
-            });
+            })
+            .catch(error => showFlash(error));
         },
         deleteLetter: function() {
             fetch(store.getters.getApiUrl+"/mail/"+this.letter.id, {
@@ -128,7 +130,8 @@ var Letter = Vue.component("letter", {
                 store.dispatch("updateMail", json.mail);
                 this.$router.push({ name: "mail" });
                 showFlash("Mail deleted.");
-            });
+            })
+            .catch(error => showFlash(error));
         },
     },
     created: function() {
@@ -179,7 +182,8 @@ var Compose = Vue.component("compose", {
                     var currentUser = store.getters.getUserInfo;
                     return user.id !== currentUser.id;
                 });
-            });
+            })
+            .catch(error => showFlash(error));
         },
         discardDraft: function() {
             router.go(-1);
@@ -199,9 +203,7 @@ var Compose = Vue.component("compose", {
                 this.$router.push({ name: "mail" });
                 showFlash("Mail sent.");
             })
-            .catch(error => {
-                showFlash(error);
-            });
+            .catch(error => showFlash(error));
         },
     },
     created: function() {
@@ -261,7 +263,8 @@ var Reply = Vue.component("reply", {
                 store.dispatch("updateMail", []);
                 this.$router.push({ name: "mail" });
                 showFlash("Mail sent.");
-            });
+            })
+            .catch(error => showFlash(error));
         },
     },
     created: function() {

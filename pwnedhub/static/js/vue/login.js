@@ -32,7 +32,7 @@ var Login = Vue.component('login', {
             .then(handleErrors)
             .then(response => response.json())
             .then(json => this.handleLogin(json))
-            .catch(error => this.loginFailed(error))
+            .catch(error => this.loginFailed(error));
         },
         handleLogin: function(json) {
             if (!json.id) {

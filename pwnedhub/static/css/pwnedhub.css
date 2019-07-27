@@ -317,6 +317,7 @@ nav ul li:hover ul {
     z-index: 999;
     top: 1rem;
     right: 1rem;
+    margin-left: 1rem;
 }
 
 .flash div {

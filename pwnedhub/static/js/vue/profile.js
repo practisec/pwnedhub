@@ -26,7 +26,8 @@ var Profile = Vue.component("profile", {
             .then(response => response.json())
             .then(json => {
                 this.user = json;
-            });
+            })
+            .catch(error => showFlash(error));
         },
     },
     created: function() {
