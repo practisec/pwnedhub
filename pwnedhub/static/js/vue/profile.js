@@ -3,7 +3,7 @@ var Profile = Vue.component("profile", {
         userId: [Number, String],
     },
     template: `
-        <div v-if="user" class="flex-width-6 flex-offset-3 flex-basis-6 profile-view center-content">
+        <div v-if="user" class="flex-width-8 flex-offset-2 flex-basis-8 profile-view center-content">
             <div class="avatar"><img class="circular bordered-dark" v-bind:src="user.avatar" title="Avatar" /></div>
             <div><h3>{{ user.name }}</h3></div>
             <div><h6>Member since: {{ user.created }}</h6></div>

@@ -2,7 +2,7 @@ var Navigation = Vue.component("navigation", {
     template: `
         <nav class="flex-grow container-fluid flex-row">
             <div class="brand">
-                Pwned<span class="red"><b>Hub</b></span>
+                Pwned<span class="red"><b>Hub</b></span><span class="subscript">/m<span>
             </div>
             <ul v-if="isLoggedIn" class="flex-grow flex-row flex-justify-right">
                 <li><div><img class="circular bordered-dark" v-bind:src="getUserAvatar()" title="Avatar" /></div>

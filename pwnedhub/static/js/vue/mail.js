@@ -72,7 +72,7 @@ var Letter = Vue.component("letter", {
         letterId: [Number, String],
     },
     template: `
-        <div v-if="letter" class="flex-width-10 flex-offset-1 flex-basis-10 mail">
+        <div v-if="letter" class="flex-grow mail">
             <div>
                 <h5>{{ letter.subject }}</h5>
             </div>
@@ -141,7 +141,7 @@ var Letter = Vue.component("letter", {
 
 var Compose = Vue.component("compose", {
     template: `
-        <div class="flex-width-10 flex-offset-1 flex-basis-10 mail">
+        <div class="flex-grow mail">
             <div class="flex-column">
                 <label for="receiver">To: *</label>
                 <select name="receiver" v-model="letterForm.receiver">
@@ -216,7 +216,7 @@ var Reply = Vue.component("reply", {
         letterId: [Number, String],
     },
     template: `
-        <div class="flex-width-10 flex-offset-1 flex-basis-10 mail">
+        <div class="flex-grow mail">
             <div v-if="letter" class="flex-column">
                 <div><h5>{{ letter.sender.name }}</h5></div>
                 <input type="hidden" name="receiver" v-bind:value="letter.sender.id" />

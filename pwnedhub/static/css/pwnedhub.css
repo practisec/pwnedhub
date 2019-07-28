@@ -621,6 +621,7 @@ nav ul li:hover ul {
 .pagination a {
     padding: 0.25rem 1rem;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .pagination a.active {

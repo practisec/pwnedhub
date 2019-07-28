@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-flex.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-utility.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub-mobile.css') }}">
 </head>
 <body>
     <div id="flash" class="flash"></div>
@@ -22,13 +23,6 @@
                 <router-view></router-view>
             </div>
         </section>
-        <footer class="flex-no-shrink flex-row">
-            <div class="flex-grow container-fluid flex-row flex-justify-center">
-                <div class="footer center-content">
-                    &copy; {{ date.year }} PwnedHub. All rights reserved.
-                </div>
-            </div>
-        </footer>
     </div>
     <script>
         const API_BASE_URL = "{{ config.API_BASE_URL }}";

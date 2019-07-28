@@ -1,6 +1,6 @@
 var Login = Vue.component('login', {
     template: `
-        <div class="flex-width-4 flex-offset-4 flex-basis-4">
+        <div class="flex-width-8 flex-offset-2 flex-basis-8">
             <div class="flex-column">
                 <label for="username">Username:</label>
                 <input name="username" type="text" v-model="loginForm.username" />
