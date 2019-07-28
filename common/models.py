@@ -238,7 +238,7 @@ class User(BaseModel):
                 'id': self.id,
                 'created': self.created_as_string,
                 'name': self.name,
-                'avatar': self.avatar,
+                'avatar': self.avatar_or_default,
                 'signature': self.signature,
                 'reputation': self.reputation,
             }
@@ -248,7 +248,7 @@ class User(BaseModel):
             'username': self.username,
             'email': self.email,
             'name': self.name,
-            'avatar': self.avatar,
+            'avatar': self.avatar_or_default,
             'signature': self.signature,
             'notes': self.notes,
             'role': self.role_as_string,
