@@ -20,49 +20,51 @@
             <div class="brand">
                 <a href="{{ url_for('core.index') }}">Pwned<span class="red"><b>Hub</b></span></a>
             </div>
-            <ul class="flex-grow flex-row flex-justify-right">
-            {% if g.user %}
-                <li><a href="#">bugs</a>
-                    <ul>
-                        <li><a href="{{ url_for('core.bounty_info') }}">Info</a></li>
-                        <li><a href="{{ url_for('core.bounty_scoreboard') }}">Scoreboard</a></li>
-                        <li><a href="{{ url_for('core.submissions') }}">Submissions</a></li>
-                        <li><a href="{{ url_for('core.submissions_new') }}">New Submission</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">testing</a>
-                    <ul>
-                        <li><a href="{{ url_for('core.notes') }}">Notes</a></li>
-                        <li><a href="{{ url_for('core.artifacts') }}">Artifacts</a></li>
-                        <li><a href="{{ url_for('core.tools') }}">Tools</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">{% if g.user.has_unread_mail %}*{% endif %}collaboration</a>
-                    <ul>
-                        <li><a href="{{ url_for('core.mail') }}">{% if g.user.has_unread_mail %}*{% endif %}PwnMail</a></li>
-                        <li><a href="{{ url_for('core.messages') }}">Messages</a></li>
-                    </ul>
-                </li>
-            {% if g.user.is_admin %}
-                <li><a href="#">admin</a>
-                    <ul>
-                        <li><a href="{{ url_for('core.admin_tools') }}">Tools</a></li>
-                        <li><a href="{{ url_for('core.admin_users') }}">Users</a></li>
-                        <li><a href="{{ url_for('core.admin_games') }}">Games</a></li>
-                    </ul>
-                </li>
-            {% endif %}
-                <li><div><img class="circular bordered-dark" src="{{ g.user.avatar_or_default|safe }}" title="Avatar" /></div>
-                    <ul>
-                        <li><a href="{{ url_for('core.profile') }}">Profile</a></li>
-                        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-                    </ul>
-                </li>
-            {% else %}
-                <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-            {% endif %}
-            </ul>
+            <div class="flex-grow flex-row flex-justify-right nav">
+                <ul class="top-menu">
+                {% if g.user %}
+                    <li><a href="#">bugs</a>
+                        <ul class="sub-menu">
+                            <li><a href="{{ url_for('core.bounty_info') }}">Info</a></li>
+                            <li><a href="{{ url_for('core.bounty_scoreboard') }}">Scoreboard</a></li>
+                            <li><a href="{{ url_for('core.submissions') }}">Submissions</a></li>
+                            <li><a href="{{ url_for('core.submissions_new') }}">New Submission</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">testing</a>
+                        <ul class="sub-menu">
+                            <li><a href="{{ url_for('core.notes') }}">Notes</a></li>
+                            <li><a href="{{ url_for('core.artifacts') }}">Artifacts</a></li>
+                            <li><a href="{{ url_for('core.tools') }}">Tools</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">{% if g.user.has_unread_mail %}*{% endif %}collaboration</a>
+                        <ul class="sub-menu">
+                            <li><a href="{{ url_for('core.mail') }}">{% if g.user.has_unread_mail %}*{% endif %}PwnMail</a></li>
+                            <li><a href="{{ url_for('core.messages') }}">Messages</a></li>
+                        </ul>
+                    </li>
+                {% if g.user.is_admin %}
+                    <li><a href="#">admin</a>
+                        <ul class="sub-menu">
+                            <li><a href="{{ url_for('core.admin_tools') }}">Tools</a></li>
+                            <li><a href="{{ url_for('core.admin_users') }}">Users</a></li>
+                            <li><a href="{{ url_for('core.admin_games') }}">Games</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+                    <li><img class="circular bordered-dark avatar" src="{{ g.user.avatar_or_default|safe }}" title="Avatar" />
+                        <ul class="sub-menu">
+                            <li><a href="{{ url_for('core.profile') }}">Profile</a></li>
+                            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                {% endif %}
+                </ul>
+            </div>
         </nav>
     </header>
     <section class="flex-grow flex-no-shrink flex-row">

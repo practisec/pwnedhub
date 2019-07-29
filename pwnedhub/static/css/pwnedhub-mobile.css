@@ -3,6 +3,10 @@ nav .subscript {
     font-weight: bold;
 }
 
+nav .nav .top-menu > li:hover {
+    background: inherit;
+}
+
 .inbox table {
     width: 100%;
 }

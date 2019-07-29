@@ -2,20 +2,22 @@ var Navigation = Vue.component("navigation", {
     template: `
         <nav class="flex-grow container-fluid flex-row">
             <div class="brand">
-                Pwned<span class="red"><b>Hub</b></span><span class="subscript">/m<span>
+                Pwned<span class="red"><b>Hub</b></span><span class="subscript">/m</span>
             </div>
-            <ul v-if="isLoggedIn" class="flex-grow flex-row flex-justify-right">
-                <li><div><img class="circular bordered-dark" v-bind:src="getUserAvatar()" title="Avatar" /></div>
-                    <ul>
-                        <li v-for="route in links" v-bind:key="route.id" v-bind:route="route">
-                            <router-link v-bind:to="{ name: route.name, params: route.params || {} }">{{ route.text }}</router-link>
-                        </li>
-                        <li>
-                            <span v-on:click="doLogout">Logout</span>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+            <div class="flex-grow flex-row flex-justify-right nav">
+                <ul v-if="isLoggedIn" class="top-menu">
+                    <li><img class="circular bordered-dark avatar" v-bind:src="getUserAvatar()" title="Avatar" />
+                        <ul class="sub-menu">
+                            <li v-for="route in links" v-bind:key="route.id" v-bind:route="route">
+                                <router-link v-bind:to="{ name: route.name, params: route.params || {} }">{{ route.text }}</router-link>
+                            </li>
+                            <li>
+                                <span v-on:click="doLogout">Logout</span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </nav>
         `,
     data: function() {

@@ -181,6 +181,15 @@ nav {
     position: relative;
 }
 
+nav a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+nav a:hover {
+    color: inherit;
+}
+
 nav .brand {
     font-size: 3rem;
     padding-left: 1rem;
@@ -191,47 +200,29 @@ nav .brand a {
     text-decoration: inherit;
 }
 
-nav a {
-    color: inherit;
-    text-decoration: inherit;
+nav .nav ul {
+    list-style-type: none;
 }
 
-nav a:hover {
-    color: inherit;
-}
-
-nav ul {
-    list-style: none;
-    height: 100%;
+nav .nav ul,
+nav .nav li {
     margin: 0;
     padding: 0;
 }
 
-nav > ul {
-    float: right;
-}
-
-nav ul li {
-    display: inline-block;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-nav ul li:hover {
+nav .nav li:hover {
     background: red;
 }
 
-nav ul li a,
-nav ul li span,
-nav ul li div {
+nav .nav li a,
+nav .nav li span {
     display: block;
     height: 100%;
     cursor: pointer;
 }
 
-nav ul li a,
-nav ul li span {
+nav .nav li a,
+nav .nav li span {
     line-height: 5rem; /* critical to nav height 2/3 */
     font-size: 1.25rem;
     letter-spacing: 0.1rem;
@@ -240,15 +231,19 @@ nav ul li span {
     padding: 0 1rem;
 }
 
-nav ul li div {
-    padding: 0.5rem;
+nav .nav .top-menu {
+    display: flex;
+    align-items: center;
 }
 
-nav ul li div img {
+nav .nav .top-menu > li .avatar {
+    display: block;
     height: 4rem;
+    margin: 0.5rem;
+    cursor: pointer;
 }
 
-nav ul li ul {
+nav .nav .sub-menu {
     display: none;
     position: absolute;
     top: 5rem; /* critical to nav height 3/3 */
@@ -261,8 +256,15 @@ nav ul li ul {
     z-index: 99;
 }
 
-nav ul li:hover ul {
+nav .nav .top-menu li:hover .sub-menu {
     display: block;
+}
+
+@media only screen and (min-width: 600px) {
+    nav .nav .top-menu li:hover .sub-menu {
+        display: flex;
+        justify-content: flex-end;
+    }
 }
 
 .tabs {
