@@ -45,12 +45,6 @@ def roles_required(*roles):
         return wrapped
     return wrapper
 
-def async(func):
-    def wrapper(*args, **kwargs):
-        thr = Thread(target=func, args=args, kwargs=kwargs)
-        thr.start()
-    return wrapper
-
 def no_cache(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
