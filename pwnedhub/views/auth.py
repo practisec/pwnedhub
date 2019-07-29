@@ -7,10 +7,28 @@ from common.constants import QUESTIONS
 from common.utils import xor_encrypt
 from common.validators import is_valid_password
 from hashlib import md5
+from secrets import token_urlsafe
 import os
 import requests
 
 auth = Blueprint('auth', __name__)
+
+def create_welcome_message(user):
+    sender = User.query.get(1)
+    receiver = user
+    subject = 'Welcome to PwnedHub!'
+    content = "We're glad you've chosen PwnedHub to help you take your next step in becoming a more efficient security consultant. We're here to help. If you have any questions or concerns, please don't hesitate to reach out to this account for assistance. Together, we can make security testing great again!"
+    mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
+    db.session.add(mail)
+    db.session.commit()
+
+def init_session(user_id):
+    session['user_id'] = user_id
+    path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user_id).encode()).hexdigest())
+    if not os.path.exists(path):
+        os.makedirs(path)
+    session['upload_folder'] = path
+    session.rotate()
 
 # authenticaton controllers
 
@@ -27,14 +45,7 @@ def register():
                     user = User(**request.form.to_dict())
                     db.session.add(user)
                     db.session.commit()
-                    # create default welcome message
-                    sender = User.query.get(1)
-                    receiver = user
-                    subject = 'Welcome to PwnedHub!'
-                    content = "We're glad you've chosen PwnedHub to help you take your next step in becoming a more efficient security consultant. We're here to help. If you have any questions or concerns, please don't hesitate to reach out to this account for assistance. Together, we can make security testing great again!"
-                    mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
-                    db.session.add(mail)
-                    db.session.commit()
+                    create_welcome_message(user)
                     flash('Account created. Please log in.')
                     return redirect(url_for('auth.login'))
                 else:
@@ -44,14 +55,6 @@ def register():
         else:
             flash('Username already exists.')
     return render_template('register.html', questions=QUESTIONS)
-
-def _init_session(user_id):
-    session['user_id'] = user_id
-    path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user_id).encode()).hexdigest())
-    if not os.path.exists(path):
-        os.makedirs(path)
-    session['upload_folder'] = path
-    session.rotate()
 
 @auth.route('/login', methods=['GET', 'POST'])
 @validate(['username', 'password'])
@@ -65,7 +68,7 @@ def login():
         query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
         user = db.session.execute(query).first()
         if user and user['status'] == 1:
-            _init_session(user['id'])
+            init_session(user['id'])
             return redirect(request.args.get('next') or url_for('core.home'))
         return redirect(url_for('auth.login', error='Invalid username or password.'))
     return render_template('login.html')
@@ -104,9 +107,26 @@ def oauth_callback(provider):
         flash(e.__str__(), category='error')
     else:
         # process user information
-        user = User.get_by_email(resp['email'])
+        email = resp['email']
+        user = User.get_by_email(email)
+        if not user:
+            # register the user
+            user = User(
+                username=email.split('@')[0],
+                email=email,
+                avatar=resp['picture'],
+                signature='',
+                name=resp['name'],
+                password=token_urlsafe(20),
+                question=0,
+                answer=token_urlsafe(10),
+            )
+            db.session.add(user)
+            db.session.commit()
+            create_welcome_message(user)
         if user and user.status == 1:
-            _init_session(user.id)
+            # authenticate the user
+            init_session(user.id)
             return redirect(request.args.get('next') or url_for('core.home'))
         flash('User not found.', category='error')
     return redirect(url_for('auth.login'))

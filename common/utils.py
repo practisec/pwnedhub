@@ -9,12 +9,6 @@ def xor_decrypt(c, k):
     ciphertext = base64.b64decode(c.encode()).decode()
     return ''.join([ chr(ord(c)^ord(k)) for c,k in zip(ciphertext, cycle(k)) ])
 
-import binascii
-import os
-
-def get_token(n=40):
-    return binascii.hexlify(os.urandom(n))
-
 def get_jaccard_sim(str1, str2):
     a = set(str1.split())
     b = set(str2.split())
