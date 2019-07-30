@@ -54,7 +54,7 @@ var Messages = Vue.component("messages", {
 
 Vue.component("create-message", {
     template: `
-        <div class="flex-grow flex-row flex-align-center">
+        <div class="flex-row">
             <input class="flex-grow gutter-right" type="text" v-model="messageForm.message" placeholder="Message here..." />
             <input type="button" v-on:click="createMessage" value="Submit" />
         </div>
