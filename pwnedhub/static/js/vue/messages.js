@@ -166,7 +166,7 @@ Vue.component("scroll", {
     template: `
         <div class="scroll">
             <a v-for="(unfurl, index) in unfurls" v-bind:key="index" v-bind:unfurl="unfurl" v-bind:href="unfurl.url">
-                <p>{{ unfurl.site_name }} | {{ unfurl.title }} | {{ unfurl.description }}</p>
+                <p>{{ unfurl.values.join(" | ") }}</p>
             </a>
         </div>
     `,
@@ -178,7 +178,7 @@ Vue.component("scroll", {
     methods: {
         parseUrls: function(message) {
             var pattern = /\w+:(\/?\/?)[^\s]+/gi;
-            matches = message.comment.match(pattern);
+            var matches = message.comment.match(pattern);
             return matches || [];
         },
         doUnfurl: function(message) {
@@ -193,7 +193,18 @@ Vue.component("scroll", {
                 .then(handleErrors)
                 .then(response => response.json())
                 .then(json => {
-                    this.unfurls.push(json);
+                    var unfurl = Object;
+                    unfurl.url = json.url;
+                    unfurl.values = [];
+                    var keys = ["site_name", "title", "description"];
+                    for (var k in keys) {
+                        if (json[keys[k]] !== null) {
+                            unfurl.values.push(json[keys[k]]);
+                        }
+                    }
+                    if (unfurl.values.length > 0) {
+                        this.unfurls.push(unfurl);
+                    }
                 })
                 .catch(error => showFlash(error));
             }.bind(this));
