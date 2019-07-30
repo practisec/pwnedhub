@@ -391,11 +391,11 @@ def tools_execute(tid):
         env['PATH'] = os.pathsep.join(('/usr/bin', env['PATH']))
         p = subprocess.Popen([cmd, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=env)
         out, err = p.communicate()
-        output = out + err
+        output = (out + err).decode()
     else:
         output = 'Command contains invalid characters.'
         error = True
-    return jsonify(cmd=cmd, output=output.decode(), error=error)
+    return jsonify(cmd=cmd, output=output, error=error)
 
 @core.route('/submissions')
 @core.route('/submissions/page/<int:page>')
