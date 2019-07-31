@@ -1,4 +1,5 @@
 from flask import Blueprint, request, render_template, render_template_string, jsonify
+from urllib.parse import unquote
 import traceback
 
 errors = Blueprint('errors', __name__)
@@ -21,6 +22,8 @@ def forbidden(e):
     else:
         return e
 
+# affected by werkzeug v0.15.0
+# https://github.com/pallets/werkzeug/pull/1433
 @errors.app_errorhandler(404)
 def not_found(e):
     if request.content_type == CONTENT_TYPE:
@@ -30,7 +33,7 @@ def not_found(e):
 {% block body %}
 <div class="flex-grow error center-content">
     <h1>Oops! That page doesn't exist.</h1>
-    <h3>'''+request.url+'''</h3>
+    <h3>'''+unquote(request.url)+'''</h3>
 </div>
 {% endblock %}'''
         return render_template_string(template), 404
