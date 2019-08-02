@@ -289,11 +289,11 @@ class ExecuteList(Resource):
             env['PATH'] = os.pathsep.join(('/usr/bin', env['PATH']))
             p = subprocess.Popen([cmd, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=env)
             out, err = p.communicate()
-            output = out + err
+            output = (out + err).decode()
         else:
             output = 'Command contains invalid characters.'
             error = True
-        return {'cmd': cmd, 'output': output.decode(), 'error': error}
+        return {'cmd': cmd, 'output': output, 'error': error}
 
 api.add_resource(ExecuteList, '/execute')
 
