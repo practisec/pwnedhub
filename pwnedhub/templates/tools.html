@@ -16,41 +16,39 @@
         <div id="spinner" class="spinner"></div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 <script>
-function info(e) {
-    var tid = e.options[e.selectedIndex].value;
-    // get the description
-    $.ajax({
-        url: "{{ url_for('core.tools_info', tid='{0}') | urldecode }}".format(tid),
-        success: function(data){
-            // update the textarea with the description
-            document.getElementById("output").innerHTML = data.description;
-        }
-    });
-}
+var socket = io.connect("http://" + document.domain + ":" + location.port);
+
+socket.on("status", function(data) {
+    console.log(data);
+});
+
+socket.on('info', function(data) {
+    document.getElementById("output").textContent = data.description;
+    document.getElementById("args").value = "";
+});
+
+socket.on('output', function(data) {
+    var output = document.getElementById("output");
+    output.textContent = "$ {0}\n{1}".format(data.cmd, data.output);
+    output.scrollTop = output.scrollHeight;
+    spinner.style.visibility = "hidden";
+});
 
 function execute() {
     var spinner = document.getElementById("spinner");
     spinner.style.visibility = "visible";
     var tid = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].value;
     var args = document.getElementById("args").value;
-    // execute the command
-    $.ajax({
-        url: "{{ url_for('core.tools_execute', tid='{0}') | urldecode }}".format(tid),
-        type: "POST",
-        data: JSON.stringify({args: args}),
-        contentType: "application/json",
-        success: function(data){
-            spinner.style.visibility = "hidden";
-            if (data.error === true) {
-                // flash error message
-                showFlash(data.output);
-            } else {
-                // update the textarea with the command output
-                document.getElementById("output").innerHTML = "$ {0}\n{1}".format(data.cmd, data.output);
-            }
-        }
-    });
+    // clear out existing command output
+    document.getElementById("output").textContent = "";
+    socket.emit('execute', {tid: tid, args: args});
+}
+
+function info(e) {
+    var tid = e.options[e.selectedIndex].value;
+    socket.emit('info', {tid: tid});
 }
 
 function save_artifact() {

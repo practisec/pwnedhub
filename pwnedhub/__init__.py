@@ -1,11 +1,13 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
+from flask_socketio import SocketIO
 from common import db
 from datetime import datetime
 from urllib.parse import unquote
 
 sess = Session()
+socketio = SocketIO()
 
 def create_app(config='Development'):
 
@@ -16,6 +18,7 @@ def create_app(config='Development'):
 
     db.init_app(app)
     sess.init_app(app)
+    socketio.init_app(app)
 
     # custom jinja global for the current date
     # used in the layout to keep the current year
@@ -45,7 +48,9 @@ def create_app(config='Development'):
     app.register_blueprint(auth)
     app.register_blueprint(errors)
 
-    return app
+    from pwnedhub.views import websockets
+
+    return app, socketio
 
 def init_db(config='Development'):
     app = create_app(config)
