@@ -53,13 +53,14 @@ function buildUnfurl(url, data) {
 }
 
 var messages = document.getElementsByClassName("comment");
-var pattern = /\w+:(\/?\/?)[^\s]+/gi;
+var pattern = /\w+:\/\/[^\s]+/gi;
 for (var i = 0; i < messages.length; i++) {
     var content = messages[i].innerHTML;
     matches = content.match(pattern);
     if (matches !== null) {
         for (var x = 0; x < matches.length; x++) {
-            var url = matches[x];
+            // remove punctuation from URLs ending a sentence
+            var url = matches[x].replace(/[!.?]+$/g, '');
             // closure required to localize parameters
             (function(i, url) {
                 $.ajax({

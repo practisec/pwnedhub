@@ -177,17 +177,19 @@ Vue.component("scroll", {
     },
     methods: {
         parseUrls: function(message) {
-            var pattern = /\w+:(\/?\/?)[^\s]+/gi;
+            var pattern = /\w+:\/\/[^\s]+/gi;
             var matches = message.comment.match(pattern);
             return matches || [];
         },
         doUnfurl: function(message) {
             var urls = this.parseUrls(message);
             urls.forEach(function(value, key) {
+                // remove punctuation from URLs ending a sentence
+                var url = value.replace(/[!.?]+$/g, '');
                 fetch(store.getters.getApiUrl+"/unfurl", {
                     credentials: "include",
                     method: "POST",
-                    body: JSON.stringify({url: value}),
+                    body: JSON.stringify({url: url}),
                     headers:{"Content-Type": "application/json"}
                 })
                 .then(handleErrors)
