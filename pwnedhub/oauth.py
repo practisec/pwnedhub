@@ -1,25 +1,8 @@
 from flask import current_app, url_for, session
+from common.utils import generate_state, generate_nonce, get_unverified_jwt_payload
 from time import time
 from urllib.parse import urlencode
-import base64
-import hashlib
-import json
-import os
-import random
 import requests
-
-def generate_state(length=1024):
-    """Generates a random string of characters."""
-    return hashlib.sha256(os.urandom(1024)).hexdigest()
-
-def generate_nonce(length=8):
-    """Generates a pseudorandom number."""
-    return ''.join([str(random.randint(0, 9)) for i in range(length)])
-
-def parse_jwt(token):
-    """Parses the payload from a JWT."""
-    jwt = token.split('.')
-    return json.loads(base64.b64decode(jwt[1] + "==="))
 
 def validate_id_token(token, provider, client, c_time, nonce=None):
     """Validates an ID Token."""
@@ -104,7 +87,7 @@ class OAuthSignIn(object):
                 #user_resp = requests.get(self.doc['userinfo_endpoint'], headers={'Authorization': 'Bearer '+access_token})
                 id_token = resp.json().get('id_token')
                 # obtain payload information from the ID token
-                jwt_payload = parse_jwt(id_token)
+                jwt_payload = get_unverified_jwt_payload(id_token)
                 # validate the received ID token
                 if validate_id_token(
                         token=jwt_payload,

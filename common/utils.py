@@ -15,6 +15,26 @@ def get_jaccard_sim(str1, str2):
     c = a.intersection(b)
     return float(len(c)) / (len(a) + len(b) - len(c))
 
+import hashlib
+import os
+
+def generate_state(length=1024):
+    """Generates a random string of characters."""
+    return hashlib.sha256(os.urandom(1024)).hexdigest()
+
+import random
+
+def generate_nonce(length=8):
+    """Generates a pseudorandom number."""
+    return ''.join([str(random.randint(0, 9)) for i in range(length)])
+
+import json
+
+def get_unverified_jwt_payload(token):
+    """Parses the payload from a JWT."""
+    jwt = token.split('.')
+    return json.loads(base64.b64decode(jwt[1] + "==="))
+
 from lxml import etree
 import requests
 
