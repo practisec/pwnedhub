@@ -342,6 +342,11 @@ nav .nav .top-menu li:hover .sub-menu {
     text-align: justify;
 }
 
+.oidc-button {
+    cursor: pointer;
+    max-width: 100%;
+}
+
 .scoreboard table {
     width: 100%;
 }

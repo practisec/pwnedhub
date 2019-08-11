@@ -13,7 +13,7 @@
         <input type="submit" value="Login" />
         <hr>
         <div class="center-content">
-            <a href="{{ url_for('auth.oauth_login', provider='google') }}"><img style="max-width: 100%;" src="{{ url_for('static', filename='images/google_signin.png') }}" /></a>
+            <img class="oidc-button" src="{{ url_for('static', filename='images/google_signin.png') }}" onclick="window.location='{{ url_for('auth.oauth_login', provider='google') }}';" />
         </div>
     </form>
 </div>
