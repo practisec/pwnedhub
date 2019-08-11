@@ -9,7 +9,11 @@ var Login = Vue.component('login', {
                     <input id="password" name="password" type="password" v-model="loginForm.password" />
                     <input type="button" class="show" onclick="toggleShow();" value="show" />
                 </div>
-                <input type="button" v-on:click="doLogin" value="Login" />
+                <input type="button" v-on:click="doFormLogin" value="Login" />
+                <hr>
+                <div class="center-content">
+                    <google-oidc v-on:done="doOIDCLogin" />
+                </div>
             </div>
         </div>
     `,
@@ -22,11 +26,20 @@ var Login = Vue.component('login', {
         }
     },
     methods: {
-        doLogin: function() {
+        doFormLogin: function() {
+            this.doLogin(this.loginForm);
+        },
+        doOIDCLogin: function(user) {
+            var payload = {
+                id_token: user.getAuthResponse().id_token
+            };
+            this.doLogin(payload);
+        },
+        doLogin: function(payload) {
             fetch(store.getters.getApiUrl+"/access-token", {
                 credentials: "include",
                 method: "POST",
-                body: JSON.stringify(this.loginForm),
+                body: JSON.stringify(payload),
                 headers:{"Content-Type": "application/json"}
             })
             .then(handleErrors)
@@ -41,7 +54,7 @@ var Login = Vue.component('login', {
             }
             //[vuln] not really a vuln, but can change "user" to "admin" to see other functionality in the interface
             store.dispatch("setUserInfo", json);
-            if (this.$route.params.nextUrl != null){
+            if (this.$route.params.nextUrl != null) {
                 // originally requested location
                 this.$router.push(this.$route.params.nextUrl);
             } else {
@@ -53,5 +66,32 @@ var Login = Vue.component('login', {
             store.dispatch("unsetUserInfo");
             showFlash(error);
         },
+    },
+});
+
+Vue.component('google-oidc', {
+    template: `
+        <img id="signinBtn" class="oidc-button" src="/images/google_signin.png" />
+    `,
+    mounted: function() {
+        gapi.load('auth2', function() {
+            const auth2 = window.gapi.auth2.init({
+                cookiepolicy: 'single_host_origin',
+            });
+            auth2.attachClickHandler(
+                "signinBtn",
+                {},
+                function(googleUser) {
+                    this.$emit('done', googleUser);
+                }.bind(this),
+                function(error) {
+                    if (error.error === "network_error") {
+                        showFlash("OpenID Connect provider unreachable.");
+                    } else if (error.error !== "popup_closed_by_user") {
+                        showFlash("OpenID Connect error ({0}).".format(error.error));
+                    }
+                },
+            );
+        }.bind(this));
     },
 });

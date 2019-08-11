@@ -3,7 +3,7 @@ from flask_restful import Resource, Api
 from pwnedapi import db
 from common.constants import ADMIN_RESPONSE
 from common.models import User, Message, Mail, Tool
-from common.utils import unfurl_url
+from common.utils import get_unverified_jwt_payload, unfurl_url
 from common.validators import is_valid_command
 from datetime import datetime, timedelta
 from functools import wraps
@@ -71,22 +71,28 @@ class TokenList(Resource):
 
     def post(self):
         '''Returns a JWT for the user that owns the provided credentials.'''
+        id_token = request.json.get('id_token')
         username = request.json.get('username')
         password = request.json.get('password')
-        if not all([username, password]):
-            abort(400, 'Username and password required.')
-        user = User.get_by_username(username)
+        user = None
+        if id_token:
+            #[vuln] doesn't verify JWT, so it can be modified to authn as anyone
+            payload = get_unverified_jwt_payload(id_token)
+            user = User.get_by_email(payload['email'])
+        elif username and password:
+            user = User.get_by_username(username)
+            if user and not user.check_password(password):
+                user = None
         if user and user.is_enabled:
-            if user.check_password(password):
-                # build other claims
-                claims = {}
-                path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user.id).encode()).hexdigest())
-                if not os.path.exists(path):
-                    os.makedirs(path)
-                claims['upload_folder'] = path
-                # create a JWT and set it as a HttpOnly cookie for the api
-                token = encode_jwt(user.id, claims=claims)
-                return user.serialize(), 200, {'Set-Cookie': 'access_token='+token+'; HttpOnly'}
+            # build other claims
+            claims = {}
+            path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user.id).encode()).hexdigest())
+            if not os.path.exists(path):
+                os.makedirs(path)
+            claims['upload_folder'] = path
+            # create a JWT and set it as a HttpOnly cookie for the api
+            token = encode_jwt(user.id, claims=claims)
+            return user.serialize(), 200, {'Set-Cookie': 'access_token='+token+'; HttpOnly'}
         return {'message': 'Invalid username or password.'}
 
     def delete(self):
