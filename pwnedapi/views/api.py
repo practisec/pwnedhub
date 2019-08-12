@@ -1,4 +1,4 @@
-from flask import Blueprint, g, current_app, session, request, jsonify, abort, Response
+from flask import Blueprint, g, current_app, request, jsonify, abort, Response
 from flask_restful import Resource, Api
 from pwnedapi import db
 from common.constants import ADMIN_RESPONSE
