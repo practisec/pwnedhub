@@ -28,6 +28,13 @@ def generate_nonce(length=8):
     """Generates a pseudorandom number."""
     return ''.join([str(random.randint(0, 9)) for i in range(length)])
 
+from flask import session
+from uuid import uuid4
+
+def generate_csrf_token():
+    session['csrf_token'] = str(uuid4())
+    return session['csrf_token']
+
 import json
 
 def get_unverified_jwt_payload(token):

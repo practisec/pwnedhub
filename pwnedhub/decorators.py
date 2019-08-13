@@ -1,4 +1,4 @@
-from flask import g, request, redirect, url_for, abort, make_response, flash
+from flask import current_app, g, request, session, redirect, url_for, abort, make_response, flash
 from common.constants import ROLES
 from functools import wraps
 from threading import Thread
@@ -44,6 +44,16 @@ def roles_required(*roles):
             return func(*args, **kwargs)
         return wrapped
     return wrapper
+
+def csrf_protect(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        csrf_token = session.pop('csrf_token', None)
+        untrusted_token = request.values.get('csrf_token')
+        if not current_app.config['CSRF_PROTECT'] or untrusted_token == csrf_token:
+            return func(*args, **kwargs)
+        return abort(400)
+    return wrapped
 
 def no_cache(func):
     @wraps(func)

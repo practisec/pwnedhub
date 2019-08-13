@@ -8,6 +8,8 @@ class BaseConfig(object):
     DEBUG = False
     SECRET_KEY = 'development key'
     PW_ENC_KEY = 'sekrit'
+    #[vuln] CSRF if set to False
+    CSRF_PROTECT = False
     UPLOAD_FOLDER = '/tmp/artifacts'
     ALLOWED_EXTENSIONS = set(['txt', 'xml', 'jpg', 'png', 'gif', 'pdf'])
     ALLOWED_MIMETYPES = set(['text/plain', 'application/xml', 'image/jpeg', 'image/png', 'image/gif', 'application/pdf'])

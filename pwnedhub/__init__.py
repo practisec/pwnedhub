@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_socketio import SocketIO
 from common import db
+from common.utils import generate_csrf_token
 from datetime import datetime
 from urllib.parse import unquote
 
@@ -23,6 +24,8 @@ def create_app(config='Development'):
     # custom jinja global for the current date
     # used in the layout to keep the current year
     app.jinja_env.globals['date'] = datetime.now()
+    # custom jinja global for setting CSRF tokens
+    app.jinja_env.globals['csrf_token'] = generate_csrf_token
     # custom jinja filter to decode urls
     app.jinja_env.filters['urldecode'] = lambda s: unquote(s)
     # misc jinja configuration variables

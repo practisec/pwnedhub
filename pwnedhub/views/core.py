@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, request, session, g, redirect, url_for
 from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from pwnedhub import db
-from pwnedhub.decorators import login_required, roles_required, validate
+from pwnedhub.decorators import login_required, roles_required, validate, csrf_protect
 from common.models import Mail, Message, Tool, Bug, User, Score
 from common.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES, REVIEW_NOTIFICATION, UPDATE_NOTIFICATION, BUG_NOTIFICATIONS
 from common.utils import unfurl_url
@@ -136,6 +136,7 @@ def profile_view(uid):
 @core.route('/profile/change', methods=['GET', 'POST'])
 @login_required
 @validate(['name', 'question', 'answer'])
+@csrf_protect
 def profile_change():
     user = g.user
     password = request.values['password']
