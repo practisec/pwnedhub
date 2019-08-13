@@ -139,38 +139,34 @@ def config():
 
 # user controllers
 
-@core.route('/profile')
+@core.route('/profile', methods=['GET', 'POST'])
 @login_required
+@validate(['name', 'question', 'answer'])
+@csrf_protect
 def profile():
-    return render_template('profile.html', user=g.user, questions=QUESTIONS)
+    user = g.user
+    if request.method == 'POST':
+        password = request.values['password']
+        if password:
+            if is_valid_password(password):
+                user.password = password
+            else:
+                flash('Password does not meet complexity requirements.')
+        user.avatar = request.values['avatar']
+        user.signature = request.values['signature']
+        user.name = request.values['name']
+        user.question = request.values['question']
+        user.answer = request.values['answer']
+        db.session.add(user)
+        db.session.commit()
+        flash('Account information changed.')
+    return render_template('profile.html', user=user, questions=QUESTIONS)
 
 @core.route('/profile/view/<int:uid>')
 @login_required
 def profile_view(uid):
     user = User.query.get_or_404(uid)
     return render_template('profile_view.html', user=user)
-
-@core.route('/profile/change', methods=['GET', 'POST'])
-@login_required
-@validate(['name', 'question', 'answer'])
-@csrf_protect
-def profile_change():
-    user = g.user
-    password = request.values['password']
-    if password:
-        if is_valid_password(password):
-            user.password = password
-        else:
-            flash('Password does not meet complexity requirements.')
-    user.avatar = request.values['avatar']
-    user.signature = request.values['signature']
-    user.name = request.values['name']
-    user.question = request.values['question']
-    user.answer = request.values['answer']
-    db.session.add(user)
-    db.session.commit()
-    flash('Account information changed.')
-    return redirect(url_for('core.profile'))
 
 @core.route('/mail')
 @login_required

@@ -48,11 +48,15 @@ def roles_required(*roles):
 def csrf_protect(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
-        csrf_token = session.pop('csrf_token', None)
-        untrusted_token = request.values.get('csrf_token')
-        if not current_app.config['CSRF_PROTECT'] or untrusted_token == csrf_token:
-            return func(*args, **kwargs)
-        return abort(400)
+        if current_app.config['CSRF_PROTECT']:
+            #[vuln] CSRF bypass via method interchange
+            # only apply CSRF protection to POSTs
+            if request.method == 'POST':
+                csrf_token = session.pop('csrf_token', None)
+                untrusted_token = request.values.get('csrf_token')
+                if not csrf_token or untrusted_token != csrf_token:
+                    return abort(400)
+        return func(*args, **kwargs)
     return wrapped
 
 def no_cache(func):
