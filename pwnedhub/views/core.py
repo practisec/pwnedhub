@@ -4,7 +4,7 @@ from sqlalchemy.sql import func
 from pwnedhub import db
 from pwnedhub.decorators import login_required, roles_required, validate, csrf_protect
 from common.models import Mail, Message, Tool, Bug, User, Score
-from common.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES, REVIEW_NOTIFICATION, UPDATE_NOTIFICATION, BUG_NOTIFICATIONS
+from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES, REVIEW_NOTIFICATION, UPDATE_NOTIFICATION, BUG_NOTIFICATIONS
 from common.utils import unfurl_url
 from common.validators import is_valid_password, is_valid_command, is_valid_filename, is_valid_mimetype
 from datetime import datetime
@@ -119,6 +119,23 @@ def admin_users_modify(action, uid):
     else:
         flash('Self-modification denied.')
     return redirect(url_for('core.admin_users'))
+
+@core.route('/config', methods=['GET', 'POST'])
+def config():
+    #[vuln] time-based route enumeration
+    # simulate a resource intensive operation
+    import time
+    time.sleep(0.25)
+    # hide the existence of this route if not an admin
+    if not g.user or ROLES[g.user.role] != ROLES[0]:
+        return abort(404)
+    if request.method == 'POST':
+        # handle CSRF protection option
+        current_app.config['CSRF_PROTECT'] = False
+        if request.form.get('csrf_protect') == 'on':
+            current_app.config['CSRF_PROTECT'] = True
+        flash('Configuration updated')
+    return render_template('config.html')
 
 # user controllers
 

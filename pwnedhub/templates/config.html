@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="flex-width-10 flex-offset-1 flex-basis-10">
+    <form class="flex-column" action="{{ url_for('core.config') }}" method="post">
+        <label for="csrf_protect">
+            <input name="csrf_protect" type="checkbox" {% if config.CSRF_PROTECT %}checked {% endif %}/>
+            <span>CSRF Protection - {% if not config.CSRF_PROTECT %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+        </label>
+        <div class="left-content">
+            <input type="submit" value="Submit" onclick="cleanSubmit(event, this.form);" />
+        </div>
+    </form>
+</div>
+{% endblock %}
