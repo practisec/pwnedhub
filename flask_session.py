@@ -100,12 +100,12 @@ class SqlAlchemySessionInterface(SessionInterface):
         return binascii.hexlify(os.urandom(16)).decode()
 
     def open_session(self, app, request):
-        sid = request.cookies.get(app.session_cookie_name)
+        untrusted_sid = request.cookies.get(app.session_cookie_name)
         # create a new session if the request does not include a token
-        if not sid:
+        if not untrusted_sid:
             return self.session_class(sid=self._generate_sid())
         # attempt to retrieve the session associated with the given token
-        store_id = self.key_prefix + sid
+        store_id = self.key_prefix + untrusted_sid
         saved_session = self.sql_session_model.query.filter_by(session_id=store_id).first()
         # check and handle expired sessions
         if saved_session and saved_session.expiry <= datetime.utcnow():
@@ -118,10 +118,11 @@ class SqlAlchemySessionInterface(SessionInterface):
             try:
                 val = saved_session.data
                 data = self.serializer.loads(want_bytes(val))
-                return self.session_class(data, sid=sid)
+                return self.session_class(data, sid=untrusted_sid)
             except:
                 pass
-        return self.session_class(sid=sid)
+        # create a new session with a trusted token/sid
+        return self.session_class(sid=self._generate_sid())
 
     def save_session(self, app, session, response):
         domain = self.get_cookie_domain(app)
