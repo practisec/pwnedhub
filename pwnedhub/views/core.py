@@ -34,6 +34,13 @@ def add_header(response):
     response.headers['X-Powered-By'] = 'Flask/{}'.format(__version__)
     return response
 
+@core.after_app_request
+def restrict_flashes(response):
+    flashes = session.get('_flashes')
+    if flashes and len(flashes) > 5:
+        del session['_flashes'][0]
+    return response
+
 # general controllers
 
 @core.route('/')
