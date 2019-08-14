@@ -12,7 +12,7 @@ then
     echo "Running in development mode..."
     python ./pwnedhub.py
 else
-    echo "Running in production mode..."
-    sudo gunicorn --bind 0.0.0.0:80 pwnedhub.wsgi:app
+    echo "Running in production-like mode..."
+    sudo gunicorn --bind 127.0.0.1:5000 --worker-class eventlet --workers 1 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
 fi
 mysql.server stop
