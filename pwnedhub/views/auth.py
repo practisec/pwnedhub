@@ -133,6 +133,12 @@ def oauth_callback(provider):
 
 # password recovery flow controllers
 
+def reset_flow(message):
+    # clear recovery values from session
+    session.pop('reset_id', None)
+    flash(message)
+    return redirect(url_for('auth.reset_init'))
+
 @auth.route('/reset', methods=['GET', 'POST'])
 @validate(['username'])
 def reset_init():
@@ -154,26 +160,25 @@ def reset_init():
 @auth.route('/reset/question', methods=['GET', 'POST'])
 @validate(['answer'])
 def reset_question():
-    # enforce flow control
+    # validate flow control
     if not session.get('reset_id'):
-        flash('Reset improperly initialized.')
-        return redirect(url_for('auth.reset_init'))
+        return reset_flow('Reset improperly initialized.')
     user = User.query.get(session.get('reset_id'))
     if request.method == 'POST':
         answer = request.form['answer']
         if user.answer == answer:
             return redirect(url_for('auth.reset_password'))
         else:
-            flash('Incorrect answer.')
+            #[vuln] resetting the flow is a weak anti-automation control because there is no anti-automation control implemented to initialize the flow
+            return reset_flow('Incorrect answer.')
     return render_template('reset_question.html', question=user.question_as_string)
 
 @auth.route('/reset/password', methods=['GET', 'POST'])
 @validate(['password'])
 def reset_password():
-    # enforce flow control
+    # validate flow control
     if not session.get('reset_id'):
-        flash('Reset improperly initialized.')
-        return redirect(url_for('auth.reset_init'))
+        return reset_flow('Reset improperly initialized.')
     if request.method == 'POST':
         password = request.form['password']
         if is_valid_password(password):
@@ -184,5 +189,5 @@ def reset_password():
             flash('Password reset. Please log in.')
             return redirect(url_for('auth.login'))
         else:
-            flash('Invalid password. 6 or more characters required.')
+            flash('Password does not meet complexity requirements.')
     return render_template('reset_password.html')
