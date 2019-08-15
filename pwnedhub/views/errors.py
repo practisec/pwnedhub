@@ -11,7 +11,7 @@ CONTENT_TYPE = 'application/json'
 @errors.app_errorhandler(400)
 def bad_request(e):
     if request.content_type == CONTENT_TYPE:
-        response = jsonify(status=400, message=e.description), 400
+        return jsonify(status=400, message=e.description), 400
     else:
         return e
 
