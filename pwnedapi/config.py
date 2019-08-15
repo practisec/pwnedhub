@@ -12,6 +12,9 @@ class BaseConfig(object):
     ALLOWED_MIMETYPES = set(['text/plain', 'application/xml', 'image/jpeg', 'image/png', 'image/gif', 'application/pdf'])
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = 'mysql://pwnedhub:dbconnectpass@localhost/pwnedhub'
+    # prevents connection pool exhaustion
+    # but disables interactive debugging
+    PRESERVE_CONTEXT_ON_EXCEPTION = False
     #[vuln] arbitrary reflected origin, providing a list enables whitelisting
     #CORS_ORIGINS = ['http://pwnedhub.com:5000', 'http://www.pwnedhub.com:5000']
 

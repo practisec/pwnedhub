@@ -15,14 +15,17 @@ class BaseConfig(object):
     ALLOWED_MIMETYPES = set(['text/plain', 'application/xml', 'image/jpeg', 'image/png', 'image/gif', 'application/pdf'])
     SESSION_COOKIE_HTTPONLY = False
     PERMANENT_SESSION_LIFETIME = 3600 # 1 hour
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
     MARKDOWN_EXTENSIONS = [
         'markdown.extensions.tables',
         'markdown.extensions.extra',
         'markdown.extensions.attr_list',
         'markdown.extensions.fenced_code',
     ]
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = 'mysql://pwnedhub:dbconnectpass@localhost/pwnedhub'
+    # prevents connection pool exhaustion
+    # but disables interactive debugging
+    PRESERVE_CONTEXT_ON_EXCEPTION = False
     API_BASE_URL = 'http://api.pwnedhub.com:5001'
     OAUTH_PROVIDERS = {
         'google': {
