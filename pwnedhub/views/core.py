@@ -269,6 +269,8 @@ def messages_delete(mid):
 def unfurl():
     url = request.json.get('url')
     headers = {'User-Agent': request.headers.get('User-Agent')}
+    data = {'error': 'RequestError', 'message': 'Invalid request.'}
+    status = 400
     if url:
         try:
             data = unfurl_url(url, headers)
@@ -276,9 +278,6 @@ def unfurl():
         except Exception as e:
             data = {'error': 'UnfurlError', 'message': str(e)}
             status = 500
-    else:
-        data = {'error': 'RequestError', 'message': 'Invalid request.'}
-        status = 400
     return jsonify(**data), status
 
 @core.route('/notes')
