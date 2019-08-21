@@ -35,12 +35,18 @@ def encode_jwt(user_id, claims={}):
         algorithm='HS256'
     ).decode()
 
+def get_bearer_token(headers):
+    auth_header = headers.get('Authorization')
+    if auth_header:
+        return auth_header.split()[1]
+    return None
+
 # PRE-REQUEST FUNCTIONS
 
 @resources.before_app_request
 def parse_jwt():
     request.jwt = {}
-    token = request.cookies.get('access_token')
+    token = request.cookies.get('access_token') or get_bearer_token(request.headers)
     try:
         payload = jwt.decode(token, current_app.config['SECRET_KEY'])
     except:
@@ -90,8 +96,12 @@ class TokenList(Resource):
             if not os.path.exists(path):
                 os.makedirs(path)
             claims['upload_folder'] = path
-            # create a JWT and set it as a HttpOnly cookie for the api
+            # create a JWT
             token = encode_jwt(user.id, claims=claims)
+            # send the JWT as a Bearer token for non-browser-based consumers
+            if not request.headers.get('Origin'):
+                return {'token': token}, 200
+            # set the JWT as a HttpOnly cookie for browser-based consumers
             return user.serialize(), 200, {'Set-Cookie': 'access_token='+token+'; HttpOnly'}
         return {'message': 'Invalid username or password.'}
 
