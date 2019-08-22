@@ -7,7 +7,7 @@ var Login = Vue.component('login', {
                 <label for="password">Password:</label>
                 <div class="flex-column" style="position: relative;">
                     <input id="password" name="password" type="password" v-model="loginForm.password" />
-                    <input type="button" class="show" onclick="toggleShow();" value="show" />
+                    <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
                 </div>
                 <input type="button" v-on:click="doFormLogin" value="Login" />
                 <hr>
