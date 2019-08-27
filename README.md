@@ -11,7 +11,7 @@ PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http:/
     $ git clone https://github.com/lanmaster53/pwnedhub.git
     ```
 
-3. Install the dependencies. I recommend using `virtualenv` to keep things tidy. The below commands **do not** implement `virtualenv`.
+3. Install the dependencies. I recommend using `virtualenv` to keep things tidy. The below commands **do not** implement `virtualenv` and will install to your global pip environment.
 
     ```
     $ cd pwnedhub
@@ -40,10 +40,29 @@ PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http:/
     > exit;
     ```
 
-7. Start the application.
+7. Modify the hosts file to create the following records:
 
     ```
-    $ sudo gunicorn --bind 0.0.0.0:80 pwnedhub.wsgi:app
+    127.0.0.1   pwnedhub.com
+    127.0.0.1   api.pwnedhub.com
     ```
 
-8. Visit the application.
+8. Start the MySQL server.
+
+    ```
+    $ sudo systemctl start mysql
+    ```
+
+9. Start the PwnedHub application.
+
+    ```
+    $ python ./pwnedhub.py
+    ```
+
+10. Start the PwnedAPI application.
+
+    ```
+    $ python ./pwnedapi.py
+    ```
+
+11. Visit the application at http://pwnedhub.com:5000.
