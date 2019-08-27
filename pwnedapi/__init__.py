@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_restful import Api
 from common import db
 
-cors = CORS(supports_credentials=True)
+cors = CORS()
 
 def create_app(config='Development'):
 
