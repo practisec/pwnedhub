@@ -18,7 +18,9 @@
 </div>
 <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
 <script>
-var socket = io.connect("http://" + document.domain + ":" + location.port);
+var socket = io.connect("http://" + document.domain + ":" + location.port, {
+    transports: ['websocket']
+});
 
 socket.on("status", function(data) {
     console.log(data);
