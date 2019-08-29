@@ -51,23 +51,3 @@ def create_app(config='Development'):
     from pwnedhub.views import websockets
 
     return app, socketio
-
-def init_db(config='Development'):
-    app = create_app(config)
-    with app.app_context():
-        db.create_all()
-    print('Database initialized.')
-
-def drop_db(config='Development'):
-    app = create_app(config)
-    with app.app_context():
-        db.drop_all()
-    print('Database dropped.')
-
-def make_admin(username, config='Development'):
-    app = create_app(config)
-    with app.app_context():
-        user = models.User.get_by_username(username)
-        user.role = 0
-        db.session.add(user)
-        db.session.commit()
