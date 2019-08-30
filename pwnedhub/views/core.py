@@ -129,7 +129,6 @@ def admin_users_modify(action, uid):
 
 @core.route('/config', methods=['GET', 'POST'])
 def config():
-    #[vuln] time-based route enumeration
     # simulate a resource intensive operation
     import time
     time.sleep(0.25)

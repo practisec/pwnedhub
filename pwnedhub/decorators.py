@@ -49,7 +49,6 @@ def csrf_protect(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
         if current_app.config['CSRF_PROTECT']:
-            #[vuln] CSRF bypass via method interchange
             # only apply CSRF protection to POSTs
             if request.method == 'POST':
                 csrf_token = session.pop('csrf_token', None)

@@ -82,7 +82,6 @@ class TokenList(Resource):
         password = request.json.get('password')
         user = None
         if id_token:
-            #[vuln] doesn't verify JWT, so it can be modified to authn as anyone
             payload = get_unverified_jwt_payload(id_token)
             user = User.get_by_email(payload['email'])
         elif username and password:
@@ -134,7 +133,6 @@ class UserInst(Resource):
 
     @auth_required
     def patch(self, uid):
-        #[vuln] mass assignment here now too!
         User.query.filter_by(id=g.user.id).update(request.json)
         db.session.commit()
         return g.user.serialize()
@@ -257,7 +255,6 @@ api.add_resource(MailInst, '/mail/<string:mid>')
 class UnfurlList(Resource):
 
     def post(self):
-        #[vuln] no authn required and results in SSRF
         url = request.json.get('url')
         headers = {'User-Agent': request.headers.get('User-Agent')}
         if url:

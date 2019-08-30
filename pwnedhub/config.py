@@ -2,7 +2,6 @@ from common.config import SharedConfig
 
 class BaseConfig(SharedConfig):
 
-    #[vuln] CSRF if set to False
     CSRF_PROTECT = False
     SESSION_COOKIE_HTTPONLY = False
     PERMANENT_SESSION_LIFETIME = 3600 # 1 hour

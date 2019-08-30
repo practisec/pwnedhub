@@ -90,7 +90,6 @@ def oauth_login(provider):
     # build an authorization url
     oauth = OAuthSignIn(provider)
     if not oauth.doc:
-        #[vuln] D-XSS also presented here
         return redirect(url_for('auth.login', error='OpenID Connect provider unreachable.'))
     url = oauth.authorize()
     return redirect(url)
@@ -169,7 +168,6 @@ def reset_question():
         if user.answer == answer:
             return redirect(url_for('auth.reset_password'))
         else:
-            #[vuln] resetting the flow is a weak anti-automation control because there is no anti-automation control implemented to initialize the flow
             return reset_flow('Incorrect answer.')
     return render_template('reset_question.html', question=user.question_as_string)
 

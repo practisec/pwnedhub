@@ -33,7 +33,6 @@ def command_execution_event_handler(data):
         path = tool.path
         args = data.get('args')
         cmd = ' '.join([x for x in [path, args] if x is not None])
-        #[vuln] still vulnerable to command injection
         if not is_valid_command(cmd):
             output = 'Command contains invalid characters.'
         else:
@@ -50,7 +49,6 @@ def tool_info_event_handler(data):
     tid = data.get('tid')
     tool = {}
     if tid:
-        #[vuln] still vulnerable to SQL injection
         query = 'SELECT name, path, description FROM tools WHERE id='+tid
         try:
             tool = db.session.execute(query).first() or {}

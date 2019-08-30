@@ -52,7 +52,6 @@ var Login = Vue.component('login', {
                 this.loginFailed(json.message);
                 return;
             }
-            //[vuln] not really a vuln, but can change "user" to "admin" to see other functionality in the interface
             store.dispatch("setUserInfo", json);
             if (this.$route.params.nextUrl != null) {
                 // originally requested location
