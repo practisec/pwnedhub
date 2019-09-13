@@ -151,7 +151,7 @@ def config():
 @csrf_protect
 def profile():
     user = g.user
-    if request.method == 'POST':
+    if request.values:
         password = request.values['password']
         if password:
             if is_valid_password(password):
