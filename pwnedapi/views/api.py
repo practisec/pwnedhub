@@ -46,7 +46,9 @@ def get_bearer_token(headers):
 @resources.before_app_request
 def parse_jwt():
     request.jwt = {}
-    token = request.cookies.get('access_token') or get_bearer_token(request.headers)
+    token = request.cookies.get('access_token')
+    if current_app.config['BEARER_AUTH_ENABLE']:
+        token = get_bearer_token(request.headers)
     try:
         payload = jwt.decode(token, current_app.config['SECRET_KEY'])
     except:
@@ -73,6 +75,29 @@ def auth_required(func):
 
 # API RESOURCE CLASSES
 
+DYNAMIC_CONFIGS = [
+    'BEARER_AUTH_ENABLE',
+]
+
+
+class ConfigList(Resource):
+
+    def get(self):
+        config = {}
+        for key in DYNAMIC_CONFIGS:
+            config[key] = current_app.config[key]
+        return config
+
+    def patch(self):
+        config = {}
+        for key in DYNAMIC_CONFIGS:
+            current_app.config[key] = request.json.get(key)
+            config[key] = current_app.config[key]
+        return config
+
+api.add_resource(ConfigList, '/config')
+
+
 class TokenList(Resource):
 
     def post(self):
@@ -89,6 +114,7 @@ class TokenList(Resource):
             if user and not user.check_password(password):
                 user = None
         if user and user.is_enabled:
+            data = {'user': user.serialize()}
             # build other claims
             claims = {}
             path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user.id).encode()).hexdigest())
@@ -97,11 +123,13 @@ class TokenList(Resource):
             claims['upload_folder'] = path
             # create a JWT
             token = encode_jwt(user.id, claims=claims)
-            # send the JWT as a Bearer token for non-browser-based consumers
-            if not request.headers.get('Origin'):
-                return {'token': token}, 200
-            # set the JWT as a HttpOnly cookie for browser-based consumers
-            return user.serialize(), 200, {'Set-Cookie': 'access_token='+token+'; HttpOnly'}
+            # send the JWT as a Bearer token when the feature is enabled
+            if current_app.config['BEARER_AUTH_ENABLE']:
+                data['token'] = token
+                # remove any existing access token cookie
+                return data, 200, {'Set-Cookie': 'access_token=; Expires=Thu, 01-Jan-1970 00:00:00 GMT'}
+            # set the JWT as a HttpOnly cookie by default
+            return data, 200, {'Set-Cookie': 'access_token='+token+'; HttpOnly'}
         return {'message': 'Invalid username or password.'}
 
     def delete(self):

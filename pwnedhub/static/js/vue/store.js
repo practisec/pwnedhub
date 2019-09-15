@@ -1,8 +1,9 @@
 const state = {
     apiUrl: API_BASE_URL,
-    mail: Array(),
-    messages: Array(),
+    mail: [],
+    messages: [],
     userInfo: null,
+    authHeader: {},
 }
 
 const mutations = {
@@ -19,12 +20,20 @@ const mutations = {
         state.messages = payload;
     },
     SET_USER_INFO(state, value) {
-      state.userInfo = value;
-      localStorage.setItem("userInfo", JSON.stringify(state.userInfo));
+        state.userInfo = value;
+        localStorage.setItem("user", JSON.stringify(value));
     },
     UNSET_USER_INFO(state) {
-      state.userInfo = null
-      localStorage.removeItem("userInfo");
+        state.userInfo = null
+        localStorage.removeItem("user");
+    },
+    SET_AUTH_HEADER(state, token) {
+        state.authHeader = {"Authorization": "Bearer "+token};
+        localStorage.setItem("token", JSON.stringify(token));
+    },
+    UNSET_AUTH_HEADER(state) {
+        state.authHeader = {};
+        localStorage.removeItem("token");
     },
 };
 
@@ -38,16 +47,26 @@ const actions = {
     updateMessages(context, messages) {
         context.commit("UPDATE_MESSAGES", messages);
     },
-    setUserInfo(context, value) {
-        context.commit("SET_USER_INFO", value);
+    setAuthInfo(context, json) {
+        context.commit("SET_USER_INFO", json.user);
+        if (json.token) {
+            context.commit("SET_AUTH_HEADER", json.token);
+        }
     },
-    unsetUserInfo(context) {
+    unsetAuthInfo(context) {
         context.commit("UNSET_USER_INFO");
+        context.commit("UNSET_AUTH_HEADER");
     },
-    initUserInfo(context) {
-        var user = JSON.parse(localStorage.getItem("userInfo"));
+    initAuthInfo(context) {
+        // initialize user info
+        var user = JSON.parse(localStorage.getItem("user"));
         if (user != null) {
-            context.dispatch("setUserInfo", user);
+            context.commit("SET_USER_INFO", user);
+            // initialize access token (if necessary)
+            var token = JSON.parse(localStorage.getItem("token"));
+            if (token != null) {
+                context.commit("SET_AUTH_HEADER", token);
+            }
         }
     },
 };
@@ -72,6 +91,9 @@ const getters = {
     getUserInfo(state) {
         return state.userInfo;
     },
+    getAuthHeader(state) {
+        return state.authHeader;
+    },
     isLoggedIn(state, getters) {
         if (getters.getUserInfo === null) {
             return false;
@@ -89,4 +111,4 @@ const store = new Vuex.Store({
 
 // initialize the store prior to instantiating the app to ensure
 // the router.beforeEach check gets the proper isLoggedIn value
-store.dispatch("initUserInfo");
+store.dispatch("initAuthInfo");

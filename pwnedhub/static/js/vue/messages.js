@@ -40,6 +40,7 @@ var Messages = Vue.component("messages", {
         } else {
             fetch(store.getters.getApiUrl+"/messages", {
                 credentials: "include",
+                headers: store.getters.getAuthHeader,
             })
             .then(handleErrors)
             .then(response => response.json())
@@ -70,9 +71,12 @@ Vue.component("create-message", {
         createMessage: function() {
             fetch(store.getters.getApiUrl+"/messages", {
                 credentials: "include",
+                headers: Object.assign(
+                    store.getters.getAuthHeader,
+                    {"Content-Type": "application/json"},
+                ),
                 method: "POST",
                 body: JSON.stringify(this.messageForm),
-                headers:{"Content-Type": "application/json"}
             })
             .then(handleErrors)
             .then(response => response.json())
@@ -121,6 +125,7 @@ Vue.component("show-message", {
         deleteMessage: function(message) {
             fetch(store.getters.getApiUrl+"/messages/"+message.id, {
                 credentials: "include",
+                headers: store.getters.getAuthHeader,
                 method: "DELETE",
             })
             .then(handleErrors)
@@ -188,9 +193,12 @@ Vue.component("scroll", {
                 var url = value.replace(/[!.?]+$/g, '');
                 fetch(store.getters.getApiUrl+"/unfurl", {
                     credentials: "include",
+                    headers: Object.assign(
+                        store.getters.getAuthHeader,
+                        {"Content-Type": "application/json"},
+                    ),
                     method: "POST",
                     body: JSON.stringify({url: url}),
-                    headers:{"Content-Type": "application/json"}
                 })
                 .then(handleErrors)
                 .then(response => response.json())

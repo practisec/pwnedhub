@@ -38,9 +38,12 @@ var Login = Vue.component('login', {
         doLogin: function(payload) {
             fetch(store.getters.getApiUrl+"/access-token", {
                 credentials: "include",
+                headers: Object.assign(
+                    store.getters.getAuthHeader,
+                    {"Content-Type": "application/json"},
+                ),
                 method: "POST",
                 body: JSON.stringify(payload),
-                headers:{"Content-Type": "application/json"}
             })
             .then(handleErrors)
             .then(response => response.json())
@@ -48,21 +51,23 @@ var Login = Vue.component('login', {
             .catch(error => this.loginFailed(error));
         },
         handleLogin: function(json) {
-            if (!json.id) {
+            if (!json.user) {
                 this.loginFailed(json.message);
                 return;
             }
-            store.dispatch("setUserInfo", json);
+            // store auth data as necessary
+            store.dispatch("setAuthInfo", json);
+            // route appropriately
             if (this.$route.params.nextUrl != null) {
                 // originally requested location
                 this.$router.push(this.$route.params.nextUrl);
             } else {
                 // fallback landing page
-                this.$router.push('messages');
+                this.$router.push("messages");
             }
         },
         loginFailed: function(error) {
-            store.dispatch("unsetUserInfo");
+            store.dispatch("unsetAuthInfo");
             showFlash(error);
         },
     },

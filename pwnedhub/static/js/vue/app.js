@@ -3,7 +3,7 @@ function handleErrors(response) {
         return Promise.resolve(response);
     }
     if (response.status === 401) {
-        store.dispatch("unsetUserInfo");
+        store.dispatch("unsetAuthInfo");
         router.push("login");
     }
     return response.json().then(json => {

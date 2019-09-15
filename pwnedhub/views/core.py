@@ -10,9 +10,11 @@ from common.validators import is_valid_password, is_valid_command, is_valid_file
 from datetime import datetime
 from lxml import etree
 from urllib.parse import urlencode
+import json
 import math
 import os
 import re
+import requests
 import subprocess
 
 core = Blueprint('core', __name__)
@@ -136,12 +138,28 @@ def config():
     if not g.user or ROLES[g.user.role] != ROLES[0]:
         return abort(404)
     if request.method == 'POST':
+        # PwnedHub config
         # handle CSRF protection option
         current_app.config['CSRF_PROTECT'] = False
         if request.form.get('csrf_protect') == 'on':
             current_app.config['CSRF_PROTECT'] = True
+        # PwnedAPI config
+        api_config = {}
+        # handle Bearer Token Authentication option
+        api_config['BEARER_AUTH_ENABLE'] = False
+        if request.form.get('bearer_enable') == 'on':
+            api_config['BEARER_AUTH_ENABLE'] = True
+        # synchronize API configuration
+        headers = {'Content-Type': 'application/json'}
+        data = json.dumps(api_config)
+        response = requests.patch(current_app.config['API_BASE_URL']+'/config', headers=headers, data=data)
+        api_config = response.json()
         flash('Configuration updated')
-    return render_template('config.html')
+    else:
+        # get API config
+        response = requests.get(current_app.config['API_BASE_URL']+'/config')
+        api_config = response.json()
+    return render_template('config.html', api_config=api_config)
 
 # user controllers
 
