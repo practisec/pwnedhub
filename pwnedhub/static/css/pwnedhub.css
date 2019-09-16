@@ -347,6 +347,12 @@ nav .nav .top-menu li:hover .sub-menu {
     max-width: 100%;
 }
 
+.config .panel {
+    border: 1px solid #bbb;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
 .scoreboard table {
     width: 100%;
 }

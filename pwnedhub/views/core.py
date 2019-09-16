@@ -131,33 +131,30 @@ def admin_users_modify(action, uid):
 
 @core.route('/config', methods=['GET', 'POST'])
 def config():
-    # simulate a resource intensive operation
+    # simulate the latency of an external API request
     import time
     time.sleep(0.25)
     # hide the existence of this route if not an admin
     if not g.user or ROLES[g.user.role] != ROLES[0]:
         return abort(404)
+    headers = {current_app.config['API_CONFIG_KEY_NAME']: current_app.config['API_CONFIG_KEY_VALUE']}
     if request.method == 'POST':
         # PwnedHub config
         # handle CSRF protection option
-        current_app.config['CSRF_PROTECT'] = False
-        if request.form.get('csrf_protect') == 'on':
-            current_app.config['CSRF_PROTECT'] = True
+        current_app.config['CSRF_PROTECT'] = request.form.get('csrf_protect') == 'on' or False
         # PwnedAPI config
         api_config = {}
         # handle Bearer Token Authentication option
-        api_config['BEARER_AUTH_ENABLE'] = False
-        if request.form.get('bearer_enable') == 'on':
-            api_config['BEARER_AUTH_ENABLE'] = True
+        api_config['BEARER_AUTH_ENABLE'] = request.form.get('bearer_enable') == 'on' or False
         # synchronize API configuration
-        headers = {'Content-Type': 'application/json'}
+        headers['Content-Type'] = 'application/json'
         data = json.dumps(api_config)
         response = requests.patch(current_app.config['API_BASE_URL']+'/config', headers=headers, data=data)
         api_config = response.json()
         flash('Configuration updated')
     else:
         # get API config
-        response = requests.get(current_app.config['API_BASE_URL']+'/config')
+        response = requests.get(current_app.config['API_BASE_URL']+'/config', headers=headers)
         api_config = response.json()
     return render_template('config.html', api_config=api_config)
 

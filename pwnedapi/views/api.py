@@ -64,10 +64,19 @@ def load_user():
 
 # DECORATOR FUNCTIONS
 
-def auth_required(func):
+def token_auth_required(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
         if g.user:
+            return func(*args, **kwargs)
+        abort(401)
+    return wrapped
+
+def key_auth_required(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        key = request.headers.get(current_app.config['API_CONFIG_KEY_NAME'])
+        if key == current_app.config['API_CONFIG_KEY_VALUE']:
             return func(*args, **kwargs)
         abort(401)
     return wrapped
@@ -82,12 +91,14 @@ DYNAMIC_CONFIGS = [
 
 class ConfigList(Resource):
 
+    @key_auth_required
     def get(self):
         config = {}
         for key in DYNAMIC_CONFIGS:
             config[key] = current_app.config[key]
         return config
 
+    @key_auth_required
     def patch(self):
         config = {}
         for key in DYNAMIC_CONFIGS:
@@ -142,7 +153,7 @@ api.add_resource(TokenList, '/access-token')
 
 class UserList(Resource):
 
-    @auth_required
+    @token_auth_required
     def get(self):
         users = [u.serialize(public=True) for u in User.query.all()]
         return {'users': users}
@@ -152,14 +163,14 @@ api.add_resource(UserList, '/users')
 
 class UserInst(Resource):
 
-    @auth_required
+    @token_auth_required
     def get(self, uid):
         if uid == 'me' or uid == str(g.user.id):
             return g.user.serialize()
         user = User.query.get_or_404(uid)
         return user.serialize(public=True)
 
-    @auth_required
+    @token_auth_required
     def patch(self, uid):
         User.query.filter_by(id=g.user.id).update(request.json)
         db.session.commit()
@@ -170,14 +181,14 @@ api.add_resource(UserInst, '/users/<string:uid>')
 
 class MessageList(Resource):
 
-    @auth_required
+    @token_auth_required
     def get(self):
         messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
         resp = jsonify(messages=messages)
         resp.mimetype = 'text/html'
         return resp
 
-    @auth_required
+    @token_auth_required
     def post(self):
         jsonobj = request.get_json(force=True)
         message = jsonobj.get('message')
@@ -193,7 +204,7 @@ api.add_resource(MessageList, '/messages')
 
 class MessageInst(Resource):
 
-    @auth_required
+    @token_auth_required
     def delete(self, mid):
         message = Message.query.get_or_404(mid)
         if message.user != g.user and not g.user.is_admin:
@@ -208,12 +219,12 @@ api.add_resource(MessageInst, '/messages/<string:mid>')
 
 class MailList(Resource):
 
-    @auth_required
+    @token_auth_required
     def get(self):
         mail = [m.serialize() for m in g.user.received_mail.order_by(Mail.created.desc()).all()]
         return {'mail': mail}
 
-    @auth_required
+    @token_auth_required
     def post(self):
         receiver = User.query.get(request.json.get('receiver'))
         if not receiver:
@@ -246,7 +257,7 @@ api.add_resource(MailList, '/mail')
 
 class MailInst(Resource):
 
-    @auth_required
+    @token_auth_required
     def get(self, mid):
         mail = Mail.query.get_or_404(mid)
         if mail.receiver != g.user:
@@ -258,7 +269,7 @@ class MailInst(Resource):
             db.session.commit()
         return mail.serialize()
 
-    @auth_required
+    @token_auth_required
     def patch(self, mid):
         mail = Mail.query.get_or_404(mid)
         if mail.receiver != g.user:
@@ -267,7 +278,7 @@ class MailInst(Resource):
         db.session.commit()
         return mail.serialize()
 
-    @auth_required
+    @token_auth_required
     def delete(self, mid):
         mail = Mail.query.get_or_404(mid)
         if mail.receiver != g.user:
@@ -302,7 +313,7 @@ api.add_resource(UnfurlList, '/unfurl')
 
 class ToolInst(Resource):
 
-    @auth_required
+    @token_auth_required
     def get(self, tid):
         query = 'SELECT id, name, path, description FROM tools WHERE id='+tid
         try:
@@ -316,7 +327,7 @@ api.add_resource(ToolInst, '/tools/<string:tid>')
 
 class ExecuteList(Resource):
 
-    @auth_required
+    @token_auth_required
     def post(self):
         tool = Tool.query.get(request.json.get('tid') or -1)
         if not tool:
@@ -341,7 +352,7 @@ api.add_resource(ExecuteList, '/execute')
 
 class ArtifactsList(Resource):
 
-    @auth_required
+    @token_auth_required
     def post(self):
         xml = request.data
         parser = etree.XMLParser(no_network=False)

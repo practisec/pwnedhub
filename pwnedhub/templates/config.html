@@ -1,15 +1,23 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-width-10 flex-offset-1 flex-basis-10">
+<div class="flex-width-10 flex-offset-1 flex-basis-10 config">
     <form class="flex-column" action="{{ url_for('core.config') }}" method="post">
-        <label for="csrf_protect">
-            <input name="csrf_protect" type="checkbox" {% if config.CSRF_PROTECT %}checked {% endif %}/>
-            <span>CSRF Protection (PwnedHub) - {% if not config.CSRF_PROTECT %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-        </label>
-        <label for="bearer_enable">
-            <input name="bearer_enable" type="checkbox" {% if api_config.BEARER_AUTH_ENABLE %}checked {% endif %}/>
-            <span>Bearer Token Authentication (PwnedAPI) - {% if not api_config.BEARER_AUTH_ENABLE %}DISABLED{% else %}ENABLED{% endif %}</span>
-        </label>
+        <div class="panel rounded">
+            <div>Security Controls</div>
+            <hr>
+            <label for="csrf_protect">
+                <input name="csrf_protect" type="checkbox" {% if config.CSRF_PROTECT %}checked {% endif %}/>
+                <span>Profile CSRF Protection (PwnedHub) - {% if not config.CSRF_PROTECT %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+            </label>
+        </div>
+        <div class="panel rounded">
+            <div>Features</div>
+            <hr>
+            <label for="bearer_enable">
+                <input name="bearer_enable" type="checkbox" {% if api_config.BEARER_AUTH_ENABLE %}checked {% endif %}/>
+                <span>Bearer Token Authentication (PwnedAPI) - {% if not api_config.BEARER_AUTH_ENABLE %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+            </label>
+        </div>
         <div class="left-content">
             <input type="submit" value="Submit" onclick="cleanSubmit(event, this.form);" />
         </div>
