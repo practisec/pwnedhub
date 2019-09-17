@@ -3,18 +3,16 @@ from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from pwnedhub import db
 from pwnedhub.decorators import login_required, roles_required, validate, csrf_protect
-from common.models import Mail, Message, Tool, Bug, User, Score
+from common.models import Config, Mail, Message, Tool, Bug, User, Score
 from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE, VULNERABILITIES, SEVERITY, BUG_STATUSES, REVIEW_NOTIFICATION, UPDATE_NOTIFICATION, BUG_NOTIFICATIONS
 from common.utils import unfurl_url
 from common.validators import is_valid_password, is_valid_command, is_valid_filename, is_valid_mimetype
 from datetime import datetime
 from lxml import etree
 from urllib.parse import urlencode
-import json
 import math
 import os
 import re
-import requests
 import subprocess
 
 core = Blueprint('core', __name__)
@@ -137,26 +135,16 @@ def config():
     # hide the existence of this route if not an admin
     if not g.user or ROLES[g.user.role] != ROLES[0]:
         return abort(404)
-    headers = {current_app.config['API_CONFIG_KEY_NAME']: current_app.config['API_CONFIG_KEY_VALUE']}
     if request.method == 'POST':
         # PwnedHub config
         # handle CSRF protection option
-        current_app.config['CSRF_PROTECT'] = request.form.get('csrf_protect') == 'on' or False
+        Config.get_by_name('CSRF_PROTECT').value = request.form.get('csrf_protect') == 'on' or False
         # PwnedAPI config
-        api_config = {}
         # handle Bearer Token Authentication option
-        api_config['BEARER_AUTH_ENABLE'] = request.form.get('bearer_enable') == 'on' or False
-        # synchronize API configuration
-        headers['Content-Type'] = 'application/json'
-        data = json.dumps(api_config)
-        response = requests.patch(current_app.config['API_BASE_URL']+'/config', headers=headers, data=data)
-        api_config = response.json()
+        Config.get_by_name('BEARER_AUTH_ENABLE').value = request.form.get('bearer_enable') == 'on' or False
+        db.session.commit()
         flash('Configuration updated')
-    else:
-        # get API config
-        response = requests.get(current_app.config['API_BASE_URL']+'/config', headers=headers)
-        api_config = response.json()
-    return render_template('config.html', api_config=api_config)
+    return render_template('config.html')
 
 # user controllers
 

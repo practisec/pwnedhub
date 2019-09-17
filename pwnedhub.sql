@@ -70,6 +70,31 @@ INSERT INTO `bugs` VALUES (1,'2019-02-18 13:52:51','2019-02-18 15:38:38','Form R
 UNLOCK TABLES;
 
 --
+-- Table structure for table `configs`
+--
+
+DROP TABLE IF EXISTS `configs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `configs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `value` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `configs`
+--
+
+LOCK TABLES `configs` WRITE;
+/*!40000 ALTER TABLE `configs` DISABLE KEYS */;
+INSERT INTO `configs` VALUES (1,'CSRF_PROTECT',0),(2,'BEARER_AUTH_ENABLE',0);
+/*!40000 ALTER TABLE `configs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `mail`
 --
 

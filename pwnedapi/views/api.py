@@ -2,7 +2,7 @@ from flask import Blueprint, g, current_app, request, jsonify, abort, Response
 from flask_restful import Resource, Api
 from pwnedapi import db
 from common.constants import ADMIN_RESPONSE
-from common.models import User, Message, Mail, Tool
+from common.models import Config, User, Message, Mail, Tool
 from common.utils import get_unverified_jwt_payload, unfurl_url
 from common.validators import is_valid_command
 from datetime import datetime, timedelta
@@ -47,7 +47,7 @@ def get_bearer_token(headers):
 def parse_jwt():
     request.jwt = {}
     token = request.cookies.get('access_token')
-    if current_app.config['BEARER_AUTH_ENABLE']:
+    if Config.get_value('BEARER_AUTH_ENABLE'):
         token = get_bearer_token(request.headers)
     try:
         payload = jwt.decode(token, current_app.config['SECRET_KEY'])
@@ -81,32 +81,7 @@ def key_auth_required(func):
         abort(401)
     return wrapped
 
-
 # API RESOURCE CLASSES
-
-DYNAMIC_CONFIGS = [
-    'BEARER_AUTH_ENABLE',
-]
-
-
-class ConfigList(Resource):
-
-    @key_auth_required
-    def get(self):
-        config = {}
-        for key in DYNAMIC_CONFIGS:
-            config[key] = current_app.config[key]
-        return config
-
-    @key_auth_required
-    def patch(self):
-        config = {}
-        for key in DYNAMIC_CONFIGS:
-            current_app.config[key] = request.json.get(key)
-            config[key] = current_app.config[key]
-        return config
-
-api.add_resource(ConfigList, '/config')
 
 
 class TokenList(Resource):
@@ -135,7 +110,7 @@ class TokenList(Resource):
             # create a JWT
             token = encode_jwt(user.id, claims=claims)
             # send the JWT as a Bearer token when the feature is enabled
-            if current_app.config['BEARER_AUTH_ENABLE']:
+            if Config.get_value('BEARER_AUTH_ENABLE'):
                 data['token'] = token
                 # remove any existing access token cookie
                 return data, 200, {'Set-Cookie': 'access_token=; Expires=Thu, 01-Jan-1970 00:00:00 GMT'}

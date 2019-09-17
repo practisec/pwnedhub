@@ -1,5 +1,6 @@
 from flask import current_app, g, request, session, redirect, url_for, abort, make_response, flash
 from common.constants import ROLES
+from common.models import Config
 from functools import wraps
 from threading import Thread
 from urllib.parse import urlparse
@@ -48,7 +49,7 @@ def roles_required(*roles):
 def csrf_protect(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
-        if current_app.config['CSRF_PROTECT']:
+        if Config.get_value('CSRF_PROTECT'):
             # only apply CSRF protection to POSTs
             if request.method == 'POST':
                 csrf_token = session.pop('csrf_token', None)

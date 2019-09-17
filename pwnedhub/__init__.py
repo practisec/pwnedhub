@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_socketio import SocketIO
 from common import db
+from common.models import Config
 from common.utils import generate_csrf_token
 from datetime import datetime
 from urllib.parse import unquote
@@ -21,6 +22,8 @@ def create_app(config='Development'):
     sess.init_app(app)
     socketio.init_app(app)
 
+    # custom jinja global for accessing dynamic configuration values
+    app.jinja_env.globals['app_config'] = Config.get_value
     # custom jinja global for the current date
     # used in the layout to keep the current year
     app.jinja_env.globals['date'] = datetime.now()
@@ -51,3 +54,20 @@ def create_app(config='Development'):
     from pwnedhub.views import websockets
 
     return app, socketio
+
+def init_db(config='Development'):
+    app, socketio = create_app(config)
+    with app.app_context():
+        db.create_all()
+    print('Database initialized.')
+
+def drop_db(config='Development'):
+    app, socketio = create_app(config)
+    with app.app_context():
+        db.drop_all()
+    print('Database dropped.')
+
+def interact(config='Development'):
+    app, socketio = create_app(config)
+    with app.app_context():
+        import pdb; pdb.set_trace()
