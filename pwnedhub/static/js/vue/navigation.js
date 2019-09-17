@@ -48,7 +48,6 @@ var Navigation = Vue.component("navigation", {
         doLogout: function() {
             fetch(store.getters.getApiUrl+"/access-token", {
                 credentials: "include",
-                headers: store.getters.getAuthHeader,
                 method: "DELETE",
             })
             .then(handleErrors)

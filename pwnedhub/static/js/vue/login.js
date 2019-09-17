@@ -38,10 +38,7 @@ var Login = Vue.component('login', {
         doLogin: function(payload) {
             fetch(store.getters.getApiUrl+"/access-token", {
                 credentials: "include",
-                headers: Object.assign(
-                    store.getters.getAuthHeader,
-                    {"Content-Type": "application/json"},
-                ),
+                headers: {"Content-Type": "application/json"},
                 method: "POST",
                 body: JSON.stringify(payload),
             })

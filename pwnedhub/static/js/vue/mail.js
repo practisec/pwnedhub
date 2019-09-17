@@ -37,7 +37,6 @@ var Mail = Vue.component("mail", {
         } else {
             fetch(store.getters.getApiUrl+"/mail", {
                 credentials: "include",
-                headers: store.getters.getAuthHeader,
             })
             .then(handleErrors)
             .then(response => response.json())
@@ -111,7 +110,6 @@ var Letter = Vue.component("letter", {
             // fetching updates the local and remote letter.read property
             fetch(store.getters.getApiUrl+"/mail/"+this.letterId, {
                 credentials: "include",
-                headers: store.getters.getAuthHeader,
             })
             .then(handleErrors)
             .then(response => response.json())
@@ -124,7 +122,6 @@ var Letter = Vue.component("letter", {
         deleteLetter: function() {
             fetch(store.getters.getApiUrl+"/mail/"+this.letter.id, {
                 credentials: "include",
-                headers: store.getters.getAuthHeader,
                 method: "DELETE",
             })
             .then(handleErrors)
@@ -177,7 +174,6 @@ var Compose = Vue.component("compose", {
         getUsers: function() {
             fetch(store.getters.getApiUrl+"/users", {
                 credentials: "include",
-                headers: store.getters.getAuthHeader,
             })
             .then(handleErrors)
             .then(response => response.json())
@@ -195,10 +191,7 @@ var Compose = Vue.component("compose", {
         sendLetter: function() {
             fetch(store.getters.getApiUrl+"/mail", {
                 credentials: "include",
-                headers: Object.assign(
-                    store.getters.getAuthHeader,
-                    {"Content-Type": "application/json"},
-                ),
+                headers: {"Content-Type": "application/json"},
                 method: "POST",
                 body: JSON.stringify(this.letterForm),
             })
@@ -257,10 +250,7 @@ var Reply = Vue.component("reply", {
         sendReply: function() {
             fetch(store.getters.getApiUrl+"/mail", {
                 credentials: "include",
-                headers: Object.assign(
-                    store.getters.getAuthHeader,
-                    {"Content-Type": "application/json"},
-                ),
+                headers: {"Content-Type": "application/json"},
                 method: "POST",
                 body: JSON.stringify({
                     ...this.letterForm,

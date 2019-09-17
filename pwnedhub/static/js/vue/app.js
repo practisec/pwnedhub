@@ -1,3 +1,14 @@
+// override and wrap fetch
+var _fetch = window.fetch;
+window.fetch = function(url, options) {
+    var options = options || {};
+    options.headers = {
+        ...store.getters.getAuthHeader,
+        ...options.headers || {},
+    }
+    return _fetch(url, options);
+}
+
 function handleErrors(response) {
     if (response.ok) {
         return Promise.resolve(response);

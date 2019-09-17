@@ -21,7 +21,6 @@ var Profile = Vue.component("profile", {
         getUser: function() {
             fetch(store.getters.getApiUrl+"/users/"+this.userId, {
                 credentials: "include",
-                headers: store.getters.getAuthHeader,
             })
             .then(handleErrors)
             .then(response => response.json())
