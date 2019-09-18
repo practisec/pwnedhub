@@ -9,6 +9,10 @@
                 <input name="csrf_protect" type="checkbox" {% if app_config('CSRF_PROTECT') %}checked {% endif %}/>
                 <span>Profile CSRF Protection (PwnedHub) - {% if not app_config('CSRF_PROTECT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
             </label>
+            <label for="cors_restrict">
+                <input name="cors_restrict" type="checkbox" {% if app_config('CORS_RESTRICT') %}checked {% endif %}/>
+                <span>Restricted CORS (PwnedAPI) - {% if not app_config('CORS_RESTRICT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+            </label>
         </div>
         <div class="panel rounded">
             <div>Features</div>

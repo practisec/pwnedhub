@@ -81,7 +81,7 @@ CREATE TABLE `configs` (
   `name` varchar(255) NOT NULL,
   `value` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -90,7 +90,7 @@ CREATE TABLE `configs` (
 
 LOCK TABLES `configs` WRITE;
 /*!40000 ALTER TABLE `configs` DISABLE KEYS */;
-INSERT INTO `configs` VALUES (1,'CSRF_PROTECT',0),(2,'BEARER_AUTH_ENABLE',0);
+INSERT INTO `configs` VALUES (1,'CSRF_PROTECT',0),(2,'BEARER_AUTH_ENABLE',0),(3,'CORS_RESTRICT',0);
 /*!40000 ALTER TABLE `configs` ENABLE KEYS */;
 UNLOCK TABLES;
 

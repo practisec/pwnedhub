@@ -136,12 +136,9 @@ def config():
     if not g.user or ROLES[g.user.role] != ROLES[0]:
         return abort(404)
     if request.method == 'POST':
-        # PwnedHub config
-        # handle CSRF protection option
         Config.get_by_name('CSRF_PROTECT').value = request.form.get('csrf_protect') == 'on' or False
-        # PwnedAPI config
-        # handle Bearer Token Authentication option
         Config.get_by_name('BEARER_AUTH_ENABLE').value = request.form.get('bearer_enable') == 'on' or False
+        Config.get_by_name('CORS_RESTRICT').value = request.form.get('cors_restrict') == 'on' or False
         db.session.commit()
         flash('Configuration updated')
     return render_template('config.html')
