@@ -49,6 +49,8 @@ def index():
 
 @core.route('/home')
 def home():
+    if g.user.is_admin:
+        return redirect(url_for('core.admin_users'))
     return redirect(url_for('core.notes'))
 
 @core.route('/about')
@@ -281,12 +283,14 @@ def unfurl():
 
 @core.route('/notes')
 @login_required
+@roles_required('user')
 def notes():
     notes = g.user.notes or DEFAULT_NOTE
     return render_template('notes.html', notes=notes)
 
 @core.route('/notes', methods=['PUT'])
 @login_required
+@roles_required('user')
 def notes_update():
     g.user.notes = request.json.get('notes')
     db.session.add(g.user)
@@ -295,6 +299,7 @@ def notes_update():
 
 @core.route('/artifacts')
 @login_required
+@roles_required('user')
 def artifacts():
     artifacts = []
     for (dirpath, dirnames, filenames) in os.walk(session.get('upload_folder')):
@@ -308,6 +313,7 @@ def artifacts():
 
 @core.route('/artifacts/save', methods=['POST'])
 @login_required
+@roles_required('user')
 @validate(['file'])
 def artifacts_save():
     file = request.files['file']
@@ -329,6 +335,7 @@ def artifacts_save():
 
 @core.route('/artifacts/create', methods=['POST'])
 @login_required
+@roles_required('user')
 def artifacts_create():
     xml = request.data
     parser = etree.XMLParser(no_network=False)
@@ -354,6 +361,7 @@ def artifacts_create():
 
 @core.route('/artifacts/delete', methods=['POST'])
 @login_required
+@roles_required('user')
 @validate(['filename'])
 def artifacts_delete():
     filename = request.form['filename']
@@ -366,6 +374,7 @@ def artifacts_delete():
 
 @core.route('/artifacts/view', methods=['POST'])
 @login_required
+@roles_required('user')
 @validate(['filename'])
 def artifacts_view():
     filename = request.form['filename']
@@ -377,12 +386,14 @@ def artifacts_view():
 
 @core.route('/tools')
 @login_required
+@roles_required('user')
 def tools():
     tools = Tool.query.all()
     return render_template('tools.html', tools=tools)
 
 @core.route('/tools/info/<string:tid>', methods=['GET'])
 @login_required
+@roles_required('user')
 def tools_info(tid):
     query = 'SELECT * FROM tools WHERE id='+tid
     try:
@@ -393,6 +404,7 @@ def tools_info(tid):
 
 @core.route('/tools/execute/<string:tid>', methods=['POST'])
 @login_required
+@roles_required('user')
 def tools_execute(tid):
     tool = Tool.query.get_or_404(tid)
     path = tool.path
@@ -425,6 +437,7 @@ def submissions(page=0):
 
 @core.route('/submissions/new', methods=['GET', 'POST'])
 @login_required
+@roles_required('user')
 @validate(['title', 'vuln_id', 'severity', 'description', 'impact'])
 def submissions_new():
     if request.method == 'POST':
@@ -468,6 +481,7 @@ def submissions_new():
 
 @core.route('/submissions/edit/<int:bid>', methods=['GET', 'POST'])
 @login_required
+@roles_required('user')
 @validate(['title', 'vuln_id', 'severity', 'description', 'impact'])
 def submissions_edit(bid):
     submission = Bug.query.get_or_404(bid)
@@ -501,6 +515,7 @@ def submissions_view(bid):
 
 @core.route('/submissions/<string:action>/<int:bid>')
 @login_required
+@roles_required('user')
 def submissions_action(action, bid):
     submission = Bug.query.get_or_404(bid)
     if submission.is_validated or submission.reviewer != g.user:
@@ -540,6 +555,7 @@ def bounty_scoreboard():
 
 @core.route('/bounty/info')
 @login_required
+@roles_required('user')
 def bounty_info():
     return render_template('bounty_info.html')
 

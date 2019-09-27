@@ -23,6 +23,27 @@
             <div class="flex-grow flex-row flex-justify-right nav">
                 <ul class="top-menu">
                 {% if g.user %}
+                    {% if g.user.is_admin %}
+                    <li><a href="#">bugs</a>
+                        <ul class="sub-menu">
+                            <li><a href="{{ url_for('core.bounty_scoreboard') }}">Scoreboard</a></li>
+                            <li><a href="{{ url_for('core.submissions') }}">Submissions</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">{% if g.user.has_unread_mail %}*{% endif %}collaboration</a>
+                        <ul class="sub-menu">
+                            <li><a href="{{ url_for('core.mail') }}">{% if g.user.has_unread_mail %}*{% endif %}PwnMail</a></li>
+                            <li><a href="{{ url_for('core.messages') }}">Messages</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">admin</a>
+                        <ul class="sub-menu">
+                            <li><a href="{{ url_for('core.admin_tools') }}">Tools</a></li>
+                            <li><a href="{{ url_for('core.admin_users') }}">Users</a></li>
+                            <li><a href="{{ url_for('core.games') }}">Games</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
                     <li><a href="#">bugs</a>
                         <ul class="sub-menu">
                             <li><a href="{{ url_for('core.bounty_info') }}">Info</a></li>
@@ -44,15 +65,7 @@
                             <li><a href="{{ url_for('core.messages') }}">Messages</a></li>
                         </ul>
                     </li>
-                {% if g.user.is_admin %}
-                    <li><a href="#">admin</a>
-                        <ul class="sub-menu">
-                            <li><a href="{{ url_for('core.admin_tools') }}">Tools</a></li>
-                            <li><a href="{{ url_for('core.admin_users') }}">Users</a></li>
-                            <li><a href="{{ url_for('core.games') }}">Games</a></li>
-                        </ul>
-                    </li>
-                {% endif %}
+                    {% endif %}
                     <li><img class="circular bordered-dark avatar" src="{{ g.user.avatar_or_default|safe }}" title="Avatar" />
                         <ul class="sub-menu">
                             <li><a href="{{ url_for('core.profile') }}">Profile</a></li>
