@@ -559,7 +559,7 @@ def bounty_scoreboard():
 def bounty_info():
     return render_template('bounty_info.html')
 
-@core.route('/games/')
+@core.route('/games')
 @login_required
 def games():
     return render_template('games.html')
