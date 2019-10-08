@@ -55,7 +55,8 @@ def csrf_protect(func):
                 csrf_token = session.pop('csrf_token', None)
                 untrusted_token = request.values.get('csrf_token')
                 if not csrf_token or untrusted_token != csrf_token:
-                    return abort(400)
+                    flash('CSRF detected!')
+                    return redirect(request.referrer)
         return func(*args, **kwargs)
     return wrapped
 
