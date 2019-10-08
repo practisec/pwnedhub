@@ -170,7 +170,7 @@ class User(BaseModel):
         for bug in self.accepted_bugs:
             rep += bug.bounty
         for val in self.accepted_validations:
-            rep += val.bounty/4
+            rep += val.bounty//4
         return rep
 
     @property
