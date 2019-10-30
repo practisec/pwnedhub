@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+
+    app:
+        build: .
+        image: pwnedhub
+        container_name: pwnedhub
+        ports:
+            - '5000:5000'
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - DATABASE_HOST=db
+            - CONFIG=Development
+        command: gunicorn --bind 0.0.0.0:5000 --worker-class eventlet --workers 1 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
+        depends_on:
+            - db
+
+    api:
+        image: pwnedhub
+        ports:
+            - '5001:5001'
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - DATABASE_HOST=db
+            - CONFIG=Development
+        command: gunicorn --bind 0.0.0.0:5001 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
+        depends_on:
+            - db
+
+    db:
+        image: mysql:5.7
+        environment:
+            - MYSQL_ROOT_PASSWORD=adminpass
+            - MYSQL_DATABASE=pwnedhub
+            - MYSQL_USER=pwnedhub
+            - MYSQL_PASSWORD=dbconnectpass
+        volumes:
+            - ./pwnedhub.sql:/docker-entrypoint-initdb.d/pwnedhub.sql:ro

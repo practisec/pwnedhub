@@ -2,6 +2,41 @@
 
 PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http://www.lanmaster53.com/training/) training course. PwnedHub contains intentional vulnerability and should never be exposed to the open Internet. This software is NOT Open Source. See the `LICENSE.txt` file for more information.
 
+## Using Docker
+
+1. Install Docker Desktop.
+2. Clone the PwnedHub repository.
+
+    ```
+    $ git clone https://github.com/lanmaster53/pwnedhub.git
+    ```
+
+3. Change into the PwnedHub directory.
+
+    ```
+    $ cd pwnedhub
+    ```
+
+4. Build the PwnedHub Docker image.
+
+    ```
+    docker build --rm -t pwnedhub .
+    ```
+
+5. Launch the PwnedHub architecture using Docker Compose.
+
+    ```
+    docker-compose up
+    ```
+
+    * To launch as a daemon (no terminal logging), add the `-d` switch.
+
+6. When done using PwnedHub, clean up the Docker environment with the following command:
+
+    ```
+    docker-compose down
+    ```
+
 ## Installation (Ubuntu)
 
 1. Install [pip](https://pip.pypa.io/en/stable/installing/).

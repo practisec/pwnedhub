@@ -1,3 +1,5 @@
+import os
+
 class SharedConfig(object):
 
     DEBUG = False
@@ -9,7 +11,8 @@ class SharedConfig(object):
     ALLOWED_EXTENSIONS = set(['txt', 'xml', 'jpg', 'png', 'gif', 'pdf'])
     ALLOWED_MIMETYPES = set(['text/plain', 'application/xml', 'image/jpeg', 'image/png', 'image/gif', 'application/pdf'])
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = 'mysql://pwnedhub:dbconnectpass@localhost/pwnedhub'
+    DATABASE_HOST = os.environ.get('DATABASE_HOST', 'localhost')
+    SQLALCHEMY_DATABASE_URI = f"mysql://pwnedhub:dbconnectpass@{DATABASE_HOST}/pwnedhub"
     # prevents connection pool exhaustion
     # but disables interactive debugging
     PRESERVE_CONTEXT_ON_EXCEPTION = False
