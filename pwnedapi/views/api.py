@@ -172,7 +172,9 @@ class MessageList(Resource):
             db.session.add(msg)
             db.session.commit()
         messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
-        return {'messages': messages}
+        resp = jsonify(messages=messages)
+        resp.mimetype = 'text/html'
+        return resp
 
 api.add_resource(MessageList, '/messages')
 
