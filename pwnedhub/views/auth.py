@@ -156,8 +156,9 @@ def oauth_callback(provider):
 # password recovery flow controllers
 
 def reset_flow(message):
-    # clear recovery values from session
-    session.pop('reset_id', None)
+    # clear recovery values from the session, but don't empty the
+    # session because it is used to carry the flash messages
+    session['reset_id'] = 0
     flash(message)
     return redirect(url_for('auth.reset_init'))
 
