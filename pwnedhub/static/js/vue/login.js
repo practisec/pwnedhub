@@ -1,7 +1,7 @@
 var Login = Vue.component('login', {
     template: `
-        <div class="flex-width-8 flex-offset-2 flex-basis-8">
-            <div class="flex-column">
+        <div class="flex-width-8 flex-offset-2 flex-basis-8 flex-align-center login">
+            <div class="flex-column form">
                 <label for="username">Username:</label>
                 <input name="username" type="text" v-model="loginForm.username" />
                 <label for="password">Password:</label>

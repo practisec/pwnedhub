@@ -2,7 +2,7 @@ var Navigation = Vue.component("navigation", {
     template: `
         <nav class="flex-grow container-fluid flex-row">
             <div class="brand">
-                Pwned<span class="red"><b>Hub</b></span><span class="subscript">/m</span>
+                Pwned<span class="rounded hub"><b>Hub</b></span><span class="subscript">.mob</span>
             </div>
             <div class="flex-grow flex-row flex-justify-right nav">
                 <ul v-if="isLoggedIn" class="top-menu">
