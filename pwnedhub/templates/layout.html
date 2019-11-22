@@ -18,7 +18,7 @@
     <header class="flex-no-shrink flex-row">
         <nav class="flex-grow container-fluid flex-row">
             <div class="brand">
-                <a href="{{ url_for('core.index') }}">Pwned<span class="red"><b>Hub</b></span></a>
+                <a href="{{ url_for('core.index') }}">Pwned<span class="rounded hub"><b>Hub</b></span></a>
             </div>
             <div class="flex-grow flex-row flex-justify-right nav">
                 <ul class="top-menu">
@@ -73,7 +73,9 @@
                         </ul>
                     </li>
                 {% else %}
+                {% if not app_config('OIDC_ENABLE') %}
                     <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                {% endif %}
                     <li><a href="{{ url_for('auth.login') }}">Login</a></li>
                 {% endif %}
                 </ul>

@@ -1,7 +1,18 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-width-4 flex-offset-4 flex-basis-4">
-    <form class="flex-column" action="" method="post">
+<div class="flex-width-4 flex-offset-4 flex-basis-4 flex-column flex-align-center login">
+{% if app_config('OIDC_ENABLE') %}
+    <div class="oidc bordered-light rounded">
+        <div class="center-content">
+            <h4>Login with your<br/>Google Account</h4>
+            <hr>
+            <p>No need to register or remember another pesky password! Just click the button below to register and/or sign-in and get started.</p>
+            <hr>
+            <img class="oidc-button" src="{{ url_for('static', filename='images/google_signin.png') }}" onclick="window.location='{{ url_for('auth.oauth_login', provider='google') }}';" />
+        </div>
+    </div>
+{% else %}
+    <form class="flex-column form" action="" method="post">
         <label for="username">Username:</label>
         <input name="username" type="text" />
         <label for="password">Password:</label>
@@ -11,10 +22,7 @@
         </div>
         <p><a href="{{ url_for('auth.reset_init') }}">Forget your password?</a></p>
         <input type="submit" value="Login" />
-        <hr>
-        <div class="center-content">
-            <img class="oidc-button" src="{{ url_for('static', filename='images/google_signin.png') }}" onclick="window.location='{{ url_for('auth.oauth_login', provider='google') }}';" />
-        </div>
     </form>
+{% endif %}
 </div>
 {% endblock %}

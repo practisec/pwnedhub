@@ -177,7 +177,7 @@ i.large {
 /* navigation */
 
 nav {
-    height: 5rem; /* critical to nav height 1/3 */
+    height: 5rem; /* critical to nav height 1/4 */
     position: relative;
 }
 
@@ -191,6 +191,7 @@ nav a:hover {
 }
 
 nav .brand {
+    line-height: 5rem; /* critical to nav height 2/4 */
     font-size: 3rem;
     padding-left: 1rem;
 }
@@ -198,6 +199,13 @@ nav .brand {
 nav .brand a {
     color: inherit;
     text-decoration: inherit;
+}
+
+nav .brand .hub {
+    border: 0;
+    background-color: red;
+    padding: 0 0.25rem;
+    margin: 0 0.25rem;
 }
 
 nav .nav ul {
@@ -223,7 +231,7 @@ nav .nav li span {
 
 nav .nav li a,
 nav .nav li span {
-    line-height: 5rem; /* critical to nav height 2/3 */
+    line-height: 5rem; /* critical to nav height 3/4 */
     font-size: 1.25rem;
     letter-spacing: 0.1rem;
     text-transform: uppercase;
@@ -246,7 +254,7 @@ nav .nav .top-menu > li .avatar {
 nav .nav .sub-menu {
     display: none;
     position: absolute;
-    top: 5rem; /* critical to nav height 3/3 */
+    top: 5rem; /* critical to nav height 4/4 */
     right: 0;
     width: 100%;
     text-align: right;
@@ -342,9 +350,25 @@ nav .nav .top-menu li:hover .sub-menu {
     text-align: justify;
 }
 
-.oidc-button {
+.login p {
+    margin-bottom: 1rem;
+}
+
+.login .oidc-button {
     cursor: pointer;
     max-width: 100%;
+}
+
+.login .oidc {
+    padding: 2rem 4rem;
+}
+
+.login .oidc .oidc-button {
+    margin-top: 1rem;
+}
+
+.login .form {
+    width: 100%;
 }
 
 .config .panel {

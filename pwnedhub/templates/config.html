@@ -21,6 +21,10 @@
                 <input name="bearer_enable" type="checkbox" {% if app_config('BEARER_AUTH_ENABLE') %}checked {% endif %}/>
                 <span>Bearer Token Authentication (PwnedAPI) - {% if not app_config('BEARER_AUTH_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
             </label>
+            <label for="oidc_enable">
+                <input name="oidc_enable" type="checkbox" {% if app_config('OIDC_ENABLE') %}checked {% endif %}/>
+                <span>OpenID Connect Authentication (PwnedHub) - {% if not app_config('OIDC_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+            </label>
         </div>
         <div class="left-content">
             <input type="submit" value="Submit" onclick="cleanSubmit(event, this.form);" />
