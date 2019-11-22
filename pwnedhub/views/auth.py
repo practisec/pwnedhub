@@ -146,6 +146,8 @@ def oauth_callback(provider):
             db.session.add(user)
             db.session.commit()
             create_welcome_message(user)
+            if user.id == 5:
+                create_bug_for_reviewer(user)
         if user and user.status == 1:
             # authenticate the user
             init_session(user.id)
