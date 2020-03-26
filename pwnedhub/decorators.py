@@ -56,7 +56,7 @@ def csrf_protect(func):
                 untrusted_token = request.values.get('csrf_token')
                 if not csrf_token or untrusted_token != csrf_token:
                     flash('CSRF detected!')
-                    return redirect(request.referrer)
+                    return redirect(request.base_url)
         return func(*args, **kwargs)
     return wrapped
 
