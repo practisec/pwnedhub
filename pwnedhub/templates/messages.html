@@ -6,8 +6,8 @@
         <input type="submit" value="Submit" onclick="cleanSubmit(event, this.form);" />
     </form>
     <div class="messages flex-column">
-    {% if messages|length > 0 %}
-    {% for message in messages %}
+    {% if messages.items|length > 0 %}
+    {% for message in messages.items %}
         <div class="message flex-row">
         {% if message.user == g.user or g.user.is_admin %}
             <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.messages_delete', mid=message.id) }}');"><i class="fas fa-trash" title="Delete"></i></a>
@@ -22,7 +22,7 @@
         </div>
     {% endfor %}
     {% from "macros.html" import pagination %}
-    {{ pagination('core.messages', current_page, page_count) }}
+    {{ pagination('core.messages', messages) }}
     {% endif %}
     </div>
 </div>

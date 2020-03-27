@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="flex-grow submissions flex-column">
-{% if submissions|length > 0 %}
-{% for submission in submissions %}
+{% if submissions.items|length > 0 %}
+{% for submission in submissions.items %}
     <div class="submission-preview flex-row flex-align-center">
         <div class="avatar"><a href="{{ url_for('core.profile_view', uid=submission.submitter.id) }}"><img class="circular bordered-dark" src="{{ submission.submitter.avatar_or_default|safe }}" title="Avatar" /></a></div>
         <div class="flex-grow flex-column">
@@ -17,7 +17,7 @@
     </div>
 {% endfor %}
 {% from "macros.html" import pagination %}
-{{ pagination('core.submissions', current_page, page_count) }}
+{{ pagination('core.submissions', submissions) }}
 {% endif %}
 </div>
 {% endblock %}

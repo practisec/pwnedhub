@@ -235,15 +235,9 @@ def mail_delete(mid):
 @core.route('/messages')
 @core.route('/messages/page/<int:page>')
 @login_required
-def messages(page=0):
-    count = 5
-    messages = Message.query.order_by(Message.created.desc()).all()
-    subsets = [messages[i:i + count] for i in range(0, len(messages), count)]
-    try:
-        subset = subsets[page]
-    except IndexError:
-        subset = []
-    return render_template('messages.html', messages=subset, current_page=page, page_count=len(subsets))
+def messages(page=1):
+    messages = Message.query.order_by(Message.created.desc()).paginate(page=page, per_page=5)
+    return render_template('messages.html', messages=messages)
 
 @core.route('/messages/create', methods=['POST'])
 @login_required
@@ -426,15 +420,9 @@ def tools_execute(tid):
 @core.route('/submissions')
 @core.route('/submissions/page/<int:page>')
 @login_required
-def submissions(page=0):
-    count = 10
-    submissions = Bug.query.order_by(Bug.created.desc()).all()
-    subsets = [submissions[i:i + count] for i in range(0, len(submissions), count)]
-    try:
-        subset = subsets[page]
-    except IndexError:
-        subset = []
-    return render_template('submissions.html', submissions=subset, current_page=page, page_count=len(subsets))
+def submissions(page=1):
+    submissions = Bug.query.order_by(Bug.created.desc()).paginate(page=page, per_page=10)
+    return render_template('submissions.html', submissions=submissions)
 
 @core.route('/submissions/new', methods=['GET', 'POST'])
 @login_required

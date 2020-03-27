@@ -1,9 +1,20 @@
-{% macro pagination(route, current_page, page_count) %}
+{% macro pagination(route, items) %}
 <div class="pagination flex-row flex-align-center flex-justify-right">
-    <a href="{{ url_for(route, page=current_page-1) }}"{% if current_page == 0 %} disabled="disabled"{% endif %}>&laquo;</a>
-{% for page in range(0, page_count) %}
-    <a href="{{ url_for(route, page=page) }}"{% if current_page == page %} class="active"{% endif %}>{{ page }}</a>
+<!-- previous page -->
+{% if items.has_prev %}
+    <a href="{{ url_for(route, page=items.prev_num) }}">&laquo;</a>
+{% endif %}
+<!-- all page numbers -->
+{% for page_num in items.iter_pages(left_edge=1, left_current=2, right_current=3, right_edge=1) %}
+{% if page_num %}
+    <a href="{{ url_for(route, page=page_num) }}"{% if page_num == items.page %} class="active"{% endif %}>{{ page_num }}</a>
+{% else %}
+    <span>...</span>
+{% endif %}
 {% endfor %}
-    <a href="{{ url_for(route, page=current_page+1) }}"{% if current_page >= page_count-1 %} disabled="disabled"{% endif %}>&raquo;</a>
+<!-- next page -->
+{% if items.has_next %}
+    <a href="{{ url_for(route, page=items.next_num) }}">&raquo;</a>
+{% endif %}
 </div>
 {% endmacro %}
