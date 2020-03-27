@@ -141,12 +141,40 @@ Vue.component("pagination", {
     },
     template: `
             <div class="pagination flex-row flex-align-center flex-justify-right">
-                <a v-on:click="prevPage" v-bind:disabled="pageNumber === 0">&laquo;</a>
-                <a v-for="(page, index) in pageCount" v-bind:key="page" v-on:click="gotoPage(index)" v-bind:class="pageNumber === index ? 'active' : ''">{{ index }}</a>
-                <a v-on:click="nextPage" v-bind:disabled="pageNumber >= pageCount-1">&raquo;</a>
+                <a v-if="pageNumber !== 0" v-on:click="prevPage">&laquo;</a>
+                <div v-for="page in iterPages()" v-bind:key="page">
+                    <a v-if="page !== null" v-on:click="gotoPage(page-1)" v-bind:class="pageNumber === page-1 ? 'active' : ''">{{ page }}</a>
+                    <span v-else>...</span>
+                </div>
+                <a v-if="pageNumber < pageCount-1" v-on:click="nextPage">&raquo;</a>
             </div>
     `,
     methods: {
+        iterPages: function() {
+            // the zero index is manipulated here and in the
+            // template to make the page numbers look normal
+            var page = this.pageNumber+1;
+            var firstPage = 1;
+            var lastPage = this.pageCount;
+            var pages = [];
+            if (page-3 === firstPage) {
+                pages.push(firstPage);
+            } else if (page-3 > firstPage) {
+                pages.push(firstPage, null);
+            }
+            var pageRange = [page-2, page-1, page, page+1, page+2];
+            pageRange.forEach(function(value) {
+                if (value >= firstPage && value <= lastPage) {
+                    pages.push(value);
+                }
+            });
+            if (page+3 < lastPage) {
+                pages.push(null, lastPage);
+            } else if (page+3 === lastPage) {
+                pages.push(lastPage);
+            }
+            return pages;
+        },
         gotoPage: function(page) {
             this.$emit("click", page);
         },
