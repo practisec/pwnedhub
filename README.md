@@ -20,7 +20,7 @@ PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http:/
 4. Build the PwnedHub Docker image.
 
     ```
-    docker build --rm -t pwnedhub .
+    docker-compose build
     ```
 
 5. Launch the PwnedHub architecture using Docker Compose.
@@ -31,7 +31,16 @@ PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http:/
 
     * To launch as a daemon (no terminal logging), add the `-d` switch.
 
-6. When done using PwnedHub, clean up the Docker environment with the following command:
+6. Modify the hosts file to create the following records:
+
+    ```
+    127.0.0.1   pwnedhub.com
+    127.0.0.1   api.pwnedhub.com
+    ```
+
+7. Visit the application at http://pwnedhub.com.
+
+8. When done using PwnedHub, clean up the Docker environment with the following command:
 
     ```
     docker-compose down

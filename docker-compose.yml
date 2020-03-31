@@ -4,31 +4,41 @@ services:
 
     app:
         build: .
-        image: pwnedhub
-        container_name: pwnedhub
-        ports:
-            - '5000:5000'
+        image: pwnedhub-dev
+        expose:
+            - 5000
         volumes:
             - .:/pwnedhub
         environment:
             - DATABASE_HOST=db
-            - CONFIG=Development
+            - CONFIG=Production
         command: gunicorn --bind 0.0.0.0:5000 --worker-class eventlet --workers 1 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
 
     api:
-        image: pwnedhub
-        ports:
-            - '5001:5001'
+        image: pwnedhub-dev
+        expose:
+            - 5001
         volumes:
             - .:/pwnedhub
         environment:
             - DATABASE_HOST=db
-            - CONFIG=Development
+            - CONFIG=Production
         command: gunicorn --bind 0.0.0.0:5001 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
+
+    proxy:
+        image: nginx:alpine
+        ports:
+            - 80:80
+        volumes:
+            - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./proxy/proxy_params:/etc/nginx/proxy_params:ro
+        depends_on:
+            - app
+            - api
 
     db:
         image: mysql:5.7
