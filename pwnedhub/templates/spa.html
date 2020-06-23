@@ -28,7 +28,7 @@
         const API_BASE_URL = "{{ config.API_BASE_URL }}";
     </script>
     <meta name="google-signin-client_id" content="{{ config.OAUTH_PROVIDERS.google.CLIENT_ID }}">
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
     <script src="{{ url_for('static', filename='js/vue/vue.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/vue-router.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/vuex.js') }}"></script>
