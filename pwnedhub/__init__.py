@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
-from flask_socketio import SocketIO
 from common import db
 from common.models import Config
 from common.utils import generate_csrf_token
@@ -9,7 +8,6 @@ from datetime import datetime
 from urllib.parse import unquote
 
 sess = Session()
-socketio = SocketIO()
 
 def create_app(config='Development'):
 
@@ -20,7 +18,6 @@ def create_app(config='Development'):
 
     db.init_app(app)
     sess.init_app(app)
-    socketio.init_app(app)
 
     # custom jinja global for accessing dynamic configuration values
     app.jinja_env.globals['app_config'] = Config.get_value
@@ -51,9 +48,7 @@ def create_app(config='Development'):
     app.register_blueprint(auth)
     app.register_blueprint(errors)
 
-    from pwnedhub.views import websockets
-
-    return app, socketio
+    return app
 
 def init_db(config='Development'):
     app, socketio = create_app(config)
