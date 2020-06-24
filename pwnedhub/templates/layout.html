@@ -24,12 +24,6 @@
                 <ul class="top-menu">
                 {% if g.user %}
                     {% if g.user.is_admin %}
-                    <li><a href="#">bugs</a>
-                        <ul class="sub-menu">
-                            <li><a href="{{ url_for('core.bounty_scoreboard') }}">Scoreboard</a></li>
-                            <li><a href="{{ url_for('core.submissions') }}">Submissions</a></li>
-                        </ul>
-                    </li>
                     <li><a href="#">{% if g.user.has_unread_mail %}*{% endif %}collaboration</a>
                         <ul class="sub-menu">
                             <li><a href="{{ url_for('core.mail') }}">{% if g.user.has_unread_mail %}*{% endif %}PwnMail</a></li>
@@ -44,14 +38,6 @@
                         </ul>
                     </li>
                     {% else %}
-                    <li><a href="#">bugs</a>
-                        <ul class="sub-menu">
-                            <li><a href="{{ url_for('core.bounty_info') }}">Info</a></li>
-                            <li><a href="{{ url_for('core.bounty_scoreboard') }}">Scoreboard</a></li>
-                            <li><a href="{{ url_for('core.submissions') }}">Submissions</a></li>
-                            <li><a href="{{ url_for('core.submissions_new') }}">New Submission</a></li>
-                        </ul>
-                    </li>
                     <li><a href="#">testing</a>
                         <ul class="sub-menu">
                             <li><a href="{{ url_for('core.notes') }}">Notes</a></li>

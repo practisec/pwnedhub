@@ -1,6 +1,6 @@
 from flask import current_app, url_for
 from common import db
-from common.constants import ROLES, QUESTIONS, USER_STATUSES, BUG_STATUSES, VULNERABILITIES, SEVERITY
+from common.constants import ROLES, QUESTIONS, USER_STATUSES
 from common.utils import xor_encrypt, xor_decrypt, get_jaccard_sim
 import datetime
 
@@ -91,60 +91,6 @@ class Mail(BaseModel):
     def __repr__(self):
         return "<Mail '{}'>".format(self.id)
 
-class Bug(BaseModel):
-    __tablename__ = 'bugs'
-    title = db.Column(db.String(255), nullable=False)
-    vuln_id = db.Column(db.Integer, nullable=False, default=0)
-    severity = db.Column(db.Integer, nullable=False, default=0)
-    description = db.Column(db.Text, nullable=False)
-    impact = db.Column(db.Text, nullable=False)
-    status = db.Column(db.Integer, nullable=False, default=0)
-    submitter_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    reviewer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
-    @property
-    def vulnerability_as_string(self):
-        return VULNERABILITIES[self.vuln_id][0]
-
-    @property
-    def severity_as_string(self):
-        return SEVERITY[self.severity]
-
-    @property
-    def status_as_string(self):
-        return BUG_STATUSES[self.status]
-
-    @property
-    def bounty(self):
-        return VULNERABILITIES[self.vuln_id][1] * self.severity
-
-    @staticmethod
-    def is_unique(signature):
-        for bug in Bug.query.all():
-            s = ' '.join((bug.title, bug.description, bug.impact))
-            js = get_jaccard_sim(signature, s)
-            if js > 0.5:
-                return False
-        return True
-
-    @property
-    def is_validated(self):
-        # includes any validation result
-        # rejected, confirmed, and fixed
-        if self.status > 0:
-            return True
-        return False
-
-    @property
-    def is_accepted(self):
-        # includes confirmed and fixed
-        if self.status > 1:
-            return True
-        return False
-
-    def __repr__(self):
-        return "<Bug '{}'>".format(self.title)
-
 class User(BaseModel):
     __tablename__ = 'users'
     username = db.Column(db.String(255), nullable=False, unique=True)
@@ -161,33 +107,6 @@ class User(BaseModel):
     messages = db.relationship('Message', backref='user', lazy='dynamic')
     sent_mail = db.relationship('Mail', foreign_keys='Mail.sender_id', backref='sender', lazy='dynamic')
     received_mail = db.relationship('Mail', foreign_keys='Mail.receiver_id', backref='receiver', lazy='dynamic')
-    bugs = db.relationship('Bug', foreign_keys='Bug.submitter_id', backref='submitter', lazy='dynamic')
-    validations = db.relationship('Bug', foreign_keys='Bug.reviewer_id', backref='reviewer', lazy='dynamic')
-
-    @property
-    def reputation(self):
-        rep = 0
-        for bug in self.accepted_bugs:
-            rep += bug.bounty
-        for val in self.accepted_validations:
-            rep += val.bounty//4
-        return rep
-
-    @property
-    def accepted_bugs(self):
-        return [b for b in self.bugs if b.is_accepted]
-
-    @property
-    def accepted_validations(self):
-        return [v for v in self.validations if v.is_accepted]
-
-    @property
-    def completed_validations(self):
-        return [v for v in self.validations if v.is_validated]
-
-    @property
-    def open_validations(self):
-        return [v for v in self.validations if not v.is_validated]
 
     @property
     def role_as_string(self):
@@ -257,7 +176,6 @@ class User(BaseModel):
                 'name': self.name,
                 'avatar': self.avatar_or_default,
                 'signature': self.signature,
-                'reputation': self.reputation,
             }
         return {
             'id': self.id,
@@ -269,7 +187,6 @@ class User(BaseModel):
             'signature': self.signature,
             'notes': self.notes,
             'role': self.role_as_string,
-            'reputation': self.reputation,
         }
 
     def __repr__(self):

@@ -2,8 +2,8 @@ from flask import Blueprint, current_app, request, session, redirect, url_for, r
 from pwnedhub import db
 from pwnedhub.decorators import login_required, validate
 from pwnedhub.oauth import OAuthSignIn, OAuthCallbackError
-from common.models import Mail, User, Bug
-from common.constants import QUESTIONS, REVIEW_NOTIFICATION
+from common.models import Mail, User
+from common.constants import QUESTIONS
 from common.utils import xor_encrypt
 from common.validators import is_valid_password
 from hashlib import md5
@@ -19,27 +19,6 @@ def create_welcome_message(user):
     subject = 'Welcome to PwnedHub!'
     content = "We're glad you've chosen PwnedHub to help you take your next step in becoming a more efficient security consultant. We're here to help. If you have any questions or concerns, please don't hesitate to reach out to this account for assistance. Together, we can make security testing great again!"
     mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
-    db.session.add(mail)
-    db.session.commit()
-
-def create_bug_for_reviewer(reviewer):
-    # bug
-    title = 'Credientals Over GET method in plain Text'
-    vuln_id = 12
-    severity = 2
-    description = 'While I was testing the application i found this bug where the application is sending the credentials over Plain text in the URL of a GET request: `https://auth.ratelimited.me/login?username=testqaz%40grr.la&password=D33vanh%40h%40h%40`'
-    impact = 'If the application is sending the credentials over GET request it will be saved in the history of the Browser.'
-    submitter = User.query.get(3)
-    submission = Bug(title=title, vuln_id=vuln_id, severity=severity, description=description, impact=impact, submitter=submitter, reviewer=reviewer)
-    # mail
-    sender = User.query.get(1)
-    receiver = reviewer
-    subject = 'New Submission for Review'
-    bug_href = url_for('core.submissions_view', bid=submission.id, _external=True)
-    content = REVIEW_NOTIFICATION.format(bug_href, submission.id)
-    mail = Mail(content=content, subject=subject, sender=sender, receiver=receiver)
-    # write to the database
-    db.session.add(submission)
     db.session.add(mail)
     db.session.commit()
 
@@ -67,8 +46,6 @@ def register():
                     db.session.add(user)
                     db.session.commit()
                     create_welcome_message(user)
-                    if user.id == 5:
-                        create_bug_for_reviewer(user)
                     flash('Account created. Please log in.')
                     return redirect(url_for('auth.login'))
                 else:
@@ -146,8 +123,6 @@ def oauth_callback(provider):
             db.session.add(user)
             db.session.commit()
             create_welcome_message(user)
-            if user.id == 5:
-                create_bug_for_reviewer(user)
         if user and user.status == 1:
             # authenticate the user
             init_session(user.id)

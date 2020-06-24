@@ -1,10 +1,8 @@
 User-agent: *
 Disallow: /admin
 Disallow: /artifacts
-Disallow: /bounty
 Disallow: /mail
 Disallow: /messages
 Disallow: /notes
 Disallow: /profile
-Disallow: /submissions
 Disallow: /tools

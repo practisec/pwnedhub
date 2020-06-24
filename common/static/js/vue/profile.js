@@ -8,8 +8,6 @@ var Profile = Vue.component("profile", {
             <div><h3>{{ user.name }}</h3></div>
             <div><h6>Member since: {{ user.created }}</h6></div>
             <div><blockquote>{{ user.signature }}</blockquote></div>
-            <div><h6>Reputation:</h6></div>
-            <div><h1>{{ user.reputation }}</h1></div>
         </div>
     `,
     data: function() {
