@@ -2,14 +2,7 @@ from common.config import SharedBaseConfig, SharedDevConfig, SharedTestConfig, S
 
 class BaseConfig(SharedBaseConfig):
 
-    SESSION_COOKIE_HTTPONLY = False
-    PERMANENT_SESSION_LIFETIME = 3600 # 1 hour
-    MARKDOWN_EXTENSIONS = [
-        'markdown.extensions.tables',
-        'markdown.extensions.extra',
-        'markdown.extensions.attr_list',
-        'markdown.extensions.fenced_code',
-    ]
+    API_BASE_URL = 'http://api.pwnedhub.com:5002'
 
 class Development(SharedDevConfig, BaseConfig):
 
@@ -21,4 +14,4 @@ class Test(SharedTestConfig, BaseConfig):
 
 class Production(SharedProdConfig, BaseConfig):
 
-    pass
+    API_BASE_URL = 'http://api.pwnedhub.com'

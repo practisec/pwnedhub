@@ -17,11 +17,11 @@ import subprocess
 
 core = Blueprint('core', __name__)
 
-@core.before_app_request
-def render_mobile():
-    if any(x in request.user_agent.string.lower() for x in ['android', 'iphone', 'ipad']):
-        if not request.endpoint.startswith('static'):
-            return render_template('spa.html')
+#@core.before_app_request
+#def render_mobile():
+#    if any(x in request.user_agent.string.lower() for x in ['android', 'iphone', 'ipad']):
+#        if not request.endpoint.startswith('static'):
+#            return render_template('spa.html')
 
 @core.before_app_request
 def load_user():

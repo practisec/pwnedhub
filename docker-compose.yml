@@ -16,7 +16,8 @@ services:
         depends_on:
             - db
 
-    api:
+    spa:
+        build: .
         image: pwnedhub-dev
         expose:
             - 5001
@@ -25,7 +26,20 @@ services:
         environment:
             - DATABASE_HOST=db
             - CONFIG=Production
-        command: gunicorn --bind 0.0.0.0:5001 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
+        command: gunicorn --bind 0.0.0.0:5001 pwnedspa.wsgi:app --error-logfile - --log-level DEBUG
+        depends_on:
+            - db
+
+    api:
+        image: pwnedhub-dev
+        expose:
+            - 5002
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - DATABASE_HOST=db
+            - CONFIG=Production
+        command: gunicorn --bind 0.0.0.0:5002 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
 
@@ -38,6 +52,7 @@ services:
             - ./proxy/proxy_params:/etc/nginx/proxy_params:ro
         depends_on:
             - app
+            - spa
             - api
 
     db:

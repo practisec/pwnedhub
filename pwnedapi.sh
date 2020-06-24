@@ -13,6 +13,6 @@ then
     python ./pwnedapi.py
 else
     echo "Running in production-like mode..."
-    sudo gunicorn --bind 127.0.0.1:5001 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
+    sudo gunicorn --bind 127.0.0.1:5002 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
 fi
 mysql.server stop

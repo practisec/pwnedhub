@@ -1,19 +1,18 @@
-from common.config import SharedConfig
+from common.config import SharedBaseConfig, SharedDevConfig, SharedTestConfig, SharedProdConfig
 
-class BaseConfig(SharedConfig):
+class BaseConfig(SharedBaseConfig):
 
     CORS_SUPPORTS_CREDENTIALS = True
-    ALLOWED_ORIGINS = ['http://pwnedhub.com:5000', 'http://www.pwnedhub.com:5000']
+    ALLOWED_ORIGINS = ['http://www.pwnedhub.com:5000', 'http://test.pwnedhub.com:5001']
 
-class Development(BaseConfig):
+class Development(SharedDevConfig, BaseConfig):
 
-    DEBUG = True
+    pass
 
-class Test(BaseConfig):
+class Test(SharedTestConfig, BaseConfig):
 
-    DEBUG = True
-    TESTING = True
+    pass
 
-class Production(BaseConfig):
+class Production(SharedProdConfig, BaseConfig):
 
-    ALLOWED_ORIGINS = ['http://pwnedhub.com', 'http://www.pwnedhub.com']
+    ALLOWED_ORIGINS = ['http://www.pwnedhub.com', 'http://test.pwnedhub.com']

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="flash" class="flash"></div>
+<div class="flex-column" id="app">
+    <header class="flex-no-shrink flex-row">
+        <Navigation></Navigation>
+    </header>
+    <section class="flex-grow flex-no-shrink flex-row">
+        <div class="flex-grow container-fluid flex-row">
+            <router-view></router-view>
+        </div>
+    </section>
+</div>
+<script>
+    const API_BASE_URL = "{{ config.API_BASE_URL }}";
+</script>
+<meta name="google-signin-client_id" content="{{ config.OAUTH_PROVIDERS.google.CLIENT_ID }}">
+<script src="https://apis.google.com/js/platform.js"></script>
+<script src="{{ url_for('static', filename='js/vue/vue.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vue/vue-router.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vue/vuex.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vue/mail.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vue/messages.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vue/profile.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vue/login.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vue/navigation.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vue/router.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vue/store.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vue/app.js') }}"></script>
+{% endblock %}
