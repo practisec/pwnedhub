@@ -1,50 +1,108 @@
-var Navigation = Vue.component("navigation", {
+Vue.component("navigation", {
     template: `
-        <nav class="flex-grow container-fluid flex-row">
-            <div class="brand">
-                Pwned<span class="rounded hub"><b>Hub</b></span><span class="subscript">.mob</span>
-            </div>
-            <div class="flex-grow flex-row flex-justify-right nav">
-                <ul v-if="isLoggedIn" class="top-menu">
-                    <li><img class="circular bordered-dark avatar" v-bind:src="getUserAvatar()" title="Avatar" />
-                        <ul class="sub-menu">
-                            <li v-for="route in links" v-bind:key="route.id" v-bind:route="route">
-                                <router-link v-bind:to="{ name: route.name, params: route.params || {} }">{{ route.text }}</router-link>
-                            </li>
-                            <li>
-                                <span v-on:click="doLogout">Logout</span>
-                            </li>
-                        </ul>
+        <div class="header">
+            <div class="container-fluid nav">
+                <ul class="menu" v-bind:class="{ active: isOpen }">
+                    <li class="brand"><img src="/images/logo.png" /></li>
+                    <li class="toggle"><a href="#" v-on:click="toggleMenu"><i class="fas fa-bars"></i></a></li>
+                    <li class="item avatar" v-if="isLoggedIn">
+                        <router-link v-bind:to="{ name: 'profile', params: {} }">
+                            <img class="circular bordered-dark" v-bind:src="userAvatar" title="Avatar" />
+                        </router-link>
                     </li>
+                    <li class="item" v-for="route in permissions[userRole]" v-bind:key="route.id" v-bind:route="route">
+                        <router-link v-bind:to="{ name: route.name, params: route.params || {} }">{{ route.text }}</router-link>
+                    </li>
+                    <li class="item" v-if="isLoggedIn"><span v-on:click="doLogout">Logout</span></li>
                 </ul>
             </div>
-        </nav>
+        </div>
         `,
     data: function() {
         return {
-            links: [
-                {
-                    id: 0,
-                    text: "Messages",
-                    name: "messages",
-                },
-                {
-                    id: 1,
-                    text: "Mail",
-                    name: "mail",
-                },
-            ]
+            isOpen: false,
+            permissions: {
+                guest: [
+                    {
+                        id: 0,
+                        text: "Login",
+                        name: "login",
+                    },
+                    {
+                        id: 1,
+                        text: "Signup",
+                        name: null,
+                    },
+                ],
+                admin: [
+                    {
+                        id: 0,
+                        text: "PwnMail",
+                        name: "mail",
+                    },
+                    {
+                        id: 1,
+                        text: "Messages",
+                        name: "messages",
+                    },
+                    {
+                        id: 2,
+                        text: "Tools",
+                        name: null,
+                    },
+                    {
+                        id: 3,
+                        text: "Users",
+                        name: null,
+                    },
+                ],
+                user: [
+                    {
+                        id: 0,
+                        text: "Notes",
+                        name: null,
+                    },
+                    {
+                        id: 1,
+                        text: "Artifacts",
+                        name: null,
+                    },
+                    {
+                        id: 2,
+                        text: "Scanners",
+                        name: null,
+                    },
+                    {
+                        id: 3,
+                        text: "PwnMail",
+                        name: "mail",
+                    },
+                    {
+                        id: 4,
+                        text: "Messages",
+                        name: "messages",
+                    },
+                ],
+            }
         }
+    },
+    watch: {
+        '$route': function() {
+            this.isOpen = false;
+        },
     },
     computed: {
         isLoggedIn: function() {
             return store.getters.isLoggedIn;
         },
-    },
-    methods: {
-        getUserAvatar: function() {
+        userRole: function() {
+            return store.getters.getUserRole;
+        },
+        userAvatar: function() {
             return store.getters.getUserInfo.avatar;
         },
+    },
+    methods: {
         doLogout: function() {
             fetch(store.getters.getApiUrl+"/access-token", {
                 credentials: "include",
@@ -52,11 +110,14 @@ var Navigation = Vue.component("navigation", {
             })
             .then(handleErrors)
             .then(response => this.handleLogout())
-            .catch(error => showFlash(error));
+            .catch(error => store.dispatch("createToast", error));
         },
         handleLogout: function() {
             store.dispatch("unsetAuthInfo");
             this.$router.push({ name: "login" });
-        }
+        },
+        toggleMenu: function() {
+            this.isOpen = !this.isOpen;
+        },
     }
 });

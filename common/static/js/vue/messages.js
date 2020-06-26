@@ -47,7 +47,7 @@ var Messages = Vue.component("messages", {
                 store.dispatch("updateMessages", json.messages);
                 next();
             })
-            .catch(error => showFlash(error));
+            .catch(error => store.dispatch("createToast", error));
         }
     },
 });
@@ -82,7 +82,7 @@ Vue.component("create-message", {
                     this.messageForm[k] = "";
                 });
             })
-            .catch(error => showFlash(error));
+            .catch(error => store.dispatch("createToast", error));
         },
     },
 });
@@ -115,8 +115,7 @@ Vue.component("show-message", {
             return (user.id === message.author.id) ? true : false;
         },
         isEditable: function(message) {
-            user = store.getters.getUserInfo;
-            return (this.isAuthor(message) || user.role === "admin") ? true : false;
+            return (this.isAuthor(message) || store.getters.isAdmin) ? true : false;
         },
         deleteMessage: function(message) {
             fetch(store.getters.getApiUrl+"/messages/"+message.id, {
@@ -127,9 +126,9 @@ Vue.component("show-message", {
             .then(response => response.json())
             .then(json => {
                 store.dispatch("updateMessages", json.messages);
-                showFlash("Message deleted.");
+                store.dispatch("createToast", "Message deleted.");
             })
-            .catch(error => showFlash(error));
+            .catch(error => store.dispatch("createToast", error));
         },
     },
 });
@@ -236,7 +235,7 @@ Vue.component("scroll", {
                         this.unfurls.push(unfurl);
                     }
                 })
-                .catch(error => showFlash(error));
+                .catch(error => store.dispatch("createToast", error));
             }.bind(this));
         },
     },

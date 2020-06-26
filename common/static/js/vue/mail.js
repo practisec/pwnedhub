@@ -44,7 +44,7 @@ var Mail = Vue.component("mail", {
                 store.dispatch("updateMail", json.mail);
                 next();
             })
-            .catch(error => showFlash(error));
+            .catch(error => store.dispatch("createToast", error));
         }
     },
 });
@@ -117,7 +117,7 @@ var Letter = Vue.component("letter", {
                 store.dispatch("updateLetter", json);
                 this.letter = json;
             })
-            .catch(error => showFlash(error));
+            .catch(error => store.dispatch("createToast", error));
         },
         deleteLetter: function() {
             fetch(store.getters.getApiUrl+"/mail/"+this.letter.id, {
@@ -129,9 +129,9 @@ var Letter = Vue.component("letter", {
             .then(json => {
                 store.dispatch("updateMail", json.mail);
                 this.$router.push({ name: "mail" });
-                showFlash("Mail deleted.");
+                store.dispatch("createToast", "Mail deleted.");
             })
-            .catch(error => showFlash(error));
+            .catch(error => store.dispatch("createToast", error));
         },
     },
     created: function() {
@@ -183,7 +183,7 @@ var Compose = Vue.component("compose", {
                     return user.id !== currentUser.id;
                 });
             })
-            .catch(error => showFlash(error));
+            .catch(error => store.dispatch("createToast", error));
         },
         discardDraft: function() {
             router.go(-1);
@@ -201,9 +201,9 @@ var Compose = Vue.component("compose", {
                 // will cause the mail component to refetch
                 store.dispatch("updateMail", []);
                 this.$router.push({ name: "mail" });
-                showFlash("Mail sent.");
+                store.dispatch("createToast", "Mail sent.");
             })
-            .catch(error => showFlash(error));
+            .catch(error => store.dispatch("createToast", error));
         },
     },
     created: function() {
@@ -262,9 +262,9 @@ var Reply = Vue.component("reply", {
             .then(response => {
                 store.dispatch("updateMail", []);
                 this.$router.push({ name: "mail" });
-                showFlash("Mail sent.");
+                store.dispatch("createToast", "Mail sent.");
             })
-            .catch(error => showFlash(error));
+            .catch(error => store.dispatch("createToast", error));
         },
     },
     created: function() {

@@ -2,6 +2,7 @@ const state = {
     apiUrl: API_BASE_URL,
     mail: [],
     messages: [],
+    toasts: [],
     userInfo: null,
     authHeader: {},
 }
@@ -18,6 +19,12 @@ const mutations = {
     },
     UPDATE_MESSAGES(state, payload) {
         state.messages = payload;
+    },
+    CREATE_TOAST(state, toast) {
+        state.toasts.push(toast)
+    },
+    REMOVE_TOAST(state, id) {
+        state.toasts = state.toasts.filter(t => t.id !== id)
     },
     SET_USER_INFO(state, value) {
         state.userInfo = value;
@@ -37,6 +44,8 @@ const mutations = {
     },
 };
 
+let maxToastId = 0;
+
 const actions = {
     updateMail(context, mail) {
         context.commit("UPDATE_MAIL", mail);
@@ -46,6 +55,13 @@ const actions = {
     },
     updateMessages(context, messages) {
         context.commit("UPDATE_MESSAGES", messages);
+    },
+    createToast(context, text) {
+        const id = ++maxToastId;
+        context.commit("CREATE_TOAST", {id: id, text: text});
+        setTimeout(() => {
+            context.commit("REMOVE_TOAST", id);
+        }, 5000)
     },
     setAuthInfo(context, json) {
         context.commit("SET_USER_INFO", json.user);
@@ -88,6 +104,9 @@ const getters = {
     getMessages(state) {
         return state.messages;
     },
+    getToasts(stats) {
+        return state.toasts;
+    },
     getUserInfo(state) {
         return state.userInfo;
     },
@@ -99,6 +118,19 @@ const getters = {
             return false;
         }
         return true;
+    },
+    isAdmin: function(state, getters) {
+        if (getters.isLoggedIn) {
+            user = getters.getUserInfo;
+            return (user.role === "admin") ? true : false;
+        }
+        return false;
+    },
+    getUserRole: function(state, getters) {
+        if (getters.isLoggedIn) {
+            return store.getters.getUserInfo.role;
+        }
+        return "guest";
     },
 };
 

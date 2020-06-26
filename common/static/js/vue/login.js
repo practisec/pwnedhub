@@ -65,7 +65,7 @@ var Login = Vue.component('login', {
         },
         loginFailed: function(error) {
             store.dispatch("unsetAuthInfo");
-            showFlash(error);
+            store.dispatch("createToast", error);
         },
     },
 });
@@ -87,9 +87,9 @@ Vue.component('google-oidc', {
                 }.bind(this),
                 function(error) {
                     if (error.error === "network_error") {
-                        showFlash("OpenID Connect provider unreachable.");
+                        store.dispatch("createToast", "OpenID Connect provider unreachable.");
                     } else if (error.error !== "popup_closed_by_user") {
-                        showFlash("OpenID Connect error ({0}).".format(error.error));
+                        store.dispatch("createToast", "OpenID Connect error ({0}).".format(error.error));
                     }
                 },
             );

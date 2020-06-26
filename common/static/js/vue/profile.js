@@ -25,7 +25,7 @@ var Profile = Vue.component("profile", {
             .then(json => {
                 this.user = json;
             })
-            .catch(error => showFlash(error));
+            .catch(error => store.dispatch("createToast", error));
         },
     },
     created: function() {
