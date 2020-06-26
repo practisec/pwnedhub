@@ -158,7 +158,25 @@ i.large {
     font-size: 10rem;
 }
 
-/* end */
+/* tags end */
+
+/* general */
+
+.header {
+    background-color: #222;/*#fafafa;*/
+    color: #fff;
+}
+
+.content {
+    padding: 3rem 0;
+}
+
+.container-fluid {
+    max-width: 960px;
+    min-width: 0;
+}
+
+/* general end */
 
 /* navigation */
 
@@ -312,21 +330,44 @@ i.large {
 
 /* toasts end */
 
-/* classes */
+/* login */
 
-.header {
-    background-color: #222;/*#fafafa;*/
-    color: #fff;
+.login {
+    display: flex;
+    flex-direction: column;
 }
 
-.content {
-    padding: 3rem 0;
+.login .oidc-button {
+    cursor: pointer;
+    max-width: 100%;
 }
 
-.container-fluid {
-    max-width: 100rem;
-    min-width: 0;
+/* desktop login */
+@media all and (min-width: 960px) {
+
+    .login {
+        flex-direction: row;
+    }
+
+    .login > * {
+        flex-basis: 50%;
+    }
+
+    .login .form {
+        padding: 0 10rem;
+        border-right: 1px solid #ddd;
+    }
+
+    .login .oidc {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-left: 1px solid #ddd;
+    }
+
 }
+
+/* login end */
 
 .banner .panel {
     min-width: 20rem;
@@ -336,27 +377,6 @@ i.large {
 .about,
 .info {
     text-align: justify;
-}
-
-.login p {
-    margin-bottom: 1rem;
-}
-
-.login .oidc-button {
-    cursor: pointer;
-    max-width: 100%;
-}
-
-.login .oidc {
-    padding: 2rem 4rem;
-}
-
-.login .oidc .oidc-button {
-    margin-top: 1rem;
-}
-
-.login .form {
-    width: 100%;
 }
 
 .config .panel {

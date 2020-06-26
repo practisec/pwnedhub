@@ -1,6 +1,6 @@
 var Login = Vue.component('login', {
     template: `
-        <div class="flex-width-8 flex-offset-2 flex-basis-8 flex-align-center login">
+        <div class="login">
             <div class="flex-column form">
                 <label for="username">Username:</label>
                 <input name="username" type="text" v-model="loginForm.username" />
@@ -10,7 +10,8 @@ var Login = Vue.component('login', {
                     <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
                 </div>
                 <input type="button" v-on:click="doFormLogin" value="Login" />
-                <hr>
+            </div>
+            <div class="oidc">
                 <div class="center-content">
                     <google-oidc v-on:done="doOIDCLogin" />
                 </div>
