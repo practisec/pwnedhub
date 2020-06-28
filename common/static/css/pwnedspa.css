@@ -43,11 +43,11 @@
 /* apply a natural box layout model to all elements, but allowing components to change */
 
 html {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 *, *:before, *:after {
-  box-sizing: inherit;
+    box-sizing: inherit;
 }
 
 /* tags */
@@ -162,9 +162,39 @@ i.large {
 
 /* general */
 
+#app {
+    position: relative;
+}
+
+.background-auth {
+    background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+}
+
+.background-unauth {
+    background-image: url(/images/background-dark.jpg);
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
 .header {
     background-color: #222;/*#fafafa;*/
     color: #fff;
+    z-index: 20;
+}
+
+/* index order keeps toasts under the header, but above the content */
+.content-wrapper {
+    z-index: 10;
 }
 
 .content {
@@ -179,15 +209,6 @@ i.large {
 /* general end */
 
 /* navigation */
-
-/* index order keeps toasts under the header, but above the content */
-.header {
-    z-index: 20;
-}
-
-.content-wrapper {
-    z-index: 10;
-}
 
 .nav a {
     color: inherit;
@@ -335,11 +356,22 @@ i.large {
 .login {
     display: flex;
     flex-direction: column;
+    color: white;
 }
 
-.login .oidc-button {
+.login .form {
+    padding: 1rem 2rem;
+    background-color: rgba(0,0,0,0.6);
+}
+
+.login .form .oidc-button {
     cursor: pointer;
     max-width: 100%;
+}
+
+.login .panels > * {
+    flex-basis: 20rem;
+    margin: 2rem 0;
 }
 
 /* desktop login */
@@ -347,6 +379,7 @@ i.large {
 
     .login {
         flex-direction: row;
+        flex-wrap: wrap;
     }
 
     .login > * {
@@ -354,25 +387,18 @@ i.large {
     }
 
     .login .form {
-        padding: 0 10rem;
-        border-right: 1px solid #ddd;
+        margin: 0 auto;
+        width: 60%;
     }
 
-    .login .oidc {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-left: 1px solid #ddd;
+    .login .panels {
+        margin-top: 5rem;
+        flex-grow: 1;
     }
 
 }
 
 /* login end */
-
-.banner .panel {
-    min-width: 20rem;
-    margin-bottom: 5rem;
-}
 
 .about,
 .info {

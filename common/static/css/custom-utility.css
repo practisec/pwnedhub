@@ -19,6 +19,10 @@
     clear: both;
 }
 
+.bolded {
+    font-weight: bold;
+}
+
 .rounded {
     -webkit-border-radius: .5rem;
     -moz-border-radius: .5rem;
@@ -43,6 +47,14 @@
 
 .gutter-half-right {
     margin-right: 0.5;
+}
+
+.gutter-bottom {
+    margin-bottom: 1rem;
+}
+
+.gutter-half-bottom {
+    margin-bottom: 0.5;
 }
 
 .gutter-left {

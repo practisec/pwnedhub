@@ -1,7 +1,43 @@
 var Login = Vue.component('login', {
     template: `
         <div class="login">
-            <div class="flex-column form">
+            <index-static></index-static>
+            <login-form></login-form>
+            <div class="flex-row flex-wrap flex-justify-space-evenly center-content panels">
+                <div>
+                    <h5>Scan.</h5>
+                    <i class="fas fa-search large" title="Find"></i>
+                </div>
+                <div>
+                    <h5>Find.</h5>
+                    <i class="fas fa-bug large" title="Bug"></i>
+                </div>
+                <div>
+                    <h5>Win.</h5>
+                    <i class="fas fa-dollar-sign large" title="Bounty"></i>
+                </div>
+            </div>
+        </div>
+    `,
+});
+
+Vue.component('index-static', {
+    template: `
+        <div class="flex-column">
+            <div>
+                <img style="max-width: 100%;" src="/images/logo.png" />
+            </div>
+            <div class="center-content">
+                <h3>A <span class="red">collaborative</span> space to conduct <span class="red">hosted</span> security assessments.</h3>
+            </div>
+        </div>
+    `,
+});
+
+Vue.component('login-form', {
+    template: `
+        <div>
+            <div class="flex-column form rounded">
                 <label for="username">Username:</label>
                 <input name="username" type="text" v-model="loginForm.username" />
                 <label for="password">Password:</label>
@@ -10,8 +46,7 @@ var Login = Vue.component('login', {
                     <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
                 </div>
                 <input type="button" v-on:click="doFormLogin" value="Login" />
-            </div>
-            <div class="oidc">
+                <div class="gutter-bottom center-content bolded">OR</div>
                 <div class="center-content">
                     <google-oidc v-on:done="doOIDCLogin" />
                 </div>
