@@ -1,10 +1,10 @@
 from flask import Blueprint, g, current_app, request, jsonify, abort, Response
 from flask_restful import Resource, Api
 from pwnedapi import db
-from common.constants import ADMIN_RESPONSE
+from common.constants import QUESTIONS, ADMIN_RESPONSE
 from common.models import Config, User, Message, Mail, Tool
 from common.utils import get_unverified_jwt_payload, unfurl_url
-from common.validators import is_valid_command
+from common.validators import is_valid_password, is_valid_command
 from datetime import datetime, timedelta
 from functools import wraps
 from hashlib import md5
@@ -133,6 +133,25 @@ class UserList(Resource):
         users = [u.serialize(public=True) for u in User.query.all()]
         return {'users': users}
 
+    def post(self):
+        '''Creates an account.'''
+        username = request.json.get('username')
+        if not User.query.filter_by(username=username).first():
+            email = request.json.get('email')
+            if not User.query.filter_by(email=email).first():
+                password = request.json.get('password')
+                if is_valid_password(password):
+                    user = User(**request.json)
+                    db.session.add(user)
+                    db.session.commit()
+                    return {'message': 'Account created. Please log in.', 'user': user.serialize()}, 201
+                else:
+                    abort(400, 'Password does not meet complexity requirements.')
+            else:
+                abort(400, 'Email already exists.')
+        else:
+            abort(400, 'Username already exists.')
+
 api.add_resource(UserList, '/users')
 
 
@@ -152,6 +171,15 @@ class UserInst(Resource):
         return g.user.serialize()
 
 api.add_resource(UserInst, '/users/<string:uid>')
+
+
+class QuestionList(Resource):
+
+    def get(self):
+        questions = [{'id': index, 'text': value} for (index, value) in QUESTIONS.items()]
+        return {'questions': questions}
+
+api.add_resource(QuestionList, '/questions')
 
 
 class MessageList(Resource):
@@ -251,6 +279,7 @@ class MailInst(Resource):
         mail = Mail.query.get_or_404(mid)
         if mail.receiver != g.user:
             abort(403)
+        # [Todo] this shouldn't work because only BaseQuery has update method
         mail.update(request.json)
         db.session.commit()
         return mail.serialize()

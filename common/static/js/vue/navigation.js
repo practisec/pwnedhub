@@ -31,7 +31,7 @@ Vue.component("navigation", {
                     {
                         id: 1,
                         text: "Signup",
-                        name: null,
+                        name: "signup",
                     },
                 ],
                 admin: [
