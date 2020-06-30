@@ -185,9 +185,23 @@ class UserInst(Resource):
 
     @token_auth_required
     def patch(self, uid):
-        User.query.filter_by(id=g.user.id).update(request.json)
+        if uid != str(g.user.id):
+            abort(403)
+        user = g.user
+        new_password = request.json.get('new_password')
+        if new_password:
+            if is_valid_password(new_password):
+                user.password = new_password
+            else:
+                abort(400, 'Password does not meet complexity requirements.')
+        user.avatar = request.json.get('avatar') or user.avatar
+        user.signature = request.json.get('signature') or user.signature
+        user.name = request.json.get('name') or user.name
+        user.question = request.json.get('question') or user.question
+        user.answer = request.json.get('answer') or user.answer
+        db.session.add(user)
         db.session.commit()
-        return g.user.serialize()
+        return user.serialize()
 
 api.add_resource(UserInst, '/users/<string:uid>')
 

@@ -6,7 +6,7 @@ Vue.component("navigation", {
                     <li class="brand"><img src="/images/logo.png" /></li>
                     <li class="toggle"><a href="#" v-on:click="toggleMenu"><i class="fas fa-bars"></i></a></li>
                     <li class="item avatar" v-if="isLoggedIn">
-                        <router-link v-bind:to="{ name: 'profile', params: {} }">
+                        <router-link v-bind:to="{ name: 'account', params: {} }">
                             <img class="circular bordered-dark" v-bind:src="userAvatar" title="Avatar" />
                         </router-link>
                     </li>

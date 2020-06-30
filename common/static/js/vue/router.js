@@ -10,6 +10,23 @@ const routes = [
         component: Login,
     },
     {
+        path: "/account",
+        name: "account",
+        component: Account,
+        meta: {
+            authRequired: true,
+        },
+    },
+    {
+        path: "/profile/view/:userId",
+        name: "profile",
+        component: Profile,
+        props: true,
+        meta: {
+            authRequired: true,
+        },
+    },
+    {
         path: "/messages",
         name: "messages",
         component: Messages,
@@ -46,15 +63,6 @@ const routes = [
         path: "/mail/reply/:letterId",
         name: "reply",
         component: Reply,
-        props: true,
-        meta: {
-            authRequired: true,
-        },
-    },
-    {
-        path: "/profile/view/:userId",
-        name: "profile",
-        component: Profile,
         props: true,
         meta: {
             authRequired: true,

@@ -413,6 +413,10 @@ i.large {
     background-color: rgba(0,0,0,0.6);
 }
 
+.signup .about {
+    text-align: justify;
+}
+
 /* desktop signup */
 @media all and (min-width: 960px) {
 
@@ -434,10 +438,60 @@ i.large {
 
 /* signup end */
 
-.about,
-.info {
-    text-align: justify;
+/* account start */
+
+.account .avatar img {
+    max-width: 20rem;
+    width: 100%;
 }
+
+/* desktop account */
+@media all and (min-width: 960px) {
+
+    .account {
+        margin: 0 auto;
+        width: 30rem;
+    }
+
+}
+
+/* account end */
+
+/* profile start */
+
+.profile .avatar img {
+    max-width: 30rem;
+    width: 100%;
+}
+
+.profile blockquote {
+    font-style: italic;
+    margin-left: 0;
+    margin-right: 0;
+    quotes: "\201C""\201D""\2018""\2019";
+}
+
+.profile blockquote:before {
+  color: #bbb;
+  font-family: Arial;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+
+/* desktop profile */
+@media all and (min-width: 960px) {
+
+    .profile {
+        margin: 0 auto;
+        width: 30rem;
+    }
+
+}
+
+/* profile end */
 
 .config .panel {
     border: 1px solid #bbb;
@@ -606,42 +660,6 @@ i.large {
 .pagination a[disabled] {
     pointer-events: none;
     opacity: 0.5;
-}
-
-.profile input[type="submit"] {
-    margin-bottom: 0;
-}
-
-.profile blockquote {
-    font-style: italic;
-    margin-left: 0;
-    margin-right: 0;
-    quotes: "\201C""\201D""\2018""\2019";
-}
-
-.profile blockquote:before {
-  color: #bbb;
-  font-family: Arial;
-  content: open-quote;
-  font-size: 4em;
-  line-height: 0.1em;
-  margin-right: 0.25em;
-  vertical-align: -0.4em;
-}
-
-.profile .avatar a {
-    display: block;
-    max-width: 20rem;
-}
-
-.profile .avatar img {
-    display: block;
-    width: 100%;
-}
-
-.profile-view .avatar img {
-    max-width: 30rem;
-    width: 100%;
 }
 
 .error {
