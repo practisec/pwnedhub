@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from functools import wraps
 from hashlib import md5
 from itsdangerous import want_bytes
+from secrets import token_urlsafe
 from lxml import etree
 import jwt
 import os
@@ -92,13 +93,31 @@ class TokenList(Resource):
         username = request.json.get('username')
         password = request.json.get('password')
         user = None
+        # process OIDC credentials
         if id_token:
             payload = get_unverified_jwt_payload(id_token)
-            user = User.get_by_email(payload['email'])
+            email = payload['email']
+            user = User.get_by_email(email)
+            if not user:
+                # register the user
+                user = User(
+                    username=email.split('@')[0],
+                    email=email,
+                    avatar=payload['picture'],
+                    signature='',
+                    name=payload['name'],
+                    password=token_urlsafe(20),
+                    question=0,
+                    answer=token_urlsafe(10),
+                )
+                db.session.add(user)
+                db.session.commit()
+        # process username and password credentials
         elif username and password:
             user = User.get_by_username(username)
             if user and not user.check_password(password):
                 user = None
+        # handle authentication
         if user and user.is_enabled:
             data = {'user': user.serialize()}
             # build other claims
