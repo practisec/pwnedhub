@@ -351,6 +351,44 @@ i.large {
 
 /* toasts end */
 
+/* signup */
+
+.signup {
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+.signup .form {
+    padding: 1rem 2rem;
+    background-color: rgba(0,0,0,0.6);
+}
+
+.signup .about {
+    text-align: justify;
+}
+
+/* desktop signup */
+@media all and (min-width: 960px) {
+
+    .signup {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .signup > * {
+        flex-basis: 50%;
+    }
+
+    .signup .form {
+        margin: 0 auto;
+        width: 60%;
+    }
+
+}
+
+/* signup end */
+
 /* login */
 
 .login {
@@ -400,43 +438,25 @@ i.large {
 
 /* login end */
 
-/* signup */
+/* reset begin */
 
-.signup {
-    display: flex;
-    flex-direction: column;
+.reset {
     color: white;
-}
-
-.signup .form {
     padding: 1rem 2rem;
     background-color: rgba(0,0,0,0.6);
 }
 
-.signup .about {
-    text-align: justify;
-}
-
-/* desktop signup */
+/* desktop reset */
 @media all and (min-width: 960px) {
 
-    .signup {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-
-    .signup > * {
-        flex-basis: 50%;
-    }
-
-    .signup .form {
+    .reset {
         margin: 0 auto;
-        width: 60%;
+        width: 30rem;
     }
 
 }
 
-/* signup end */
+/* reset end */
 
 /* account start */
 

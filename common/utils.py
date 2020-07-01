@@ -20,7 +20,7 @@ import os
 
 def generate_state(length=1024):
     """Generates a random string of characters."""
-    return hashlib.sha256(os.urandom(1024)).hexdigest()
+    return hashlib.sha256(os.urandom(length)).hexdigest()
 
 import random
 
@@ -28,11 +28,15 @@ def generate_nonce(length=8):
     """Generates a pseudorandom number."""
     return ''.join([str(random.randint(0, 9)) for i in range(length)])
 
-from flask import session
 from uuid import uuid4
 
+def generate_token():
+    return str(uuid4())
+
+from flask import session
+
 def generate_csrf_token():
-    session['csrf_token'] = str(uuid4())
+    session['csrf_token'] = generate_token()
     return session['csrf_token']
 
 import json
@@ -61,6 +65,25 @@ def unfurl_url(url, headers={}):
         values = html.xpath('//meta[@property=\'{}\']/@content'.format(prop))
         data[kw] = ' '.join(values) or None
     return data
+
+from flask import current_app
+from datetime import datetime
+import os
+
+def send_email(sender, recipient, subject, body):
+    # check for and create an inbox folder
+    inbox = current_app.config['INBOX_PATH']
+    if not os.path.exists(inbox):
+        os.makedirs(inbox)
+    # create a filename based on the subject and time stamp
+    timestamp = datetime.now().strftime('%Y-%m-%d %H-%M-%S')
+    filename = f"{subject} {timestamp}.html".replace(' ', '_')
+    # write the email to a file
+    filepath = os.path.join(inbox, filename)
+    email = f"<b>From:</b> {sender}<br><br><b>To:</b> {recipient}<br><br><b>Subject:</b> {subject}<br><br><hr><br>{body}"
+    with open(filepath, 'w') as fp:
+        fp.write(email)
+    return filepath
 
 # borrowed from Django and modified to work in Python 2
 

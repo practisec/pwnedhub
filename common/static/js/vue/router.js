@@ -10,6 +10,17 @@ const routes = [
         component: Login,
     },
     {
+        path: "/reset",
+        name: "reset-init",
+        component: ResetInit,
+    },
+    {
+        path: "/reset/:userId/:token",
+        name: "reset-password",
+        component: ResetPassword,
+        props: true,
+    },
+    {
         path: "/account",
         name: "account",
         component: Account,
@@ -18,7 +29,7 @@ const routes = [
         },
     },
     {
-        path: "/profile/view/:userId",
+        path: "/profile/:userId",
         name: "profile",
         component: Profile,
         props: true,

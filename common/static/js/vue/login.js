@@ -46,6 +46,7 @@ Vue.component('login-form', {
                     <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
                 </div>
                 <input type="button" v-on:click="doFormLogin" value="Login" />
+                <p><router-link v-bind:to="{ name: 'reset-init', params: {} }">Forget your password?</router-link></p>
                 <div class="gutter-bottom center-content bolded">OR</div>
                 <div class="center-content">
                     <google-oidc v-on:done="doOIDCLogin" />

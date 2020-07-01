@@ -3,7 +3,7 @@ from flask_restful import Resource, Api
 from pwnedapi import db
 from common.constants import QUESTIONS, ADMIN_RESPONSE
 from common.models import Config, User, Message, Mail, Tool
-from common.utils import get_unverified_jwt_payload, unfurl_url
+from common.utils import get_unverified_jwt_payload, unfurl_url, send_email
 from common.validators import is_valid_password, is_valid_command
 from datetime import datetime, timedelta
 from functools import wraps
@@ -135,7 +135,7 @@ class TokenList(Resource):
                 return data, 200, {'Set-Cookie': 'access_token=; Expires=Thu, 01-Jan-1970 00:00:00 GMT'}
             # set the JWT as a HttpOnly cookie by default
             return data, 200, {'Set-Cookie': 'access_token='+token+'; HttpOnly'}
-        return {'message': 'Invalid username or password.'}
+        abort(400, 'Invalid username or password.')
 
     def delete(self):
         response = Response(None, 204)
@@ -213,6 +213,57 @@ class QuestionList(Resource):
         return {'questions': questions}
 
 api.add_resource(QuestionList, '/questions')
+
+
+class PasswordResetList(Resource):
+
+    def post(self):
+        '''Creates and sends a password reset link.'''
+        credential = request.json.get('credential')
+        user = None
+        if credential:
+            user = User.get_by_email(credential) or User.get_by_username(credential)
+        if user and user.is_enabled:
+            # create a JWT
+            token = encode_jwt(user.id)
+            # "send an email" with a reset link using the token
+            base_url = request.headers['origin']
+            link = f"{base_url}/#/reset/{user.id}/{token}"
+            send_email(
+                sender = User.query.first().email,
+                recipient = user.email,
+                subject = 'PwnedHub Password Reset',
+                body = f"Hi {user.name}!<br><br>You recently requested to reset your PwnedHub password. Visit the following link to set a new password for your account.<br><br><a href=\"{link}\">{link}</a><br><br>If you did not request this password reset, please respond to this email to reach an administrator. Thank you.",
+            )
+            return {'message': 'Password reset email sent.'}, 201
+        abort(400, 'Invalid email address or username.')
+
+api.add_resource(PasswordResetList, '/password-reset')
+
+
+class PasswordInst(Resource):
+
+    def put(self, uid):
+        '''Updates a user's password.'''
+        user = User.query.get_or_404(uid)
+        token = request.json.get('token')
+        if token:
+            payload = get_unverified_jwt_payload(token)
+            if payload['sub'] == user.id:
+                new_password = request.json.get('new_password')
+                if new_password:
+                    if is_valid_password(new_password):
+                        user.password = new_password
+                        db.session.add(user)
+                        db.session.commit()
+                        return {'message': 'Password successfully reset.'}
+                    else:
+                        abort(400, 'Password does not meet complexity requirements.')
+            else:
+                abort(400, 'Invalid token.')
+        abort(400, 'Invalid request.')
+
+api.add_resource(PasswordInst, '/users/<string:uid>/password')
 
 
 class MessageList(Resource):

@@ -1,9 +1,11 @@
 from common.config import SharedBaseConfig, SharedDevConfig, SharedTestConfig, SharedProdConfig
+import os
 
 class BaseConfig(SharedBaseConfig):
 
     CORS_SUPPORTS_CREDENTIALS = True
     ALLOWED_ORIGINS = ['http://www.pwnedhub.com:5000', 'http://test.pwnedhub.com:5001']
+    INBOX_PATH = os.environ.get('INBOX_PATH', '/tmp/inbox')
 
 class Development(SharedDevConfig, BaseConfig):
 

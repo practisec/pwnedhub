@@ -10,8 +10,8 @@ services:
         volumes:
             - .:/pwnedhub
         environment:
-            - DATABASE_HOST=db
             - CONFIG=Production
+            - DATABASE_HOST=db
         command: gunicorn --bind 0.0.0.0:5000 --worker-class eventlet --workers 1 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
@@ -24,8 +24,8 @@ services:
         volumes:
             - .:/pwnedhub
         environment:
-            - DATABASE_HOST=db
             - CONFIG=Production
+            - DATABASE_HOST=db
         command: gunicorn --bind 0.0.0.0:5001 pwnedspa.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
@@ -36,9 +36,11 @@ services:
             - 5002
         volumes:
             - .:/pwnedhub
+            - ~/inbox:/tmp/inbox # local mapping to INBOX_PATH
         environment:
-            - DATABASE_HOST=db
             - CONFIG=Production
+            - DATABASE_HOST=db
+            - INBOX_PATH=/tmp/inbox # writable location for Gunicorn
         command: gunicorn --bind 0.0.0.0:5002 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
