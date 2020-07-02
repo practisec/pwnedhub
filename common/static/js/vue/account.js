@@ -24,13 +24,13 @@ var Account = Vue.component("account", {
             </select>
             <label for="answer">Answer: *</label>
             <input name="answer" v-model="userForm.answer" type="text" />
-            <input type="button" v-on:click="doFormUser" value="Submit" />
+            <input type="button" v-on:click="updateUser" value="Submit" />
         </div>
     `,
     data: function() {
         return {
-            user: null,
             questions: [],
+            user: null,
             userForm: {
                 name: "",
                 avatar: "",
@@ -42,6 +42,15 @@ var Account = Vue.component("account", {
         }
     },
     methods: {
+        getQuestions: function() {
+            fetch(store.getters.getApiUrl+"/questions")
+            .then(handleErrors)
+            .then(response => response.json())
+            .then(json => {
+                this.questions = json.questions;
+            })
+            .catch(error => store.dispatch("createToast", error));
+        },
         getUser: function() {
             fetch(store.getters.getApiUrl+"/users/me", {
                 credentials: "include",
@@ -58,42 +67,26 @@ var Account = Vue.component("account", {
             })
             .catch(error => store.dispatch("createToast", error));
         },
-        getQuestions: function() {
-            fetch(store.getters.getApiUrl+"/questions")
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                this.questions = json.questions;
-            })
-            .catch(error => store.dispatch("createToast", error));
-        },
-        doFormUser: function() {
-            this.doUserUpdate(this.userForm);
-        },
-        doUserUpdate: function(payload) {
+        updateUser: function(payload) {
             fetch(store.getters.getApiUrl+"/users/"+this.user.id, {
                 credentials: "include",
                 headers: {"Content-Type": "application/json"},
                 method: "PATCH",
-                body: JSON.stringify(payload),
+                body: JSON.stringify(this.userForm),
             })
             .then(handleErrors)
             .then(response => response.json())
-            .then(json => this.handleUpdate(json))
-            .catch(error => this.updateFailed(error));
-        },
-        handleUpdate: function(json) {
-            this.user = json;
-            this.userForm.name = this.user.name;
-            this.userForm.avatar = this.user.avatar;
-            this.userForm.signature = this.user.signature;
-            this.userForm.new_password = "";
-            this.userForm.question = this.user.question;
-            this.userForm.answer = this.user.answer;
-            store.dispatch("createToast", 'Account updated.');
-        },
-        updateFailed: function(error) {
-            store.dispatch("createToast", error);
+            .then(json => {
+                this.user = json;
+                this.userForm.name = this.user.name;
+                this.userForm.avatar = this.user.avatar;
+                this.userForm.signature = this.user.signature;
+                this.userForm.new_password = "";
+                this.userForm.question = this.user.question;
+                this.userForm.answer = this.user.answer;
+                store.dispatch("createToast", 'Account updated.');
+            })
+            .catch(error => store.dispatch("createToast", error));
         },
     },
     created: function() {

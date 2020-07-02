@@ -44,7 +44,7 @@ Vue.component('signup-form', {
                 </select>
                 <label for="answer">Answer: *</label>
                 <input name="answer" type="text" v-model="signupForm.answer" />
-                <input type="button" v-on:click="doFormSignup" value="Signup" />
+                <input type="button" v-on:click="doSignup" value="Signup" />
             </div>
         </div>
     `,
@@ -75,26 +75,19 @@ Vue.component('signup-form', {
             })
             .catch(error => store.dispatch("createToast", error));
         },
-        doFormSignup: function() {
-            this.doSignup(this.signupForm);
-        },
-        doSignup: function(payload) {
+        doSignup: function() {
             fetch(store.getters.getApiUrl+"/users", {
                 headers: {"Content-Type": "application/json"},
                 method: "POST",
-                body: JSON.stringify(payload),
+                body: JSON.stringify(this.signupForm),
             })
             .then(handleErrors)
             .then(response => response.json())
-            .then(json => this.handleSignup(json))
-            .catch(error => this.signupFailed(error));
-        },
-        handleSignup: function(json) {
-            store.dispatch("createToast", json.message);
-            this.$router.push("login");
-        },
-        signupFailed: function(error) {
-            store.dispatch("createToast", error);
+            .then(json => {
+                store.dispatch("createToast", json.message);
+                this.$router.push({ name: "login" });
+            })
+            .catch(error => store.dispatch("createToast", error));
         },
     },
     created: function() {

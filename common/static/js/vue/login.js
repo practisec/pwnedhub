@@ -46,7 +46,7 @@ Vue.component('login-form', {
                     <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
                 </div>
                 <input type="button" v-on:click="doFormLogin" value="Login" />
-                <p><router-link v-bind:to="{ name: 'reset-init', params: {} }">Forget your password?</router-link></p>
+                <p><router-link v-bind:to="{ name: 'reset-init' }">Forget your password?</router-link></p>
                 <div class="gutter-bottom center-content bolded">OR</div>
                 <div class="center-content">
                     <google-oidc v-on:done="doOIDCLogin" />
@@ -81,12 +81,12 @@ Vue.component('login-form', {
             })
             .then(handleErrors)
             .then(response => response.json())
-            .then(json => this.handleLogin(json))
-            .catch(error => this.loginFailed(error));
+            .then(json => this.handleLoginSuccess(json))
+            .catch(error => this.handleLoginFailure(error));
         },
-        handleLogin: function(json) {
+        handleLoginSuccess: function(json) {
             if (!json.user) {
-                this.loginFailed(json.message);
+                this.handleLoginFailure(json.message);
                 return;
             }
             // store auth data as necessary
@@ -97,10 +97,10 @@ Vue.component('login-form', {
                 this.$router.push(this.$route.params.nextUrl);
             } else {
                 // fallback landing page
-                this.$router.push("messages");
+                this.$router.push({ name: "messages" });
             }
         },
-        loginFailed: function(error) {
+        handleLoginFailure: function(error) {
             store.dispatch("unsetAuthInfo");
             store.dispatch("createToast", error);
         },

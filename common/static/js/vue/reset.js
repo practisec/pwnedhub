@@ -5,7 +5,7 @@ var ResetInit = Vue.component('reset-init', {
             <p>Don't worry. It happens to the best of us.</p>
             <label for="credential">Email address or username:</label>
             <input name="credential" type="text" v-model="credentialForm.credential" />
-            <input type="button" v-on:click="doInitializeReset" value="Please email me a recovery link." />
+            <input type="button" v-on:click="initializeReset" value="Please email me a recovery link." />
         </div>
     `,
     data: function() {
@@ -16,7 +16,7 @@ var ResetInit = Vue.component('reset-init', {
         }
     },
     methods: {
-        doInitializeReset: function() {
+        initializeReset: function() {
             fetch(store.getters.getApiUrl+"/password-reset", {
                 headers: {"Content-Type": "application/json"},
                 method: "POST",
@@ -24,18 +24,14 @@ var ResetInit = Vue.component('reset-init', {
             })
             .then(handleErrors)
             .then(response => response.json())
-            .then(json => this.handleSuccess(json))
-            .catch(error => this.handleFailure(error));
-        },
-        handleSuccess: function(json) {
-            this.credentialForm.credential = "";
-            store.dispatch("createToast", json.message);
-            setTimeout(function() {
-                alert("You've got mail!");
-            }, 2000);
-        },
-        handleFailure: function(error) {
-            store.dispatch("createToast", error);
+            .then(json => {
+                this.credentialForm.credential = "";
+                store.dispatch("createToast", json.message);
+                setTimeout(function() {
+                    alert("You've got mail!");
+                }, 2000);
+            })
+            .catch(error => store.dispatch("createToast", error));
         },
     },
 });
@@ -54,7 +50,7 @@ var ResetPassword = Vue.component('reset-password', {
                 <input id="password" name="password" type="password" v-model="passwordForm.new_password" />
                 <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
             </div>
-            <input type="button" v-on:click="doResetPassword" value="Please reset my password." />
+            <input type="button" v-on:click="resetPassword" value="Please reset my password." />
         </div>
     `,
     data: function() {
@@ -66,7 +62,7 @@ var ResetPassword = Vue.component('reset-password', {
         }
     },
     methods: {
-        doResetPassword: function(payload) {
+        resetPassword: function() {
             fetch(store.getters.getApiUrl+"/users/"+this.userId+"/password", {
                 headers: {"Content-Type": "application/json"},
                 method: "PUT",
@@ -74,15 +70,11 @@ var ResetPassword = Vue.component('reset-password', {
             })
             .then(handleErrors)
             .then(response => response.json())
-            .then(json => this.handleSuccess(json))
-            .catch(error => this.handleFailure(error));
-        },
-        handleSuccess: function(json) {
-            store.dispatch("createToast", json.message);
-            this.$router.push({ name: "login" });
-        },
-        handleFailure: function(error) {
-            store.dispatch("createToast", error);
+            .then(json => {
+                store.dispatch("createToast", json.message);
+                this.$router.push({ name: "login" });
+            })
+            .catch(error => store.dispatch("createToast", error));
         },
     },
 });
