@@ -17,7 +17,7 @@ Vue.component("navigation", {
                 </ul>
             </div>
         </div>
-        `,
+    `,
     data: function() {
         return {
             isOpen: false,
@@ -118,5 +118,5 @@ Vue.component("navigation", {
         toggleMenu: function() {
             this.isOpen = !this.isOpen;
         },
-    }
+    },
 });

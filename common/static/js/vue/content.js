@@ -8,12 +8,12 @@ Vue.component("content-wrapper", {
                 </div>
             </div>
         </transition-group>
-        `,
+    `,
     computed: {
         toasts: function() {
             return store.getters.getToasts;
         }
-    }
+    },
 });
 
 Vue.component("toast", {
@@ -26,5 +26,5 @@ Vue.component("toast", {
                 {{ toast.text }}
             </div>
         </div>
-        `
+    `,
 });
