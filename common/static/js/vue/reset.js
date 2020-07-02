@@ -36,7 +36,7 @@ var ResetInit = Vue.component('reset-init', {
     },
 });
 
-var ResetPassword = Vue.component('reset-password', {
+var ResetPassword = Vue.component('reset-password-form', {
     props: {
         userId: [Number, String],
         token: String,

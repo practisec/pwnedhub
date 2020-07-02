@@ -2,7 +2,9 @@ var Login = Vue.component('login', {
     template: `
         <div class="login">
             <index-static></index-static>
-            <login-form></login-form>
+            <div>
+                <login-form></login-form>
+            </div>
             <div class="flex-row flex-wrap flex-justify-space-evenly center-content panels">
                 <div>
                     <h5>Scan.</h5>
@@ -36,21 +38,19 @@ Vue.component('index-static', {
 
 Vue.component('login-form', {
     template: `
-        <div>
-            <div class="flex-column form rounded">
-                <label for="username">Username:</label>
-                <input name="username" type="text" v-model="loginForm.username" />
-                <label for="password">Password:</label>
-                <div class="flex-column" style="position: relative;">
-                    <input id="password" name="password" type="password" v-model="loginForm.password" />
-                    <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
-                </div>
-                <input type="button" v-on:click="doFormLogin" value="Login" />
-                <p><router-link v-bind:to="{ name: 'reset-init' }">Forget your password?</router-link></p>
-                <div class="gutter-bottom center-content bolded">OR</div>
-                <div class="center-content">
-                    <google-oidc v-on:done="doOIDCLogin" />
-                </div>
+        <div class="flex-column form rounded">
+            <label for="username">Username:</label>
+            <input name="username" type="text" v-model="loginForm.username" />
+            <label for="password">Password:</label>
+            <div class="flex-column" style="position: relative;">
+                <input id="password" name="password" type="password" v-model="loginForm.password" />
+                <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
+            </div>
+            <input type="button" v-on:click="doFormLogin" value="Login" />
+            <p><router-link v-bind:to="{ name: 'reset-init' }">Forget your password?</router-link></p>
+            <div class="gutter-bottom center-content bolded">OR</div>
+            <div class="center-content">
+                <google-oidc v-on:done="doOIDCLogin" />
             </div>
         </div>
     `,

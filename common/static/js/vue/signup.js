@@ -2,7 +2,9 @@ var Signup = Vue.component('signup', {
     template: `
         <div class="signup">
             <about-static></about-static>
-            <signup-form></signup-form>
+            <div>
+                <signup-form></signup-form>
+            </div>
         </div>
     `,
 });
@@ -20,32 +22,30 @@ Vue.component('about-static', {
 
 Vue.component('signup-form', {
     template: `
-        <div>
-            <div class="flex-column form rounded">
-                <label for="username">Username: *</label>
-                <input name="username" type="text" v-model="signupForm.username" />
-                <label for="email">Email: *</label>
-                <input name="email" type="text" v-model="signupForm.email" />
-                <label for="name">Display Name: *</label>
-                <input name="name" type="text" v-model="signupForm.name" />
-                <label for="avatar">Avatar URL:</label>
-                <input name="avatar" type="text" v-model="signupForm.avatar" />
-                <label for="signature">Signature:</label>
-                <textarea name="signature" v-model="signupForm.signature"></textarea>
-                <label for="password">Password: *</label>
-                <div class="flex-column" style="position: relative;">
-                    <input id="password" name="password" type="password" v-model="signupForm.password" />
-                    <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
-                </div>
-                <label for="question">Question: *</label>
-                <select name="question" v-model="signupForm.question">
-                    <option value="" disabled selected>Select a question</option>
-                    <option v-for="question in questions" v-bind:key="question.id" v-bind:value="question.id">{{ question.text }}</option>
-                </select>
-                <label for="answer">Answer: *</label>
-                <input name="answer" type="text" v-model="signupForm.answer" />
-                <input type="button" v-on:click="doSignup" value="Signup" />
+        <div class="flex-column form rounded">
+            <label for="username">Username: *</label>
+            <input name="username" type="text" v-model="signupForm.username" />
+            <label for="email">Email: *</label>
+            <input name="email" type="text" v-model="signupForm.email" />
+            <label for="name">Display Name: *</label>
+            <input name="name" type="text" v-model="signupForm.name" />
+            <label for="avatar">Avatar URL:</label>
+            <input name="avatar" type="text" v-model="signupForm.avatar" />
+            <label for="signature">Signature:</label>
+            <textarea name="signature" v-model="signupForm.signature"></textarea>
+            <label for="password">Password: *</label>
+            <div class="flex-column" style="position: relative;">
+                <input id="password" name="password" type="password" v-model="signupForm.password" />
+                <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
             </div>
+            <label for="question">Question: *</label>
+            <select name="question" v-model="signupForm.question">
+                <option value="" disabled selected>Select a question</option>
+                <option v-for="question in questions" v-bind:key="question.id" v-bind:value="question.id">{{ question.text }}</option>
+            </select>
+            <label for="answer">Answer: *</label>
+            <input name="answer" type="text" v-model="signupForm.answer" />
+            <input type="button" v-on:click="doSignup" value="Signup" />
         </div>
     `,
     data: function() {
