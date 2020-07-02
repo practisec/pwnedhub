@@ -188,12 +188,6 @@ class UserInst(Resource):
         if uid != str(g.user.id):
             abort(403)
         user = g.user
-        new_password = request.json.get('new_password')
-        if new_password:
-            if is_valid_password(new_password):
-                user.password = new_password
-            else:
-                abort(400, 'Password does not meet complexity requirements.')
         user.avatar = request.json.get('avatar') or user.avatar
         user.signature = request.json.get('signature') or user.signature
         user.name = request.json.get('name') or user.name
@@ -245,22 +239,36 @@ class PasswordInst(Resource):
 
     def put(self, uid):
         '''Updates a user's password.'''
-        user = User.query.get_or_404(uid)
+        current_password = request.json.get('current_password')
         token = request.json.get('token')
-        if token:
+        user = User.query.get_or_404(uid)
+        new_password = None
+        # process current password
+        if current_password:
+            if not g.user:
+                abort(401)
+            if user.id != g.user.id:
+                abort(403)
+            if user.check_password(current_password):
+                new_password = request.json.get('new_password')
+            else:
+                abort(400, 'Invalid current password.')
+        # process reset token
+        elif token:
             payload = get_unverified_jwt_payload(token)
             if payload['sub'] == user.id:
                 new_password = request.json.get('new_password')
-                if new_password:
-                    if is_valid_password(new_password):
-                        user.password = new_password
-                        db.session.add(user)
-                        db.session.commit()
-                        return {'message': 'Password successfully reset.'}
-                    else:
-                        abort(400, 'Password does not meet complexity requirements.')
             else:
                 abort(400, 'Invalid token.')
+        # handle password update
+        if new_password:
+            if is_valid_password(new_password):
+                user.password = new_password
+                db.session.add(user)
+                db.session.commit()
+                return {'message': 'Password successfully reset.'}
+            else:
+                abort(400, 'Password does not meet complexity requirements.')
         abort(400, 'Invalid request.')
 
 api.add_resource(PasswordInst, '/users/<string:uid>/password')

@@ -187,7 +187,6 @@ class User(BaseModel):
             'signature': self.signature,
             'question': self.question,
             'answer': self.answer,
-            'notes': self.notes,
             'role': self.role_as_string,
         }
 

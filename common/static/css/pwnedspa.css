@@ -460,17 +460,39 @@ i.large {
 
 /* account start */
 
+.account {
+    display: flex;
+    flex-direction: column;
+}
+
 .account .avatar img {
     max-width: 20rem;
     width: 100%;
+}
+
+.account .form {
+    padding: 1rem 2rem;
 }
 
 /* desktop account */
 @media all and (min-width: 960px) {
 
     .account {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .account > * {
+        flex-basis: 50%;
+    }
+
+    .account .avatar {
+        margin-bottom: 5rem;
+    }
+
+    .account .form {
         margin: 0 auto;
-        width: 30rem;
+        width: 80%;
     }
 
 }
