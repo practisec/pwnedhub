@@ -45,11 +45,8 @@ var ResetPassword = Vue.component('reset-password-form', {
         <div class="flex-column reset">
             <h3>Reset your password!</h3>
             <p>And if you need us again, we'll be here, ready to help.</p>
-            <label for="password">New password:</label>
-            <div class="flex-column" style="position: relative;">
-                <input id="password" name="password" type="password" v-model="passwordForm.new_password" />
-                <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
-            </div>
+            <label for="new_password">New password:</label>
+            <password-field name="new_password" v-model="passwordForm.new_password"></password-field>
             <input type="button" v-on:click="resetPassword" value="Please reset my password." />
         </div>
     `,

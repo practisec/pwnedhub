@@ -34,10 +34,7 @@ Vue.component('signup-form', {
             <label for="signature">Signature:</label>
             <textarea name="signature" v-model="signupForm.signature"></textarea>
             <label for="password">Password: *</label>
-            <div class="flex-column" style="position: relative;">
-                <input id="password" name="password" type="password" v-model="signupForm.password" />
-                <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
-            </div>
+            <password-field name="password" v-model="signupForm.password"></password-field>
             <label for="question">Question: *</label>
             <select name="question" v-model="signupForm.question">
                 <option value="" disabled selected>Select a question</option>

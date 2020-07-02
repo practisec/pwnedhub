@@ -42,10 +42,7 @@ Vue.component('login-form', {
             <label for="username">Username:</label>
             <input name="username" type="text" v-model="loginForm.username" />
             <label for="password">Password:</label>
-            <div class="flex-column" style="position: relative;">
-                <input id="password" name="password" type="password" v-model="loginForm.password" />
-                <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
-            </div>
+            <password-field name="password" v-model="loginForm.password"></password-field>
             <input type="button" v-on:click="doFormLogin" value="Login" />
             <p><router-link v-bind:to="{ name: 'reset-init' }">Forget your password?</router-link></p>
             <div class="gutter-bottom center-content bolded">OR</div>

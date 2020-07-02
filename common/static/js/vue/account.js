@@ -24,15 +24,9 @@ Vue.component("update-password-form", {
     template: `
         <div class="flex-column form">
             <label for="new_password">New Password:</label>
-            <div class="flex-column" style="position: relative;">
-                <input id="new_password" name="new_password" v-model="passwordForm.new_password" type="password" />
-                <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
-            </div>
+            <password-field name="new_password" v-model="passwordForm.new_password"></password-field>
             <label for="current_password">Current Password:</label>
-            <div class="flex-column" style="position: relative;">
-                <input id="current_password" name="current_password" v-model="passwordForm.current_password" type="password" />
-                <input type="button" class="show" tabindex="-1" onclick="toggleShow();" value="show" />
-            </div>
+            <password-field name="current_password" v-model="passwordForm.current_password"></password-field>
             <input type="button" v-on:click="updatePassword" value="Update my password." />
         </div>
     `,

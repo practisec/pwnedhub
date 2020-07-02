@@ -21,10 +21,14 @@
         const API_BASE_URL = "{{ config.API_BASE_URL }}";
     </script>
     <meta name="google-signin-client_id" content="{{ config.OAUTH_PROVIDERS.google.CLIENT_ID }}">
+    <!-- base dependencies -->
     <script src="https://apis.google.com/js/platform.js"></script>
     <script src="{{ url_for('static', filename='js/vue/vue.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/vue-router.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/vuex.js') }}"></script>
+    <!-- utility components -->
+    <script src="{{ url_for('static', filename='js/vue/components.js') }}"></script>
+    <!-- route components -->
     <script src="{{ url_for('static', filename='js/vue/mail.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/messages.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/profile.js') }}"></script>
@@ -32,9 +36,11 @@
     <script src="{{ url_for('static', filename='js/vue/reset.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/login.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/signup.js') }}"></script>
+    <!-- layout components -->
     <script src="{{ url_for('static', filename='js/vue/content.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/navigation.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/background.js') }}"></script>
+    <!-- application core -->
     <script src="{{ url_for('static', filename='js/vue/router.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/store.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue/app.js') }}"></script>
