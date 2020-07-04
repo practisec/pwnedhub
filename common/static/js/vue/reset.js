@@ -23,10 +23,9 @@ var ResetInit = Vue.component('reset-init', {
                 body: JSON.stringify(this.credentialForm),
             })
             .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
+            .then(response => {
                 this.credentialForm.credential = "";
-                store.dispatch("createToast", json.message);
+                store.dispatch("createToast", "Password reset email sent.");
                 setTimeout(function() {
                     alert("You've got mail!");
                 }, 2000);
@@ -66,9 +65,8 @@ var ResetPassword = Vue.component('reset-password-form', {
                 body: JSON.stringify(this.passwordForm),
             })
             .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                store.dispatch("createToast", json.message);
+            .then(response => {
+                store.dispatch("createToast", "Password successfully reset.");
                 this.$router.push({ name: "login" });
             })
             .catch(error => store.dispatch("createToast", error));

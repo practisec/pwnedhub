@@ -79,9 +79,8 @@ Vue.component('signup-form', {
                 body: JSON.stringify(this.signupForm),
             })
             .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                store.dispatch("createToast", json.message);
+            .then(response => {
+                store.dispatch("createToast", "Account created. Please log in.");
                 this.$router.push({ name: "login" });
             })
             .catch(error => store.dispatch("createToast", error));

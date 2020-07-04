@@ -156,21 +156,18 @@ class UserList(Resource):
     def post(self):
         '''Creates an account.'''
         username = request.json.get('username')
-        if not User.query.filter_by(username=username).first():
-            email = request.json.get('email')
-            if not User.query.filter_by(email=email).first():
-                password = request.json.get('password')
-                if is_valid_password(password):
-                    user = User(**request.json)
-                    db.session.add(user)
-                    db.session.commit()
-                    return {'message': 'Account created. Please log in.', 'user': user.serialize()}, 201
-                else:
-                    abort(400, 'Password does not meet complexity requirements.')
-            else:
-                abort(400, 'Email already exists.')
-        else:
+        if User.query.filter_by(username=username).first():
             abort(400, 'Username already exists.')
+        email = request.json.get('email')
+        if User.query.filter_by(email=email).first():
+            abort(400, 'Email already exists.')
+        password = request.json.get('password')
+        if not is_valid_password(password):
+            abort(400, 'Password does not meet complexity requirements.')
+        user = User(**request.json)
+        db.session.add(user)
+        db.session.commit()
+        return {'success': True}, 201
 
 api.add_resource(UserList, '/users')
 
@@ -218,20 +215,20 @@ class PasswordResetList(Resource):
         user = None
         if credential:
             user = User.get_by_email(credential) or User.get_by_username(credential)
-        if user and user.is_enabled:
-            # create a JWT
-            token = encode_jwt(user.id)
-            # "send an email" with a reset link using the token
-            base_url = request.headers['origin']
-            link = f"{base_url}/#/reset/{user.id}/{token}"
-            send_email(
-                sender = User.query.first().email,
-                recipient = user.email,
-                subject = 'PwnedHub Password Reset',
-                body = f"Hi {user.name}!<br><br>You recently requested to reset your PwnedHub password. Visit the following link to set a new password for your account.<br><br><a href=\"{link}\">{link}</a><br><br>If you did not request this password reset, please respond to this email to reach an administrator. Thank you.",
-            )
-            return {'message': 'Password reset email sent.'}, 201
-        abort(400, 'Invalid email address or username.')
+        if not user or not user.is_enabled:
+            abort(400, 'Invalid email address or username.')
+        # create a JWT
+        token = encode_jwt(user.id)
+        # "send an email" with a reset link using the token
+        base_url = request.headers['origin']
+        link = f"{base_url}/#/reset/{user.id}/{token}"
+        send_email(
+            sender = User.query.first().email,
+            recipient = user.email,
+            subject = 'PwnedHub Password Reset',
+            body = f"Hi {user.name}!<br><br>You recently requested to reset your PwnedHub password. Visit the following link to set a new password for your account.<br><br><a href=\"{link}\">{link}</a><br><br>If you did not request this password reset, please respond to this email to reach an administrator. Thank you.",
+        )
+        return {'success': True}, 201
 
 api.add_resource(PasswordResetList, '/password-reset')
 
@@ -250,27 +247,24 @@ class PasswordInst(Resource):
                 abort(401)
             if user.id != g.user.id:
                 abort(403)
-            if user.check_password(current_password):
-                new_password = request.json.get('new_password')
-            else:
+            if not user.check_password(current_password):
                 abort(400, 'Invalid current password.')
+            new_password = request.json.get('new_password')
         # process reset token
         elif token:
             payload = get_unverified_jwt_payload(token)
-            if payload['sub'] == user.id:
-                new_password = request.json.get('new_password')
-            else:
+            if payload['sub'] != user.id:
                 abort(400, 'Invalid token.')
+            new_password = request.json.get('new_password')
         # handle password update
-        if new_password:
-            if is_valid_password(new_password):
-                user.password = new_password
-                db.session.add(user)
-                db.session.commit()
-                return {'message': 'Password successfully reset.'}
-            else:
-                abort(400, 'Password does not meet complexity requirements.')
-        abort(400, 'Invalid request.')
+        if not new_password:
+            abort(400, 'Invalid request.')
+        if not is_valid_password(new_password):
+            abort(400, 'Password does not meet complexity requirements.')
+        user.password = new_password
+        db.session.add(user)
+        db.session.commit()
+        return {'success': True}
 
 api.add_resource(PasswordInst, '/users/<string:uid>/password')
 
@@ -295,10 +289,11 @@ class MessageList(Resource):
     def post(self):
         jsonobj = request.get_json(force=True)
         comment = jsonobj.get('message')
-        if comment:
-            message = Message(comment=comment, user=g.user)
-            db.session.add(message)
-            db.session.commit()
+        if not comment:
+            abort(400, 'Invalid request.')
+        message = Message(comment=comment, user=g.user)
+        db.session.add(message)
+        db.session.commit()
         result = message.serialize()
         resp = jsonify(result)
         resp.mimetype = 'text/html'

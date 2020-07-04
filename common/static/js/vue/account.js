@@ -47,11 +47,10 @@ Vue.component("update-password-form", {
                 body: JSON.stringify(this.passwordForm),
             })
             .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
+            .then(response => {
                 this.passwordForm.new_password = "";
                 this.passwordForm.current_password = "";
-                store.dispatch("createToast", 'Password updated.');
+                store.dispatch("createToast", "Password updated.");
             })
             .catch(error => store.dispatch("createToast", error));
         },
