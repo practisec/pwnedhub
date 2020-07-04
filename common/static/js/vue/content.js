@@ -1,13 +1,13 @@
 Vue.component("content-wrapper", {
     template: `
-        <transition-group name="toasts" tag="div" class="flex-column content-wrapper">
-            <toast v-for="toast in toasts" v-bind:key="toast.id" v-bind:toast="toast"></toast>
-            <div key="content" class="content">
-                <div class="container-fluid">
-                    <router-view></router-view>
-                </div>
+        <div class="flex-grow flex-column content-wrapper">
+            <transition-group name="toasts" tag="div" class="flex-column toasts">
+                <toast v-for="toast in toasts" v-bind:key="toast.id" v-bind:toast="toast"></toast>
+            </transition-group>
+            <div key="content" class="flex-grow container-fluid content">
+                <router-view></router-view>
             </div>
-        </transition-group>
+        </div>
     `,
     computed: {
         toasts: function() {

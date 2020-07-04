@@ -192,18 +192,22 @@ i.large {
     z-index: 20;
 }
 
-/* index order keeps toasts under the header, but above the content */
-.content-wrapper {
-    z-index: 10;
-}
-
 .content {
-    padding: 3rem 0;
+    width: 100%;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    /* container-fluid contains additional styles */
 }
 
 .container-fluid {
     max-width: 960px;
     min-width: 0;
+}
+
+/* index order keeps toasts under the header, but above the content */
+.content-wrapper {
+    position: relative;
+    z-index: 10;
 }
 
 /* general end */
@@ -330,6 +334,18 @@ i.large {
     color: #fff;
 }
 
+.toast:last-child {
+    -webkit-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+}
+
+.toasts {
+    position: absolute;
+    width: 100%;
+    top: 0;
+}
+
 .toasts-enter-active,
 .toasts-leave-active {
     transition: all 1s ease;
@@ -438,7 +454,7 @@ i.large {
 
 /* login end */
 
-/* reset begin */
+/* reset */
 
 .reset {
     color: white;
@@ -458,7 +474,7 @@ i.large {
 
 /* reset end */
 
-/* account start */
+/* account */
 
 .account {
     display: flex;
@@ -499,7 +515,7 @@ i.large {
 
 /* account end */
 
-/* profile start */
+/* profile */
 
 .profile .avatar img {
     max-width: 30rem;
