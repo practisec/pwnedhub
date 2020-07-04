@@ -493,13 +493,13 @@ nav .nav .top-menu li:hover .sub-menu {
     right: 0;
 }
 
-.messages .scroll a {
+.messages .link-preview a {
     color: inherit;
     text-decoration: inherit;
     font-weight: inherit;
 }
 
-.messages .scroll p {
+.messages .link-preview p {
     font-size: 1.25rem;
     border-left: 2px solid red;
     padding-left: .5rem;

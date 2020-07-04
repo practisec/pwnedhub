@@ -16,7 +16,7 @@
             <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
                 <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
                 <p class="comment">{{ message.comment|safe }}</p>
-                <div class="scroll"></div>
+                <div class="link-preview"></div>
                 <p class="timestamp">{{ message.created_as_string }}</p>
             </div>
         </div>

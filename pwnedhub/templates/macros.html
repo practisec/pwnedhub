@@ -1,5 +1,5 @@
 {% macro pagination(route, items) %}
-<div class="pagination flex-row flex-align-center flex-justify-right">
+<div class="pagination flex-row flex-align-center flex-justify-end">
 <!-- previous page -->
 {% if items.has_prev %}
     <a href="{{ url_for(route, page=items.prev_num) }}">&laquo;</a>
