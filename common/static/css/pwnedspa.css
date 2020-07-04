@@ -551,6 +551,98 @@ i.large {
 
 /* profile end */
 
+/* messages */
+
+.messages {
+    height: calc(100vh - 90px); /* height of nav (50) + vertical padding (20+20) */
+    margin-top: -2rem;
+}
+
+.messages button {
+    line-height: 1em;
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 0;
+}
+
+.messages .message-container {
+    overflow-y: auto;
+}
+
+.messages .message-container .message {
+    position: relative;
+    padding: 1rem 0;
+}
+
+.messages .message-container .message .avatar {
+    margin: 0 1rem;
+}
+
+.messages .message-container .message .avatar img {
+    display: block;
+    height: 4rem;
+}
+
+.messages .message-container .message .name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: .5rem;
+}
+
+.messages .message-container .message .comment {
+    margin-bottom: .5rem;
+}
+
+.messages .message-container .message a.img-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+.messages .message-container .message .link-preview a {
+    color: inherit;
+    text-decoration: inherit;
+    font-weight: inherit;
+}
+
+.messages .message-container .message .link-preview p {
+    font-size: 1.25rem;
+    border-left: 2px solid red;
+    padding-left: .5rem;
+    margin-bottom: .5rem;
+}
+
+.messages .message-container .message .timestamp {
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+/* desktop messages */
+@media all and (min-width: 960px) {
+
+    .messages button {
+        display: none;
+    }
+
+    .messages .message-container .message:hover {
+        background-color: #eee;
+    }
+
+    .messages .message-container .message a.img-btn {
+        display: none;
+    }
+
+    .messages .message-container .message:hover a.img-btn {
+        display: inline;
+    }
+
+}
+
+/* messages end */
+
 .config .panel {
     border: 1px solid #bbb;
     padding: 1rem;
@@ -642,82 +734,6 @@ i.large {
     margin-top: 2rem;
     margin-bottom: 1rem;
     white-space: pre-wrap;
-}
-
-.messages {
-    border-top: 1px solid #e1e1e1;
-}
-
-.messages .message {
-    position: relative;
-    border-bottom: 1px solid #e1e1e1;
-}
-
-.messages .message .avatar {
-    margin: 1rem;
-}
-
-.messages .message .avatar img {
-    display: block;
-    height: 4rem;
-}
-
-.messages .message .name {
-    font-size: 1.75rem;
-    margin-bottom: .5rem;
-}
-
-.messages .message .comment {
-    margin-bottom: .5rem;
-}
-
-.messages .message a.img-btn {
-    position: absolute;
-    top: 0.5rem;
-    right: 0;
-}
-
-.messages .scroll a {
-    color: inherit;
-    text-decoration: inherit;
-    font-weight: inherit;
-}
-
-.messages .scroll p {
-    font-size: 1.25rem;
-    border-left: 2px solid red;
-    padding-left: .5rem;
-    margin-bottom: .5rem;
-}
-
-.messages .timestamp {
-    font-size: 1rem;
-    margin-bottom: 0;
-}
-
-.pagination {
-    margin-top: 1rem;
-}
-
-.pagination a {
-    padding: 0.25rem 1rem;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.pagination a.active {
-    background-color: #e1e1e1;
-    color: inherit;
-}
-
-.pagination a:hover:not(.active) {
-    background-color: #bbb;
-    color: inherit;
-}
-
-.pagination a[disabled] {
-    pointer-events: none;
-    opacity: 0.5;
 }
 
 .error {

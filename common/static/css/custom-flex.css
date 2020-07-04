@@ -15,9 +15,19 @@ flex item default = flex: 0 1 auto
     flex-direction: row;
 }
 
+.flex-row-reverse {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
 .flex-column {
     display: flex;
     flex-direction: column;
+}
+
+.flex-column-reverse {
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 .flex-no-basis {
@@ -49,7 +59,7 @@ flex item default = flex: 0 1 auto
     justify-content: center;
 }
 
-.flex-justify-right {
+.flex-justify-end {
     justify-content: flex-end;
 }
 

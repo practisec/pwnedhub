@@ -1,6 +1,7 @@
 from flask import Blueprint, g, current_app, request, jsonify, abort, Response
 from flask_restful import Resource, Api
 from pwnedapi import db
+from pwnedapi.utils import PaginationHelper
 from common.constants import QUESTIONS, ADMIN_RESPONSE
 from common.models import Config, User, Message, Mail, Tool
 from common.utils import get_unverified_jwt_payload, unfurl_url, send_email
@@ -278,21 +279,28 @@ class MessageList(Resource):
 
     @token_auth_required
     def get(self):
-        messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
-        resp = jsonify(messages=messages)
+        pagination_helper = PaginationHelper(
+            request,
+            query=Message.query.order_by(Message.created.desc()),
+            resource_for_url='resources.messagelist',
+            key_name='messages'
+        )
+        result = pagination_helper.paginate_query()
+        result['messages'].reverse()
+        resp = jsonify(result)
         resp.mimetype = 'text/html'
         return resp
 
     @token_auth_required
     def post(self):
         jsonobj = request.get_json(force=True)
-        message = jsonobj.get('message')
-        if message:
-            msg = Message(comment=message, user=g.user)
-            db.session.add(msg)
+        comment = jsonobj.get('message')
+        if comment:
+            message = Message(comment=comment, user=g.user)
+            db.session.add(message)
             db.session.commit()
-        messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
-        resp = jsonify(messages=messages)
+        result = message.serialize()
+        resp = jsonify(result)
         resp.mimetype = 'text/html'
         return resp
 
@@ -308,8 +316,7 @@ class MessageInst(Resource):
             abort(403)
         db.session.delete(message)
         db.session.commit()
-        messages = [m.serialize() for m in Message.query.order_by(Message.created.desc()).all()]
-        return {'messages': messages}
+        return '', 204
 
 api.add_resource(MessageInst, '/messages/<string:mid>')
 

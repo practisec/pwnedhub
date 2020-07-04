@@ -1,62 +1,76 @@
 var Messages = Vue.component("messages", {
     template: `
-        <div class="flex-grow">
-            <create-message></create-message>
-            <div class="messages flex-column">
-                <show-message v-if="messages.length > 0" v-for="message in paginatedMessages" v-bind:key="message.id" v-bind:message="message"></show-message>
+        <div class="flex-column flex-justify-end messages">
+            <div id="message-container" class="message-container" v-chat-scroll="{ always: false, smooth: false, scrollonremoved: true }" @v-chat-scroll-top-reached="getNextPage">
+                <message v-if="messages.length > 0" v-for="message in messages" v-bind:key="message.id" v-bind:message="message" v-on:delete="deleteMessage"></message>
             </div>
-            <pagination v-if="messages.length > 0" v-bind:pageNumber="pageNumber" v-bind:pageCount="pageCount" v-on:click="updatePageNumber"></pagination>
+            <create-message v-on:create="createMessage"></create-message>
         </div>
     `,
     data: function() {
         return {
-            pageNumber: 0,
-            size: 5,
+            messages: [],
+            count: 0,
+            pageNumber: 1,
         }
-    },
-    computed: {
-        messages: function() {
-            return store.getters.getMessages;
-        },
-        paginatedMessages: function() {
-            var start = this.pageNumber * this.size;
-            var end = start + this.size;
-            return store.getters.getMessages.slice(start, end);
-        },
-        pageCount: function() {
-            var l = store.getters.getMessages.length
-            var s = this.size;
-            return Math.ceil(l/s);
-        },
     },
     methods: {
-        updatePageNumber: function(page) {
-            this.pageNumber = page;
-        }
-    },
-    beforeRouteEnter (to, from, next) {
-        if (store.getters.getMessages.length > 0) {
-            next();
-        } else {
-            fetch(store.getters.getApiUrl+"/messages", {
+        getMessages: function() {
+            fetch(store.getters.getApiUrl+"/messages?page="+this.pageNumber, {
                 credentials: "include",
             })
             .then(handleErrors)
             .then(response => response.json())
             .then(json => {
-                store.dispatch("updateMessages", json.messages);
-                next();
+                this.messages.unshift(...json.messages);
+                this.count = json.count;
             })
             .catch(error => store.dispatch("createToast", error));
-        }
+        },
+        getNextPage: function() {
+            if (this.messages.length < this.count) {
+                this.pageNumber++;
+                this.getMessages();
+            }
+        },
+        createMessage: function(payload) {
+            fetch(store.getters.getApiUrl+"/messages", {
+                credentials: "include",
+                headers: {"Content-Type": "application/json"},
+                method: "POST",
+                body: JSON.stringify(payload),
+            })
+            .then(handleErrors)
+            .then(response => response.json())
+            .then(json => {
+                this.messages.push(json)
+            })
+            .catch(error => store.dispatch("createToast", error));
+        },
+        deleteMessage: function(message) {
+            fetch(store.getters.getApiUrl+"/messages/"+message.id, {
+                credentials: "include",
+                method: "DELETE",
+            })
+            .then(handleErrors)
+            .then(response => {
+                this.messages.splice(this.messages.findIndex(a => a.id === message.id) , 1);
+            })
+            .catch(error => {
+                store.dispatch("createToast", error)
+            });
+        },
     },
+    created: function() {
+        this.getMessages();
+    }
 });
 
 Vue.component("create-message", {
     template: `
-        <div class="flex-row">
-            <input class="flex-grow gutter-right" type="text" v-model="messageForm.message" placeholder="Message here..." />
-            <input type="button" v-on:click="createMessage" value="Submit" />
+        <div class="flex-row" style="position: relative">
+            <input class="flex-grow" type="text" v-model="messageForm.message" v-on:keyup="handleKeyPress" placeholder="Message here..." />
+            <button class="show" v-on:click="createMessage"><i class="fas fa-paper-plane" title="Send"></i></button>
         </div>
     `,
     data: function() {
@@ -67,32 +81,26 @@ Vue.component("create-message", {
         }
     },
     methods: {
+        handleKeyPress: function(event) {
+            if (event.keyCode === 13) {
+                if (this.messageForm.message) {
+                    this.createMessage();
+                }
+            }
+        },
         createMessage: function() {
-            fetch(store.getters.getApiUrl+"/messages", {
-                credentials: "include",
-                headers: {"Content-Type": "application/json"},
-                method: "POST",
-                body: JSON.stringify(this.messageForm),
-            })
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                store.dispatch("updateMessages", json.messages);
-                Object.keys(this.messageForm).forEach((k) => {
-                    this.messageForm[k] = "";
-                });
-            })
-            .catch(error => store.dispatch("createToast", error));
+            this.$emit('create', this.messageForm);
+            this.messageForm.message = "";
         },
     },
 });
 
-Vue.component("show-message", {
+Vue.component("message", {
     props: {
         message: Object,
     },
     template: `
-            <div class="message flex-row">
+            <div class="flex-row message">
                 <a class="img-btn" v-if="isEditable(message) === true" v-on:click="deleteMessage(message)">
                     <i class="fas fa-trash" title="Delete"></i>
                 </a>
@@ -101,10 +109,10 @@ Vue.component("show-message", {
                         <img class="circular bordered-dark" v-bind:src="message.author.avatar" title="Avatar" />
                     </router-link>
                 </div>
-                <div v-bind:style="isAuthor(message) ? { fontWeight: 'bold' } : ''">
-                    <p class="name"><span class="red">{{ message.author.name }}</span> <span style="font-size: .75em">({{ message.author.username }})</span></p>
+                <div>
+                    <p class="name">{{ message.author.name }}</span> <span style="font-size: .75em">({{ message.author.username }})</span></p>
                     <p class="comment" ref="message">{{ message.comment }}</p>
-                    <scroll v-bind:message="message"></scroll>
+                    <link-preview v-bind:message="message"></link-preview>
                     <p class="timestamp">{{ message.created }}</p>
                 </div>
             </div>
@@ -118,80 +126,17 @@ Vue.component("show-message", {
             return (this.isAuthor(message) || store.getters.isAdmin) ? true : false;
         },
         deleteMessage: function(message) {
-            fetch(store.getters.getApiUrl+"/messages/"+message.id, {
-                credentials: "include",
-                method: "DELETE",
-            })
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                store.dispatch("updateMessages", json.messages);
-                store.dispatch("createToast", "Message deleted.");
-            })
-            .catch(error => store.dispatch("createToast", error));
+            this.$emit('delete', message);
         },
     },
 });
 
-Vue.component("pagination", {
-    props: {
-        pageNumber: Number,
-        pageCount: Number,
-    },
-    template: `
-            <div class="pagination flex-row flex-align-center flex-justify-right">
-                <a v-if="pageNumber !== 0" v-on:click="prevPage">&laquo;</a>
-                <div v-for="page in iterPages()" v-bind:key="page">
-                    <a v-if="page !== null" v-on:click="gotoPage(page-1)" v-bind:class="pageNumber === page-1 ? 'active' : ''">{{ page }}</a>
-                    <span v-else>...</span>
-                </div>
-                <a v-if="pageNumber < pageCount-1" v-on:click="nextPage">&raquo;</a>
-            </div>
-    `,
-    methods: {
-        iterPages: function() {
-            // the zero index is manipulated here and in the
-            // template to make the page numbers look normal
-            var page = this.pageNumber+1;
-            var firstPage = 1;
-            var lastPage = this.pageCount;
-            var pages = [];
-            if (page-3 === firstPage) {
-                pages.push(firstPage);
-            } else if (page-3 > firstPage) {
-                pages.push(firstPage, null);
-            }
-            var pageRange = [page-2, page-1, page, page+1, page+2];
-            pageRange.forEach(function(value) {
-                if (value >= firstPage && value <= lastPage) {
-                    pages.push(value);
-                }
-            });
-            if (page+3 < lastPage) {
-                pages.push(null, lastPage);
-            } else if (page+3 === lastPage) {
-                pages.push(lastPage);
-            }
-            return pages;
-        },
-        gotoPage: function(page) {
-            this.$emit("click", page);
-        },
-        nextPage: function() {
-            this.gotoPage(this.pageNumber+1);
-        },
-        prevPage: function() {
-            this.gotoPage(this.pageNumber-1);
-        },
-    },
-});
-
-Vue.component("scroll", {
+Vue.component("link-preview", {
     props: {
         message: Object,
     },
     template: `
-        <div class="scroll">
+        <div class="link-preview">
             <a v-for="(unfurl, index) in unfurls" v-bind:key="index" v-bind:unfurl="unfurl" v-bind:href="unfurl.url">
                 <p>{{ unfurl.values.join(" | ") }}</p>
             </a>
@@ -235,7 +180,7 @@ Vue.component("scroll", {
                         this.unfurls.push(unfurl);
                     }
                 })
-                .catch(error => store.dispatch("createToast", error));
+                .catch(error => {});
             }.bind(this));
         },
     },
