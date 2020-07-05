@@ -307,7 +307,7 @@ class MessageInst(Resource):
     @token_auth_required
     def delete(self, mid):
         message = Message.query.get_or_404(mid)
-        if message.user != g.user and not g.user.is_admin:
+        if message.author != g.user and not g.user.is_admin:
             abort(403)
         db.session.delete(message)
         db.session.commit()

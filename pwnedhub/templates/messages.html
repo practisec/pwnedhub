@@ -9,12 +9,12 @@
     {% if messages.items|length > 0 %}
     {% for message in messages.items %}
         <div class="message flex-row">
-        {% if message.user == g.user or g.user.is_admin %}
+        {% if message.author == g.user or g.user.is_admin %}
             <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.messages_delete', mid=message.id) }}');"><i class="fas fa-trash" title="Delete"></i></a>
         {% endif %}
-            <div class="avatar"><a href="{{ url_for('core.profile_view', uid=message.user.id) }}"><img class="circular bordered-dark" src="{{ message.user.avatar_or_default|safe }}" title="Avatar" /></a></div>
-            <div{% if message.user == g.user %} style="font-weight: bold;"{% endif %}>
-                <p class="name"><span class="red">{{ message.user.name }}</span> <span style="font-size: .75em">({{ message.user.username }})</span></p>
+            <div class="avatar"><a href="{{ url_for('core.profile_view', uid=message.author.id) }}"><img class="circular bordered-dark" src="{{ message.author.avatar_or_default|safe }}" title="Avatar" /></a></div>
+            <div{% if message.author == g.user %} style="font-weight: bold;"{% endif %}>
+                <p class="name"><span class="red">{{ message.author.name }}</span> <span style="font-size: .75em">({{ message.author.username }})</span></p>
                 <p class="comment">{{ message.comment|safe }}</p>
                 <div class="link-preview"></div>
                 <p class="timestamp">{{ message.created_as_string }}</p>

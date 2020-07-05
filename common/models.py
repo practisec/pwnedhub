@@ -39,6 +39,24 @@ class Config(db.Model):
     def __repr__(self):
         return "<Config '{}'>".format(self.name)
 
+class Note(BaseModel):
+    __tablename__ = 'notes'
+    name = db.Column(db.String(255), nullable=False)
+    content = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'content': self.content,
+            'created': self.created_as_string,
+            'modified': self.modified_as_string,
+        }
+
+    def __repr__(self):
+        return "<Note '{}'>".format(self.name)
+
 class Tool(BaseModel):
     __tablename__ = 'tools'
     name = db.Column(db.String(255), nullable=False)
@@ -104,7 +122,8 @@ class User(BaseModel):
     notes = db.Column(db.Text)
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
-    messages = db.relationship('Message', backref='user', lazy='dynamic')
+    notes = db.relationship('Note', backref='owner', lazy='dynamic')
+    messages = db.relationship('Message', backref='author', lazy='dynamic')
     sent_mail = db.relationship('Mail', foreign_keys='Mail.sender_id', backref='sender', lazy='dynamic')
     received_mail = db.relationship('Mail', foreign_keys='Mail.receiver_id', backref='receiver', lazy='dynamic')
 

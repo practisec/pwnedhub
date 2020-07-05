@@ -3,7 +3,7 @@ from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from pwnedhub import db
 from pwnedhub.decorators import login_required, roles_required, validate, csrf_protect
-from common.models import Config, Mail, Message, Tool, User, Score
+from common.models import Config, Note, Mail, Message, Tool, User, Score
 from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
 from common.utils import unfurl_url
 from common.validators import is_valid_password, is_valid_command, is_valid_filename, is_valid_mimetype
@@ -244,7 +244,7 @@ def messages(page=1):
 @validate(['message'])
 def messages_create():
     message = request.form['message']
-    msg = Message(comment=message, user=g.user)
+    msg = Message(comment=message, author=g.user)
     db.session.add(msg)
     db.session.commit()
     return redirect(url_for('core.messages'))
@@ -253,7 +253,7 @@ def messages_create():
 @login_required
 def messages_delete(mid):
     message = Message.query.get_or_404(mid)
-    if message.user == g.user or g.user.is_admin:
+    if message.author == g.user or g.user.is_admin:
         db.session.delete(message)
         db.session.commit()
         flash('Message deleted.')
@@ -280,17 +280,21 @@ def unfurl():
 @login_required
 @roles_required('user')
 def notes():
-    notes = g.user.notes or DEFAULT_NOTE
+    note = g.user.notes.first()
+    notes = note.content if note else DEFAULT_NOTE
     return render_template('notes.html', notes=notes)
 
 @core.route('/notes', methods=['PUT'])
 @login_required
 @roles_required('user')
 def notes_update():
-    g.user.notes = request.json.get('notes')
-    db.session.add(g.user)
+    notes = g.user.notes.first()
+    if not notes:
+        notes = Note(name='Notes', owner=g.user)
+    notes.content = request.json.get('notes')
+    db.session.add(notes)
     db.session.commit()
-    return jsonify(notes=g.user.notes)
+    return jsonify(notes=notes.content)
 
 @core.route('/artifacts')
 @login_required

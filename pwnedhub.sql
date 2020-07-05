@@ -121,6 +121,26 @@ INSERT INTO `messages` VALUES (1,'2019-02-18 04:55:11','2019-02-18 04:55:11','He
 UNLOCK TABLES;
 
 --
+-- Table structure for table `notes`
+--
+
+DROP TABLE IF EXISTS `notes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `notes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `content` text,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `notes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `scores`
 --
 
@@ -196,7 +216,6 @@ CREATE TABLE `users` (
   `password_hash` varchar(255) DEFAULT NULL,
   `question` int(11) NOT NULL,
   `answer` varchar(255) NOT NULL,
-  `notes` text,
   `role` int(11) NOT NULL,
   `status` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -211,7 +230,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'2019-02-16 01:51:59','2019-02-16 01:51:59','admin','admin@pwnedhub.com','Administrator','/images/avatars/admin.png','All your base are belong to me.','FgsMEw4RHgAFBho=',1,'Diego',NULL,0,1),(2,'2019-02-16 04:46:27','2019-02-16 04:46:27','Cooperman','cooper@pwnedhub.com','Cooper','/images/avatars/c-man.png','Gamer, hacker, and basketball player. Energy sword FTW!','JxdbBwtAFwoZVFo=',3,'Augusta',NULL,1,1),(3,'2019-02-16 04:47:14','2019-02-16 04:47:14','Babygirl#1','taylor@pwnedhub.com','Taylor','/images/avatars/wolf.jpg','Wolf in a past life. Nerd in the current. Johnny 5 is indeed alive.','EAoZAAwXBw0EABoREQQfBgwGChYfExkYFg==',2,'Rocket',NULL,1,1),(4,'2019-02-16 04:48:19','2019-02-16 04:48:19','Hack3rPrincess','tanner@pwnedhub.com','Tanner','/images/avatars/kitty.jpg','I might be small, cute, and cuddly, but remember... dynamite comes in small tightly wrapped packages that go boom.','Cw4IFkcXHAhES1pCXA==',0,'Drumstick',NULL,1,1);
+INSERT INTO `users` VALUES (1,'2019-02-16 01:51:59','2019-02-16 01:51:59','admin','admin@pwnedhub.com','Administrator','/images/avatars/admin.png','All your base are belong to me.','FgsMEw4RHgAFBho=',1,'Diego',0,1),(2,'2019-02-16 04:46:27','2019-02-16 04:46:27','Cooperman','cooper@pwnedhub.com','Cooper','/images/avatars/c-man.png','Gamer, hacker, and basketball player. Energy sword FTW!','JxdbBwtAFwoZVFo=',3,'Augusta',1,1),(3,'2019-02-16 04:47:14','2019-02-16 04:47:14','Babygirl#1','taylor@pwnedhub.com','Taylor','/images/avatars/wolf.jpg','Wolf in a past life. Nerd in the current. Johnny 5 is indeed alive.','EAoZAAwXBw0EABoREQQfBgwGChYfExkYFg==',2,'Rocket',1,1),(4,'2019-02-16 04:48:19','2019-02-16 04:48:19','Hack3rPrincess','tanner@pwnedhub.com','Tanner','/images/avatars/kitty.jpg','I might be small, cute, and cuddly, but remember... dynamite comes in small tightly wrapped packages that go boom.','Cw4IFkcXHAhES1pCXA==',0,'Drumstick',1,1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
