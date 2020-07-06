@@ -57,6 +57,12 @@ const actions = {
         context.commit("UPDATE_MESSAGES", messages);
     },
     createToast(context, text) {
+        // handle non-string input such as errors
+        // errors from processing successful responses can end up here
+        if (typeof(text) != "string") {
+            console.error(text);
+            return
+        }
         const id = ++maxToastId;
         context.commit("CREATE_TOAST", {id: id, text: text});
         setTimeout(() => {
