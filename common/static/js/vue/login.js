@@ -1,6 +1,6 @@
 var Login = Vue.component('login', {
     template: `
-        <div class="login">
+        <div class="login center">
             <index-static></index-static>
             <div>
                 <login-form></login-form>

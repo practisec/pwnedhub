@@ -435,6 +435,7 @@ i.large {
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
+        width: 960px;
     }
 
     .login > * {
@@ -447,7 +448,7 @@ i.large {
     }
 
     .login .panels {
-        flex-basis: 80rem;
+        flex-basis: 100%;
         margin-top: 5rem;
     }
 
