@@ -194,14 +194,11 @@ i.large {
 
 .content {
     width: 100%;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    /* container-fluid contains additional styles */
-}
-
-.container-fluid {
-    max-width: 960px;
+    /*max-width: 960px;*/
     min-width: 0;
+    padding: 0;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 /* index order keeps toasts under the header, but above the content */
@@ -373,6 +370,7 @@ i.large {
     display: flex;
     flex-direction: column;
     color: white;
+    padding: 1rem;
 }
 
 .signup .form {
@@ -390,15 +388,16 @@ i.large {
     .signup {
         flex-direction: row;
         flex-wrap: wrap;
+        justify-content: center;
     }
 
     .signup > * {
-        flex-basis: 50%;
+        flex-basis: 40rem;
     }
 
     .signup .form {
         margin: 0 auto;
-        width: 60%;
+        width: 30rem;
     }
 
 }
@@ -411,6 +410,7 @@ i.large {
     display: flex;
     flex-direction: column;
     color: white;
+    padding: 1rem;
 }
 
 .login .form {
@@ -434,20 +434,21 @@ i.large {
     .login {
         flex-direction: row;
         flex-wrap: wrap;
+        justify-content: center;
     }
 
     .login > * {
-        flex-basis: 50%;
+        flex-basis: 40rem;
     }
 
     .login .form {
         margin: 0 auto;
-        width: 60%;
+        width: 30rem;
     }
 
     .login .panels {
+        flex-basis: 80rem;
         margin-top: 5rem;
-        flex-grow: 1;
     }
 
 }
@@ -458,6 +459,10 @@ i.large {
 
 .reset {
     color: white;
+    padding: 1rem;
+}
+
+.reset .form {
     padding: 1rem 2rem;
     background-color: rgba(0,0,0,0.6);
 }
@@ -465,7 +470,7 @@ i.large {
 /* desktop reset */
 @media all and (min-width: 960px) {
 
-    .reset {
+    .reset .form {
         margin: 0 auto;
         width: 30rem;
     }
@@ -479,15 +484,16 @@ i.large {
 .account {
     display: flex;
     flex-direction: column;
+    padding: 1rem;
 }
 
 .account .avatar img {
-    max-width: 20rem;
+    max-width: 30rem;
     width: 100%;
 }
 
 .account .form {
-    padding: 1rem 2rem;
+    padding: 0.5rem 0;
 }
 
 /* desktop account */
@@ -496,19 +502,16 @@ i.large {
     .account {
         flex-direction: row;
         flex-wrap: wrap;
+        justify-content: center;
     }
 
     .account > * {
-        flex-basis: 50%;
-    }
-
-    .account .avatar {
-        margin-bottom: 5rem;
+        flex-basis: 40rem;
     }
 
     .account .form {
         margin: 0 auto;
-        width: 80%;
+        width: 30rem;
     }
 
 }
@@ -516,6 +519,10 @@ i.large {
 /* account end */
 
 /* profile */
+
+.profile {
+    padding: 1rem;
+}
 
 .profile .avatar img {
     max-width: 30rem;
@@ -554,8 +561,8 @@ i.large {
 /* messages */
 
 .messages {
-    height: calc(100vh - 90px); /* height of nav (50) + vertical padding (20+20) */
-    margin-top: -2rem;
+    height: calc(100vh - 50px); /* height of nav (50) */
+    padding: 0 1rem 1rem 1rem;
 }
 
 .messages button {
@@ -618,6 +625,12 @@ i.large {
 .messages .message-container .message .timestamp {
     font-size: 1rem;
     margin-bottom: 0;
+}
+
+.messages .message-form input[type=text],
+.messages .message-form input[type=text]:focus {
+    border: 1px solid #e1e1e1;
+    margin: 0;
 }
 
 /* desktop messages */

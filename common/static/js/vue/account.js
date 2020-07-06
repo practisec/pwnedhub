@@ -1,8 +1,12 @@
 var Account = Vue.component("account", {
     template: `
         <div v-if="user" class="account">
-            <div>
-                <div class="avatar center-content"><router-link v-bind:to="{ name: 'profile', params: {userId: user.id} }" class="center"><img class="circular bordered-dark" v-bind:src="user.avatar" title="Avatar" /></router-link></div>
+            <div class="flex-column">
+                <div class="flex-grow flex-row flex-align-center avatar center-content">
+                    <router-link v-bind:to="{ name: 'profile', params: {userId: user.id} }" class="flex-grow">
+                        <img class="circular bordered-dark" v-bind:src="user.avatar" title="Avatar" />
+                    </router-link>
+                </div>
                 <update-password-form v-bind:user="user"></update-password-form>
             </div>
             <div>

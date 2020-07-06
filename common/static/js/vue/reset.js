@@ -1,11 +1,13 @@
 var ResetInit = Vue.component('reset-init', {
     template: `
         <div class="flex-column reset">
-            <h3>Forgot your password?</h3>
-            <p>Don't worry. It happens to the best of us.</p>
-            <label for="credential">Email address or username:</label>
-            <input name="credential" type="text" v-model="credentialForm.credential" />
-            <input type="button" v-on:click="initializeReset" value="Please email me a recovery link." />
+            <div class="flex-column form rounded">
+                <h3>Forgot your password?</h3>
+                <p>Don't worry. It happens to the best of us.</p>
+                <label for="credential">Email address or username:</label>
+                <input name="credential" type="text" v-model="credentialForm.credential" />
+                <input type="button" v-on:click="initializeReset" value="Please email me a recovery link." />
+            </div>
         </div>
     `,
     data: function() {
@@ -42,11 +44,13 @@ var ResetPassword = Vue.component('reset-password-form', {
     },
     template: `
         <div class="flex-column reset">
-            <h3>Reset your password!</h3>
-            <p>And if you need us again, we'll be here, ready to help.</p>
-            <label for="new_password">New password:</label>
-            <password-field name="new_password" v-model="passwordForm.new_password"></password-field>
-            <input type="button" v-on:click="resetPassword" value="Please reset my password." />
+            <div class="flex-column form rounded">
+                <h3>Reset your password!</h3>
+                <p>And if you need us again, we'll be here, ready to help.</p>
+                <label for="new_password">New password:</label>
+                <password-field name="new_password" v-model="passwordForm.new_password"></password-field>
+                <input type="button" v-on:click="resetPassword" value="Please reset my password." />
+            </div>
         </div>
     `,
     data: function() {

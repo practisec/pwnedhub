@@ -63,12 +63,12 @@ var Messages = Vue.component("messages", {
     },
     created: function() {
         this.getMessages();
-    }
+    },
 });
 
 Vue.component("create-message", {
     template: `
-        <div class="flex-row" style="position: relative">
+        <div class="flex-row message-form" style="position: relative">
             <input class="flex-grow" type="text" v-model="messageForm.message" v-on:keyup="handleKeyPress" placeholder="Message here..." />
             <button class="show" v-on:click="createMessage"><i class="fas fa-paper-plane" title="Send"></i></button>
         </div>

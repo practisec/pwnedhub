@@ -4,7 +4,7 @@ Vue.component("content-wrapper", {
             <transition-group name="toasts" tag="div" class="flex-column toasts">
                 <toast v-for="toast in toasts" v-bind:key="toast.id" v-bind:toast="toast"></toast>
             </transition-group>
-            <div key="content" class="flex-grow container-fluid content">
+            <div key="content" class="flex-grow content">
                 <router-view></router-view>
             </div>
         </div>
