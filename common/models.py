@@ -77,10 +77,10 @@ class Message(BaseModel):
             'created': self.created_as_string,
             'comment': self.comment,
             'author': {
-                'id': self.user.id,
-                'name': self.user.name,
-                'username': self.user.username,
-                'avatar': self.user.avatar_or_default,
+                'id': self.author.id,
+                'name': self.author.name,
+                'username': self.author.username,
+                'avatar': self.author.avatar_or_default,
             },
         }
 

@@ -60,7 +60,7 @@ Vue.component("navigation", {
                     {
                         id: 0,
                         text: "Notes",
-                        name: null,
+                        name: "notes",
                     },
                     {
                         id: 1,

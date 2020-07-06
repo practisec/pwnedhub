@@ -2,8 +2,8 @@ from flask import Blueprint, g, current_app, request, jsonify, abort, Response
 from flask_restful import Resource, Api
 from pwnedapi import db
 from pwnedapi.utils import PaginationHelper
-from common.constants import QUESTIONS, ADMIN_RESPONSE
-from common.models import Config, User, Message, Mail, Tool
+from common.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
+from common.models import Config, User, Note, Message, Mail, Tool
 from common.utils import get_unverified_jwt_payload, unfurl_url, send_email
 from common.validators import is_valid_password, is_valid_command
 from datetime import datetime, timedelta
@@ -269,6 +269,30 @@ class PasswordInst(Resource):
 api.add_resource(PasswordInst, '/users/<string:uid>/password')
 
 
+class NoteInst(Resource):
+
+    @token_auth_required
+    def get(self):
+        #note = Note.query.get_or_404(mid)
+        #if note.owner != g.user:
+        #    abort(403)
+        note = g.user.notes.first()
+        content = note.content if note else DEFAULT_NOTE
+        return {'content': content}
+
+    @token_auth_required
+    def put(self):
+        note = g.user.notes.first()
+        if not note:
+            note = Note(name='Notes', owner=g.user)
+        note.content = request.json.get('content')
+        db.session.add(note)
+        db.session.commit()
+        return {'success': True}
+
+api.add_resource(NoteInst, '/notes')
+
+
 class MessageList(Resource):
 
     @token_auth_required
@@ -291,7 +315,7 @@ class MessageList(Resource):
         comment = jsonobj.get('message')
         if not comment:
             abort(400, 'Invalid request.')
-        message = Message(comment=comment, user=g.user)
+        message = Message(comment=comment, author=g.user)
         db.session.add(message)
         db.session.commit()
         result = message.serialize()

@@ -664,6 +664,7 @@ i.large {
 
 .notes {
     position: relative;
+    height: 100%;
 }
 
 .notes textarea {
@@ -678,6 +679,41 @@ i.large {
     position: absolute;
     top: 1rem;
     right: 1rem;
+}
+
+.tabs {
+}
+
+.tabs > input[type=radio] {
+    display: none;
+}
+
+.tabs > label {
+    background-color: #eee;
+    border: 1px solid #e1e1e1;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.tabs > input[type=radio]:checked + label {
+    background: #fff;
+    border-bottom: 1px solid #fff;
+}
+
+.tab-content > div {
+    margin-top: -1px; /* overlaps the border of the lab */
+    background-color: #fff;
+    border: 1px solid #e1e1e1;
+}
+
+.tab-content > div:not(.active) {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    height: 1px;
+    width: 1px;
 }
 
 .artifacts form {

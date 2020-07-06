@@ -38,6 +38,14 @@ const routes = [
         },
     },
     {
+        path: "/notes",
+        name: "notes",
+        component: Notes,
+        meta: {
+            authRequired: true,
+        },
+    },
+    {
         path: "/messages",
         name: "messages",
         component: Messages,
