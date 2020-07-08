@@ -39,6 +39,26 @@ class Config(db.Model):
     def __repr__(self):
         return "<Config '{}'>".format(self.name)
 
+class Scan(BaseModel):
+    __tablename__ = 'scans'
+    id = db.Column(db.String(36), primary_key=True)
+    command = db.Column(db.String(255), nullable=False)
+    results = db.Column(db.Text)
+    complete = db.Column(db.Boolean, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def serialize(self, include_results=False):
+        return {
+            'id': self.id,
+            'created': self.created_as_string,
+            'modified': self.modified_as_string,
+            'command': self.command,
+            'complete': self.complete,
+        }
+
+    def __repr__(self):
+        return "<Scan '{}'>".format(self.name)
+
 class Note(BaseModel):
     __tablename__ = 'notes'
     name = db.Column(db.String(255), nullable=False)
@@ -62,6 +82,14 @@ class Tool(BaseModel):
     name = db.Column(db.String(255), nullable=False)
     path = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=False)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'path': self.path,
+            'description': self.description,
+        }
 
     def __repr__(self):
         return "<Tool '{}'>".format(self.name)
@@ -123,6 +151,7 @@ class User(BaseModel):
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
     notes = db.relationship('Note', backref='owner', lazy='dynamic')
+    scans = db.relationship('Scan', backref='owner', lazy='dynamic')
     messages = db.relationship('Message', backref='author', lazy='dynamic')
     sent_mail = db.relationship('Mail', foreign_keys='Mail.sender_id', backref='sender', lazy='dynamic')
     received_mail = db.relationship('Mail', foreign_keys='Mail.receiver_id', backref='receiver', lazy='dynamic')

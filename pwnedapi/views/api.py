@@ -3,7 +3,7 @@ from flask_restful import Resource, Api
 from pwnedapi import db
 from pwnedapi.utils import PaginationHelper
 from common.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
-from common.models import Config, User, Note, Message, Mail, Tool
+from common.models import Config, User, Note, Message, Mail, Tool, Scan
 from common.utils import get_unverified_jwt_payload, unfurl_url, send_email
 from common.validators import is_valid_password, is_valid_command
 from datetime import datetime, timedelta
@@ -84,7 +84,6 @@ def key_auth_required(func):
     return wrapped
 
 # API RESOURCE CLASSES
-
 
 class TokenList(Resource):
 
@@ -183,7 +182,7 @@ class UserInst(Resource):
 
     @token_auth_required
     def patch(self, uid):
-        if uid != str(g.user.id):
+        if uid != 'me' and uid != str(g.user.id):
             abort(403)
         user = g.user
         user.avatar = request.json.get('avatar') or user.avatar
@@ -435,6 +434,16 @@ class UnfurlList(Resource):
 api.add_resource(UnfurlList, '/unfurl')
 
 
+class ToolList(Resource):
+
+    @token_auth_required
+    def get(self):
+        tools = [t.serialize() for t in Tool.query.all()]
+        return {'tools': tools}
+
+api.add_resource(ToolList, '/tools')
+
+
 class ToolInst(Resource):
 
     @token_auth_required
@@ -449,7 +458,12 @@ class ToolInst(Resource):
 api.add_resource(ToolInst, '/tools/<string:tid>')
 
 
-class ExecuteList(Resource):
+class ScanList(Resource):
+
+    @token_auth_required
+    def get(self):
+        scans = [s.serialize() for s in g.user.scans.order_by(Scan.created.asc())]
+        return {'scans': scans}
 
     @token_auth_required
     def post(self):
@@ -460,18 +474,42 @@ class ExecuteList(Resource):
         args = request.json.get('args')
         cmd = '{} {}'.format(path, args)
         error = False
-        if is_valid_command(cmd):
-            env = os.environ.copy()
-            env['PATH'] = os.pathsep.join(('/usr/bin', env['PATH']))
-            p = subprocess.Popen([cmd, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=env)
-            out, err = p.communicate()
-            output = (out + err).decode()
-        else:
-            output = 'Command contains invalid characters.'
-            error = True
-        return {'cmd': cmd, 'output': output, 'error': error}
+        if not is_valid_command(cmd):
+            abort(400, 'Command contains invalid characters.')
+        job = current_app.task_queue.enqueue('pwnedapi.tasks.execute_tool', path, args)
+        sid = job.get_id()
+        scan = Scan(id=sid, command=cmd, owner=g.user)
+        db.session.add(scan)
+        db.session.commit()
+        return scan.serialize(), 201
 
-api.add_resource(ExecuteList, '/execute')
+api.add_resource(ScanList, '/scans')
+
+
+class ScanInst(Resource):
+
+    @token_auth_required
+    def delete(self, sid):
+        scan = Scan.query.get_or_404(sid)
+        if scan.owner != g.user:
+            abort(403)
+        db.session.delete(scan)
+        db.session.commit()
+        return '', 204
+
+api.add_resource(ScanInst, '/scans/<string:sid>')
+
+
+class ResultsInst(Resource):
+
+    @token_auth_required
+    def get(self, sid):
+        scan = Scan.query.get_or_404(sid)
+        if scan.owner != g.user:
+            abort(403)
+        return {'results': scan.results}
+
+api.add_resource(ResultsInst, '/scans/<string:sid>/results')
 
 
 class ArtifactsList(Resource):

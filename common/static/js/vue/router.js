@@ -46,6 +46,14 @@ const routes = [
         },
     },
     {
+        path: "/scans",
+        name: "scans",
+        component: Scans,
+        meta: {
+            authRequired: true,
+        },
+    },
+    {
         path: "/messages",
         name: "messages",
         component: Messages,

@@ -1,10 +1,12 @@
 const state = {
     apiUrl: API_BASE_URL,
     mail: [],
-    messages: [],
     toasts: [],
     userInfo: null,
     authHeader: {},
+    modalVisible: false,
+    modalComponent: null,
+    modalParams: {},
 }
 
 const mutations = {
@@ -16,9 +18,6 @@ const mutations = {
             return letter.id === payload.id;
         })
         state.mail[index] = payload;
-    },
-    UPDATE_MESSAGES(state, payload) {
-        state.messages = payload;
     },
     CREATE_TOAST(state, toast) {
         state.toasts.push(toast)
@@ -42,6 +41,16 @@ const mutations = {
         state.authHeader = {};
         localStorage.removeItem("token");
     },
+    SHOW_MODAL(state, payload) {
+        state.modalVisible = true;
+        state.modalComponent = payload.componentName;
+        state.modalParams = payload.params;
+    },
+    HIDE_MODAL(state) {
+        state.modalVisible = false;
+        state.modalComponent = null;
+        state.modalParams = {};
+    },
 };
 
 let maxToastId = 0;
@@ -52,9 +61,6 @@ const actions = {
     },
     updateLetter(context, letter) {
         context.commit("UPDATE_LETTER", letter);
-    },
-    updateMessages(context, messages) {
-        context.commit("UPDATE_MESSAGES", messages);
     },
     createToast(context, text) {
         // handle non-string input such as errors
@@ -91,6 +97,12 @@ const actions = {
             }
         }
     },
+    showModal(context, payload) {
+        context.commit("SHOW_MODAL", payload);
+    },
+    hideModal(context) {
+        context.commit("HIDE_MODAL");
+    },
 };
 
 const getters = {
@@ -106,9 +118,6 @@ const getters = {
                 return letter.id === id;
             });
         };
-    },
-    getMessages(state) {
-        return state.messages;
     },
     getToasts(stats) {
         return state.toasts;
@@ -137,6 +146,15 @@ const getters = {
             return store.getters.getUserInfo.role;
         }
         return "guest";
+    },
+    modalVisible(state) {
+        return state.modalVisible;
+    },
+    modalComponent(state) {
+        return state.modalComponent;
+    },
+    modalParams(state) {
+        return state.modalParams;
     },
 };
 

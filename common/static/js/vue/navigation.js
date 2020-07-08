@@ -69,8 +69,8 @@ Vue.component("navigation", {
                     },
                     {
                         id: 2,
-                        text: "Scanners",
-                        name: null,
+                        text: "Scans",
+                        name: "scans",
                     },
                     {
                         id: 3,

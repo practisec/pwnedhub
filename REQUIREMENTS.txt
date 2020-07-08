@@ -3,13 +3,14 @@ Flask
 Flask-SQLAlchemy
 Flask-MySQLdb
 lxml
+requests
 gunicorn
 # website
 Markdown
-requests
-Flask-SocketIO
-eventlet
 # api
 flask-restful
 flask-cors
 pyjwt
+rq
+#Flask-SocketIO
+#eventlet

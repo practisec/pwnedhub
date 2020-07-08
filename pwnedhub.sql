@@ -141,6 +141,27 @@ CREATE TABLE `notes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `scans`
+--
+
+DROP TABLE IF EXISTS `scans`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `scans` (
+  `id` varchar(36) NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  `command` varchar(255) NOT NULL,
+  `results` text,
+  `complete` tinyint(1) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `scans_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `scores`
 --
 

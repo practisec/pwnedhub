@@ -3,6 +3,8 @@ from flask_cors import CORS
 from flask_restful import Api
 from common import db
 from common.models import Config
+from redis import Redis
+import rq
 
 cors = CORS()
 
@@ -11,6 +13,9 @@ def create_app(config='Development'):
     # setting the static_url_path to blank serves static files from the web root
     app = Flask(__name__, static_url_path='')
     app.config.from_object('pwnedapi.config.{}'.format(config.title()))
+
+    app.redis = Redis.from_url(app.config['REDIS_URL'])
+    app.task_queue = rq.Queue('pwnedhub-tasks', connection=app.redis)
 
     def is_allowed_origin(response):
         for k, v in response.headers:

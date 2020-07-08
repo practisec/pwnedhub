@@ -104,8 +104,6 @@ input.show {
 }
 
 select:disabled {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
 }
 
@@ -208,6 +206,60 @@ i.large {
 }
 
 /* general end */
+
+/* modal */
+
+.modal-mask {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    transition: opacity .3s ease;
+    overflow-x: auto;
+}
+
+.modal-mask .modal-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 3rem 2rem 2rem;
+    background-color: #fff;
+    transition: all .3s ease;
+}
+
+.modal-mask .modal-container a.img-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+.modal-enter,
+.modal-leave-active {
+    opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+/* desktop modal */
+@media all and (min-width: 960px) {
+
+    .modal-mask .modal-container {
+        width: 80%;
+        height: 80%;
+        border-radius: .5rem;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+    }
+
+}
+
+/* modal end */
 
 /* navigation */
 
@@ -332,8 +384,6 @@ i.large {
 }
 
 .toast:last-child {
-    -webkit-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
 }
 
@@ -363,6 +413,112 @@ i.large {
 }
 
 /* toasts end */
+
+/* tabs */
+
+.tabs {
+}
+
+.tabs > input[type=radio] {
+    display: none;
+}
+
+.tabs > label {
+    background-color: #eee;
+    border: 1px solid #e1e1e1;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.tabs > input[type=radio]:checked + label {
+    background: #fff;
+    border-bottom: 1px solid #fff;
+}
+
+.tab-content > div {
+    margin-top: -1px; /* overlaps the border of the lab */
+    background-color: #fff;
+    border: 1px solid #e1e1e1;
+}
+
+.tab-content > div:not(.active) {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    height: 1px;
+    width: 1px;
+}
+
+/* tabs end */
+
+/* responsive table */
+
+.responsive-table {
+}
+
+.responsive-table .responsive-table-headers {
+    display: none;
+    margin-bottom: 1rem;
+}
+
+.responsive-table .responsive-table-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-weight: 600;
+}
+
+.responsive-table .responsive-table-body {
+}
+
+.responsive-table .responsive-table-row {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+}
+
+.responsive-table .responsive-table-row:hover {
+    cursor: pointer;
+}
+
+.responsive-table .responsive-table-cell {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+.responsive-table .responsive-table-cell * {
+    margin: 0;
+}
+
+.responsive-table .mobile-header {
+    display: inline-block;
+    min-width: 10rem;
+    font-weight: 600;
+}
+
+@media all and (min-width: 960px) {
+
+    .responsive-table .responsive-table-headers {
+        display: flex;
+    }
+
+    .responsive-table .responsive-table-row {
+        flex-direction: row;
+    }
+
+    .responsive-table .mobile-header {
+        display: none;
+    }
+
+}
+
+/* responsive table end */
 
 /* signup */
 
@@ -566,16 +722,6 @@ i.large {
     padding: 0 1rem 1rem 1rem;
 }
 
-.messages button {
-    line-height: 1em;
-    border: none;
-    background-color: transparent;
-    position: absolute;
-    right: 0;
-    top: 0;
-    border: 0;
-}
-
 .messages .message-container {
     overflow-y: auto;
 }
@@ -628,18 +774,28 @@ i.large {
     margin-bottom: 0;
 }
 
+.messages .message-form {
+    position: relative;
+}
+
 .messages .message-form input[type=text],
 .messages .message-form input[type=text]:focus {
     border: 1px solid #e1e1e1;
     margin: 0;
 }
 
+.messages .message-form button {
+    line-height: 1em;
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 0;
+}
+
 /* desktop messages */
 @media all and (min-width: 960px) {
-
-    .messages button {
-        display: none;
-    }
 
     .messages .message-container .message:hover {
         background-color: #eee;
@@ -653,18 +809,17 @@ i.large {
         display: inline;
     }
 
+    .messages .message-form button {
+        display: none;
+    }
+
 }
 
 /* messages end */
 
-.config .panel {
-    border: 1px solid #bbb;
-    padding: 1rem;
-    margin-bottom: 1rem;
-}
+/* notes */
 
 .notes {
-    position: relative;
     height: 100%;
 }
 
@@ -676,45 +831,87 @@ i.large {
     resize: none;
 }
 
-.notes a.img-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+/* notes end */
+
+/* scans */
+
+.scans {
+    padding: 1rem;
 }
 
-.tabs {
+.scans .scan-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
 }
 
-.tabs > input[type=radio] {
-    display: none;
-}
-
-.tabs > label {
-    background-color: #eee;
+.scans .scan-form input[type=text],
+.scans .scan-form input[type=text]:focus,
+.scans .scan-form select,
+.scans .scan-form select:focus {
     border: 1px solid #e1e1e1;
-    padding: 0.5rem 1rem;
+}
+
+.scans .scan-form .scan-form-args {
+    position: relative;
+}
+
+.scans .scan-form .scan-form-args button {
+    line-height: 1em;
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 0;
+}
+
+.scans .scans-table pre {
+    white-space: pre-wrap;
+}
+
+/* desktop scans */
+@media all and (min-width: 960px) {
+
+    /*flex-row flex-wrap flex-align-center */
+    .scans .scan-form {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .scans .scan-form select {
+        margin-right: 1rem;
+    }
+
+    .scans .scan-form .scan-form-args {
+        flex-grow: 1;
+    }
+
+    .scans .scan-form .scan-form-meta {
+        flex-basis: 100%;
+    }
+
+    .scans .scan-form .scan-form-args button {
+        display: none;
+    }
+
+}
+
+.scans-modal {
+}
+
+.scans-modal pre {
+    /*height: 100%; /* keep scrollbar at bottom */
     margin: 0;
-    cursor: pointer;
-    z-index: 1;
+    overflow: scroll;
 }
 
-.tabs > input[type=radio]:checked + label {
-    background: #fff;
-    border-bottom: 1px solid #fff;
-}
+/* scans end */
 
-.tab-content > div {
-    margin-top: -1px; /* overlaps the border of the lab */
-    background-color: #fff;
-    border: 1px solid #e1e1e1;
-}
-
-.tab-content > div:not(.active) {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-    height: 1px;
-    width: 1px;
+.config .panel {
+    border: 1px solid #bbb;
+    padding: 1rem;
+    margin-bottom: 1rem;
 }
 
 .artifacts form {
@@ -724,37 +921,6 @@ i.large {
 .artifacts td {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
-}
-
-.tools {
-    min-width: 0;
-}
-
-.tools input[type="text"],
-.tools select {
-    font-family: monospace;
-    font-size: 1.5rem;
-}
-
-.tools .output {
-    min-height: 0; /* Firefox */
-    background-color: #000;
-    color: #fff;
-    position: relative;
-    padding: 1rem 1.5rem;
-    border: 1px solid #bbb;
-}
-
-.tools .output pre {
-    height: 100%; /* keep scrollbar at bottom */
-    margin: 0;
-    overflow: scroll;
-}
-
-.tools .output a.img-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
 }
 
 .inbox table {
@@ -807,6 +973,18 @@ i.large {
 
 /* utility styles */
 
+.flex-basis-30 {
+    flex-basis: 30%;
+}
+
+.flex-basis-20 {
+    flex-basis: 20%;
+}
+
+.flex-basis-10 {
+    flex-basis: 10%;
+}
+
 .center-content {
     text-align: center !important;
 }
@@ -850,51 +1028,6 @@ i.large {
 
 .markdown code {
     overflow: scroll;
-}
-
-/* end */
-
-/* spinner */
-
-.spinner {
-    visibility: hidden;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width:60px;
-    height:60px;
-    margin-top: -30px;
-    margin-left: -35px;
-    -webkit-animation: rotation .6s infinite linear;
-    -moz-animation: rotation .6s infinite linear;
-    -o-animation: rotation .6s infinite linear;
-    animation: rotation .6s infinite linear;
-    border-left: 6px solid rgba(255, 0, 0, 0.25);
-    border-right: 6px solid rgba(255, 0, 0, 0.25);
-    border-bottom: 6px solid rgba(255, 0, 0, 0.25);
-    border-top: 6px solid rgba(255, 0, 0, 0.75);
-    border-radius: 100%;
-    z-index: 98;
-}
-
-@-webkit-keyframes rotation {
-    from {-webkit-transform: rotate(0deg);}
-    to {-webkit-transform: rotate(359deg);}
-}
-
-@-moz-keyframes rotation {
-    from {-moz-transform: rotate(0deg);}
-    to {-moz-transform: rotate(359deg);}
-}
-
-@-o-keyframes rotation {
-    from {-o-transform: rotate(0deg);}
-    to {-o-transform: rotate(359deg);}
-}
-
-@keyframes rotation {
-    from {transform: rotate(0deg);}
-    to {transform: rotate(359deg);}
 }
 
 /* end */

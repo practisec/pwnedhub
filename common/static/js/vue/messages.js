@@ -4,7 +4,7 @@ var Messages = Vue.component("messages", {
             <div id="message-container" class="message-container" v-chat-scroll="{ always: false, smooth: false, scrollonremoved: true }" @v-chat-scroll-top-reached="getNextPage">
                 <message v-if="messages.length > 0" v-for="message in messages" v-bind:key="message.id" v-bind:message="message" v-on:delete="deleteMessage"></message>
             </div>
-            <create-message v-on:create="createMessage"></create-message>
+            <message-form v-on:create="createMessage"></message-form>
         </div>
     `,
     data: function() {
@@ -54,7 +54,7 @@ var Messages = Vue.component("messages", {
             })
             .then(handleErrors)
             .then(response => {
-                this.messages.splice(this.messages.findIndex(a => a.id === message.id) , 1);
+                this.messages.splice(this.messages.findIndex(m => m.id === message.id), 1);
             })
             .catch(error => {
                 store.dispatch("createToast", error)
@@ -66,9 +66,9 @@ var Messages = Vue.component("messages", {
     },
 });
 
-Vue.component("create-message", {
+Vue.component("message-form", {
     template: `
-        <div class="flex-row message-form" style="position: relative">
+        <div class="flex-row flex-align-center message-form">
             <input class="flex-grow" type="text" v-model="messageForm.message" v-on:keyup="handleKeyPress" placeholder="Message here..." />
             <button class="show" v-on:click="createMessage"><i class="fas fa-paper-plane" title="Send"></i></button>
         </div>
@@ -83,14 +83,14 @@ Vue.component("create-message", {
     methods: {
         handleKeyPress: function(event) {
             if (event.keyCode === 13) {
-                if (this.messageForm.message) {
-                    this.createMessage();
-                }
+                this.createMessage();
             }
         },
         createMessage: function() {
-            this.$emit('create', this.messageForm);
-            this.messageForm.message = "";
+            if (this.messageForm.message) {
+                this.$emit('create', this.messageForm);
+                this.messageForm.message = "";
+            }
         },
     },
 });
