@@ -2,7 +2,7 @@ from flask import Blueprint, g, current_app, request, jsonify, abort, Response
 from flask_restful import Resource, Api
 from pwnedapi import db
 from pwnedapi.utils import PaginationHelper
-from common.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
+from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
 from common.models import Config, User, Note, Message, Mail, Tool, Scan
 from common.utils import get_unverified_jwt_payload, unfurl_url, send_email
 from common.validators import is_valid_password, is_valid_command
@@ -82,6 +82,16 @@ def key_auth_required(func):
             return func(*args, **kwargs)
         abort(401)
     return wrapped
+
+def roles_required(*roles):
+    def wrapper(func):
+        @wraps(func)
+        def wrapped(*args, **kwargs):
+            if ROLES[g.user.role] not in roles:
+                return abort(403)
+            return func(*args, **kwargs)
+        return wrapped
+    return wrapper
 
 # API RESOURCE CLASSES
 
@@ -441,6 +451,18 @@ class ToolList(Resource):
         tools = [t.serialize() for t in Tool.query.all()]
         return {'tools': tools}
 
+    @token_auth_required
+    @roles_required('admin')
+    def post(self):
+        tool = Tool(
+            name=request.json.get('name'),
+            path=request.json.get('path'),
+            description=request.json.get('description'),
+        )
+        db.session.add(tool)
+        db.session.commit()
+        return tool.serialize(), 201
+
 api.add_resource(ToolList, '/tools')
 
 
@@ -454,6 +476,14 @@ class ToolInst(Resource):
         except:
             tool = {}
         return dict(tool)
+
+    @token_auth_required
+    @roles_required('admin')
+    def delete(self, tid):
+        tool = Tool.query.get_or_404(tid)
+        db.session.delete(tool)
+        db.session.commit()
+        return '', 204
 
 api.add_resource(ToolInst, '/tools/<string:tid>')
 
@@ -476,7 +506,7 @@ class ScanList(Resource):
         error = False
         if not is_valid_command(cmd):
             abort(400, 'Command contains invalid characters.')
-        job = current_app.task_queue.enqueue('pwnedapi.tasks.execute_tool', path, args)
+        job = current_app.task_queue.enqueue('pwnedapi.tasks.execute_tool', cmd)
         sid = job.get_id()
         scan = Scan(id=sid, command=cmd, owner=g.user)
         db.session.add(scan)

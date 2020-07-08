@@ -6,14 +6,14 @@ import subprocess
 import sys
 import traceback
 
-def execute_tool(path, args):
+def execute_tool(cmd):
     app = create_app(os.environ.get('CONFIG', 'Production'))
     with app.app_context():
         try:
             output = ''
             env = os.environ.copy()
             env['PATH'] = os.pathsep.join(('/usr/bin', env['PATH']))
-            p = subprocess.Popen([path, args], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=env)
+            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, env=env)
             out, err = p.communicate()
             output = (out + err).decode()
         except:

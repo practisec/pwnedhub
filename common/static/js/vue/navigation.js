@@ -48,7 +48,7 @@ Vue.component("navigation", {
                     {
                         id: 2,
                         text: "Tools",
-                        name: null,
+                        name: "tools",
                     },
                     {
                         id: 3,

@@ -897,16 +897,59 @@ i.large {
 
 }
 
+/* needed for scrolling overflow */
 .scans-modal {
+    position: absolute;
+    top: 3rem;
+    left: 2rem;
+    right: 2rem;
+    bottom: 2rem;
+    overflow: auto;
 }
 
 .scans-modal pre {
-    /*height: 100%; /* keep scrollbar at bottom */
     margin: 0;
-    overflow: scroll;
 }
 
 /* scans end */
+
+/* tools */
+
+.tools {
+    padding: 1rem;
+}
+
+.tools .tool-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.tools .tool-form input[type=text],
+.tools .tool-form input[type=text]:focus {
+    border: 1px solid #e1e1e1;
+}
+
+.tools .tools-table pre {
+    white-space: pre-wrap;
+}
+
+/* desktop scans */
+@media all and (min-width: 960px) {
+
+    /*flex-row flex-wrap flex-align-center */
+    .tools .tool-form {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .tools .tool-form input {
+        margin-right: 1rem;
+    }
+
+}
+
+/* tools end */
 
 .config .panel {
     border: 1px solid #bbb;

@@ -96,6 +96,14 @@ const routes = [
         },
     },
     {
+        path: "/admin/tools",
+        name: "tools",
+        component: Tools,
+        meta: {
+            authRequired: true,
+        },
+    },
+    {
         path: "*",
         redirect: "/messages",
     }
