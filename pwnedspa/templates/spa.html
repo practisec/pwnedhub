@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedspa.css') }}">
     <!-- component styles -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/modal.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/toasts.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/content.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/navigation.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/background.css') }}">
@@ -31,9 +32,11 @@
 </head>
 <body>
     <div class="flex-column" id="app">
-        <modal></modal>
+        <!-- fixed components -->
         <background></background>
-        <navigation></navigation>
+        <toasts></toasts>
+        <modal></modal>
+        <!-- static components -->
         <content-wrapper></content-wrapper>
     </div>
     <script>
@@ -50,6 +53,7 @@
     <script src="{{ url_for('static', filename='vue/libs/marked.min.js') }}"></script>
     <!-- utility components -->
     <script src="{{ url_for('static', filename='vue/components/modal.js') }}"></script>
+    <script src="{{ url_for('static', filename='vue/components/toasts.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/components/password-field.js') }}"></script>
     <!-- layout components -->
     <script src="{{ url_for('static', filename='vue/components/content.js') }}"></script>

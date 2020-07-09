@@ -1,21 +1,19 @@
 Vue.component("navigation", {
     template: `
-        <div class="header">
-            <div class="container-fluid nav">
-                <ul class="menu" v-bind:class="{ active: isOpen }">
-                    <li class="brand"><img src="/images/logo.png" /></li>
-                    <li class="toggle"><a href="#" v-on:click="toggleMenu"><i class="fas fa-bars"></i></a></li>
-                    <li class="item avatar" v-if="isLoggedIn">
-                        <router-link v-bind:to="{ name: 'account' }">
-                            <img class="circular bordered-dark" v-bind:src="userAvatar" title="Avatar" />
-                        </router-link>
-                    </li>
-                    <li class="item" v-for="route in permissions[userRole]" v-bind:key="route.id" v-bind:route="route">
-                        <router-link v-bind:to="{ name: route.name, params: route.params || {} }">{{ route.text }}</router-link>
-                    </li>
-                    <li class="item" v-if="isLoggedIn"><span v-on:click="doLogout">Logout</span></li>
-                </ul>
-            </div>
+        <div class="nav">
+            <ul class="menu" v-bind:class="{ active: isOpen }">
+                <li class="brand"><img src="/images/logo.png" /></li>
+                <li class="toggle"><a href="#" v-on:click="toggleMenu"><i class="fas fa-bars"></i></a></li>
+                <li class="item avatar" v-if="isLoggedIn">
+                    <router-link v-bind:to="{ name: 'account' }">
+                        <img class="circular bordered-dark" v-bind:src="userAvatar" title="Avatar" />
+                    </router-link>
+                </li>
+                <li class="item" v-for="route in permissions[userRole]" v-bind:key="route.id" v-bind:route="route">
+                    <router-link v-bind:to="{ name: route.name, params: route.params || {} }">{{ route.text }}</router-link>
+                </li>
+                <li class="item" v-if="isLoggedIn"><span v-on:click="doLogout">Logout</span></li>
+            </ul>
         </div>
     `,
     data: function() {

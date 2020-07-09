@@ -162,7 +162,7 @@ Vue.component("scan", {
         headings: Object,
     },
     template: `
-        <div v-on:click="getResults" class="responsive-table-row scans-table-row shaded-light rounded">
+        <div class="responsive-table-row scans-table-row shaded-light rounded" v-on:click="getResults">
             <div class="responsive-table-cell" style="flex-basis: 40%;">
                 <div class="mobile-header">{{ headings.command }}</div>
                 <div><pre>{{ scan.command }}</pre></div>

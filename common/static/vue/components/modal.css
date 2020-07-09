@@ -1,6 +1,6 @@
 .modal-mask {
     position: fixed;
-    z-index: 9998;
+    z-index: 20;
     top: 0;
     left: 0;
     width: 100%;
@@ -43,7 +43,7 @@
         width: 80%;
         height: 80%;
         border-radius: .5rem;
-        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
     }
 
 }

@@ -1,7 +1,6 @@
-.header {
-    background-color: #222;/*#fafafa;*/
-    color: #fff;
-    z-index: 20;
+.nav {
+    padding: 0 2rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
 }
 
 .nav a {
@@ -26,7 +25,6 @@
 .nav .menu {
     display: flex;
     flex-wrap: wrap;
-    /*justify-content: space-between;*/
     align-items: center;
 }
 
