@@ -130,8 +130,8 @@ class Mail(BaseModel):
             'subject': self.subject,
             'content': self.content,
             'read': self.read,
-            'sender': self.sender.serialize(public=True),
-            'receiver': self.receiver.serialize(public=True),
+            'sender': self.sender.serialize(),
+            'receiver': self.receiver.serialize(),
         }
 
     def __repr__(self):
@@ -147,7 +147,6 @@ class User(BaseModel):
     password_hash = db.Column(db.String(255))
     question = db.Column(db.Integer, nullable=False)
     answer = db.Column(db.String(255), nullable=False)
-    notes = db.Column(db.Text)
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
     notes = db.relationship('Note', backref='owner', lazy='dynamic')
@@ -216,16 +215,8 @@ class User(BaseModel):
     def get_by_email(email):
         return User.query.filter_by(email=email).first()
 
-    def serialize(self, public=False):
-        if public:
-            return {
-                'id': self.id,
-                'created': self.created_as_string,
-                'name': self.name,
-                'avatar': self.avatar_or_default,
-                'signature': self.signature,
-            }
-        return {
+    def serialize(self, private=False, remove_fields=[]):
+        serialized_user = {
             'id': self.id,
             'created': self.created_as_string,
             'username': self.username,
@@ -236,7 +227,12 @@ class User(BaseModel):
             'question': self.question,
             'answer': self.answer,
             'role': self.role_as_string,
+            'status': self.status_as_string,
         }
+        private_fields = ['username', 'email', 'question', 'answer', 'role', 'status']
+        if not private:
+            remove_fields.extend(private_fields)
+        return {k: v for k, v in serialized_user.items() if k not in remove_fields}
 
     def __repr__(self):
         return "<User '{}'>".format(self.username)

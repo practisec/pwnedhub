@@ -481,10 +481,6 @@ i.large {
     padding: 0.5rem;
 }
 
-.responsive-table .responsive-table-row:hover {
-    cursor: pointer;
-}
-
 .responsive-table .responsive-table-cell {
     display: flex;
     justify-content: flex-start;
@@ -870,6 +866,10 @@ i.large {
     white-space: pre-wrap;
 }
 
+.scans .scans-table .scans-table-row:hover {
+    cursor: pointer;
+}
+
 /* desktop scans */
 @media all and (min-width: 960px) {
 
@@ -934,7 +934,7 @@ i.large {
     white-space: pre-wrap;
 }
 
-/* desktop scans */
+/* desktop tools */
 @media all and (min-width: 960px) {
 
     /*flex-row flex-wrap flex-align-center */
@@ -950,6 +950,23 @@ i.large {
 }
 
 /* tools end */
+
+/* users */
+
+.users {
+    padding: 1rem;
+}
+
+.users .avatar {
+    margin-right: 1rem;
+}
+
+.users .avatar img {
+    display: block;
+    height: 4rem;
+}
+
+/* users end */
 
 .config .panel {
     border: 1px solid #bbb;

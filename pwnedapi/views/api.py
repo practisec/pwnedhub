@@ -129,7 +129,7 @@ class TokenList(Resource):
                 user = None
         # handle authentication
         if user and user.is_enabled:
-            data = {'user': user.serialize()}
+            data = {'user': user.serialize(private=True)}
             # build other claims
             claims = {}
             path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user.id).encode()).hexdigest())
@@ -159,7 +159,7 @@ class UserList(Resource):
 
     @token_auth_required
     def get(self):
-        users = [u.serialize(public=True) for u in User.query.all()]
+        users = [u.serialize() for u in User.query.all()]
         return {'users': users}
 
     def post(self):
@@ -186,25 +186,54 @@ class UserInst(Resource):
     @token_auth_required
     def get(self, uid):
         if uid == 'me' or uid == str(g.user.id):
-            return g.user.serialize()
+            return g.user.serialize(private=True)
         user = User.query.get_or_404(uid)
-        return user.serialize(public=True)
+        return user.serialize()
 
     @token_auth_required
     def patch(self, uid):
         if uid != 'me' and uid != str(g.user.id):
             abort(403)
         user = g.user
-        user.avatar = request.json.get('avatar') or user.avatar
-        user.signature = request.json.get('signature') or user.signature
-        user.name = request.json.get('name') or user.name
-        user.question = request.json.get('question') or user.question
-        user.answer = request.json.get('answer') or user.answer
+        user.name = request.json.get('name', user.name)
+        user.avatar = request.json.get('avatar', user.avatar)
+        user.signature = request.json.get('signature', user.signature)
+        user.question = request.json.get('question', user.question)
+        user.answer = request.json.get('answer', user.answer)
         db.session.add(user)
         db.session.commit()
-        return user.serialize()
+        return user.serialize(private=True)
 
 api.add_resource(UserInst, '/users/<string:uid>')
+
+
+class AdminUserList(Resource):
+
+    @token_auth_required
+    @roles_required('admin')
+    def get(self):
+        users = [u.serialize(private=True, remove_fields=['question', 'answer']) for u in User.query.all()]
+        return {'users': users}
+
+api.add_resource(AdminUserList, '/admin/users')
+
+
+class AdminUserInst(Resource):
+
+    @token_auth_required
+    @roles_required('admin')
+    def patch(self, uid):
+        user = User.query.get_or_404(uid)
+        if user == g.user:
+            abort(400, 'Self-administration not permitted.')
+        print(request.json)
+        user.role = request.json.get('role', user.role)
+        user.status = request.json.get('status', user.status)
+        db.session.add(user)
+        db.session.commit()
+        return user.serialize(private=True, remove_fields=['question', 'answer'])
+
+api.add_resource(AdminUserInst, '/admin/users/<string:uid>')
 
 
 class QuestionList(Resource):

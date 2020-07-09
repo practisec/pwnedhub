@@ -104,6 +104,14 @@ const routes = [
         },
     },
     {
+        path: "/admin/users",
+        name: "users",
+        component: Users,
+        meta: {
+            authRequired: true,
+        },
+    },
+    {
         path: "*",
         redirect: "/messages",
     }

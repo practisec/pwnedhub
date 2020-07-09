@@ -99,7 +99,7 @@ Vue.component("tools-table", {
                 <div class="responsive-table-header" style="flex-basis: 10%;"></div>
             </div>
             <div class="responsive-table-body">
-                <tool v-for="tool in tools" v-bind:key="tool.id" v-bind:tool="tool" v-bind:headings="headings"  v-on:delete="deleteTool"></tool>
+                <tool v-for="tool in tools" v-bind:key="tool.id" v-bind:tool="tool" v-bind:headings="headings" v-on:delete="deleteTool"></tool>
             </div>
         </div>
     `,
@@ -141,7 +141,7 @@ Vue.component("tool", {
             <div class="responsive-table-cell" style="flex-basis: 10%;">
                 <div class="mobile-header">Actions</div>
                 <div>
-                    <a class="img-btn" v-on:click.stop="deleteTool(tool)">
+                    <a class="img-btn" v-on:click="deleteTool(tool)">
                         <i class="fas fa-trash" title="Delete"></i>
                     </a>
                 </div>

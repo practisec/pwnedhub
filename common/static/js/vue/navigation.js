@@ -53,7 +53,7 @@ Vue.component("navigation", {
                     {
                         id: 3,
                         text: "Users",
-                        name: null,
+                        name: "users",
                     },
                 ],
                 user: [
