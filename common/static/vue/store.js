@@ -6,7 +6,7 @@ const state = {
     authHeader: {},
     modalVisible: false,
     modalComponent: null,
-    modalParams: {},
+    modalProps: {},
 }
 
 const mutations = {
@@ -44,12 +44,12 @@ const mutations = {
     SHOW_MODAL(state, payload) {
         state.modalVisible = true;
         state.modalComponent = payload.componentName;
-        state.modalParams = payload.params;
+        state.modalProps = payload.props;
     },
     HIDE_MODAL(state) {
         state.modalVisible = false;
         state.modalComponent = null;
-        state.modalParams = {};
+        state.modalProps = {};
     },
 };
 
@@ -153,8 +153,8 @@ const getters = {
     modalComponent(state) {
         return state.modalComponent;
     },
-    modalParams(state) {
-        return state.modalParams;
+    modalProps(state) {
+        return state.modalProps;
     },
 };
 

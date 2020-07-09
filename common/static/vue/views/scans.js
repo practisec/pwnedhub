@@ -208,7 +208,7 @@ Vue.component("scan", {
             .catch(error => store.dispatch("createToast", error));
         },
         showModal: function() {
-            store.dispatch("showModal", {componentName: 'results-modal', params: {results: this.results}});
+            store.dispatch("showModal", {componentName: 'results-modal', props: {results: this.results}});
         },
         deleteScan: function(scan) {
             this.$emit('delete', scan);
@@ -218,11 +218,11 @@ Vue.component("scan", {
 
 var ResultsModal = Vue.component("results-modal", {
     props: {
-        params: Object,
+        results: String,
     },
     template: `
         <div class="scans-modal">
-            <pre>{{ params.results }}</pre>
+            <pre>{{ results }}</pre>
         </div>
     `,
 });

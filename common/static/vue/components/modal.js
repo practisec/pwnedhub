@@ -6,7 +6,7 @@ Vue.component("modal", {
                     <a class="img-btn" v-on:click="close">
                         <i class="fas fa-window-close" title="Close"></i>
                     </a>
-                    <component v-bind:is="component" v-bind:params="params"></component>
+                    <component v-bind:is="component" v-bind="props"></component>
                 </div>
             </div>
         </transition>
@@ -18,8 +18,8 @@ Vue.component("modal", {
         component: function() {
             return store.getters.modalComponent;
         },
-        params: function() {
-            return store.getters.modalParams;
+        props: function() {
+            return store.getters.modalProps;
         },
     },
     methods: {
