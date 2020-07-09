@@ -1,0 +1,79 @@
+.scans {
+    padding: 1rem;
+}
+
+.scans .scan-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.scans .scan-form input[type=text],
+.scans .scan-form input[type=text]:focus,
+.scans .scan-form select,
+.scans .scan-form select:focus {
+    border: 1px solid #e1e1e1;
+}
+
+.scans .scan-form .scan-form-args {
+    position: relative;
+}
+
+.scans .scan-form .scan-form-args button {
+    line-height: 1em;
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: 0;
+}
+
+.scans .scans-table pre {
+    white-space: pre-wrap;
+}
+
+.scans .scans-table .scans-table-row:hover {
+    cursor: pointer;
+}
+
+/* desktop scans */
+@media all and (min-width: 960px) {
+
+    /*flex-row flex-wrap flex-align-center */
+    .scans .scan-form {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .scans .scan-form select {
+        margin-right: 1rem;
+    }
+
+    .scans .scan-form .scan-form-args {
+        flex-grow: 1;
+    }
+
+    .scans .scan-form .scan-form-meta {
+        flex-basis: 100%;
+    }
+
+    .scans .scan-form .scan-form-args button {
+        display: none;
+    }
+
+}
+
+/* needed for scrolling overflow */
+.scans-modal {
+    position: absolute;
+    top: 3rem;
+    left: 2rem;
+    right: 2rem;
+    bottom: 2rem;
+    overflow: auto;
+}
+
+.scans-modal pre {
+    margin: 0;
+}

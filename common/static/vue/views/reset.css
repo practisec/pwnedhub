@@ -1,0 +1,19 @@
+.reset {
+    color: white;
+    padding: 1rem;
+}
+
+.reset .form {
+    padding: 1rem 2rem;
+    background-color: rgba(0,0,0,0.6);
+}
+
+/* desktop reset */
+@media all and (min-width: 960px) {
+
+    .reset .form {
+        margin: 0 auto;
+        width: 30rem;
+    }
+
+}

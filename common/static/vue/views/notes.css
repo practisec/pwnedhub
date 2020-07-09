@@ -1,0 +1,63 @@
+.notes {
+    height: 100%;
+}
+
+.notes textarea {
+    height: auto; /* skeleton override */
+    padding: 1rem 1.5rem;
+    border: 1px solid #bbb;
+    margin: 1rem;
+    resize: none;
+}
+
+.markdown {
+    padding: 2rem 3rem;
+    border: 1px solid #e1e1e1;
+}
+
+.markdown li {
+    margin-bottom: 0;
+}
+
+.markdown code {
+    overflow: scroll;
+}
+
+/* tabs */
+
+.tabs {
+}
+
+.tabs > input[type=radio] {
+    display: none;
+}
+
+.tabs > label {
+    background-color: #eee;
+    border: 1px solid #e1e1e1;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.tabs > input[type=radio]:checked + label {
+    background: #fff;
+    border-bottom: 1px solid #fff;
+}
+
+.tab-content > div {
+    margin-top: -1px; /* overlaps the border of the lab */
+    background-color: #fff;
+    border: 1px solid #e1e1e1;
+}
+
+.tab-content > div:not(.active) {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    height: 1px;
+    width: 1px;
+}
+
+/* tabs end */

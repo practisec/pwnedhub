@@ -1,0 +1,35 @@
+.profile {
+    padding: 1rem;
+}
+
+.profile .avatar img {
+    max-width: 30rem;
+    width: 100%;
+}
+
+.profile blockquote {
+    font-style: italic;
+    margin-left: 0;
+    margin-right: 0;
+    quotes: "\201C""\201D""\2018""\2019";
+}
+
+.profile blockquote:before {
+  color: #bbb;
+  font-family: Arial;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+
+/* desktop profile */
+@media all and (min-width: 960px) {
+
+    .profile {
+        margin: 0 auto;
+        width: 30rem;
+    }
+
+}

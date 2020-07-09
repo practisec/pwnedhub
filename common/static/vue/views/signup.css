@@ -1,0 +1,35 @@
+.signup {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    padding: 1rem;
+}
+
+.signup .form {
+    padding: 1rem 2rem;
+    background-color: rgba(0,0,0,0.6);
+}
+
+.signup .about {
+    text-align: justify;
+}
+
+/* desktop signup */
+@media all and (min-width: 960px) {
+
+    .signup {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .signup > * {
+        flex-basis: 40rem;
+    }
+
+    .signup .form {
+        margin: 0 auto;
+        width: 30rem;
+    }
+
+}

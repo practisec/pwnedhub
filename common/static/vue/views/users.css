@@ -1,0 +1,12 @@
+.users {
+    padding: 1rem;
+}
+
+.users .avatar {
+    margin-right: 1rem;
+}
+
+.users .avatar img {
+    display: block;
+    height: 4rem;
+}

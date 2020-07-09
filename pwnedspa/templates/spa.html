@@ -3,12 +3,31 @@
 <head>
     <title>PwnedHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>html{visibility: hidden;opacity:0;}</style><!-- FOUC fix -->
+    <style>html{visibility:hidden;opacity:0;}</style><!-- FOUC fix 1/2 -->
+    <!-- third-party styles -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fontawesome.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton-flexbox.css') }}">
+    <!-- utility styles -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-flex.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-utility.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedspa.css') }}">
+    <!-- component styles -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/modal.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/content.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/navigation.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/background.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/users.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/tools.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/mail.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/messages.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/scans.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/notes.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/profile.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/account.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/reset.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/login.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/signup.css') }}">
+    <style>html{visibility:visible;opacity:1;}</style><!-- FOUC fix 2/2 -->
 </head>
 <body>
     <div class="flex-column" id="app">
@@ -30,8 +49,13 @@
     <script src="{{ url_for('static', filename='vue/libs/vue-chat-scroll.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/libs/marked.min.js') }}"></script>
     <!-- utility components -->
-    <script src="{{ url_for('static', filename='vue/components/utilities.js') }}"></script>
-    <!-- route components -->
+    <script src="{{ url_for('static', filename='vue/components/modal.js') }}"></script>
+    <script src="{{ url_for('static', filename='vue/components/password-field.js') }}"></script>
+    <!-- layout components -->
+    <script src="{{ url_for('static', filename='vue/components/content.js') }}"></script>
+    <script src="{{ url_for('static', filename='vue/components/navigation.js') }}"></script>
+    <script src="{{ url_for('static', filename='vue/components/background.js') }}"></script>
+    <!-- views -->
     <script src="{{ url_for('static', filename='vue/views/users.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/views/tools.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/views/mail.js') }}"></script>
@@ -43,10 +67,6 @@
     <script src="{{ url_for('static', filename='vue/views/reset.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/views/login.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/views/signup.js') }}"></script>
-    <!-- layout components -->
-    <script src="{{ url_for('static', filename='vue/components/content.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/components/navigation.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/components/background.js') }}"></script>
     <!-- application core -->
     <script src="{{ url_for('static', filename='vue/router.js') }}"></script>
     <script src="{{ url_for('static', filename='vue/store.js') }}"></script>

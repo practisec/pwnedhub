@@ -1,0 +1,33 @@
+.tools {
+    padding: 1rem;
+}
+
+.tools .tool-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.tools .tool-form input[type=text],
+.tools .tool-form input[type=text]:focus {
+    border: 1px solid #e1e1e1;
+}
+
+.tools .tools-table pre {
+    white-space: pre-wrap;
+}
+
+/* desktop tools */
+@media all and (min-width: 960px) {
+
+    /*flex-row flex-wrap flex-align-center */
+    .tools .tool-form {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .tools .tool-form input {
+        margin-right: 1rem;
+    }
+
+}

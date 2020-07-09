@@ -1,0 +1,47 @@
+.login {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    padding: 1rem;
+}
+
+.login .form {
+    padding: 1rem 2rem;
+    background-color: rgba(0,0,0,0.6);
+}
+
+.login .form .oidc-button {
+    cursor: pointer;
+    max-width: 100%;
+}
+
+.login .panels > * {
+    flex-basis: 20rem;
+    margin: 2rem 0;
+}
+
+/* desktop login */
+@media all and (min-width: 960px) {
+
+    .login {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 960px;
+    }
+
+    .login > * {
+        flex-basis: 40rem;
+    }
+
+    .login .form {
+        margin: 0 auto;
+        width: 30rem;
+    }
+
+    .login .panels {
+        flex-basis: 100%;
+        margin-top: 5rem;
+    }
+
+}

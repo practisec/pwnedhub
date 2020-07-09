@@ -1,0 +1,55 @@
+.content-wrapper {
+    position: relative;
+    z-index: 10; /* keeps toasts under the header, but above the content */
+}
+
+.content {
+    width: 100%;
+    /*max-width: 960px;*/
+    min-width: 0;
+    padding: 0;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+/* toasts */
+
+.toast {
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 1.5rem;
+    background-color: red;
+    color: #fff;
+}
+
+.toast:last-child {
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+}
+
+.toasts {
+    position: absolute;
+    width: 100%;
+    top: 0;
+}
+
+.toasts-enter-active,
+.toasts-leave-active {
+    transition: all 1s ease;
+    /*transition-delay: .75s;*/
+}
+
+.toasts-enter,
+.toasts-leave-to {
+    transform: translateY(-100%);
+}
+
+.toasts-leave-active {
+    position: absolute;
+}
+
+.toasts-move {
+    transition: transform 1s;
+}
+
+/* toasts end */

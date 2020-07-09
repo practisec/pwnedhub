@@ -1,0 +1,34 @@
+.account {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.account .avatar img {
+    max-width: 30rem;
+    width: 100%;
+}
+
+.account .form {
+    padding: 0.5rem 0;
+}
+
+/* desktop account */
+@media all and (min-width: 960px) {
+
+    .account {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .account > * {
+        flex-basis: 40rem;
+    }
+
+    .account .form {
+        margin: 0 auto;
+        width: 30rem;
+    }
+
+}
