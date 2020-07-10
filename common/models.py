@@ -215,24 +215,30 @@ class User(BaseModel):
     def get_by_email(email):
         return User.query.filter_by(email=email).first()
 
-    def serialize(self, private=False, remove_fields=[]):
-        serialized_user = {
+    def serialize(self):
+        return {
             'id': self.id,
             'created': self.created_as_string,
-            'username': self.username,
-            'email': self.email,
             'name': self.name,
             'avatar': self.avatar_or_default,
             'signature': self.signature,
-            'question': self.question,
-            'answer': self.answer,
+        }
+
+    def serialize_admin(self):
+        return {
+            **self.serialize(),
+            'username': self.username,
+            'email': self.email,
             'role': self.role_as_string,
             'status': self.status_as_string,
         }
-        private_fields = ['username', 'email', 'question', 'answer', 'role', 'status']
-        if not private:
-            remove_fields.extend(private_fields)
-        return {k: v for k, v in serialized_user.items() if k not in remove_fields}
+
+    def serialize_self(self):
+        return {
+            **self.serialize_admin(),
+            'question': self.question,
+            'answer': self.answer,
+        }
 
     def __repr__(self):
         return "<User '{}'>".format(self.username)

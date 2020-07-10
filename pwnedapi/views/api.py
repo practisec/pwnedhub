@@ -129,7 +129,7 @@ class TokenList(Resource):
                 user = None
         # handle authentication
         if user and user.is_enabled:
-            data = {'user': user.serialize(private=True)}
+            data = {'user': user.serialize_self()}
             # build other claims
             claims = {}
             path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user.id).encode()).hexdigest())
@@ -186,7 +186,7 @@ class UserInst(Resource):
     @token_auth_required
     def get(self, uid):
         if uid == 'me' or uid == str(g.user.id):
-            return g.user.serialize(private=True)
+            return g.user.serialize_self()
         user = User.query.get_or_404(uid)
         return user.serialize()
 
@@ -202,7 +202,7 @@ class UserInst(Resource):
         user.answer = request.json.get('answer', user.answer)
         db.session.add(user)
         db.session.commit()
-        return user.serialize(private=True)
+        return user.serialize_self()
 
 api.add_resource(UserInst, '/users/<string:uid>')
 
@@ -212,7 +212,7 @@ class AdminUserList(Resource):
     @token_auth_required
     @roles_required('admin')
     def get(self):
-        users = [u.serialize(private=True, remove_fields=['question', 'answer']) for u in User.query.all()]
+        users = [u.serialize_admin() for u in User.query.all()]
         return {'users': users}
 
 api.add_resource(AdminUserList, '/admin/users')
@@ -231,7 +231,7 @@ class AdminUserInst(Resource):
         user.status = request.json.get('status', user.status)
         db.session.add(user)
         db.session.commit()
-        return user.serialize(private=True, remove_fields=['question', 'answer'])
+        return user.serialize_admin()
 
 api.add_resource(AdminUserInst, '/admin/users/<string:uid>')
 
