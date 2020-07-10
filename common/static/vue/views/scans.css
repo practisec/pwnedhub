@@ -8,13 +8,6 @@
     margin-bottom: 1rem;
 }
 
-.scans .scan-form input[type=text],
-.scans .scan-form input[type=text]:focus,
-.scans .scan-form select,
-.scans .scan-form select:focus {
-    border: 1px solid #e1e1e1;
-}
-
 .scans .scan-form .scan-form-args {
     position: relative;
 }

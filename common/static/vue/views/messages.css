@@ -59,9 +59,7 @@
     position: relative;
 }
 
-.messages .message-form input[type=text],
-.messages .message-form input[type=text]:focus {
-    border: 1px solid #e1e1e1;
+.messages .message-form input[type=text] {
     margin: 0;
 }
 

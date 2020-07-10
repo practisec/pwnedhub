@@ -8,11 +8,6 @@
     margin-bottom: 1rem;
 }
 
-.tools .tool-form input[type=text],
-.tools .tool-form input[type=text]:focus {
-    border: 1px solid #e1e1e1;
-}
-
 .tools .tools-table pre {
     white-space: pre-wrap;
 }

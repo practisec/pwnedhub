@@ -1,3 +1,5 @@
+/* fonts */
+
 @font-face {
     font-family: 'Open Sans';
     font-weight: 300;
@@ -40,15 +42,7 @@
         url('/fonts/Open-Sans-600/Open-Sans-600.svg#OpenSans') format('svg');
 }
 
-/* apply a natural box layout model to all elements, but allowing components to change */
-
-html {
-    box-sizing: border-box;
-}
-
-*, *:before, *:after {
-    box-sizing: inherit;
-}
+/* fonts end */
 
 /* tags */
 
@@ -88,11 +82,6 @@ td input, td select, td button {
     vertical-align: middle;
     margin-top: .5rem;
     margin-bottom: .5rem;
-}
-
-button, input[type="submit"], input[type="reset"], input[type="button"] {
-    padding: 0 1rem;
-    background-color: #fff;
 }
 
 input.show {
