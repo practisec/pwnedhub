@@ -76,12 +76,10 @@ Vue.component("tool-form", {
     },
     methods: {
         createTool: function() {
-            if (this.toolForm.name && this.toolForm.path && this.toolForm.description) {
-                this.$emit('create', this.toolForm);
-                this.toolForm.name = "";
-                this.toolForm.path = "";
-                this.toolForm.description = "";
-            }
+            this.$emit('create', this.toolForm);
+            this.toolForm.name = "";
+            this.toolForm.path = "";
+            this.toolForm.description = "";
         },
     },
 });

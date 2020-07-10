@@ -1,7 +1,7 @@
 from flask import Blueprint, g, current_app, request, jsonify, abort, Response
 from flask_restful import Resource, Api
 from pwnedapi import db
-from pwnedapi.utils import PaginationHelper
+from pwnedapi.utils import PaginationHelper, validate_json
 from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
 from common.models import Config, User, Note, Message, Mail, Tool, Scan
 from common.utils import get_unverified_jwt_payload, unfurl_url, send_email
@@ -482,6 +482,7 @@ class ToolList(Resource):
 
     @token_auth_required
     @roles_required('admin')
+    @validate_json(['name', 'path', 'description'])
     def post(self):
         tool = Tool(
             name=request.json.get('name'),
@@ -525,6 +526,7 @@ class ScanList(Resource):
         return {'scans': scans}
 
     @token_auth_required
+    @validate_json(['tid', 'args'])
     def post(self):
         tool = Tool.query.get(request.json.get('tid') or -1)
         if not tool:

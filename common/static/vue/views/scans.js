@@ -111,9 +111,7 @@ Vue.component("scan-form", {
             }
         },
         createScan: function() {
-            if (this.scanForm.tid && this.scanForm.args) {
-                this.$emit('create', this.scanForm);
-            }
+            this.$emit('create', this.scanForm);
         },
     },
     created: function() {
