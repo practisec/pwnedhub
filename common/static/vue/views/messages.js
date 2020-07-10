@@ -1,7 +1,8 @@
 var Messages = Vue.component("messages", {
     template: `
         <div class="flex-column flex-justify-end messages">
-            <div id="message-container" class="message-container" v-chat-scroll="{ always: false, smooth: false, scrollonremoved: true }" @v-chat-scroll-top-reached="getNextPage">
+            <div id="message-container" class="message-container" ref="container">
+                <infinite-loading spinner="spiral" v-bind:distance="0" direction="top" v-on:infinite="infiniteHandler"></infinite-loading>
                 <message v-if="messages.length > 0" v-for="message in messages" v-bind:key="message.id" v-bind:message="message" v-on:delete="deleteMessage"></message>
             </div>
             <message-form v-on:create="createMessage"></message-form>
@@ -10,28 +11,33 @@ var Messages = Vue.component("messages", {
     data: function() {
         return {
             messages: [],
-            count: 0,
             pageNumber: 1,
         }
     },
     methods: {
-        getMessages: function() {
+        scrollToEnd () {
+            var content = this.$refs.container;
+            content.scrollTop = content.scrollHeight;
+        },
+        infiniteHandler($state) {
+            this.getMessages($state);
+        },
+        getMessages: function($state) {
             fetch(store.getters.getApiUrl+"/messages?page="+this.pageNumber, {
                 credentials: "include",
             })
             .then(handleErrors)
             .then(response => response.json())
             .then(json => {
+                this.pageNumber++;
                 this.messages.unshift(...json.messages);
-                this.count = json.count;
+                if (json.next) {
+                    $state.loaded();
+                } else {
+                    $state.complete()
+                }
             })
             .catch(error => store.dispatch("createToast", error));
-        },
-        getNextPage: function() {
-            if (this.messages.length < this.count) {
-                this.pageNumber++;
-                this.getMessages();
-            }
         },
         createMessage: function(payload) {
             fetch(store.getters.getApiUrl+"/messages", {
@@ -43,7 +49,10 @@ var Messages = Vue.component("messages", {
             .then(handleErrors)
             .then(response => response.json())
             .then(json => {
-                this.messages.push(json)
+                this.messages.push(json);
+                this.$nextTick(function () {
+                    this.scrollToEnd();
+                });
             })
             .catch(error => store.dispatch("createToast", error));
         },
@@ -60,9 +69,6 @@ var Messages = Vue.component("messages", {
                 store.dispatch("createToast", error)
             });
         },
-    },
-    created: function() {
-        this.getMessages();
     },
 });
 
