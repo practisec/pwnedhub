@@ -10,3 +10,13 @@
     display: block;
     height: 4rem;
 }
+
+/* desktop users */
+@media all and (min-width: 960px) {
+
+    .users .users-table .users-table-row .actions-cell {
+        width: 100%;
+        text-align: center;
+    }
+
+}

@@ -25,4 +25,9 @@
         margin-right: 1rem;
     }
 
+    .tools .tools-table .tools-table-row .actions-cell {
+        width: 100%;
+        text-align: center;
+    }
+
 }

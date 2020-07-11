@@ -99,7 +99,7 @@ Vue.component("user", {
         headings: Object,
     },
     template: `
-        <div class="responsive-table-row shaded-light rounded">
+        <div class="responsive-table-row users-table-row shaded-light rounded">
             <div class="responsive-table-cell" style="flex-basis: 20%;">
                 <div class="mobile-header">{{ headings.name }}</div>
                 <div class="flex-row flex-align-center">
@@ -129,7 +129,7 @@ Vue.component("user", {
             </div>
             <div class="responsive-table-cell" style="flex-basis: 10%;">
                 <div class="mobile-header">Actions</div>
-                <div>
+                <div class="actions-cell">
                     <a v-if="user.role == 'admin'" class="img-btn" v-on:click.stop="updateUser(user, 'demote')">
                         <i class="fas fa-user-minus" title="Demote"></i>
                     </a>

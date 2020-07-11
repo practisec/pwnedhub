@@ -123,7 +123,7 @@ Vue.component("tool", {
         headings: Object,
     },
     template: `
-        <div class="responsive-table-row shaded-light rounded">
+        <div class="responsive-table-row tools-table-row shaded-light rounded">
             <div class="responsive-table-cell" style="flex-basis: 20%;">
                 <div class="mobile-header">{{ headings.name }}</div>
                 <div>{{ tool.name }}</div>
@@ -138,7 +138,7 @@ Vue.component("tool", {
             </div>
             <div class="responsive-table-cell" style="flex-basis: 10%;">
                 <div class="mobile-header">Actions</div>
-                <div>
+                <div class="actions-cell">
                     <a class="img-btn" v-on:click="deleteTool(tool)">
                         <i class="fas fa-trash" title="Delete"></i>
                     </a>

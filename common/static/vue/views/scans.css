@@ -55,6 +55,11 @@
         display: none;
     }
 
+    .scans .scans-table .scans-table-row .actions-cell {
+        width: 100%;
+        text-align: center;
+    }
+
 }
 
 /* needed for scrolling overflow */

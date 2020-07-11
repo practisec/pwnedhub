@@ -179,7 +179,7 @@ Vue.component("scan", {
             </div>
             <div class="responsive-table-cell" style="flex-basis: 10%;">
                 <div class="mobile-header">Actions</div>
-                <div>
+                <div class="actions-cell">
                     <a class="img-btn" v-on:click.stop="deleteScan(scan)">
                         <i class="fas fa-trash" title="Delete"></i>
                     </a>
