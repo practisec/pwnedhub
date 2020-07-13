@@ -11,7 +11,7 @@ var Messages = Vue.component("messages", {
     data: function() {
         return {
             messages: [],
-            pageNumber: 1,
+            cursor: null,
         }
     },
     methods: {
@@ -23,13 +23,18 @@ var Messages = Vue.component("messages", {
             this.getMessages($state);
         },
         getMessages: function($state) {
-            fetch(store.getters.getApiUrl+"/messages?page="+this.pageNumber, {
+            var query = "";
+            if (this.cursor) {
+                query = "?cursor="+this.cursor;
+            }
+            fetch(store.getters.getApiUrl+"/messages"+query, {
                 credentials: "include",
             })
             .then(handleErrors)
             .then(response => response.json())
             .then(json => {
-                this.pageNumber++;
+                this.cursor = json.cursor;
+                // prepend messages with the older messages
                 this.messages.unshift(...json.messages);
                 if (json.next) {
                     $state.loaded();
@@ -39,36 +44,43 @@ var Messages = Vue.component("messages", {
             })
             .catch(error => store.dispatch("createToast", error));
         },
-        createMessage: function(payload) {
-            fetch(store.getters.getApiUrl+"/messages", {
-                credentials: "include",
-                headers: {"Content-Type": "application/json"},
-                method: "POST",
-                body: JSON.stringify(payload),
-            })
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                this.messages.push(json);
-                this.$nextTick(function () {
-                    this.scrollToEnd();
-                });
-            })
-            .catch(error => store.dispatch("createToast", error));
+        createMessage: function(message) {
+            this.$socket.client.emit("create-message", message);
         },
         deleteMessage: function(message) {
-            fetch(store.getters.getApiUrl+"/messages/"+message.id, {
-                credentials: "include",
-                method: "DELETE",
-            })
-            .then(handleErrors)
-            .then(response => {
-                this.messages.splice(this.messages.findIndex(m => m.id === message.id), 1);
-            })
-            .catch(error => {
-                store.dispatch("createToast", error)
+            this.$socket.client.emit("delete-message", message);
+        },
+    },
+    sockets: {
+        // calling this "connect" results in weird behavior
+        newConnection(greeting) {
+            console.log(greeting);
+        },
+        newMessage(message) {
+            this.messages.push(message);
+            this.$nextTick(function () {
+                this.scrollToEnd();
             });
         },
+        delMessage(messageId) {
+            var index = this.messages.findIndex(m => m.id === messageId)
+            if (index !== -1) {
+                this.messages.splice(index, 1);
+                //this.messages = this.messages.filter(function(m) { return m.id !== messageId; }); 
+            }
+        },
+        log(data) {
+            console.log(data);
+        },
+    },
+    created: function() {
+        this.$socket.client.io.opts.transportOptions.polling.extraHeaders.Authorization = store.getters.getAuthHeader;
+        this.$socket.client.open();
+        this.$socket.client.emit("join-room");
+    },
+    beforeDestroy: function() {
+        this.$socket.client.close();
+        console.log("Socket disconnected.");
     },
 });
 
@@ -94,7 +106,7 @@ Vue.component("message-form", {
         },
         createMessage: function() {
             if (this.messageForm.message) {
-                this.$emit('create', this.messageForm);
+                this.$emit("create", this.messageForm);
                 this.messageForm.message = "";
             }
         },

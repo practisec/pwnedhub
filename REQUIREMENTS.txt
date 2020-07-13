@@ -2,15 +2,15 @@
 Flask
 Flask-SQLAlchemy
 Flask-MySQLdb
-lxml
-requests
 gunicorn
+requests
 # website
 Markdown
+lxml
 # api
 flask-restful
 flask-cors
 pyjwt
 rq
-#Flask-SocketIO
-#eventlet
+Flask-SocketIO
+eventlet

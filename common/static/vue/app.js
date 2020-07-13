@@ -23,6 +23,20 @@ function handleErrors(response) {
     });
 }
 
+const socket = io(API_BASE_URL, {
+    autoConnect: false,
+    transports: ['websocket'],
+    transportOptions: {
+        polling: {
+            extraHeaders: {
+                "Authorization": "Bearer None",
+            },
+        },
+    },
+});
+
+Vue.use(VueSocketIOExt, socket);
+
 const app = new Vue({
     el: "#app",
     router,

@@ -1,12 +1,14 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
+from flask_socketio import SocketIO
 from common import db
 from common.models import Config
 from redis import Redis
 import rq
 
 cors = CORS()
+socketio = SocketIO()
 
 def create_app(config='Development'):
 
@@ -44,8 +46,11 @@ def create_app(config='Development'):
 
     db.init_app(app)
     cors.init_app(app)
+    socketio.init_app(app, cors_allowed_origins=app.config['ALLOWED_ORIGINS'])
 
     from pwnedapi.views.api import resources
     app.register_blueprint(resources)
 
-    return app
+    from pwnedapi.views import websockets
+
+    return app, socketio

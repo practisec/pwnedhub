@@ -1,5 +1,5 @@
 from pwnedapi import create_app
 
-app = create_app()
+app, socketio = create_app()
 if __name__ == '__main__':
-    app.run(port=5002)
+    socketio.run(app, port=5002)

@@ -38,7 +38,7 @@ services:
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
             - INBOX_PATH=/tmp/inbox # writable location for Gunicorn
-        command: gunicorn --bind 0.0.0.0:5002 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
+        command: gunicorn --bind 0.0.0.0:5002 --worker-class eventlet --workers 1 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
             - redis

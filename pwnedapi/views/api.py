@@ -1,4 +1,4 @@
-from flask import Blueprint, g, current_app, request, jsonify, abort, Response
+from flask import Blueprint, g, current_app, request, jsonify, abort, Response, url_for
 from flask_restful import Resource, Api
 from pwnedapi import db
 from pwnedapi.utils import PaginationHelper, validate_json
@@ -335,18 +335,25 @@ class MessageList(Resource):
 
     @token_auth_required
     def get(self):
-        pagination_helper = PaginationHelper(
-            request,
-            query=Message.query.order_by(Message.created.desc()),
-            resource_for_url='resources.messagelist',
-            key_name='messages'
-        )
-        result = pagination_helper.paginate_query()
-        result['messages'].reverse()
+        cursor = float(request.args.get('cursor', datetime.now().timestamp()))
+        size = request.args.get('size', 8)
+        messages = Message.query.filter(Message.created < datetime.fromtimestamp(cursor)).order_by(Message.created.desc()).all()
+        paged_messages = messages[:size]
+        next_cursor = str(paged_messages[-1].created.timestamp())
+        next_url = None
+        if messages[-1].created < paged_messages[-1].created:
+            next_url = url_for('resources.messagelist', cursor=next_cursor, _external=True)
+        paged_messages.reverse()
+        result = {
+            'messages': [m.serialize() for m in paged_messages],
+            'cursor': next_cursor,
+            'next': next_url,
+        }
         resp = jsonify(result)
         resp.mimetype = 'text/html'
         return resp
 
+    # replaced by websocket event
     @token_auth_required
     def post(self):
         jsonobj = request.get_json(force=True)
@@ -366,6 +373,7 @@ api.add_resource(MessageList, '/messages')
 
 class MessageInst(Resource):
 
+    # replaced by websocket event
     @token_auth_required
     def delete(self, mid):
         message = Message.query.get_or_404(mid)

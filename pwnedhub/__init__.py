@@ -51,18 +51,18 @@ def create_app(config='Development'):
     return app
 
 def init_db(config='Development'):
-    app, socketio = create_app(config)
+    app = create_app(config)
     with app.app_context():
         db.create_all()
     print('Database initialized.')
 
 def drop_db(config='Development'):
-    app, socketio = create_app(config)
+    app = create_app(config)
     with app.app_context():
         db.drop_all()
     print('Database dropped.')
 
 def interact(config='Development'):
-    app, socketio = create_app(config)
+    app = create_app(config)
     with app.app_context():
         import pdb; pdb.set_trace()
