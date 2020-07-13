@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM python:3.6-alpine
 
 ENV BUILD_DEPS="build-base gcc libc-dev libxslt-dev mariadb-dev"
 ENV RUNTIME_DEPS="libxslt mariadb-connector-c-dev"
@@ -14,6 +14,7 @@ ADD ./REQUIREMENTS.txt /pwnedhub/REQUIREMENTS.txt
 
 RUN apk update &&\
     apk add --no-cache $BUILD_DEPS $RUNTIME_DEPS &&\
+    pip install --no-cache-dir --upgrade pip &&\
     pip install --no-cache-dir -r REQUIREMENTS.txt &&\
     apk del $BUILD_DEPS &&\
     rm -rf /var/cache/apk/*
