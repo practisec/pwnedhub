@@ -3,7 +3,7 @@ from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from pwnedhub import db
 from pwnedhub.decorators import login_required, roles_required, validate, csrf_protect
-from common.models import Config, Note, Mail, Message, Tool, User, Score
+from common.models import Config, Note, Mail, Message, Tool, User, Score, Room
 from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
 from common.utils import unfurl_url
 from common.validators import is_valid_password, is_valid_command, is_valid_filename, is_valid_mimetype
@@ -236,7 +236,7 @@ def mail_delete(mid):
 @core.route('/messages/page/<int:page>')
 @login_required
 def messages(page=1):
-    messages = Message.query.order_by(Message.created.desc()).paginate(page=page, per_page=5)
+    messages = Room.query.first().messages.order_by(Message.created.desc()).paginate(page=page, per_page=5)
     return render_template('messages.html', messages=messages)
 
 @core.route('/messages/create', methods=['POST'])
@@ -244,7 +244,7 @@ def messages(page=1):
 @validate(['message'])
 def messages_create():
     message = request.form['message']
-    msg = Message(comment=message, author=g.user)
+    msg = Message(comment=message, author=g.user, room=Room.query.first())
     db.session.add(msg)
     db.session.commit()
     return redirect(url_for('core.messages'))
@@ -252,7 +252,9 @@ def messages_create():
 @core.route('/messages/delete/<int:mid>')
 @login_required
 def messages_delete(mid):
-    message = Message.query.get_or_404(mid)
+    message = Room.query.first().messages.filter_by(id=mid).first()
+    if not message:
+        abort(404)
     if message.author == g.user or g.user.is_admin:
         db.session.delete(message)
         db.session.commit()
