@@ -94,7 +94,11 @@ Vue.component('login-form', {
                 this.$router.push(this.$route.params.nextUrl);
             } else {
                 // fallback landing page
-                this.$router.push({ name: "messages" });
+                if (json.user.role === "admin") {
+                    this.$router.push({ name: "users" });
+                } else {
+                    this.$router.push({ name: "notes" });
+                }
             }
         },
         handleLoginFailure: function(error) {

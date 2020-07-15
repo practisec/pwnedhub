@@ -35,23 +35,18 @@ Vue.component("navigation", {
                 admin: [
                     {
                         id: 0,
-                        text: "PwnMail",
-                        name: "mail",
+                        text: "Users",
+                        name: "users",
                     },
                     {
                         id: 1,
-                        text: "Messages",
-                        name: "messages",
-                    },
-                    {
-                        id: 2,
                         text: "Tools",
                         name: "tools",
                     },
                     {
-                        id: 3,
-                        text: "Users",
-                        name: "users",
+                        id: 2,
+                        text: "Messaging",
+                        name: "messaging",
                     },
                 ],
                 user: [
@@ -62,23 +57,13 @@ Vue.component("navigation", {
                     },
                     {
                         id: 1,
-                        text: "Artifacts",
-                        name: null,
-                    },
-                    {
-                        id: 2,
                         text: "Scans",
                         name: "scans",
                     },
                     {
-                        id: 3,
-                        text: "PwnMail",
-                        name: "mail",
-                    },
-                    {
-                        id: 4,
-                        text: "Messages",
-                        name: "messages",
+                        id: 2,
+                        text: "Messaging",
+                        name: "messaging",
                     },
                 ],
             }

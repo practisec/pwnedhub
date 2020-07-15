@@ -172,7 +172,7 @@ Vue.component("messages", {
         room: function() {
             this.messages = [];
             this.cursor = null;
-            this.infiniteId =this.room.id;
+            this.infiniteId = this.room.id;
         }
     },
     methods: {

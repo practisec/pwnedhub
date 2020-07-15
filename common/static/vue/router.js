@@ -54,43 +54,9 @@ const routes = [
         },
     },
     {
-        path: "/messages",
-        name: "messages",
+        path: "/messaging",
+        name: "messaging",
         component: Messaging,
-        meta: {
-            authRequired: true,
-        },
-    },
-    {
-        path: "/mail",
-        name: "mail",
-        component: Mail,
-        meta: {
-            authRequired: true,
-        },
-    },
-    {
-        path: "/mail/view/:letterId",
-        name: "letter",
-        component: Letter,
-        props: true,
-        meta: {
-            authRequired: true,
-        },
-    },
-    {
-        path: "/mail/compose",
-        name: "compose",
-        component: Compose,
-        meta: {
-            authRequired: true,
-        },
-    },
-    {
-        path: "/mail/reply/:letterId",
-        name: "reply",
-        component: Reply,
-        props: true,
         meta: {
             authRequired: true,
         },
@@ -113,7 +79,7 @@ const routes = [
     },
     {
         path: "*",
-        redirect: "/messages",
+        redirect: "/login",
     }
 ];
 
