@@ -56,7 +56,7 @@ const routes = [
     {
         path: "/messages",
         name: "messages",
-        component: Messages,
+        component: Messaging,
         meta: {
             authRequired: true,
         },

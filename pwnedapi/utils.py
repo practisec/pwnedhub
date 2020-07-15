@@ -76,10 +76,20 @@ class ParamValidator(object):
         return False
 
     def non_zero_len_str(self, value):
-        return type(value) == str and len(value) > 0
+        return isinstance(value, str) and len(value) > 0
+
+    def boolean(self, value):
+        return isinstance(value, bool)
+
+    def array_of_ints(self, value):
+        if isinstance(value, list):
+            return all(isinstance(x, int) for x in value)
+        return False
 
     validate_tid = any_int
     validate_args = validate_name = validate_path = validate_description = non_zero_len_str
+    validate_private = boolean
+    validate_members = array_of_ints
 
 from flask import request, abort
 from functools import wraps

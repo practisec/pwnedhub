@@ -1,6 +1,6 @@
 from flask import request, session
 from flask_socketio import emit, join_room, leave_room
-from common.models import User, Message
+from common.models import User, Message, Room
 from pwnedapi import socketio, db
 from pwnedapi.views.api import parse_jwt
 from werkzeug.exceptions import Forbidden
@@ -22,45 +22,42 @@ def connect_handler():
     load_user()
     if not session.user:
         return False
-    emit('newConnection', f"Socket connected.")
+    emit('log', f"Socket connected.")
 
 @socketio.on('join-room')
-def join_room_handler(data={}):
-    room = data.get('room', 'general')
-    join_room(room)
-    session['room'] = room
-    emit('log', f"Joined room: #{room}.")
+def join_room_handler(data):
+    join_room(data['name'])
+    emit('log', f"Joined room: {data['id']}.")
 
-# not used yet
+# unused
 @socketio.on('leave-room')
-def leave_room_handler():
-    room = session.get('room')
-    leave_room(room)
-    session.room = None
-    emit('log', f"Left room: #{room}.")
+def leave_room_handler(data):
+    leave_room(data['name'])
+    emit('log', f"Left room: {data['id']}.")
 
 @socketio.on('create-message')
 def create_message_handler(data):
-    comment = data.get('message')
-    message = Message(comment=comment, author=session.user)
+    message = Message(
+        comment=data['message']['comment'],
+        author=session.user,
+        room_id=data['room']['id']
+    )
     db.session.add(message)
     db.session.commit()
-    room = session.get('room')
-    emit('newMessage', message.serialize(), room=room)
+    emit('newMessage', message.serialize(), room=data['room']['name'])
 
 @socketio.on('delete-message')
 def delete_message_handler(data):
-    mid = data.get('id')
-    message = Message.query.get(mid)
+    message = Message.query.get(data['message']['id'])
     if message.author.id != session.user.id and session.user.is_admin == False:
         raise Forbidden('Unauthorized deletion attempt.')
+    # create response object before deleting it
+    serialized_message = message.serialize()
     db.session.delete(message)
     db.session.commit()
-    room = session.get('room')
-    emit('delMessage', mid, room=room)
+    emit('delMessage', serialized_message, room=data['room']['name'])
 
 @socketio.on_error_default
 def default_error_handler(e):
-    #print(request.event["message"]) # "my error event"
-    #print(request.event["args"])    # (data,)
+    emit('log', request.event)
     print(traceback.format_exc())

@@ -3,7 +3,7 @@ from flask_restful import Resource, Api
 from pwnedapi import db
 from pwnedapi.utils import PaginationHelper, validate_json
 from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
-from common.models import Config, User, Note, Message, Mail, Tool, Scan
+from common.models import Config, User, Note, Message, Mail, Tool, Scan, Room, Membership
 from common.utils import get_unverified_jwt_payload, unfurl_url, send_email
 from common.validators import is_valid_password, is_valid_command
 from datetime import datetime, timedelta
@@ -120,6 +120,8 @@ class TokenList(Resource):
                     question=0,
                     answer=token_urlsafe(10),
                 )
+                # create default membership
+                user.create_membership(Room.get_by_name('general'))
                 db.session.add(user)
                 db.session.commit()
         # process username and password credentials
@@ -331,8 +333,76 @@ class NoteInst(Resource):
 api.add_resource(NoteInst, '/notes')
 
 
+class RoomList(Resource):
+
+    @token_auth_required
+    def get(self):
+        rooms = [r.serialize_with_context(g.user) for r in g.user.rooms]
+        return {'rooms': rooms}
+
+    @token_auth_required
+    @validate_json(['name', 'private', 'members'])
+    def post(self):
+        name = request.json.get('name')
+        private = request.json.get('private')
+        members = request.json.get('members')
+        room = Room.get_by_name(name)
+        code = 200
+        if not room:
+            # create the room
+            room = Room(
+                name=name,
+                private=private,
+            )
+            db.session.add(room)
+            db.session.commit()
+            # initialize memberships
+            for member in members:
+                user = User.query.get(member)
+                user.create_membership(room)
+            code = 200
+        return room.serialize_with_context(g.user), code
+
+api.add_resource(RoomList, '/rooms')
+
+
+class RoomMessageList(Resource):
+
+    @token_auth_required
+    def get(self, rid):
+        room = Room.query.get_or_404(rid)
+        if room not in g.user.rooms:
+            abort(403)
+        result = {
+            'messages': [],
+            'cursor': None,
+            'next': None,
+        }
+        cursor = float(request.args.get('cursor', datetime.now().timestamp()))
+        size = request.args.get('size', 8)
+        messages = room.messages.filter(Message.created < datetime.fromtimestamp(cursor)).order_by(Message.created.desc()).all()
+        if messages:
+            paged_messages = messages[:size]
+            next_cursor = str(paged_messages[-1].created.timestamp())
+            next_url = None
+            if messages[-1].created < paged_messages[-1].created:
+                next_url = url_for('resources.roommessagesinst', rid=room.id, cursor=next_cursor, _external=True)
+            paged_messages.reverse()
+            result = {
+                'messages': [m.serialize() for m in paged_messages],
+                'cursor': next_cursor,
+                'next': next_url,
+            }
+        resp = jsonify(result)
+        resp.mimetype = 'text/html'
+        return resp
+
+api.add_resource(RoomMessageList, '/rooms/<string:rid>/messages')
+
+
 class MessageList(Resource):
 
+    # replaced by RoomMessageList resource
     @token_auth_required
     def get(self):
         cursor = float(request.args.get('cursor', datetime.now().timestamp()))

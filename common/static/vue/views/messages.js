@@ -1,21 +1,182 @@
-var Messages = Vue.component("messages", {
+var Messaging = Vue.component("messaging", {
     template: `
-        <div class="flex-column flex-justify-end messages">
+        <div class="flex-row messaging">
+            <rooms v-bind:selectedRoom="room" v-bind:taggedRooms="taggedRooms" v-on:load="loadRoom"></rooms>
+            <messages v-if="room.id" v-bind:room="room" v-on:tag="tagRoom"></messages>
+        </div>
+    `,
+    data: function() {
+        return {
+            room: {},
+            taggedRooms: [],
+        }
+    },
+    methods: {
+        loadRoom: function(room) {
+            this.room = room;
+            this.untagRoom(room);
+        },
+        untagRoom: function(room) {
+            var index = this.taggedRooms.findIndex(r => r.id === room.id)
+            if (index !== -1) {
+                this.taggedRooms.splice(index, 1);
+            }
+        },
+        tagRoom: function(room) {
+            var index = this.taggedRooms.findIndex(r => r.id === room.id)
+            if (index === -1) {
+                this.taggedRooms.push(room);
+            }
+        },
+    },
+    sockets: {
+        log(data) {
+            console.log(data);
+        },
+    },
+    created: function() {
+        this.$socket.client.io.opts.transportOptions.polling.extraHeaders.Authorization = store.getters.getAuthHeader;
+        this.$socket.client.open();
+    },
+    beforeDestroy: function() {
+        this.$socket.client.close();
+        console.log("Socket disconnected.");
+    },
+});
+
+Vue.component("rooms", {
+    props: {
+        selectedRoom: Object,
+        taggedRooms: Array,
+    },
+    template: `
+        <div class="rooms">
+            <div class="tab" v-bind:class="{closed: !menuOpen}" v-on:click="toggleMenu"></div>
+            <div class="flex-column rooms-wrapper"" v-bind:class="{closed: !menuOpen}">
+                <div>
+                    <div class="label">Rooms</div>
+                    <div class="room" v-for="room in rooms" v-bind:key="'room-'+room.id" v-bind:room="room" v-on:click.stop="loadRoom(room)" v-bind:class="{ active: isSelected(room), tagged: isTagged(room) }">{{ room.display }}</div>
+                </div>
+                <div>
+                    <div class="label">Users</div>
+                    <div class="room" v-for="user in users" v-bind:key="'user-'+user.id" v-bind:user="user" v-on:click.stop="createPrivateRoom(user)">{{ user.name }}</div>
+                </div>
+            </div>
+        </div>
+    `,
+    data: function() {
+        return {
+            rooms: [],
+            users: [],
+            menuOpen: false,
+        }
+    },
+    methods: {
+        isSelected: function(room) {
+            return room.id === this.selectedRoom.id
+        },
+        isTagged: function(room) {
+            return (this.taggedRooms.findIndex(r => r.id === room.id) !== -1) ? true : false;
+        },
+        toggleMenu: function() {
+            this.menuOpen = !this.menuOpen;
+        },
+        joinRooms: function() {
+            this.rooms.forEach(room => {
+                this.$socket.client.emit("join-room", room);
+            })
+        },
+        getRooms: function() {
+            fetch(store.getters.getApiUrl+"/rooms", {
+                credentials: "include",
+            })
+            .then(handleErrors)
+            .then(response => response.json())
+            .then(json => {
+                this.rooms = json.rooms;
+                this.joinRooms();
+                // auto-join default room on load
+                this.loadRoom(this.rooms[0]);
+            })
+            .catch(error => store.dispatch("createToast", error));
+        },
+        getUsers: function() {
+            fetch(store.getters.getApiUrl+"/users", {
+                credentials: "include",
+            })
+            .then(handleErrors)
+            .then(response => response.json())
+            .then(json => {
+                this.users = json.users.filter(user => user.id != store.getters.getUserInfo.id);
+            })
+            .catch(error => store.dispatch("createToast", error));
+        },
+        loadRoom: function(room) {
+            this.menuOpen = false;
+            this.$emit("load", room);
+        },
+        createRoom: function(payload) {
+            fetch(store.getters.getApiUrl+"/rooms", {
+                credentials: "include",
+                headers: {"Content-Type": "application/json"},
+                method: "POST",
+                body: JSON.stringify(payload),
+            })
+            .then(handleErrors)
+            .then(response => response.json())
+            .then(json => {
+                // don't add/join room if already exists
+                if (this.rooms.findIndex(r => r.id === json.id) === -1) {
+                    this.rooms.push(json);
+                    this.$socket.client.emit("join-room", json);
+                }
+                this.loadRoom(json);
+            })
+            .catch(error => store.dispatch("createToast", error));
+        },
+        createPrivateRoom: function(user) {
+            var ids = [store.getters.getUserInfo.id, user.id].sort();
+            var name = ids.join(':');
+            this.createRoom({name: name, private: true, members: ids});
+        },
+    },
+    created: function() {
+        this.getRooms();
+        this.getUsers();
+    },
+});
+
+Vue.component("messages", {
+    props: {
+        room: Object,
+    },
+    template: `
+        <div class="flex-grow flex-column flex-justify-end messages">
             <div id="message-container" class="message-container" ref="container">
-                <infinite-loading spinner="spiral" v-bind:distance="0" direction="top" v-on:infinite="infiniteHandler"></infinite-loading>
+                <infinite-loading spinner="spiral" v-bind:identifier="infiniteId" v-bind:distance="0" direction="top" v-on:infinite="infiniteHandler">
+                    <span slot="no-results"></span>
+                </infinite-loading>
                 <message v-if="messages.length > 0" v-for="message in messages" v-bind:key="message.id" v-bind:message="message" v-on:delete="deleteMessage"></message>
             </div>
-            <message-form v-on:create="createMessage"></message-form>
+            <message-form v-bind:room="room" v-on:create="createMessage"></message-form>
         </div>
     `,
     data: function() {
         return {
             messages: [],
             cursor: null,
+            infiniteId: null,
+        }
+    },
+    watch: {
+        room: function() {
+            this.messages = [];
+            this.cursor = null;
+            this.infiniteId =this.room.id;
         }
     },
     methods: {
-        scrollToEnd () {
+        scrollToEnd: function() {
             var content = this.$refs.container;
             content.scrollTop = content.scrollHeight;
         },
@@ -27,7 +188,7 @@ var Messages = Vue.component("messages", {
             if (this.cursor) {
                 query = "?cursor="+this.cursor;
             }
-            fetch(store.getters.getApiUrl+"/messages"+query, {
+            fetch(store.getters.getApiUrl+"/rooms/"+this.room.id+"/messages"+query, {
                 credentials: "include",
             })
             .then(handleErrors)
@@ -45,56 +206,49 @@ var Messages = Vue.component("messages", {
             .catch(error => store.dispatch("createToast", error));
         },
         createMessage: function(message) {
-            this.$socket.client.emit("create-message", message);
+            this.$socket.client.emit("create-message", {message: message, room: this.room});
         },
         deleteMessage: function(message) {
-            this.$socket.client.emit("delete-message", message);
+            this.$socket.client.emit("delete-message", {message: message, room: this.room});
         },
     },
     sockets: {
-        // calling this "connect" results in weird behavior
-        newConnection(greeting) {
-            console.log(greeting);
-        },
         newMessage(message) {
-            this.messages.push(message);
-            this.$nextTick(function () {
-                this.scrollToEnd();
-            });
-        },
-        delMessage(messageId) {
-            var index = this.messages.findIndex(m => m.id === messageId)
-            if (index !== -1) {
-                this.messages.splice(index, 1);
-                //this.messages = this.messages.filter(function(m) { return m.id !== messageId; }); 
+            if (message.room.id === this.room.id) {
+                this.messages.push(message);
+                this.$nextTick(function () {
+                    this.scrollToEnd();
+                });
+            } else {
+                this.$emit("tag", message.room);
             }
         },
-        log(data) {
-            console.log(data);
+        delMessage(message) {
+            if (message.room.id === this.room.id) {
+                var index = this.messages.findIndex(m => m.id === message.id)
+                if (index !== -1) {
+                    this.messages.splice(index, 1);
+                    //this.messages = this.messages.filter(function(m) { return m.id !== messageId; });
+                }
+            }
         },
-    },
-    created: function() {
-        this.$socket.client.io.opts.transportOptions.polling.extraHeaders.Authorization = store.getters.getAuthHeader;
-        this.$socket.client.open();
-        this.$socket.client.emit("join-room");
-    },
-    beforeDestroy: function() {
-        this.$socket.client.close();
-        console.log("Socket disconnected.");
     },
 });
 
 Vue.component("message-form", {
+    props: {
+        room: Object,
+    },
     template: `
         <div class="flex-row flex-align-center message-form">
-            <input class="flex-grow" type="text" v-model="messageForm.message" v-on:keyup="handleKeyPress" placeholder="Message here..." />
+            <input class="flex-grow" type="text" v-model="messageForm.comment" v-on:keyup="handleKeyPress" v-bind:placeholder="'Message '+room.display" />
             <button class="show" v-on:click="createMessage"><i class="fas fa-paper-plane" title="Send"></i></button>
         </div>
     `,
     data: function() {
         return {
             messageForm: {
-                message: "",
+                comment: "",
             },
         }
     },
@@ -105,9 +259,9 @@ Vue.component("message-form", {
             }
         },
         createMessage: function() {
-            if (this.messageForm.message) {
+            if (this.messageForm.comment) {
                 this.$emit("create", this.messageForm);
-                this.messageForm.message = "";
+                this.messageForm.comment = "";
             }
         },
     },
