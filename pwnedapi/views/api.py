@@ -120,8 +120,6 @@ class TokenList(Resource):
                     question=0,
                     answer=token_urlsafe(10),
                 )
-                # create default membership
-                user.create_membership(Room.get_by_name('general'))
                 db.session.add(user)
                 db.session.commit()
         # process username and password credentials
@@ -386,7 +384,7 @@ class RoomMessageList(Resource):
             next_cursor = str(paged_messages[-1].created.timestamp())
             next_url = None
             if messages[-1].created < paged_messages[-1].created:
-                next_url = url_for('resources.roommessagesinst', rid=room.id, cursor=next_cursor, _external=True)
+                next_url = url_for('resources.roommessagelist', rid=room.id, cursor=next_cursor, _external=True)
             paged_messages.reverse()
             result = {
                 'messages': [m.serialize() for m in paged_messages],

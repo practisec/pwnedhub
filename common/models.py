@@ -2,6 +2,8 @@ from flask import current_app, url_for
 from common import db
 from common.constants import ROLES, QUESTIONS, USER_STATUSES
 from common.utils import xor_encrypt, xor_decrypt, get_jaccard_sim
+from sqlalchemy import event
+from sqlalchemy.orm import object_session
 import datetime
 
 class BaseModel(db.Model):
@@ -127,6 +129,10 @@ class Room(BaseModel):
     @property
     def is_public(self):
         return not self.private
+
+    @staticmethod
+    def get_public_rooms():
+        return Room.query.filter_by(private=False).all()
 
     @staticmethod
     def get_by_name(name):
@@ -314,6 +320,13 @@ class User(BaseModel):
 
     def __repr__(self):
         return "<User '{}'>".format(self.username)
+
+@event.listens_for(User, "after_insert")
+def create_default_memberships(mapper, connection, user):
+    for room in Room.get_public_rooms():
+        membership = Membership(user=user, room=room, level=1)
+        user.rooms.append(membership)
+        object_session(user).add(membership)
 
 class Score(BaseModel):
     __tablename__ = 'scores'
