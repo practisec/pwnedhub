@@ -2,7 +2,7 @@ from flask import Blueprint, g, current_app, request, jsonify, abort, Response, 
 from flask_restful import Resource, Api
 from pwnedapi import db
 from pwnedapi.utils import PaginationHelper, validate_json
-from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
+from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE_V2, ADMIN_RESPONSE
 from common.models import Config, User, Note, Message, Mail, Tool, Scan, Room, Membership
 from common.utils import get_unverified_jwt_payload, unfurl_url, send_email
 from common.validators import is_valid_password, is_valid_command
@@ -315,7 +315,7 @@ class NoteInst(Resource):
         #if note.owner != g.user:
         #    abort(403)
         note = g.user.notes.first()
-        content = note.content if note else DEFAULT_NOTE
+        content = note.content if note else DEFAULT_NOTE_V2
         return {'content': content}
 
     @token_auth_required

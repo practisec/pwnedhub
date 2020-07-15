@@ -37,4 +37,28 @@ Happy hunting!
 
 '''
 
+DEFAULT_NOTE_V2 = '''##### Welcome to PwnedHub 2.0!
+
+A collaborative space to conduct hosted security assessments.
+
+**Find flaws.**
+
+* This is your notes space. Keep your personal notes here.
+* Leverage popular security testing tools right from your browser in the tools space.
+
+**Collaborate.**
+
+* Privately collborate with coworkers in the messaging space.
+* Join public rooms in the messaging space to share information and socialize.
+
+**On the Move**
+
+* PwnedHub 2.0 is built with mobility in mind. No need for a separate app!
+
+Happy hunting!
+
+\- The PwnedHub Team
+
+'''
+
 ADMIN_RESPONSE = "I would be more than happy to help you with that. Unfortunately, the person responsible for that is unavailable at the moment. We'll get back with you soon. Thanks."
