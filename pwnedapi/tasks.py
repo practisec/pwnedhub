@@ -7,7 +7,7 @@ import sys
 import traceback
 
 def execute_tool(cmd):
-    app = create_app(os.environ.get('CONFIG', 'Production'))
+    app, socketio = create_app(os.environ.get('CONFIG', 'Production'))
     with app.app_context():
         try:
             output = ''
