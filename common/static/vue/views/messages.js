@@ -35,7 +35,11 @@ var Messaging = Vue.component("messaging", {
         },
     },
     created: function() {
-        this.$socket.client.io.opts.transportOptions.polling.extraHeaders.Authorization = store.getters.getAuthHeader;
+        // if using Bearer authentication, send the auth token as query string
+        // socketio doesn't support custom headers for websocket transports
+        if (store.getters.getAuthHeader.hasOwnProperty("Authorization")) {
+            this.$socket.client.io.opts.query.access_token = store.getters.getAuthHeader.Authorization.split(" ")[1];
+        }
         this.$socket.client.open();
     },
     beforeDestroy: function() {

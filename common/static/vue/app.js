@@ -26,13 +26,7 @@ function handleErrors(response) {
 const socket = io(API_BASE_URL, {
     autoConnect: false,
     transports: ['websocket'],
-    transportOptions: {
-        polling: {
-            extraHeaders: {
-                "Authorization": "Bearer None",
-            },
-        },
-    },
+    query: {},
 });
 
 Vue.use(VueSocketIOExt, socket);

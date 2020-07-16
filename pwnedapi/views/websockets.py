@@ -1,10 +1,21 @@
-from flask import request, session
+from flask import request, current_app, session
 from flask_socketio import emit, join_room, leave_room
-from common.models import User, Message, Room
+from common.models import Config, User, Message, Room
 from pwnedapi import socketio, db
-from pwnedapi.views.api import parse_jwt
 from werkzeug.exceptions import Forbidden
+import jwt
 import traceback
+
+def parse_jwt():
+    request.jwt = {}
+    token = request.cookies.get('access_token')
+    if Config.get_value('BEARER_AUTH_ENABLE'):
+        token = request.args.get('access_token')
+    try:
+        payload = jwt.decode(token, current_app.config['SECRET_KEY'])
+    except:
+        return
+    request.jwt = payload
 
 def load_user():
     # g doesn't persist across events, so session is used to track the authenticated user
@@ -27,13 +38,13 @@ def connect_handler():
 @socketio.on('join-room')
 def join_room_handler(data):
     join_room(data['name'])
-    emit('log', f"Joined room: {data['id']}.")
+    emit('log', f"Joined room: {data['id']}")
 
 # unused
 @socketio.on('leave-room')
 def leave_room_handler(data):
     leave_room(data['name'])
-    emit('log', f"Left room: {data['id']}.")
+    emit('log', f"Left room: {data['id']}")
 
 @socketio.on('create-message')
 def create_message_handler(data):
