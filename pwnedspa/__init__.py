@@ -13,8 +13,6 @@ def create_app(config='Development'):
     app.jinja_env.lstrip_blocks = True
 
     from pwnedspa.views.core import core
-    from pwnedspa.views.errors import errors
     app.register_blueprint(core)
-    app.register_blueprint(errors)
 
     return app
