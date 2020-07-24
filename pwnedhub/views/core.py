@@ -49,9 +49,11 @@ def index():
 
 @core.route('/home')
 def home():
-    if g.user.is_admin:
-        return redirect(url_for('core.admin_users'))
-    return redirect(url_for('core.notes'))
+    if g.user:
+        if g.user.is_admin:
+            return redirect(url_for('core.admin_users'))
+        return redirect(url_for('core.notes'))
+    return redirect(url_for('core.index'))
 
 @core.route('/about')
 def about():

@@ -28,7 +28,7 @@ A collaborative space to conduct hosted security assessments.
 
 **Collaborate.**
 
-* Privately collborate with coworkers in the Pwnmail space.
+* Privately collborate with coworkers in the PwnMail space.
 * Share public information and socialize in the messages space.
 
 Happy hunting!
