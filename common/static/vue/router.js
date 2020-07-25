@@ -93,11 +93,20 @@ router.beforeEach((to, from, next) => {
             next({
                 name: "login",
                 params: { nextUrl: to.fullPath }
-            })
+            });
         } else {
-            next()
+            next();
         }
     } else {
-        next()
+        // the login view uses similar logic to handle routing of the nextUrl parameter
+        // both must be updated if there is a change
+        if (store.getters.isLoggedIn) {
+            if (store.getters.isAdmin) {
+                next({ name: "users" })
+            }
+            next({ name: "notes" })
+        } else {
+            next();
+        }
     }
 });
