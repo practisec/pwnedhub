@@ -44,9 +44,11 @@ def create_app(config='Development'):
     from pwnedhub.views.core import core
     from pwnedhub.views.auth import auth
     from pwnedhub.views.errors import errors
+    from pwnedhub.views.snake import snake
     app.register_blueprint(core)
     app.register_blueprint(auth)
     app.register_blueprint(errors)
+    app.register_blueprint(snake, url_prefix='/snake')
 
     return app
 
