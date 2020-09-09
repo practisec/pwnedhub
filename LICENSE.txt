@@ -1,3 +1,3 @@
-Copyright 2016 Timothy J. Tomes
+Copyright 2020 Timothy J. Tomes
 
 This software is intended for personal use only. This license prohibits the distibution, modification, sublicensing and/or commercial use of this software.
