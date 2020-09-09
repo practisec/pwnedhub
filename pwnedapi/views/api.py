@@ -12,6 +12,8 @@ from hashlib import md5
 from itsdangerous import want_bytes
 from secrets import token_urlsafe
 from lxml import etree
+import base64
+import hmac
 import jwt
 import os
 import pickle
@@ -93,6 +95,36 @@ def roles_required(*roles):
         return wrapped
     return wrapper
 
+class CsrfToken(object):
+
+    def __init__(self, uid, ts=None):
+        self.uid = uid
+        self.ts = ts or int(datetime.now().timestamp())
+
+    @property
+    def sig(self):
+        body = f"{self.ts}.{self.uid}".encode()
+        key = current_app.config['SECRET_KEY'].encode()
+        return hmac.new(key, body, md5).hexdigest()
+
+    def serialize(self):
+        return base64.b64encode(pickle.dumps(self)).decode()
+
+def csrf_protect(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        if not Config.get_value('BEARER_AUTH_ENABLE'):
+            # no Bearer token means cookies (default) are used and CSRF is an issue
+            csrf_token = request.headers.get(current_app.config['CSRF_TOKEN_NAME'])
+            try:
+                csrf_obj = pickle.loads(base64.b64decode(csrf_token))
+            except:
+                csrf_obj = None
+            if not csrf_obj or CsrfToken(g.user.id, csrf_obj.ts).sig != csrf_obj.sig:
+                abort(400, 'CSRF detected.')
+        return func(*args, **kwargs)
+    return wrapped
+
 # API RESOURCE CLASSES
 
 class TokenList(Resource):
@@ -143,8 +175,11 @@ class TokenList(Resource):
                 data['token'] = token
                 # remove any existing access token cookie
                 return data, 200, {'Set-Cookie': 'access_token=; Expires=Thu, 01-Jan-1970 00:00:00 GMT'}
-            # set the JWT as a HttpOnly cookie by default
-            return data, 200, {'Set-Cookie': 'access_token='+token+'; HttpOnly'}
+            # default to cookie authentication
+            # return a CSRF token when using cookie authentication
+            data['csrf_token'] = CsrfToken(user.id).serialize()
+            # set the JWT as a HttpOnly cookie
+            return data, 200, {'Set-Cookie': f"access_token={token}; HttpOnly"}
         abort(400, 'Invalid username or password.')
 
     def delete(self):
@@ -191,6 +226,7 @@ class UserInst(Resource):
         return user.serialize()
 
     @token_auth_required
+    @csrf_protect
     def patch(self, uid):
         if uid != 'me' and uid != str(g.user.id):
             abort(403)

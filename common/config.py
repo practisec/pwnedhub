@@ -26,6 +26,9 @@ class SharedBaseConfig(object):
         },
     }
 
+    # spa, api
+    CSRF_TOKEN_NAME = 'X-Csrf-Token'
+
     # unused
     API_CONFIG_KEY_NAME = 'X-API-Key'
     API_CONFIG_KEY_VALUE = 'verysekrit'

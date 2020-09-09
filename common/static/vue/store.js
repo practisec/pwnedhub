@@ -4,6 +4,7 @@ const state = {
     toasts: [],
     userInfo: null,
     authHeader: {},
+    csrfHeader: {},
     modalVisible: false,
     modalComponent: null,
     modalProps: {},
@@ -41,6 +42,14 @@ const mutations = {
         state.authHeader = {};
         localStorage.removeItem("token");
     },
+    SET_CSRF_HEADER(state, token) {
+        state.csrfHeader[CSRF_TOKEN_NAME] = token;
+        localStorage.setItem("csrf_token", JSON.stringify(token));
+    },
+    UNSET_CSRF_HEADER(state) {
+        state.csrfHeader = {};
+        localStorage.removeItem("csrf_token");
+    },
     SHOW_MODAL(state, payload) {
         state.modalVisible = true;
         state.modalComponent = payload.componentName;
@@ -77,6 +86,9 @@ const actions = {
     },
     setAuthInfo(context, json) {
         context.commit("SET_USER_INFO", json.user);
+        if (json.csrf_token) {
+            context.commit("SET_CSRF_HEADER", json.csrf_token);
+        }
         if (json.token) {
             context.commit("SET_AUTH_HEADER", json.token);
         }
@@ -84,6 +96,7 @@ const actions = {
     unsetAuthInfo(context) {
         context.commit("UNSET_USER_INFO");
         context.commit("UNSET_AUTH_HEADER");
+        context.commit("UNSET_CSRF_HEADER");
     },
     initAuthInfo(context) {
         // initialize user info
@@ -94,6 +107,11 @@ const actions = {
             var token = JSON.parse(localStorage.getItem("token"));
             if (token != null) {
                 context.commit("SET_AUTH_HEADER", token);
+            }
+            // initialize csrf token (if necessary)
+            var csrfToken = JSON.parse(localStorage.getItem("csrf_token"));
+            if (csrfToken != null) {
+                context.commit("SET_CSRF_HEADER", csrfToken);
             }
         }
     },
@@ -127,6 +145,9 @@ const getters = {
     },
     getAuthHeader(state) {
         return state.authHeader;
+    },
+    getCsrfHeader(state) {
+        return state.csrfHeader;
     },
     isLoggedIn(state, getters) {
         if (getters.getUserInfo === null) {

@@ -4,6 +4,7 @@ window.fetch = function(url, options) {
     var options = options || {};
     options.headers = {
         ...store.getters.getAuthHeader,
+        ...store.getters.getCsrfHeader,
         ...options.headers || {},
     }
     return _fetch(url, options);
