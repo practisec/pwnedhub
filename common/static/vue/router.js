@@ -102,9 +102,9 @@ router.beforeEach((to, from, next) => {
         // both must be updated if there is a change
         if (store.getters.isLoggedIn) {
             if (store.getters.isAdmin) {
-                next({ name: "users" })
+                next({ name: "users" });
             }
-            next({ name: "notes" })
+            next({ name: "notes" });
         } else {
             next();
         }
