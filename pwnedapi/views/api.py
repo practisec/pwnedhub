@@ -172,7 +172,7 @@ class TokenList(Resource):
             token = encode_jwt(user.id, claims=claims)
             # send the JWT as a Bearer token when the feature is enabled
             if Config.get_value('BEARER_AUTH_ENABLE'):
-                data['token'] = token
+                data['access_token'] = token
                 # remove any existing access token cookie
                 return data, 200, {'Set-Cookie': 'access_token=; Expires=Thu, 01-Jan-1970 00:00:00 GMT'}
             # default to cookie authentication

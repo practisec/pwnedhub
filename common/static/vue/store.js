@@ -36,11 +36,11 @@ const mutations = {
     },
     SET_AUTH_HEADER(state, token) {
         state.authHeader = {"Authorization": "Bearer "+token};
-        localStorage.setItem("token", JSON.stringify(token));
+        localStorage.setItem("access_token", JSON.stringify(token));
     },
     UNSET_AUTH_HEADER(state) {
         state.authHeader = {};
-        localStorage.removeItem("token");
+        localStorage.removeItem("access_token");
     },
     SET_CSRF_HEADER(state, token) {
         state.csrfHeader[CSRF_TOKEN_NAME] = token;
@@ -89,8 +89,8 @@ const actions = {
         if (json.csrf_token) {
             context.commit("SET_CSRF_HEADER", json.csrf_token);
         }
-        if (json.token) {
-            context.commit("SET_AUTH_HEADER", json.token);
+        if (json.access_token) {
+            context.commit("SET_AUTH_HEADER", json.access_token);
         }
     },
     unsetAuthInfo(context) {
@@ -104,9 +104,9 @@ const actions = {
         if (user != null) {
             context.commit("SET_USER_INFO", user);
             // initialize access token (if necessary)
-            var token = JSON.parse(localStorage.getItem("token"));
-            if (token != null) {
-                context.commit("SET_AUTH_HEADER", token);
+            var accessToken = JSON.parse(localStorage.getItem("access_token"));
+            if (accessToken != null) {
+                context.commit("SET_AUTH_HEADER", accessToken);
             }
             // initialize csrf token (if necessary)
             var csrfToken = JSON.parse(localStorage.getItem("csrf_token"));
