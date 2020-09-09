@@ -1,8 +1,12 @@
 # PwnedHub
 
-PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http://www.lanmaster53.com/training/) training course. PwnedHub contains intentional vulnerability and should never be exposed to the open Internet. This software is NOT Open Source. See the `LICENSE.txt` file for more information.
+PwnedHub is a vulnerable application designed exclusively for [PractiSec training courses](http://www.lanmaster53.com/training/). PwnedHub contains intentional vulnerability and should never be exposed to the open Internet. This software is NOT Open Source in a traditional sense. See the `LICENSE.txt` file for more information.
 
-## Using Docker
+## Requirements
+
+* Docker
+
+## Installation and Usage
 
 1. Install Docker Desktop.
 2. Clone the PwnedHub repository.
@@ -34,79 +38,44 @@ PwnedHub is a vulnerable application designed exclusively for the [PWAPT](http:/
 6. Modify the hosts file to create the following records:
 
     ```
-    127.0.0.1   pwnedhub.com
+    127.0.0.1   www.pwnedhub.com
+    127.0.0.1   test.pwnedhub.com
     127.0.0.1   api.pwnedhub.com
     ```
 
-7. Visit the application at http://pwnedhub.com.
-
+7. Visit the applications at http://www.pwnedhub.com and http://test.pwnedhub.com.
 8. When done using PwnedHub, clean up the Docker environment with the following command:
 
     ```
     docker-compose down
     ```
 
-## Installation (Ubuntu)
+## Development Usage
 
-1. Install [pip](https://pip.pypa.io/en/stable/installing/).
-2. Clone the PwnedHub repository.
+The repository includes launch scripts for each part of the application. The scripts still use Docker, but run each service on a development server without a reverse proxy. This allows for auto-reloading and interactive debugging.
 
-    ```
-    $ git clone https://github.com/lanmaster53/pwnedhub.git
-    ```
-
-3. Install the dependencies. I recommend using `virtualenv` to keep things tidy. The below commands **do not** implement `virtualenv` and will install to your global pip environment.
+1. Conduct steps 1-4 and 6 above.
+2. Start the PwnedHub legacy application.
 
     ```
-    $ cd pwnedhub
-    $ pip install -r REQUIREMENTS.txt
+    $ docker-compose run -p 5000:5000 app python ./pwnedhub.py
     ```
 
-    Note: In Ubuntu, the `lxml` dependency may require installing the `python-dev`, `libxml2-dev`, `libxslt-dev`, and `lib32z1-dev` packages. Look for errors during the above process and install the needed packages. Systems other than Ubuntu will likely also require some sort of finagling to get to work. MacOS worked without issue.
-
-4. Install and configure MySQL.
-    * Set the MySQL `root` user password to `adminpass`
-5. Initialize the database.
+3. Open a new tab and start the PwnedHub 2.0 application.
 
     ```
-    $ mysql -u root -p -e "CREATE DATABASE pwnedhub"
-    $ mysql -u root -p pwnedhub < pwnedhub.sql
+    $ docker-compose run -p 5001:5001 app python ./pwnedspa.py
     ```
 
-6. Add the application's database user.
+4. Open a new tab and start the PwnedHub API.
 
     ```
-    $ mysql -h localhost -u root -padminpass
-    > CREATE USER 'pwnedhub'@'localhost' IDENTIFIED BY 'dbconnectpass';
-    > GRANT ALL PRIVILEGES ON pwnedhub.* TO 'pwnedhub'@'localhost';
-    > FLUSH PRIVILEGES;
-    > SHOW GRANTS FOR 'pwnedhub'@'localhost';
-    > exit;
+    $ docker-compose run -p 5002:5002 app python ./pwnedapi.py
     ```
 
-7. Modify the hosts file to create the following records:
+5. Visit the applications at http://www.pwnedhub.com:5000 and http://test.pwnedhub.com:5001.
+6. When done using PwnedHub, close all tabs and clean up the Docker environment with the following command:
 
     ```
-    127.0.0.1   pwnedhub.com
-    127.0.0.1   api.pwnedhub.com
+    docker-compose down
     ```
-
-8. Start the MySQL server.
-
-    ```
-    $ sudo systemctl start mysql
-    ```
-
-9. Start the PwnedHub application.
-
-    ```
-    $ python ./pwnedhub.py
-    ```
-
-10. Start the PwnedAPI application.
-
-    ```
-    $ python ./pwnedapi.py
-    ```
-
-11. Visit the application at http://pwnedhub.com:5000.
