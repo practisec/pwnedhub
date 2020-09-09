@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_cors import CORS
-from flask_restful import Api
 from flask_socketio import SocketIO
 from common import db
 from common.models import Config
