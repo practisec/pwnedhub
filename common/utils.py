@@ -66,25 +66,6 @@ def unfurl_url(url, headers={}):
         data[kw] = ' '.join(values) or None
     return data
 
-from flask import current_app
-from datetime import datetime
-import os
-
-def send_email(sender, recipient, subject, body):
-    # check for and create an inbox folder
-    inbox = current_app.config['INBOX_PATH']
-    if not os.path.exists(inbox):
-        os.makedirs(inbox)
-    # create a filename based on the subject and time stamp
-    timestamp = datetime.now().strftime('%Y-%m-%d %H-%M-%S')
-    filename = f"{subject} {timestamp}.html".replace(' ', '_')
-    # write the email to a file
-    filepath = os.path.join(inbox, filename)
-    email = f"<b>From:</b> {sender}<br><br><b>To:</b> {recipient}<br><br><b>Subject:</b> {subject}<br><br><hr><br>{body}"
-    with open(filepath, 'w') as fp:
-        fp.write(email)
-    return filepath
-
 # borrowed from Django and modified to work in Python 2
 
 _js_escapes = {

@@ -1,49 +1,22 @@
 from flask import Blueprint, g, current_app, request, jsonify, abort, Response, url_for
 from flask_restful import Resource, Api
 from pwnedapi import db
-from pwnedapi.utils import PaginationHelper, validate_json
-from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE_V2, ADMIN_RESPONSE
+from pwnedapi.decorators import token_auth_required, roles_required, validate_json, csrf_protect
+from pwnedapi.utils import CsrfToken, encode_jwt, get_bearer_token, send_email
+from common.constants import QUESTIONS, DEFAULT_NOTE_V2, ADMIN_RESPONSE
 from common.models import Config, User, Note, Message, Mail, Tool, Scan, Room, Membership
-from common.utils import get_unverified_jwt_payload, unfurl_url, send_email
+from common.utils import get_unverified_jwt_payload, unfurl_url
 from common.validators import is_valid_password, is_valid_command
-from datetime import datetime, timedelta
-from functools import wraps
+from datetime import datetime
 from hashlib import md5
-from itsdangerous import want_bytes
 from secrets import token_urlsafe
 from lxml import etree
-import base64
-import hmac
 import jwt
 import os
-import pickle
-import subprocess
 
 resources = Blueprint('resources', __name__)
 api = Api()
 api.init_app(resources)
-
-# UTILITY FUNCTIONS
-
-def encode_jwt(user_id, claims={}):
-    payload = {
-        'exp': datetime.utcnow() + timedelta(days=1, seconds=0),
-        'iat': datetime.utcnow(),
-        'sub': user_id
-    }
-    for claim, value in claims.items():
-        payload[claim] = value
-    return jwt.encode(
-        payload,
-        current_app.config['SECRET_KEY'],
-        algorithm='HS256'
-    ).decode()
-
-def get_bearer_token(headers):
-    auth_header = headers.get('Authorization')
-    if auth_header:
-        return auth_header.split()[1]
-    return None
 
 # PRE-REQUEST FUNCTIONS
 
@@ -65,65 +38,6 @@ def load_user():
     uid = request.jwt.get('sub')
     if uid:
         g.user = User.query.get(uid)
-
-# DECORATOR FUNCTIONS
-
-def token_auth_required(func):
-    @wraps(func)
-    def wrapped(*args, **kwargs):
-        if g.user:
-            return func(*args, **kwargs)
-        abort(401)
-    return wrapped
-
-def key_auth_required(func):
-    @wraps(func)
-    def wrapped(*args, **kwargs):
-        key = request.headers.get(current_app.config['API_CONFIG_KEY_NAME'])
-        if key == current_app.config['API_CONFIG_KEY_VALUE']:
-            return func(*args, **kwargs)
-        abort(401)
-    return wrapped
-
-def roles_required(*roles):
-    def wrapper(func):
-        @wraps(func)
-        def wrapped(*args, **kwargs):
-            if ROLES[g.user.role] not in roles:
-                return abort(403)
-            return func(*args, **kwargs)
-        return wrapped
-    return wrapper
-
-class CsrfToken(object):
-
-    def __init__(self, uid, ts=None):
-        self.uid = uid
-        self.ts = ts or int(datetime.now().timestamp())
-
-    @property
-    def sig(self):
-        body = f"{self.ts}.{self.uid}".encode()
-        key = current_app.config['SECRET_KEY'].encode()
-        return hmac.new(key, body, md5).hexdigest()
-
-    def serialize(self):
-        return base64.b64encode(pickle.dumps(self)).decode()
-
-def csrf_protect(func):
-    @wraps(func)
-    def wrapped(*args, **kwargs):
-        if not Config.get_value('BEARER_AUTH_ENABLE'):
-            # no Bearer token means cookies (default) are used and CSRF is an issue
-            csrf_token = request.headers.get(current_app.config['CSRF_TOKEN_NAME'])
-            try:
-                csrf_obj = pickle.loads(base64.b64decode(csrf_token))
-            except:
-                csrf_obj = None
-            if not csrf_obj or CsrfToken(g.user.id, csrf_obj.ts).sig != csrf_obj.sig:
-                abort(400, 'CSRF detected.')
-        return func(*args, **kwargs)
-    return wrapped
 
 # API RESOURCE CLASSES
 
