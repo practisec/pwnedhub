@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 from hashlib import md5
 import base64
 import hmac
+import jsonpickle
 import jwt
 import os
-import pickle
 
 def get_bearer_token(headers):
     auth_header = headers.get('Authorization')
@@ -48,15 +48,16 @@ class CsrfToken(object):
     def __init__(self, uid, ts=None):
         self.uid = uid
         self.ts = ts or int(datetime.now().timestamp())
+        self.sig = None
 
-    @property
-    def sig(self):
-        body = f"{self.ts}.{self.uid}".encode()
-        key = current_app.config['SECRET_KEY'].encode()
-        return hmac.new(key, body, md5).hexdigest()
+    def sign(self, key):
+        body = f"{self.uid}{self.ts}"
+        self.sig = hmac.new(key.encode(), body.encode(), md5).hexdigest()
 
     def serialize(self):
-        return base64.b64encode(pickle.dumps(self)).decode()
+        if not self.sig:
+            raise ValueError('Token signature missing.')
+        return base64.b64encode(jsonpickle.encode(self).encode()).decode()
 
 
 class ParamValidator(object):

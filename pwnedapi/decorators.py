@@ -4,7 +4,7 @@ from common.constants import ROLES
 from common.models import Config
 from functools import wraps
 import base64
-import pickle
+import jsonpickle
 
 def token_auth_required(func):
     @wraps(func)
@@ -53,10 +53,13 @@ def csrf_protect(func):
             # no Bearer token means cookies (default) are used and CSRF is an issue
             csrf_token = request.headers.get(current_app.config['CSRF_TOKEN_NAME'])
             try:
-                csrf_obj = pickle.loads(base64.b64decode(csrf_token))
+                untrusted_csrf_obj = jsonpickle.decode(base64.b64decode(csrf_token))
+                untrusted_csrf_obj.sign(current_app.config['SECRET_KEY'])
+                trusted_csrf_obj = CsrfToken(g.user.id, untrusted_csrf_obj.ts)
+                trusted_csrf_obj.sign(current_app.config['SECRET_KEY'])
             except:
-                csrf_obj = None
-            if not csrf_obj or CsrfToken(g.user.id, csrf_obj.ts).sig != csrf_obj.sig:
+                untrusted_csrf_obj = None
+            if not untrusted_csrf_obj or trusted_csrf_obj.sig != untrusted_csrf_obj.sig:
                 abort(400, 'CSRF detected.')
         return func(*args, **kwargs)
     return wrapped

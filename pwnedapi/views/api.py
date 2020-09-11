@@ -91,7 +91,9 @@ class TokenList(Resource):
                 return data, 200, {'Set-Cookie': 'access_token=; Expires=Thu, 01-Jan-1970 00:00:00 GMT'}
             # default to cookie authentication
             # return a CSRF token when using cookie authentication
-            data['csrf_token'] = CsrfToken(user.id).serialize()
+            csrf_obj = CsrfToken(user.id)
+            csrf_obj.sign(current_app.config['SECRET_KEY'])
+            data['csrf_token'] = csrf_obj.serialize()
             # set the JWT as a HttpOnly cookie
             return data, 200, {'Set-Cookie': f"access_token={token}; HttpOnly"}
         abort(400, 'Invalid username or password.')
