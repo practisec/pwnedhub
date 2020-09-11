@@ -147,6 +147,19 @@ class UserInst(Resource):
         if uid != 'me' and uid != str(g.user.id):
             abort(403)
         user = g.user
+        # validate that the provided username doesn't belong to another user
+        username = request.json.get('username', user.username)
+        untrusted_user = User.query.filter_by(username=username).first()
+        if untrusted_user and untrusted_user != g.user:
+            abort(400, 'Username already exists.')
+        # validate that the provided email doesn't belong to another user
+        email = request.json.get('email', user.email)
+        untrusted_user = User.query.filter_by(email=email).first()
+        if untrusted_user and untrusted_user != g.user:
+            abort(400, 'Email already exists.')
+        # update the user object
+        user.username = username
+        user.email = email
         user.name = request.json.get('name', user.name)
         user.avatar = request.json.get('avatar', user.avatar)
         user.signature = request.json.get('signature', user.signature)

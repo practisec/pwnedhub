@@ -68,9 +68,9 @@ Vue.component("update-account-form", {
     template: `
         <div class="flex-column form">
             <label for="username">Username:</label>
-            <input name="username" type="text" v-bind:value="user.username" disabled />
+            <input name="username" type="text" v-model="userForm.username" />
             <label for="email">Email:</label>
-            <input name="email" type="text" v-bind:value="user.email" disabled />
+            <input name="email" type="text" v-model="userForm.email" />
             <label for="avatar">Avatar URL:</label>
             <input name="avatar" v-model="userForm.avatar" type="text"/>
             <label for="signature">Signature:</label>
@@ -91,6 +91,8 @@ Vue.component("update-account-form", {
         return {
             questions: [],
             userForm: {
+                username: "",
+                email: "",
                 name: "",
                 avatar: "",
                 signature: "",
@@ -111,6 +113,8 @@ Vue.component("update-account-form", {
             .catch(error => store.dispatch("createToast", error));
         },
         setFormValues: function(user) {
+            this.userForm.username = user.username
+            this.userForm.email = user.email
             this.userForm.name = user.name
             this.userForm.avatar = user.avatar
             this.userForm.signature = user.signature
