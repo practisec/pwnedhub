@@ -64,7 +64,7 @@ def login():
         return redirect(url_for('core.home'))
     if request.method == 'POST':
         username = request.form['username']
-        password_hash = xor_encrypt(request.form['password'], current_app.config['PW_ENC_KEY'])
+        password_hash = xor_encrypt(request.form['password'], current_app.config['SECRET_KEY'])
         query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
         user = db.session.execute(query).first()
         if user and user['status'] == 1:

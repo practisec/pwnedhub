@@ -4,10 +4,9 @@ class SharedBaseConfig(object):
 
     # all
     DEBUG = False
-    SECRET_KEY = 'M>\n\xb2\xa9B\xae\x8cL~\x0b\xc4\x19\r/GR6\xca\xd1^o\xa3$'
+    SECRET_KEY = '$ecretKey'
 
     # app, api
-    PW_ENC_KEY = 'sekrit'
     DATABASE_HOST = os.environ.get('DATABASE_HOST', 'localhost')
     SQLALCHEMY_DATABASE_URI = f"mysql://pwnedhub:dbconnectpass@{DATABASE_HOST}/pwnedhub"
     SQLALCHEMY_TRACK_MODIFICATIONS = False

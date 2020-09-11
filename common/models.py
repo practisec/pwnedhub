@@ -240,7 +240,7 @@ class User(BaseModel):
 
     @property
     def password_as_string(self):
-        return xor_decrypt(self.password_hash, current_app.config['PW_ENC_KEY'])
+        return xor_decrypt(self.password_hash, current_app.config['SECRET_KEY'])
 
     @property
     def password(self):
@@ -248,7 +248,7 @@ class User(BaseModel):
 
     @password.setter
     def password(self, password):
-        self.password_hash = xor_encrypt(password, current_app.config['PW_ENC_KEY'])
+        self.password_hash = xor_encrypt(password, current_app.config['SECRET_KEY'])
 
     @property
     def avatar_or_default(self):
@@ -281,7 +281,7 @@ class User(BaseModel):
         return membership
 
     def check_password(self, password):
-        if self.password_hash == xor_encrypt(password, current_app.config['PW_ENC_KEY']):
+        if self.password_hash == xor_encrypt(password, current_app.config['SECRET_KEY']):
             return True
         return False
 
