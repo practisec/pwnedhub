@@ -41,6 +41,7 @@ PwnedHub is a vulnerable application designed exclusively for [PractiSec trainin
     127.0.0.1   www.pwnedhub.com
     127.0.0.1   test.pwnedhub.com
     127.0.0.1   api.pwnedhub.com
+    127.0.0.1   config.pwnedhub.com
     ```
 
 7. Visit the applications at http://www.pwnedhub.com and http://test.pwnedhub.com.
@@ -73,8 +74,14 @@ The repository includes launch scripts for each part of the application. The scr
     $ docker-compose run -p 5002:5002 app python ./pwnedapi.py
     ```
 
-5. Visit the applications at http://www.pwnedhub.com:5000 and http://test.pwnedhub.com:5001.
-6. When done using PwnedHub, close all tabs and clean up the Docker environment with the following command:
+5. Open a new tab and start the PwnedConfig application.
+
+    ```
+    $ docker-compose run -p 5003:5003 app python ./pwnedconfig.py
+    ```
+
+6. Visit the applications at http://www.pwnedhub.com:5000 and http://test.pwnedhub.com:5001.
+7. When done using PwnedHub, close all tabs and clean up the Docker environment with the following command:
 
     ```
     docker-compose down

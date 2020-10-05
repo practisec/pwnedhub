@@ -3,7 +3,7 @@ from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from pwnedhub import db
 from pwnedhub.decorators import login_required, roles_required, validate, csrf_protect
-from common.models import Config, Note, Mail, Message, Tool, User, Room
+from common.models import Note, Mail, Message, Tool, User, Room
 from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
 from common.utils import unfurl_url
 from common.validators import is_valid_password, is_valid_command, is_valid_filename, is_valid_mimetype
@@ -127,23 +127,6 @@ def admin_users_modify(action, uid):
     else:
         flash('Self-modification denied.')
     return redirect(url_for('core.admin_users'))
-
-@core.route('/config', methods=['GET', 'POST'])
-def config():
-    # simulate the latency of an external API request
-    import time
-    time.sleep(0.25)
-    # hide the existence of this route if not an admin
-    if not g.user or ROLES[g.user.role] != ROLES[0]:
-        return abort(404)
-    if request.method == 'POST':
-        Config.get_by_name('CSRF_PROTECT').value = request.form.get('csrf_protect') == 'on' or False
-        Config.get_by_name('BEARER_AUTH_ENABLE').value = request.form.get('bearer_enable') == 'on' or False
-        Config.get_by_name('CORS_RESTRICT').value = request.form.get('cors_restrict') == 'on' or False
-        Config.get_by_name('OIDC_ENABLE').value = request.form.get('oidc_enable') == 'on' or False
-        db.session.commit()
-        flash('Configuration updated')
-    return render_template('config.html')
 
 # user controllers
 

@@ -43,6 +43,19 @@ services:
             - db
             - redis
 
+    config:
+        image: pwnedhub-dev
+        expose:
+            - 5003
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - CONFIG=Production
+            - DATABASE_HOST=db
+        command: gunicorn --bind 0.0.0.0:5003 pwnedconfig.wsgi:app --error-logfile - --log-level DEBUG
+        depends_on:
+            - db
+
     worker:
         image: pwnedhub-dev
         volumes:
@@ -67,6 +80,7 @@ services:
             - app
             - spa
             - api
+            - config
 
     db:
         image: mysql:5.7
