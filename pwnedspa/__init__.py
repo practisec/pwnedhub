@@ -1,10 +1,8 @@
 from flask import Flask
-from common.models import Config
 
 def create_app(config='Development'):
 
     # setting the static_url_path to blank serves static
-    # files from the web root, allowing for robots.txt
     app = Flask(__name__, static_url_path='')
     app.config.from_object('pwnedspa.config.{}'.format(config.title()))
 
