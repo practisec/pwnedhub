@@ -175,7 +175,7 @@ Vue.component("scan", {
             </div>
             <div class="responsive-table-cell" style="flex-basis: 10%;">
                 <div class="mobile-header">{{ headings.complete }}</div>
-                <div>{{ scan.complete ? "finished" : "in progress" }}</div>
+                <i class="fas" v-bind:class="scan.complete ? 'fa-check' : 'fa-spinner fa-spin'"></i>
             </div>
             <div class="responsive-table-cell" style="flex-basis: 10%;">
                 <div class="mobile-header">Actions</div>
