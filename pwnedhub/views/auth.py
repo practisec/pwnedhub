@@ -65,15 +65,11 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password_hash = xor_encrypt(request.form['password'], current_app.config['SECRET_KEY'])
-        query = "SELECT * FROM users WHERE username='"+username+"'"
+        query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
         user = db.session.execute(query).first()
         if user and user['status'] == 1:
-            # simulate the latency of a computationally intense operation
-            import time
-            time.sleep(0.1)
-            if user['password_hash'] == password_hash:
-                init_session(user['id'])
-                return redirect(request.args.get('next') or url_for('core.home'))
+            init_session(user['id'])
+            return redirect(request.args.get('next') or url_for('core.home'))
         return redirect(url_for('auth.login', error='Invalid username or password.'))
     return render_template('login.html')
 
