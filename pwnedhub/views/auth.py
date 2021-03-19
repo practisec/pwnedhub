@@ -64,6 +64,10 @@ def login():
         return redirect(url_for('core.home'))
     if request.method == 'POST':
         username = request.form['username']
+        # introduce an artificial delay to simulate multiple database queries if the username is valid
+        if User.get_by_username(username):
+            import time
+            time.sleep(0.1)
         password_hash = xor_encrypt(request.form['password'], current_app.config['SECRET_KEY'])
         query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
         user = db.session.execute(query).first()
