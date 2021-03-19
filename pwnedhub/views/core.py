@@ -29,6 +29,7 @@ def load_user():
 @core.after_app_request
 def add_header(response):
     response.headers['X-Powered-By'] = 'Flask/{}'.format(__version__)
+    response.headers['X-XSS-Protection'] = '1; mode=block'
     return response
 
 @core.after_app_request
