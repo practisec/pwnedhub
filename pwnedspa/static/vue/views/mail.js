@@ -1,7 +1,7 @@
 var Mail = Vue.component("mail", {
     template: `
-        <div class="flex-grow inbox flex-row flex-justify-center">
-            <table class="clickable">
+        <div class="flex-grow inbox">
+            <table class="clickable center">
                 <caption class="left-content">
                     <input type="button" value="Compose" v-on:click="draftLetter" />
                 </caption>

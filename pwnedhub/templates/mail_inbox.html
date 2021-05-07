@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-grow inbox flex-row flex-justify-center">
-    <table class="clickable">
+<div class="flex-grow inbox">
+    <table class="center clickable">
         <caption class="left-content"><input type="button" onclick="window.location='{{ url_for('core.mail_compose') }}';" value="Compose" /></caption>
         <thead>
             <tr><th>from</th><th>subject</th><th>date</th></tr>
