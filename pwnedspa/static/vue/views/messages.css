@@ -97,6 +97,8 @@
 
 .messages .message-container .message .avatar img {
     display: block;
+    object-fit: cover;
+    width: 4rem;
     height: 4rem;
 }
 

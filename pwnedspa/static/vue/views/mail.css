@@ -18,6 +18,8 @@
 
 .mail .sender .avatar img {
     display: block;
+    object-fit: cover;
+    width: 4rem;
     height: 4rem;
 }
 

@@ -56,6 +56,8 @@
 
 .nav .menu li.avatar img {
     display: block;
+    object-fit: cover;
+    width: 4rem;
     height: 4rem;
     margin: 0 auto;
     margin-right: 0;

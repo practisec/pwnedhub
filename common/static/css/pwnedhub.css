@@ -246,6 +246,8 @@ nav .nav .top-menu {
 
 nav .nav .top-menu > li .avatar {
     display: block;
+    object-fit: cover;
+    width: 4rem;
     height: 4rem;
     margin: 0.5rem;
     cursor: pointer;
@@ -451,6 +453,8 @@ nav .nav .top-menu li:hover .sub-menu {
 
 .mail .sender .avatar img {
     display: block;
+    object-fit: cover;
+    width: 4rem;
     height: 4rem;
 }
 
@@ -475,6 +479,8 @@ nav .nav .top-menu li:hover .sub-menu {
 
 .messages .message .avatar img {
     display: block;
+    object-fit: cover;
+    width: 4rem;
     height: 4rem;
 }
 
@@ -557,19 +563,22 @@ nav .nav .top-menu li:hover .sub-menu {
   vertical-align: -0.4em;
 }
 
-.profile .avatar a {
-    display: block;
-    max-width: 20rem;
+.profile .avatar,
+.profile-view .avatar {
+    width: 80%;
+    padding-bottom: 80%;
+    margin: 1em auto;
+    position: relative;
 }
 
-.profile .avatar img {
-    display: block;
-    width: 100%;
-}
-
+.profile .avatar img,
 .profile-view .avatar img {
-    max-width: 30rem;
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .error {

@@ -2,9 +2,20 @@
     padding: 1rem;
 }
 
+.profile .avatar {
+    width: 80%;
+    padding-bottom: 80%;
+    margin: 2rem auto;
+    position: relative;
+}
+
 .profile .avatar img {
-    max-width: 30rem;
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .profile blockquote {
