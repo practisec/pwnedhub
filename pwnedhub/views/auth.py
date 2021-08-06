@@ -56,26 +56,31 @@ def register():
             flash('Username already exists.')
     return render_template('register.html', questions=QUESTIONS)
 
-@auth.route('/login', methods=['GET', 'POST'])
-@validate(['username', 'password'])
+@auth.route('/login')
 def login():
     # redirect to home if already logged in
     if session.get('user_id'):
         return redirect(url_for('core.home'))
-    if request.method == 'POST':
-        username = request.form['username']
-        # introduce an artificial delay to simulate multiple database queries if the username is valid
-        if User.get_by_username(username):
-            import time
-            time.sleep(0.1)
-        password_hash = xor_encrypt(request.form['password'], current_app.config['SECRET_KEY'])
-        query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
-        user = db.session.execute(query).first()
-        if user and user['status'] == 1:
-            init_session(user['id'])
-            return redirect(request.args.get('next') or url_for('core.home'))
-        return redirect(url_for('auth.login', error='Invalid username or password.'))
-    return render_template('login.html')
+    return render_template('login.html', next=request.args.get('next'))
+
+@auth.route('/authenticate', methods=['POST'])
+@validate(['username', 'password'])
+def authenticate():
+    # redirect to home if already logged in
+    if session.get('user_id'):
+        return redirect(url_for('core.home'))
+    username = request.form['username']
+    # introduce an artificial delay to simulate multiple database queries if the username is valid
+    if User.get_by_username(username):
+        import time
+        time.sleep(0.1)
+    password_hash = xor_encrypt(request.form['password'], current_app.config['SECRET_KEY'])
+    query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
+    user = db.session.execute(query).first()
+    if user and user['status'] == 1:
+        init_session(user['id'])
+        return redirect(request.args.get('next') or url_for('core.home'))
+    return redirect(url_for('auth.login', error='Invalid username or password.'))
 
 @auth.route('/logout')
 def logout():

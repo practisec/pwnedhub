@@ -12,7 +12,7 @@
         </div>
     </div>
 {% else %}
-    <form class="flex-column form" action="" method="post">
+    <form class="flex-column form" action="{{ url_for('auth.authenticate', next=next) }}" method="post">
         <label for="username">Username:</label>
         <input name="username" type="text" />
         <label for="password">Password:</label>
