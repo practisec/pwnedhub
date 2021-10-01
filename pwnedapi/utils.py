@@ -106,7 +106,7 @@ class ParamValidator(object):
         return False
 
     validate_tid = any_int
-    validate_args = validate_name = validate_path = validate_description = non_zero_len_str
+    validate_args = validate_name = validate_username = validate_email = validate_password = validate_new_password = validate_current_password = validate_credential = validate_path = validate_description = validate_content = non_zero_len_str
     validate_private = boolean
     validate_members = array_of_ints
 

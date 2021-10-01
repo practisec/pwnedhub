@@ -29,9 +29,9 @@ Vue.component("update-password-form", {
     },
     template: `
         <div class="flex-column form">
-            <label for="new_password">New Password:</label>
+            <label for="new_password">New Password: *</label>
             <password-field name="new_password" v-model="passwordForm.new_password"></password-field>
-            <label for="current_password">Current Password:</label>
+            <label for="current_password">Current Password: *</label>
             <password-field name="current_password" v-model="passwordForm.current_password"></password-field>
             <input type="button" v-on:click="updatePassword" value="Update my password." />
         </div>
@@ -69,15 +69,15 @@ Vue.component("update-account-form", {
     },
     template: `
         <div class="flex-column form">
-            <label for="username">Username:</label>
+            <label for="username">Username: *</label>
             <input name="username" type="text" v-model="userForm.username" />
-            <label for="email">Email:</label>
+            <label for="email">Email: *</label>
             <input name="email" type="text" v-model="userForm.email" />
             <label for="avatar">Avatar URL:</label>
             <input name="avatar" v-model="userForm.avatar" type="text"/>
             <label for="signature">Signature:</label>
             <textarea name="signature" v-model="userForm.signature"></textarea>
-            <label for="name">Display Name:</label>
+            <label for="name">Display Name: *</label>
             <input name="name" v-model="userForm.name" type="text" />
             <input type="button" v-on:click="updateUser" value="Update my account information." />
         </div>

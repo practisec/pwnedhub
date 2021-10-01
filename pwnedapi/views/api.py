@@ -111,6 +111,7 @@ class UserList(Resource):
         users = [u.serialize() for u in User.query.all()]
         return {'users': users}
 
+    @validate_json(['username', 'email', 'name', 'password'])
     def post(self):
         '''Creates an account.'''
         username = request.json.get('username')
@@ -141,6 +142,7 @@ class UserInst(Resource):
 
     @token_auth_required
     @csrf_protect
+    @validate_json(['username', 'email', 'name'])
     def patch(self, uid):
         if uid != 'me' and uid != str(g.user.id):
             abort(403)
@@ -208,6 +210,7 @@ api.add_resource(QuestionList, '/questions')
 
 class PasswordResetList(Resource):
 
+    @validate_json(['credential'])
     def post(self):
         '''Creates and sends a password reset link.'''
         credential = request.json.get('credential')
@@ -280,6 +283,7 @@ class NoteInst(Resource):
         return {'content': content}
 
     @token_auth_required
+    @validate_json(['content'])
     def put(self):
         note = g.user.notes.first()
         if not note:
