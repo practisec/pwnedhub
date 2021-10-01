@@ -1,7 +1,7 @@
 var Account = Vue.component("account", {
     template: `
         <div v-if="user" class="account">
-            <div class="flex-column">
+            <div class="flex-column flex-justify-end">
                 <div class="flex-grow flex-row flex-align-center">
                     <div class="avatar">
                         <router-link v-bind:to="{ name: 'profile', params: {userId: user.id} }" class="flex-grow">
@@ -11,7 +11,7 @@ var Account = Vue.component("account", {
                 </div>
                 <update-password-form v-bind:user="user"></update-password-form>
             </div>
-            <div>
+            <div class="flex-column flex-justify-end">
                 <update-account-form v-bind:user="user"></update-account-form>
             </div>
         </div>
@@ -77,51 +77,29 @@ Vue.component("update-account-form", {
             <input name="avatar" v-model="userForm.avatar" type="text"/>
             <label for="signature">Signature:</label>
             <textarea name="signature" v-model="userForm.signature"></textarea>
-            <label for="name">Display Name: *</label>
+            <label for="name">Display Name:</label>
             <input name="name" v-model="userForm.name" type="text" />
-            <label for="question">Question: *</label>
-            <select name="question" v-model="userForm.question">
-                <option value="" disabled selected>Select a question</option>
-                <option v-for="question in questions" v-bind:key="question.id" v-bind:value="question.id">{{ question.text }}</option>
-            </select>
-            <label for="answer">Answer: *</label>
-            <input name="answer" v-model="userForm.answer" type="text" />
             <input type="button" v-on:click="updateUser" value="Update my account information." />
         </div>
     `,
     data: function() {
         return {
-            questions: [],
             userForm: {
                 username: "",
                 email: "",
                 name: "",
                 avatar: "",
                 signature: "",
-                question: "",
-                answer: "",
             },
         }
     },
     methods: {
-        getQuestions: function() {
-            fetch(store.getters.getApiUrl+"/questions")
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                this.questions = json.questions;
-                this.userForm.question = this.user.question;
-            })
-            .catch(error => store.dispatch("createToast", error));
-        },
         setFormValues: function(user) {
             this.userForm.username = user.username
             this.userForm.email = user.email
             this.userForm.name = user.name
             this.userForm.avatar = user.avatar
             this.userForm.signature = user.signature
-            this.userForm.question = user.question
-            this.userForm.answer = user.answer
         },
         updateUser: function() {
             fetch(store.getters.getApiUrl+"/users/"+this.user.id, {
@@ -141,6 +119,5 @@ Vue.component("update-account-form", {
     },
     created: function() {
         this.setFormValues(this.user);
-        this.getQuestions();
     },
 });

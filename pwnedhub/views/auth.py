@@ -126,8 +126,6 @@ def oauth_callback(provider):
                 signature='',
                 name=resp['name'],
                 password=token_urlsafe(20),
-                question=0,
-                answer=token_urlsafe(10),
             )
             db.session.add(user)
             db.session.commit()

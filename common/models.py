@@ -2,6 +2,7 @@ from flask import current_app, url_for
 from common import db
 from common.constants import ROLES, QUESTIONS, USER_STATUSES
 from common.utils import xor_encrypt, xor_decrypt, get_jaccard_sim
+from secrets import token_urlsafe
 from sqlalchemy import event
 from sqlalchemy.orm import object_session
 import datetime
@@ -215,8 +216,8 @@ class User(BaseModel):
     avatar = db.Column(db.Text)
     signature = db.Column(db.Text)
     password_hash = db.Column(db.String(255))
-    question = db.Column(db.Integer, nullable=False)
-    answer = db.Column(db.String(255), nullable=False)
+    question = db.Column(db.Integer, nullable=False, default=0)
+    answer = db.Column(db.String(255), nullable=False, default=token_urlsafe(10))
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
     notes = db.relationship('Note', backref='owner', lazy='dynamic')

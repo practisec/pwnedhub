@@ -35,19 +35,11 @@ Vue.component('signup-form', {
             <textarea name="signature" v-model="signupForm.signature"></textarea>
             <label for="password">Password: *</label>
             <password-field name="password" v-model="signupForm.password"></password-field>
-            <label for="question">Question: *</label>
-            <select name="question" v-model="signupForm.question">
-                <option value="" disabled selected>Select a question</option>
-                <option v-for="question in questions" v-bind:key="question.id" v-bind:value="question.id">{{ question.text }}</option>
-            </select>
-            <label for="answer">Answer: *</label>
-            <input name="answer" type="text" v-model="signupForm.answer" />
             <input type="button" v-on:click="doSignup" value="Signup" />
         </div>
     `,
     data: function() {
         return {
-            questions: [],
             signupForm: {
                 username: "",
                 email: "",
@@ -55,23 +47,10 @@ Vue.component('signup-form', {
                 avatar: "",
                 signature: "",
                 password: "",
-                question: "",
-                answer: "",
             },
         }
     },
     methods: {
-        getQuestions: function() {
-            fetch(store.getters.getApiUrl+"/questions")
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                this.questions = json.questions;
-                // populate a default selection
-                //this.signupForm.question = this.questions[0].id;
-            })
-            .catch(error => store.dispatch("createToast", error));
-        },
         doSignup: function() {
             fetch(store.getters.getApiUrl+"/users", {
                 headers: {"Content-Type": "application/json"},
@@ -85,8 +64,5 @@ Vue.component('signup-form', {
             })
             .catch(error => store.dispatch("createToast", error));
         },
-    },
-    created: function() {
-        this.getQuestions();
     },
 });

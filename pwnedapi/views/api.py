@@ -63,8 +63,6 @@ class TokenList(Resource):
                     signature='',
                     name=payload['name'],
                     password=token_urlsafe(20),
-                    question=0,
-                    answer=token_urlsafe(10),
                 )
                 db.session.add(user)
                 db.session.commit()
@@ -163,8 +161,6 @@ class UserInst(Resource):
         user.name = request.json.get('name', user.name)
         user.avatar = request.json.get('avatar', user.avatar)
         user.signature = request.json.get('signature', user.signature)
-        user.question = request.json.get('question', user.question)
-        user.answer = request.json.get('answer', user.answer)
         db.session.add(user)
         db.session.commit()
         return user.serialize_self()
