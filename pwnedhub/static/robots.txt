@@ -1,8 +1,0 @@
-User-agent: *
-Disallow: /admin
-Disallow: /artifacts
-Disallow: /mail
-Disallow: /messages
-Disallow: /notes
-Disallow: /profile
-Disallow: /tools
