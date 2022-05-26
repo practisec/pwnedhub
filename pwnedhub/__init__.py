@@ -11,7 +11,7 @@ sess = Session()
 def create_app(config='Development'):
 
     # setting the static_url_path to blank serves static
-    # files from the web root, allowing for robots.txt
+    # files from the web root, allowing for robots.txt, etc.
     app = Flask(__name__, static_url_path='')
     app.config.from_object('pwnedhub.config.{}'.format(config.title()))
 
