@@ -22,6 +22,10 @@
                             <input name="csrf_protect" type="checkbox" onchange="this.form.submit()" {% if app_config('CSRF_PROTECT') %}checked {% endif %}/>
                             <span>Profile CSRF Protection (PwnedHub) - {% if not app_config('CSRF_PROTECT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
                         </label>
+                        <label for="osci_protect">
+                            <input name="osci_protect" type="checkbox" onchange="this.form.submit()" {% if app_config('OSCI_PROTECT') %}checked {% endif %}/>
+                            <span>Tools OSCI Protection (PwnedHub) - {% if not app_config('OSCI_PROTECT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                        </label>
                         <label for="cors_restrict">
                             <input name="cors_restrict" type="checkbox" onchange="this.form.submit()" {% if app_config('CORS_RESTRICT') %}checked {% endif %}/>
                             <span>Restricted CORS (PwnedAPI) - {% if not app_config('CORS_RESTRICT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>

@@ -1,4 +1,5 @@
 from flask import current_app
+from common.models import Config
 import re
 
 # 6 or more characters
@@ -19,7 +20,10 @@ def is_valid_password(password):
     return True
 
 def is_valid_command(cmd):
-    if re.search(r'[;&|]', cmd):
+    pattern = r'[;&|]'
+    if Config.get_value('OSCI_PROTECT'):
+        pattern = r'[;&|<>`$(){}]'
+    if re.search(pattern, cmd):
         return False
     return True
 

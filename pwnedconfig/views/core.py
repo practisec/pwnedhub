@@ -11,5 +11,6 @@ def config():
         Config.get_by_name('BEARER_AUTH_ENABLE').value = request.form.get('bearer_enable') == 'on' or False
         Config.get_by_name('CORS_RESTRICT').value = request.form.get('cors_restrict') == 'on' or False
         Config.get_by_name('OIDC_ENABLE').value = request.form.get('oidc_enable') == 'on' or False
+        Config.get_by_name('OSCI_PROTECT').value = request.form.get('osci_protect') == 'on' or False
         db.session.commit()
     return render_template('config.html')
