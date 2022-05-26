@@ -45,9 +45,10 @@ class TokenList(Resource):
 
     def post(self):
         '''Returns a JWT for the user that owns the provided credentials.'''
-        id_token = request.json.get('id_token')
-        username = request.json.get('username')
-        password = request.json.get('password')
+        json_data = request.get_json(force=True)
+        id_token = json_data.get('id_token')
+        username = json_data.get('username')
+        password = json_data.get('password')
         user = None
         # process OIDC credentials
         if id_token:
