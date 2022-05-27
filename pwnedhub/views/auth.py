@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, request, session, redirect, url_for, r
 from pwnedhub import db
 from pwnedhub.decorators import login_required, validate
 from pwnedhub.oauth import OAuthSignIn, OAuthCallbackError
-from common.models import Mail, User
+from common.models import Config, Mail, User
 from common.constants import QUESTIONS
 from common.utils import xor_encrypt
 from common.validators import is_valid_password
@@ -74,11 +74,17 @@ def authenticate():
     if User.get_by_username(username):
         import time
         time.sleep(0.1)
-    password_hash = xor_encrypt(request.form['password'], current_app.config['SECRET_KEY'])
-    query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
-    user = db.session.execute(query).first()
-    if user and user['status'] == 1:
-        init_session(user['id'])
+    if Config.get_value('SQLI_PROTECT'):
+        user = User.get_by_username(username)
+        if user and not user.check_password(request.form['password']):
+            user = None
+    else:
+        password_hash = xor_encrypt(request.form['password'], current_app.config['SECRET_KEY'])
+        query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
+        user = db.session.execute(query).first()
+        if user: user = User(**user)
+    if user and user.status == 1:
+        init_session(user.id)
         return redirect(request.args.get('next') or url_for('core.home'))
     return redirect(url_for('auth.login', error='Invalid username or password.'))
 

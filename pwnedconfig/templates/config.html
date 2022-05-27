@@ -26,6 +26,10 @@
                             <input name="osci_protect" type="checkbox" onchange="this.form.submit()" {% if app_config('OSCI_PROTECT') %}checked {% endif %}/>
                             <span>Tools OSCI Protection (PwnedHub) - {% if not app_config('OSCI_PROTECT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
                         </label>
+                        <label for="sqli_protect">
+                            <input name="sqli_protect" type="checkbox" onchange="this.form.submit()" {% if app_config('SQLI_PROTECT') %}checked {% endif %}/>
+                            <span>Login SQLi Protection (PwnedHub) - {% if not app_config('SQLI_PROTECT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                        </label>
                         <label for="cors_restrict">
                             <input name="cors_restrict" type="checkbox" onchange="this.form.submit()" {% if app_config('CORS_RESTRICT') %}checked {% endif %}/>
                             <span>Restricted CORS (PwnedAPI) - {% if not app_config('CORS_RESTRICT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
@@ -41,6 +45,10 @@
                         <label for="oidc_enable">
                             <input name="oidc_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('OIDC_ENABLE') %}checked {% endif %}/>
                             <span>OpenID Connect Authentication (PwnedHub) - {% if not app_config('OIDC_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                        </label>
+                        <label for="ctf_mode">
+                            <input name="ctf_mode" type="checkbox" onchange="this.form.submit()" {% if app_config('CTF_MODE') %}checked {% endif %}/>
+                            <span>CTF Mode (Warning: Disables this interface!) - {% if not app_config('CTF_MODE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
                         </label>
                     </div>
                 </form>
