@@ -174,7 +174,6 @@ api.add_resource(UserInst, '/users/<string:uid>')
 class AdminUserList(Resource):
 
     @token_auth_required
-    @roles_required('admin')
     def get(self):
         users = [u.serialize_admin() for u in User.query.all()]
         return {'users': users}
