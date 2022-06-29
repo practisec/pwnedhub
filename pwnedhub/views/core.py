@@ -10,6 +10,7 @@ from common.validators import is_valid_password, is_valid_command, is_valid_file
 from datetime import datetime
 from lxml import etree
 import os
+import platform
 import subprocess
 
 core = Blueprint('core', __name__)
@@ -406,7 +407,57 @@ def tools_execute(tid):
         error = True
     return jsonify(cmd=cmd, output=output, error=error)
 
-@core.route('/games')
-@login_required
-def games():
-    return render_template('games.html')
+#@core.route('/games')
+#@login_required
+#def games():
+#    return render_template('games.html')
+
+@core.route('/server-status')
+def server_status():
+    # borrowed from https://github.com/balarsen/FlaskStatus
+    platform_stats = {
+        'architecture': platform.architecture(),
+        'dist': platform.dist(),
+        'java_ver': platform.java_ver(),
+        'libc_ver': platform.libc_ver(),
+        'linux_distribution': platform.linux_distribution(),
+        'mac_ver': platform.mac_ver(),
+        'machine': platform.machine(),
+        'node': platform.node(),
+        'processor': platform.processor(),
+        'python_branch': platform.python_branch(),
+        'python_build': platform.python_build(),
+        'python_compiler': platform.python_compiler(),
+        'python_implementation': platform.python_implementation(),
+        'python_revision': platform.python_revision(),
+        'python_version': platform.python_version(),
+        'python_version_tuple': platform.python_version_tuple(),
+        'release': platform.release(),
+        'system': platform.system(),
+        'uname': platform.uname(),
+        'version': platform.version(),
+        'win32_ver': platform.win32_ver(),
+        'load_average': os.getloadavg()}
+
+    log_stats = []
+    log_files = [
+        '/tmp/gunicorn-pwnedapi.log',
+        '/tmp/gunicorn-pwnedconfig.log',
+        '/tmp/gunicorn-pwnedhub.log',
+        '/tmp/gunicorn-pwnedspa.log',
+        '/var/log/nginx/access.log',
+    ]
+    for log_file in log_files:
+        if os.path.exists(log_file):
+            data = {
+                'name': log_file,
+                'size': os.path.getsize(log_file),
+                'mtime': os.path.getmtime(log_file),
+                'ctime': os.path.getctime(log_file),
+                'tail': []
+            }
+            with open(log_file) as fp:
+                data['tail'] = ''.join(fp.readlines()[-20:])
+            log_stats.append(data)
+
+    return render_template('status.html', platform_stats=platform_stats, log_stats=log_stats)
