@@ -407,11 +407,6 @@ def tools_execute(tid):
         error = True
     return jsonify(cmd=cmd, output=output, error=error)
 
-#@core.route('/games')
-#@login_required
-#def games():
-#    return render_template('games.html')
-
 @core.route('/status')
 def server_status():
     # borrowed from https://github.com/balarsen/FlaskStatus
