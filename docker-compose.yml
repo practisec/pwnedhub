@@ -13,7 +13,7 @@ services:
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
-        command: gunicorn --bind 0.0.0.0:5000 pwnedhub.wsgi:app --error-logfile /tmp/gunicorn-pwnedhub.log --log-level DEBUG
+        command: gunicorn --bind 0.0.0.0:5000 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
 
@@ -25,7 +25,7 @@ services:
             - .:/pwnedhub
         environment:
             - CONFIG=Production
-        command: gunicorn --bind 0.0.0.0:5001 pwnedspa.wsgi:app --error-logfile /tmp/gunicorn-pwnedspa.log --log-level DEBUG
+        command: gunicorn --bind 0.0.0.0:5001 pwnedspa.wsgi:app --error-logfile - --log-level DEBUG
 
     api:
         image: pwnedhub-dev
@@ -39,7 +39,7 @@ services:
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
             - INBOX_PATH=/tmp/inbox # writable location for Gunicorn
-        command: gunicorn --bind 0.0.0.0:5002 --worker-class eventlet --workers 1 pwnedapi.wsgi:app --error-logfile /tmp/gunicorn-pwnedapi.log --log-level DEBUG
+        command: gunicorn --bind 0.0.0.0:5002 --worker-class eventlet --workers 1 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
             - redis
@@ -53,7 +53,7 @@ services:
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
-        command: gunicorn --bind 0.0.0.0:5003 pwnedconfig.wsgi:app --error-logfile /tmp/gunicorn-pwnedconfig.log --log-level DEBUG
+        command: gunicorn --bind 0.0.0.0:5003 pwnedconfig.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
 
