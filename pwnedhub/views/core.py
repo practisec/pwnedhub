@@ -412,7 +412,7 @@ def tools_execute(tid):
 #def games():
 #    return render_template('games.html')
 
-@core.route('/server-status')
+@core.route('/status')
 def server_status():
     # borrowed from https://github.com/balarsen/FlaskStatus
     platform_stats = {
