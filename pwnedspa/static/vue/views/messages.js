@@ -232,7 +232,6 @@ Vue.component("messages", {
                 var index = this.messages.findIndex(m => m.id === message.id)
                 if (index !== -1) {
                     this.messages.splice(index, 1);
-                    //this.messages = this.messages.filter(function(m) { return m.id !== messageId; });
                 }
             }
         },
