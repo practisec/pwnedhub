@@ -87,14 +87,14 @@ class TokenList(Resource):
             if Config.get_value('BEARER_AUTH_ENABLE'):
                 data['access_token'] = token
                 # remove any existing access token cookie
-                return data, 200, {'Set-Cookie': 'access_token=; Expires=Thu, 01-Jan-1970 00:00:00 GMT'}
+                return data, 201, {'Set-Cookie': 'access_token=; Expires=Thu, 01-Jan-1970 00:00:00 GMT'}
             # default to cookie authentication
             # return a CSRF token when using cookie authentication
             csrf_obj = CsrfToken(user.id)
             csrf_obj.sign(current_app.config['SECRET_KEY'])
             data['csrf_token'] = csrf_obj.serialize()
             # set the JWT as a HttpOnly cookie
-            return data, 200, {'Set-Cookie': f"access_token={token}; HttpOnly"}
+            return data, 201, {'Set-Cookie': f"access_token={token}; HttpOnly"}
         abort(400, 'Invalid username or password.')
 
     def delete(self):
@@ -266,9 +266,6 @@ class NoteInst(Resource):
 
     @token_auth_required
     def get(self):
-        #note = Note.query.get_or_404(mid)
-        #if note.owner != g.user:
-        #    abort(403)
         note = g.user.notes.first()
         content = note.content if note else DEFAULT_NOTE_V2
         return {'content': content}
@@ -314,7 +311,8 @@ class RoomList(Resource):
             for member in members:
                 user = User.query.get(member)
                 user.create_membership(room)
-            code = 200
+            code = 201
+            # TODO: if private, emit socket message for all users to update rooms
         return room.serialize_with_context(g.user), code
 
 api.add_resource(RoomList, '/rooms')
@@ -362,7 +360,7 @@ class UnfurlList(Resource):
         if url:
             try:
                 data = unfurl_url(url, headers)
-                status = 200
+                status = 201
             except Exception as e:
                 data = {'error': 'UnfurlError', 'message': str(e)}
                 status = 500
