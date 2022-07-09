@@ -1,31 +1,10 @@
 from flask import current_app, url_for
-from datetime import datetime, timedelta
+from datetime import datetime
 from hashlib import md5
 import base64
 import hmac
 import jsonpickle
-import jwt
 import os
-
-def get_bearer_token(headers):
-    auth_header = headers.get('Authorization')
-    if auth_header:
-        return auth_header.split()[1]
-    return None
-
-def encode_jwt(user_id, claims={}):
-    payload = {
-        'exp': datetime.utcnow() + timedelta(days=1, seconds=0),
-        'iat': datetime.utcnow(),
-        'sub': user_id
-    }
-    for claim, value in claims.items():
-        payload[claim] = value
-    return jwt.encode(
-        payload,
-        current_app.config['SECRET_KEY'],
-        algorithm='HS256'
-    ).decode()
 
 def send_email(sender, recipient, subject, body):
     # check for and create an inbox folder

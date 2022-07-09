@@ -2,15 +2,16 @@ from flask import Blueprint, g, current_app, request, jsonify, abort, Response, 
 from flask_restful import Resource, Api
 from pwnedapi import db
 from pwnedapi.decorators import token_auth_required, roles_required, validate_json, csrf_protect
-from pwnedapi.utils import CsrfToken, encode_jwt, get_bearer_token, send_email
-from common.constants import QUESTIONS, DEFAULT_NOTE_V2, ADMIN_RESPONSE
-from common.models import Config, User, Note, Message, Mail, Tool, Scan, Room, Membership
-from common.utils import get_unverified_jwt_payload, unfurl_url
+from pwnedapi.utils import CsrfToken, send_email
+from common.constants import DEFAULT_NOTE_V2
+from common.models import Config, User, Note, Message, Tool, Scan, Room
+from common.utils import get_bearer_token, get_unverified_jwt_payload
+from common.utils.unfurl import unfurl_url
+from common.utils.jwt import encode_jwt
 from common.validators import is_valid_password, is_valid_command
 from datetime import datetime
 from hashlib import md5
 from secrets import token_urlsafe
-from lxml import etree
 import jwt
 import os
 
@@ -27,7 +28,7 @@ def parse_jwt():
     if Config.get_value('BEARER_AUTH_ENABLE'):
         token = get_bearer_token(request.headers)
     try:
-        payload = jwt.decode(token, current_app.config['SECRET_KEY'])
+        payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
     except:
         return
     request.jwt = payload
@@ -171,16 +172,6 @@ class UserInst(Resource):
 api.add_resource(UserInst, '/users/<string:uid>')
 
 
-class AdminUserList(Resource):
-
-    @token_auth_required
-    def get(self):
-        users = [u.serialize_admin() for u in User.query.all()]
-        return {'users': users}
-
-api.add_resource(AdminUserList, '/admin/users')
-
-
 class AdminUserInst(Resource):
 
     @token_auth_required
@@ -189,12 +180,11 @@ class AdminUserInst(Resource):
         user = User.query.get_or_404(uid)
         if user == g.user:
             abort(400, 'Self-administration not permitted.')
-        print(request.json)
         user.role = request.json.get('role', user.role)
         user.status = request.json.get('status', user.status)
         db.session.add(user)
         db.session.commit()
-        return user.serialize_admin()
+        return user.serialize()
 
 api.add_resource(AdminUserInst, '/admin/users/<string:uid>')
 

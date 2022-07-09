@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_session import Session
-from common import db
+from common.database import db
 from common.models import Config
-from common.utils import generate_csrf_token
+from common.utils.csrf import generate_csrf_token
 from datetime import datetime
 from urllib.parse import unquote
 

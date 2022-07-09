@@ -1,13 +1,15 @@
-from itertools import cycle
+from uuid import uuid4
 import base64
+import hashlib
+import json
+import os
+import random
 
-def xor_encrypt(s, k):
-    ciphertext = ''.join([ chr(ord(c)^ord(k)) for c,k in zip(s, cycle(k)) ])
-    return base64.b64encode(ciphertext.encode()).decode()
-
-def xor_decrypt(c, k):
-    ciphertext = base64.b64decode(c.encode()).decode()
-    return ''.join([ chr(ord(c)^ord(k)) for c,k in zip(ciphertext, cycle(k)) ])
+def get_bearer_token(headers):
+    auth_header = headers.get('Authorization')
+    if auth_header:
+        return auth_header.split()[1]
+    return None
 
 def get_jaccard_sim(str1, str2):
     a = set(str1.split())
@@ -15,56 +17,21 @@ def get_jaccard_sim(str1, str2):
     c = a.intersection(b)
     return float(len(c)) / (len(a) + len(b) - len(c))
 
-import hashlib
-import os
-
 def generate_state(length=1024):
     """Generates a random string of characters."""
     return hashlib.sha256(os.urandom(length)).hexdigest()
-
-import random
 
 def generate_nonce(length=8):
     """Generates a pseudorandom number."""
     return ''.join([str(random.randint(0, 9)) for i in range(length)])
 
-from uuid import uuid4
-
 def generate_token():
     return str(uuid4())
-
-from flask import session
-
-def generate_csrf_token():
-    session['csrf_token'] = generate_token()
-    return session['csrf_token']
-
-import json
 
 def get_unverified_jwt_payload(token):
     """Parses the payload from a JWT."""
     jwt = token.split('.')
     return json.loads(base64.b64decode(jwt[1] + "==="))
-
-from lxml import etree
-import requests
-
-def unfurl_url(url, headers={}):
-    # request resource
-    resp = requests.get(url, headers=headers)
-    # parse meta tags
-    html = etree.HTML(resp.content)
-    data = {'url': url}
-    for kw in ('site_name', 'title', 'description'):
-        # standard
-        prop = kw
-        values = html.xpath('//meta[@property=\'{}\']/@content'.format(prop))
-        data[kw] = ' '.join(values) or None
-        # OpenGraph
-        prop = 'og:{}'.format(kw)
-        values = html.xpath('//meta[@property=\'{}\']/@content'.format(prop))
-        data[kw] = ' '.join(values) or None
-    return data
 
 # borrowed from Django and modified to work in Python 2
 

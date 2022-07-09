@@ -1,6 +1,6 @@
 from flask import Flask
-from common import db
-from common.models import Config
+from pwnedconfig.models import Config
+from common.database import db
 
 def create_app(config='Development'):
 

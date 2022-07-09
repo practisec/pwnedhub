@@ -1,5 +1,6 @@
 from flask import current_app
 from common.models import Config
+from urllib.parse import urlparse
 import re
 
 # 6 or more characters
@@ -39,8 +40,6 @@ def is_valid_mimetype(mimetype):
     if mimetype in current_app.config['ALLOWED_MIMETYPES']:
         return True
     return False
-
-from urllib.parse import urlparse
 
 def is_safe_url(url, origin):
     host = urlparse(origin).netloc

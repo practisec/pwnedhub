@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_socketio import SocketIO
-from common import db
+from common.database import db
 from common.models import Config
 from redis import Redis
 import rq

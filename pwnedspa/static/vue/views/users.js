@@ -11,7 +11,7 @@ var Users = Vue.component("users", {
     },
     methods: {
         getUsers: function() {
-            fetch(store.getters.getApiUrl+"/admin/users", {
+            fetch(store.getters.getApiUrl+"/users", {
                 credentials: "include",
             })
             .then(handleErrors)

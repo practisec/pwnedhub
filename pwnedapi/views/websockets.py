@@ -12,7 +12,7 @@ def parse_jwt():
     if Config.get_value('BEARER_AUTH_ENABLE'):
         token = request.args.get('access_token')
     try:
-        payload = jwt.decode(token, current_app.config['SECRET_KEY'])
+        payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
     except:
         return
     request.jwt = payload

@@ -1,11 +1,9 @@
 from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, flash, jsonify, Response, send_file, abort, __version__
-from sqlalchemy import asc, desc
-from sqlalchemy.sql import func
 from pwnedhub import db
 from pwnedhub.decorators import login_required, roles_required, validate, csrf_protect
 from common.models import Note, Mail, Message, Tool, User, Room
 from common.constants import ROLES, QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
-from common.utils import unfurl_url
+from common.utils.unfurl import unfurl_url
 from common.validators import is_valid_password, is_valid_command, is_valid_filename, is_valid_mimetype
 from datetime import datetime
 from lxml import etree

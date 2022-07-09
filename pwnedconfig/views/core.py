@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, abort
-from common.models import Config
+from pwnedconfig.models import Config
 from pwnedconfig import db
 
 core = Blueprint('core', __name__)

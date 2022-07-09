@@ -1,15 +1,14 @@
 from flask import Blueprint, current_app, request, session, redirect, url_for, render_template, flash
 from pwnedhub import db
-from pwnedhub.decorators import login_required, validate
+from pwnedhub.decorators import validate
 from pwnedhub.oauth import OAuthSignIn, OAuthCallbackError
 from common.models import Config, Mail, User
 from common.constants import QUESTIONS
-from common.utils import xor_encrypt
+from common.utils.auth import xor_encrypt
 from common.validators import is_valid_password
 from hashlib import md5
 from secrets import token_urlsafe
 import os
-import requests
 
 auth = Blueprint('auth', __name__)
 

@@ -1,10 +1,9 @@
 from flask import current_app, url_for
-from common import db
+from common.database import db
 from common.constants import ROLES, QUESTIONS, USER_STATUSES
-from common.utils import xor_encrypt, xor_decrypt, get_jaccard_sim
+from common.utils.auth import xor_encrypt, xor_decrypt
 from secrets import token_urlsafe
 from sqlalchemy import event
-from sqlalchemy.orm import object_session
 import datetime
 
 class BaseModel(db.Model):
@@ -227,6 +226,13 @@ class User(BaseModel):
     received_mail = db.relationship('Mail', foreign_keys='Mail.receiver_id', backref='receiver', lazy='dynamic')
     rooms = db.relationship("Room", secondary="memberships", viewonly=True, lazy='dynamic')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # create default memberships
+        for room in Room.get_public_rooms():
+            membership = Membership(user=self, room=room, level=1)
+            self.rooms.append(membership)
+
     @property
     def role_as_string(self):
         return ROLES[self.role]
@@ -298,36 +304,24 @@ class User(BaseModel):
         return {
             'id': self.id,
             'created': self.created_as_string,
+            'username': self.username,
             'name': self.name,
+            'email': self.email,
             'avatar': self.avatar_or_default,
             'signature': self.signature,
-        }
-
-    def serialize_admin(self):
-        return {
-            **self.serialize(),
-            'username': self.username,
-            'email': self.email,
             'role': self.role_as_string,
             'status': self.status_as_string,
         }
 
     def serialize_self(self):
         return {
-            **self.serialize_admin(),
+            **self.serialize(),
             'question': self.question,
             'answer': self.answer,
         }
 
     def __repr__(self):
         return "<User '{}'>".format(self.username)
-
-@event.listens_for(User, "after_insert")
-def create_default_memberships(mapper, connection, user):
-    for room in Room.get_public_rooms():
-        membership = Membership(user=user, room=room, level=1)
-        user.rooms.append(membership)
-        object_session(user).add(membership)
 
 class Score(BaseModel):
     __tablename__ = 'scores'
