@@ -1,0 +1,8 @@
+flask
+flask-mysqldb
+flask-sqlalchemy
+gunicorn
+lxml
+markdown
+mysqlclient
+requests

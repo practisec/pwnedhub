@@ -1,0 +1,5 @@
+flask
+flask-mysqldb
+flask-sqlalchemy
+gunicorn
+mysqlclient

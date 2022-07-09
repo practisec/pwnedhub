@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
     app:
-        build: .
+        build: ./pwnedhub
         image: pwnedhub-dev
         expose:
             - 5000
@@ -18,7 +18,8 @@ services:
             - db
 
     spa:
-        image: pwnedhub-dev
+        build: ./pwnedspa
+        image: pwnedspa-dev
         expose:
             - 5001
         volumes:
@@ -28,7 +29,8 @@ services:
         command: gunicorn --bind 0.0.0.0:5001 pwnedspa.wsgi:app --error-logfile - --log-level DEBUG
 
     api:
-        image: pwnedhub-dev
+        build: ./pwnedapi
+        image: pwnedapi-dev
         expose:
             - 5002
         volumes:
@@ -44,8 +46,23 @@ services:
             - db
             - redis
 
+    graph:
+        build: ./pwnedgraph
+        image: pwnedgraph-dev
+        expose:
+            - 5004
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - CONFIG=Production
+            - DATABASE_HOST=db
+        command: gunicorn --bind 0.0.0.0:5004 pwnedgraph.wsgi:app --error-logfile - --log-level DEBUG
+        depends_on:
+            - db
+
     config:
-        image: pwnedhub-dev
+        build: ./pwnedconfig
+        image: pwnedconfig-dev
         expose:
             - 5003
         volumes:
@@ -58,7 +75,7 @@ services:
             - db
 
     worker:
-        image: pwnedhub-dev
+        image: pwnedapi-dev
         volumes:
             - .:/pwnedhub
         environment:
@@ -81,6 +98,7 @@ services:
             - app
             - spa
             - api
+            - graph
             - config
 
     db:
