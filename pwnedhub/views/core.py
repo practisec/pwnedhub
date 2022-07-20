@@ -410,13 +410,9 @@ def server_status():
     # borrowed from https://github.com/balarsen/FlaskStatus
     platform_stats = {
         'architecture': platform.architecture(),
-        'dist': platform.dist(),
-        'java_ver': platform.java_ver(),
-        'libc_ver': platform.libc_ver(),
-        'linux_distribution': platform.linux_distribution(),
-        'mac_ver': platform.mac_ver(),
         'machine': platform.machine(),
         'node': platform.node(),
+        'platform': platform.platform(),
         'processor': platform.processor(),
         'python_branch': platform.python_branch(),
         'python_build': platform.python_build(),
@@ -429,15 +425,19 @@ def server_status():
         'system': platform.system(),
         'uname': platform.uname(),
         'version': platform.version(),
+        'java_ver': platform.java_ver(),
         'win32_ver': platform.win32_ver(),
-        'load_average': os.getloadavg()}
-
+        'mac_ver': platform.mac_ver(),
+        'libc_ver': platform.libc_ver(),
+        'load_average': os.getloadavg()
+    }
     log_stats = []
     log_files = [
         '/tmp/gunicorn-pwnedapi.log',
         '/tmp/gunicorn-pwnedconfig.log',
         '/tmp/gunicorn-pwnedhub.log',
         '/tmp/gunicorn-pwnedspa.log',
+        '/tmp/gunicorn-pwnedgraph.log',
         '/var/log/nginx/access.log',
     ]
     for log_file in log_files:
