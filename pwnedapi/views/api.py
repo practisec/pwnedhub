@@ -346,7 +346,7 @@ class UnfurlList(Resource):
 
     def post(self):
         url = request.json.get('url')
-        headers = {'User-Agent': request.headers.get('User-Agent')}
+        headers = {}
         if url:
             try:
                 data = unfurl_url(url, headers)

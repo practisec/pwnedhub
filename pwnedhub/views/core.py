@@ -248,7 +248,7 @@ def messages_delete(mid):
 @core.route('/messages/unfurl', methods=['POST'])
 def unfurl():
     url = request.json.get('url')
-    headers = {'User-Agent': request.headers.get('User-Agent')}
+    headers = {}
     data = {'error': 'RequestError', 'message': 'Invalid request.'}
     status = 400
     if url:
