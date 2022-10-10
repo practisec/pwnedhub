@@ -201,6 +201,11 @@ nav .brand a {
     text-decoration: inherit;
 }
 
+nav .brand img {
+    height: 5rem;
+    display: block;
+}
+
 nav .brand .hub {
     border: 0;
     background-color: red;

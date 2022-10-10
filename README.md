@@ -1,4 +1,4 @@
-# PwnedHub
+<img src="/common/static/images/logo-filled.png" style="width: 50%" />
 
 PwnedHub is a vulnerable application designed exclusively for [PractiSec training courses](https://www.practisec.com/training/). PwnedHub contains intentional vulnerability and should never be exposed to the open Internet. This software is NOT Open Source in a traditional sense. See the `LICENSE.txt` file for more information.
 
