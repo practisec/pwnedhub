@@ -334,7 +334,7 @@
                 "$ref": "#/components/schemas/NoteUpdateRequest"
               },
               "example": {
-                "content": "##### Welcome to PwnedHub 2.0!\n\nA collaborative space to conduct hosted security assessments.\n\n**Find flaws.**\n\n* This is your notes space. Keep your personal notes here.\n* Leverage popular security testing tools right from your browser in the tools space.\n\n**Collaborate.**\n\n* Privately collborate with coworkers in the messaging space.\n* Join public rooms in the messaging space to share information and socialize.\n\n**On the Move**\n\n* PwnedHub 2.0 is built with mobility in mind. No need for a separate app!\n\nHappy hunting!\n\n\\- The PwnedHub Team\n\n"
+                "content": "##### Welcome to PwnedHub 2.0!\n\nA collaborative space to conduct hosted security assessments.\n\n**Find flaws.**\n\n* This is your notes space. Keep your personal notes here.\n* Leverage popular security testing tools right from your browser in the tools space.\n\n**Collaborate.**\n\n* Privately collaborate with coworkers in the messaging space.\n* Join public rooms in the messaging space to share information and socialize.\n\n**On the Move**\n\n* PwnedHub 2.0 is built with mobility in mind. No need for a separate app!\n\nHappy hunting!\n\n\\- The PwnedHub Team\n\n"
               }
             }
           },
@@ -960,7 +960,7 @@
           }
         },
         "example": {
-          "content": "##### Welcome to PwnedHub 2.0!\n\nA collaborative space to conduct hosted security assessments.\n\n**Find flaws.**\n\n* This is your notes space. Keep your personal notes here.\n* Leverage popular security testing tools right from your browser in the tools space.\n\n**Collaborate.**\n\n* Privately collborate with coworkers in the messaging space.\n* Join public rooms in the messaging space to share information and socialize.\n\n**On the Move**\n\n* PwnedHub 2.0 is built with mobility in mind. No need for a separate app!\n\nHappy hunting!\n\n\\- The PwnedHub Team\n\n"
+          "content": "##### Welcome to PwnedHub 2.0!\n\nA collaborative space to conduct hosted security assessments.\n\n**Find flaws.**\n\n* This is your notes space. Keep your personal notes here.\n* Leverage popular security testing tools right from your browser in the tools space.\n\n**Collaborate.**\n\n* Privately collaborate with coworkers in the messaging space.\n* Join public rooms in the messaging space to share information and socialize.\n\n**On the Move**\n\n* PwnedHub 2.0 is built with mobility in mind. No need for a separate app!\n\nHappy hunting!\n\n\\- The PwnedHub Team\n\n"
         }
       },
       "RoomCreateRequest": {
