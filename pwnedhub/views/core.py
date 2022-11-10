@@ -218,7 +218,7 @@ def mail_delete(mid):
 @core.route('/messages/page/<int:page>')
 @login_required
 def messages(page=1):
-    messages = Room.query.first().messages.order_by(Message.created.desc()).paginate(page=page, per_page=5)
+    messages = Room.query.first().messages.order_by(Message.created.asc()).paginate(page=page, per_page=5)
     return render_template('messages.html', messages=messages)
 
 @core.route('/messages/create', methods=['POST'])
