@@ -405,8 +405,8 @@ def tools_execute(tid):
         error = True
     return jsonify(cmd=cmd, output=output, error=error)
 
-@core.route('/status')
-def server_status():
+@core.route('/diagnostics')
+def diagnostics():
     # borrowed from https://github.com/balarsen/FlaskStatus
     platform_stats = {
         'architecture': platform.architecture(),
@@ -453,4 +453,4 @@ def server_status():
                 data['tail'] = ''.join(fp.readlines()[-20:])
             log_stats.append(data)
 
-    return render_template('status.html', platform_stats=platform_stats, log_stats=log_stats)
+    return render_template('diagnostics.html', platform_stats=platform_stats, log_stats=log_stats)
