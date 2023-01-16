@@ -495,10 +495,17 @@ nav .nav .top-menu li:hover .sub-menu {
 }
 
 .messages .message .comment {
-    margin-bottom: .5rem;
+    margin: 2rem 0;
 }
 
-.messages .message a.img-btn {
+.messages .message .comment blockquote {
+    border: 1px solid #e1e1e1;
+    padding: 0 1rem;
+    margin: 1rem 1rem;
+    background-color: #fff;
+}
+
+.messages .message .img-btns {
     position: absolute;
     top: 0.5rem;
     right: 0;
@@ -524,6 +531,7 @@ nav .nav .top-menu li:hover .sub-menu {
 
 .pagination {
     margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .pagination a {

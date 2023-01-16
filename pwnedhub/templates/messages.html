@@ -1,21 +1,21 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="flex-grow">
-    <form class="flex-width-10 flex-offset-1 flex-row flex-align-center" action="{{ url_for('core.messages_create') }}" method="post">
-        <input class="flex-grow gutter-right" name="message" type="text" placeholder="Message here..." />
-        <input type="submit" value="Submit" onclick="cleanSubmit(event, this.form);" />
-    </form>
+    <b>Messages / General Discussion</b><br><br>
     <div class="messages flex-column">
     {% if messages.items|length > 0 %}
     {% for message in messages.items %}
         <div class="message flex-row">
-        {% if message.author == g.user or g.user.is_admin %}
-            <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.messages_delete', mid=message.id) }}');"><i class="fas fa-trash" title="Delete"></i></a>
-        {% endif %}
+            <div class="img-btns">
+            {% if message.author == g.user or g.user.is_admin %}
+                <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.messages_delete', mid=message.id) }}');"><i class="fas fa-trash" title="Delete"></i></a>
+            {% endif %}
+                <a class="img-btn" onclick="reply('{{ message.id }}');"><i class="fas fa-reply" title="Reply"></i></a>
+            </div>
             <div class="avatar"><a href="{{ url_for('core.profile_view', uid=message.author.id) }}"><img class="circular bordered-dark" src="{{ message.author.avatar_or_default|safe }}" title="Avatar" /></a></div>
             <div{% if message.author == g.user %} style="font-weight: bold;"{% endif %}>
                 <p class="name"><span class="red">{{ message.author.name }}</span> <span style="font-size: .75em">({{ message.author.username }})</span></p>
-                <p class="comment">{{ message.comment|safe }}</p>
+                <div id="comment-{{ message.id }}" class="comment">{{ message.comment|safe }}</div>
                 <div class="link-preview"></div>
                 <p class="timestamp">{{ message.created_as_string }}</p>
             </div>
@@ -24,9 +24,22 @@
     {% from "macros.html" import pagination %}
     {{ pagination('core.messages', messages) }}
     {% endif %}
+    <form class="flex-column" action="{{ url_for('core.messages_create') }}" method="post">
+        <textarea style="height: 10em;" id="reply" name="message" placeholder="Message here..."></textarea>
+        <div class="right-content">
+            <input type="submit" value="Reply" onclick="cleanSubmit(event, this.form);" />
+        </div>
+    </form>
     </div>
 </div>
 <script>
+function reply(id) {
+    var template = "<blockquote>" + document.getElementById("comment-" + id).innerHTML + "</blockquote>\n\n";
+    var reply = document.getElementById("reply")
+    reply.value = template;
+    reply.focus();
+}
+
 function buildUnfurl(url, data) {
     // build array of values in specific order
     var values = [];
