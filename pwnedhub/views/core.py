@@ -2,7 +2,7 @@ from flask import Blueprint, current_app, request, session, g, redirect, url_for
 from pwnedhub import db
 from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
 from pwnedhub.decorators import login_required, roles_required, validate, csrf_protect
-from pwnedhub.models import Note, Mail, Message, Tool, User, Room
+from pwnedhub.models import Note, Mail, Message, Tool, User
 from pwnedhub.utils import unfurl_url
 from pwnedhub.validators import is_valid_password, is_valid_command, is_valid_filename, is_valid_mimetype
 from datetime import datetime
@@ -218,7 +218,7 @@ def mail_delete(mid):
 @core.route('/messages/page/<int:page>')
 @login_required
 def messages(page=1):
-    messages = Room.query.first().messages.order_by(Message.created.asc()).paginate(page=page, per_page=10)
+    messages = Message.query.order_by(Message.created.asc()).paginate(page=page, per_page=10)
     return render_template('messages.html', messages=messages)
 
 @core.route('/messages/create', methods=['POST'])
@@ -226,18 +226,16 @@ def messages(page=1):
 @validate(['message'])
 def messages_create():
     message = request.form['message']
-    msg = Message(comment=message, author=g.user, room=Room.query.first())
+    msg = Message(comment=message, author=g.user)
     db.session.add(msg)
     db.session.commit()
-    last_page = Room.query.first().messages.order_by(Message.created.asc()).paginate(page=None, per_page=10).pages
+    last_page = Message.query.order_by(Message.created.asc()).paginate(page=None, per_page=10).pages
     return redirect(url_for('core.messages', page=last_page))
 
 @core.route('/messages/delete/<int:mid>')
 @login_required
 def messages_delete(mid):
-    message = Room.query.first().messages.filter_by(id=mid).first()
-    if not message:
-        abort(404)
+    message = Message.query.get_or_404(mid)
     if message.author == g.user or g.user.is_admin:
         db.session.delete(message)
         db.session.commit()

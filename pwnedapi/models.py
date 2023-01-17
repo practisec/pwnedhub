@@ -1,9 +1,7 @@
 from flask import current_app, url_for
 from pwnedapi import db
-from pwnedapi.constants import ROLES, QUESTIONS, USER_STATUSES
+from pwnedapi.constants import ROLES, USER_STATUSES
 from pwnedapi.utils import xor_encrypt, xor_decrypt
-from secrets import token_urlsafe
-from sqlalchemy import event
 import datetime
 
 
@@ -195,29 +193,6 @@ class Message(BaseModel):
         return "<Message '{}'>".format(self.id)
 
 
-class Mail(BaseModel):
-    __tablename__ = 'mail'
-    subject = db.Column(db.Text, nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    read = db.Column(db.Integer, nullable=False, default=0)
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'created': self.created_as_string,
-            'subject': self.subject,
-            'content': self.content,
-            'read': self.read,
-            'sender': self.sender.serialize(),
-            'receiver': self.receiver.serialize(),
-        }
-
-    def __repr__(self):
-        return "<Mail '{}'>".format(self.id)
-
-
 class User(BaseModel):
     __tablename__ = 'users'
     username = db.Column(db.String(255), nullable=False, unique=True)
@@ -226,15 +201,11 @@ class User(BaseModel):
     avatar = db.Column(db.Text)
     signature = db.Column(db.Text)
     password_hash = db.Column(db.String(255))
-    question = db.Column(db.Integer, nullable=False, default=0)
-    answer = db.Column(db.String(255), nullable=False, default=token_urlsafe(10))
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
     notes = db.relationship('Note', backref='owner', lazy='dynamic')
     scans = db.relationship('Scan', backref='owner', lazy='dynamic')
     messages = db.relationship('Message', backref='author', lazy='dynamic')
-    sent_mail = db.relationship('Mail', foreign_keys='Mail.sender_id', backref='sender', lazy='dynamic')
-    received_mail = db.relationship('Mail', foreign_keys='Mail.receiver_id', backref='receiver', lazy='dynamic')
     rooms = db.relationship("Room", secondary="memberships", viewonly=True, lazy='dynamic')
 
     def __init__(self, *args, **kwargs):
@@ -251,10 +222,6 @@ class User(BaseModel):
     @property
     def status_as_string(self):
         return USER_STATUSES[self.status]
-
-    @property
-    def question_as_string(self):
-        return QUESTIONS[self.question]
 
     @property
     def password_as_string(self):
@@ -282,13 +249,6 @@ class User(BaseModel):
     def is_enabled(self):
         if self.status == 1:
             return True
-        return False
-
-    @property
-    def has_unread_mail(self):
-        for letter in self.received_mail:
-            if letter.read == 0:
-                return True
         return False
 
     def create_membership(self, room, level=1):
@@ -324,23 +284,5 @@ class User(BaseModel):
             'status': self.status_as_string,
         }
 
-    def serialize_self(self):
-        return {
-            **self.serialize(),
-            'question': self.question,
-            'answer': self.answer,
-        }
-
     def __repr__(self):
         return "<User '{}'>".format(self.username)
-
-
-class Score(BaseModel):
-    __tablename__ = 'scores'
-    player = db.Column(db.String(255), nullable=False)
-    score = db.Column(db.Integer, nullable=False)
-    recid = db.Column(db.Integer)
-    recording = db.Column(db.Text, nullable=False)
-
-    def __repr__(self):
-        return "<Score '{}:{}'>".format(self.player, self.score)

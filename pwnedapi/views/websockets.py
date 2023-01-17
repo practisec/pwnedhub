@@ -1,6 +1,6 @@
 from flask import request, current_app, session
 from flask_socketio import emit, join_room, leave_room
-from pwnedapi.models import Config, User, Message, Room
+from pwnedapi.models import Config, User, Message
 from pwnedapi import socketio, db
 from werkzeug.exceptions import Forbidden
 import jwt

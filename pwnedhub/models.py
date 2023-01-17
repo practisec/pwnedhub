@@ -3,7 +3,6 @@ from pwnedhub import db
 from pwnedhub.constants import ROLES, QUESTIONS, USER_STATUSES
 from pwnedhub.utils import xor_encrypt, xor_decrypt
 from secrets import token_urlsafe
-from sqlalchemy import event
 import datetime
 
 
@@ -45,61 +44,11 @@ class BaseModel(db.Model):
         return self.modified.strftime("%Y-%m-%d %H:%M:%S")
 
 
-class Scan(BaseModel):
-    __tablename__ = 'scans'
-    id = db.Column(db.String(36), primary_key=True)
-    command = db.Column(db.String(255), nullable=False)
-    results = db.Column(db.Text)
-    complete = db.Column(db.Boolean, default=False, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
-    def serialize(self, include_results=False):
-        return {
-            'id': self.id,
-            'created': self.created_as_string,
-            'modified': self.modified_as_string,
-            'command': self.command,
-            'complete': self.complete,
-        }
-
-    def __repr__(self):
-        return "<Scan '{}'>".format(self.name)
-
-
-class Membership(BaseModel):
-    __tablename__ = 'memberships'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
-    level = db.Column(db.Integer, nullable=False, default=1)
-    user = db.relationship("User", backref=db.backref('memberships', lazy='dynamic', cascade="all, delete-orphan"))
-    room = db.relationship("Room", backref=db.backref('memberships', lazy='dynamic', cascade="all, delete-orphan"))
-    __table_args__ = (db.UniqueConstraint('user_id', 'room_id', name='membership_id'),)
-
-    def serialize(self, include_results=False):
-        return {
-            'id': self.id,
-            'created': self.created_as_string,
-            'level': self.level,
-        }
-
-    def __repr__(self):
-        return "<Membership '{}'>".format(self.id)
-
-
 class Note(BaseModel):
     __tablename__ = 'notes'
     name = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'content': self.content,
-            'created': self.created_as_string,
-            'modified': self.modified_as_string,
-        }
 
     def __repr__(self):
         return "<Note '{}'>".format(self.name)
@@ -111,85 +60,14 @@ class Tool(BaseModel):
     path = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=False)
 
-    def serialize(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'path': self.path,
-            'description': self.description,
-        }
-
     def __repr__(self):
         return "<Tool '{}'>".format(self.name)
-
-
-class Room(BaseModel):
-    __tablename__ = 'rooms'
-    name = db.Column(db.String(255), nullable=False, unique=True)
-    private = db.Column(db.Boolean, nullable=False)
-    messages = db.relationship('Message', backref='room', lazy='dynamic')
-    members = db.relationship("User", secondary="memberships", viewonly=True, lazy='dynamic')
-
-    @property
-    def is_private(self):
-        return self.private
-
-    @property
-    def is_public(self):
-        return not self.private
-
-    @staticmethod
-    def get_public_rooms():
-        return Room.query.filter_by(private=False).all()
-
-    @staticmethod
-    def get_by_name(name):
-        return Room.query.filter_by(name=name).first()
-
-    def serialize_with_context(self, user):
-        serialized_room = self.serialize()
-        if self.is_private:
-            peer = self.members.filter(User.id != user.id).first()
-            serialized_room['display'] = f"@{peer.name}"
-        else:
-            serialized_room['display'] = f"#{self.name}"
-        return serialized_room
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'created': self.created_as_string,
-            'name': self.name,
-            'display': self.name,
-            'private': self.private,
-        }
-
-    def __repr__(self):
-        return "<Room '{}'>".format(self.name)
 
 
 class Message(BaseModel):
     __tablename__ = 'messages'
     comment = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'), nullable=False)
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'created': self.created_as_string,
-            'comment': self.comment,
-            'author': {
-                'id': self.author.id,
-                'name': self.author.name,
-                'username': self.author.username,
-                'avatar': self.author.avatar_or_default,
-            },
-            'room': {
-                'id': self.room.id,
-                'name': self.room.name,
-            },
-        }
 
     def __repr__(self):
         return "<Message '{}'>".format(self.id)
@@ -202,17 +80,6 @@ class Mail(BaseModel):
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     read = db.Column(db.Integer, nullable=False, default=0)
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'created': self.created_as_string,
-            'subject': self.subject,
-            'content': self.content,
-            'read': self.read,
-            'sender': self.sender.serialize(),
-            'receiver': self.receiver.serialize(),
-        }
 
     def __repr__(self):
         return "<Mail '{}'>".format(self.id)
@@ -231,18 +98,9 @@ class User(BaseModel):
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
     notes = db.relationship('Note', backref='owner', lazy='dynamic')
-    scans = db.relationship('Scan', backref='owner', lazy='dynamic')
     messages = db.relationship('Message', backref='author', lazy='dynamic')
     sent_mail = db.relationship('Mail', foreign_keys='Mail.sender_id', backref='sender', lazy='dynamic')
     received_mail = db.relationship('Mail', foreign_keys='Mail.receiver_id', backref='receiver', lazy='dynamic')
-    rooms = db.relationship("Room", secondary="memberships", viewonly=True, lazy='dynamic')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # create default memberships
-        for room in Room.get_public_rooms():
-            membership = Membership(user=self, room=room, level=1)
-            self.rooms.append(membership)
 
     @property
     def role_as_string(self):
@@ -291,13 +149,6 @@ class User(BaseModel):
                 return True
         return False
 
-    def create_membership(self, room, level=1):
-        membership = Membership(user=self, room=room, level=level)
-        self.rooms.append(membership)
-        db.session.add(membership)
-        db.session.commit()
-        return membership
-
     def check_password(self, password):
         if self.password_hash == xor_encrypt(password, current_app.config['SECRET_KEY']):
             return True
@@ -311,36 +162,5 @@ class User(BaseModel):
     def get_by_email(email):
         return User.query.filter_by(email=email).first()
 
-    def serialize(self):
-        return {
-            'id': self.id,
-            'created': self.created_as_string,
-            'username': self.username,
-            'name': self.name,
-            'email': self.email,
-            'avatar': self.avatar_or_default,
-            'signature': self.signature,
-            'role': self.role_as_string,
-            'status': self.status_as_string,
-        }
-
-    def serialize_self(self):
-        return {
-            **self.serialize(),
-            'question': self.question,
-            'answer': self.answer,
-        }
-
     def __repr__(self):
         return "<User '{}'>".format(self.username)
-
-
-class Score(BaseModel):
-    __tablename__ = 'scores'
-    player = db.Column(db.String(255), nullable=False)
-    score = db.Column(db.Integer, nullable=False)
-    recid = db.Column(db.Integer)
-    recording = db.Column(db.Text, nullable=False)
-
-    def __repr__(self):
-        return "<Score '{}:{}'>".format(self.player, self.score)

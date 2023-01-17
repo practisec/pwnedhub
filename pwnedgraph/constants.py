@@ -8,14 +8,6 @@ USER_STATUSES = {
     1: 'enabled',
 }
 
-QUESTIONS = {
-    0: 'Favorite food?',
-    1: 'Pet\'s name?',
-    2: 'High school mascot?',
-    3: 'Birthplace?',
-    4: 'First employer?',
-}
-
 VOYAGER_HTML = """
 <!DOCTYPE html>
 <html>

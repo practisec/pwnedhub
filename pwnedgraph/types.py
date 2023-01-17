@@ -1,5 +1,5 @@
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from pwnedgraph.models import Scan, Membership, Note, Tool, Room, Message, Mail, User
+from pwnedgraph.models import Scan, Membership, Note, Tool, Room, Message, User
 
 
 class ScanType(SQLAlchemyObjectType):
@@ -30,11 +30,6 @@ class RoomType(SQLAlchemyObjectType):
 class MessageType(SQLAlchemyObjectType):
     class Meta:
         model = Message
-
-
-class MailType(SQLAlchemyObjectType):
-    class Meta:
-        model = Mail
 
 
 class UserType(SQLAlchemyObjectType):

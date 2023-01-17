@@ -8,14 +8,6 @@ USER_STATUSES = {
     1: 'enabled',
 }
 
-QUESTIONS = {
-    0: 'Favorite food?',
-    1: 'Pet\'s name?',
-    2: 'High school mascot?',
-    3: 'Birthplace?',
-    4: 'First employer?',
-}
-
 DEFAULT_NOTE = '''##### Welcome to PwnedHub 2.0!
 
 A collaborative space to conduct hosted security assessments.

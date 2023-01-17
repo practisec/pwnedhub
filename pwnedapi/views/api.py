@@ -7,10 +7,8 @@ from pwnedapi.models import Config, User, Note, Message, Tool, Scan, Room
 from pwnedapi.utils import get_bearer_token, get_unverified_jwt_payload, encode_jwt, unfurl_url, send_email, CsrfToken
 from pwnedapi.validators import is_valid_password, is_valid_command
 from datetime import datetime
-from hashlib import md5
 from secrets import token_urlsafe
 import jwt
-import os
 
 resources = Blueprint('resources', __name__)
 api = Api()
@@ -72,7 +70,7 @@ class TokenList(Resource):
                 user = None
         # handle authentication
         if user and user.is_enabled:
-            data = {'user': user.serialize_self()}
+            data = {'user': user.serialize()}
             # build other claims
             claims = {}
             # create a JWT
@@ -130,8 +128,6 @@ class UserInst(Resource):
 
     @token_auth_required
     def get(self, uid):
-        if uid == 'me' or uid == str(g.user.id):
-            return g.user.serialize_self()
         user = User.query.get_or_404(uid)
         return user.serialize()
 
@@ -160,7 +156,7 @@ class UserInst(Resource):
         user.signature = request.json.get('signature', user.signature)
         db.session.add(user)
         db.session.commit()
-        return user.serialize_self()
+        return user.serialize()
 
 api.add_resource(UserInst, '/users/<string:uid>')
 

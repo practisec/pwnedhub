@@ -1,8 +1,7 @@
-from flask import current_app, g, request, session, redirect, url_for, abort, make_response, flash
+from flask import g, request, session, redirect, url_for, abort, make_response, flash
 from pwnedhub.constants import ROLES
 from pwnedhub.models import Config
 from functools import wraps
-from threading import Thread
 from urllib.parse import urlparse
 
 def validate(params, method='POST'):
