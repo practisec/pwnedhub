@@ -3,3 +3,4 @@
 *.db
 *sublime*
 venv/
+unused/

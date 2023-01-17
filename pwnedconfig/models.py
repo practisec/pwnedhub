@@ -1,4 +1,4 @@
-from common.database import db
+from pwnedconfig import db
 
 
 class Config(db.Model):

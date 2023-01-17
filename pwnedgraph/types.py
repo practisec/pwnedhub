@@ -1,5 +1,5 @@
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from common.models import Scan, Membership, Note, Tool, Room, Message, Mail, User
+from pwnedgraph.models import Scan, Membership, Note, Tool, Room, Message, Mail, User
 
 
 class ScanType(SQLAlchemyObjectType):

@@ -1,6 +1,6 @@
 from flask import current_app, g, request, session, redirect, url_for, abort, make_response, flash
-from common.constants import ROLES
-from common.models import Config
+from pwnedhub.constants import ROLES
+from pwnedhub.models import Config
 from functools import wraps
 from threading import Thread
 from urllib.parse import urlparse

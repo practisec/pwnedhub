@@ -1,17 +1,31 @@
-from common.config import SharedBaseConfig, SharedDevConfig, SharedTestConfig, SharedProdConfig
+import os
 
-class BaseConfig(SharedBaseConfig):
 
-    pass
+class BaseConfig(object):
 
-class Development(SharedDevConfig, BaseConfig):
+    # base
+    DEBUG = False
+    SECRET_KEY = '$ecretKey'
+    # prevents connection pool exhaustion but disables interactive debugging
+    PRESERVE_CONTEXT_ON_EXCEPTION = False
 
-    pass
+    # database
+    DATABASE_HOST = os.environ.get('DATABASE_HOST', 'localhost')
+    SQLALCHEMY_DATABASE_URI = f"mysql://pwnedhub:dbconnectpass@{DATABASE_HOST}/pwnedhub-config"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-class Test(SharedTestConfig, BaseConfig):
 
-    pass
+class Development(BaseConfig):
 
-class Production(SharedProdConfig, BaseConfig):
+    DEBUG = True
+
+
+class Test(object):
+
+    DEBUG = True
+    TESTING = True
+
+
+class Production(BaseConfig):
 
     pass

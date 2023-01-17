@@ -1,5 +1,5 @@
 from pwnedapi import create_app, db
-from common.models import Scan
+from pwnedapi.models import Scan
 from rq import get_current_job
 import os
 import subprocess

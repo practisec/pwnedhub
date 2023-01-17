@@ -3,9 +3,9 @@ from graphql import GraphQLError
 from pwnedgraph import db
 from pwnedgraph.types import MessageType, UserType
 from pwnedgraph.decorators import auth_required
-from common.models import Message as MessageModel, User as UserModel
-from common.utils.jwt import encode_jwt
-from common.validators import is_valid_password
+from pwnedgraph.models import Message as MessageModel, User as UserModel
+from pwnedgraph.validators import is_valid_password
+from pwnedgraph.utils import encode_jwt
 
 
 class CreateMessage(graphene.Mutation):

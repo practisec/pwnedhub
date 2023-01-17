@@ -1,24 +1,7 @@
 from flask import current_app
-from common.models import Config
+from pwnedhub.models import Config
 from urllib.parse import urlparse
 import re
-
-# 6 or more characters
-PASSWORD_REGEX = r'.{6,}'
-EMAIL_REGEX = r'[^@]+@[a-zA-Z\d-]+(?:\.[a-zA-Z\d-]+)+'
-
-def is_valid_quantity(quantity):
-    return quantity.isdigit()
-
-def is_valid_email(email):
-    if not re.match(r'^{}$'.format(EMAIL_REGEX), email):
-        return False
-    return True
-
-def is_valid_password(password):
-    if not re.match(r'^{}$'.format(PASSWORD_REGEX), password):
-        return False
-    return True
 
 def is_valid_command(cmd):
     pattern = r'[;&|]'
@@ -40,6 +23,21 @@ def is_valid_mimetype(mimetype):
     if mimetype in current_app.config['ALLOWED_MIMETYPES']:
         return True
     return False
+
+# 6 or more characters
+PASSWORD_REGEX = r'.{6,}'
+
+def is_valid_password(password):
+    if not re.match(r'^{}$'.format(PASSWORD_REGEX), password):
+        return False
+    return True
+
+EMAIL_REGEX = r'[^@]+@[a-zA-Z\d-]+(?:\.[a-zA-Z\d-]+)+'
+
+def is_valid_email(email):
+    if not re.match(r'^{}$'.format(EMAIL_REGEX), email):
+        return False
+    return True
 
 def is_safe_url(url, origin):
     host = urlparse(origin).netloc

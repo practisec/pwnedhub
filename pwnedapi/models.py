@@ -1,10 +1,30 @@
 from flask import current_app, url_for
-from common.database import db
-from common.constants import ROLES, QUESTIONS, USER_STATUSES
-from common.utils.auth import xor_encrypt, xor_decrypt
+from pwnedapi import db
+from pwnedapi.constants import ROLES, QUESTIONS, USER_STATUSES
+from pwnedapi.utils import xor_encrypt, xor_decrypt
 from secrets import token_urlsafe
 from sqlalchemy import event
 import datetime
+
+
+class Config(db.Model):
+    __tablename__ = 'configs'
+    __bind_key__ = 'config'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    value = db.Column(db.Boolean, nullable=False)
+
+    @staticmethod
+    def get_by_name(name):
+        return Config.query.filter_by(name=name).first()
+
+    @staticmethod
+    def get_value(name):
+        return Config.query.filter_by(name=name).first().value
+
+    def __repr__(self):
+        return "<Config '{}'>".format(self.name)
+
 
 class BaseModel(db.Model):
     __abstract__ = True
@@ -24,22 +44,6 @@ class BaseModel(db.Model):
     def modified_as_string(self):
         return self.modified.strftime("%Y-%m-%d %H:%M:%S")
 
-class Config(db.Model):
-    __tablename__ = 'configs'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
-    value = db.Column(db.Boolean, nullable=False)
-
-    @staticmethod
-    def get_by_name(name):
-        return Config.query.filter_by(name=name).first()
-
-    @staticmethod
-    def get_value(name):
-        return Config.query.filter_by(name=name).first().value
-
-    def __repr__(self):
-        return "<Config '{}'>".format(self.name)
 
 class Scan(BaseModel):
     __tablename__ = 'scans'
@@ -61,6 +65,7 @@ class Scan(BaseModel):
     def __repr__(self):
         return "<Scan '{}'>".format(self.name)
 
+
 class Membership(BaseModel):
     __tablename__ = 'memberships'
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -80,6 +85,7 @@ class Membership(BaseModel):
     def __repr__(self):
         return "<Membership '{}'>".format(self.id)
 
+
 class Note(BaseModel):
     __tablename__ = 'notes'
     name = db.Column(db.String(255), nullable=False)
@@ -98,6 +104,7 @@ class Note(BaseModel):
     def __repr__(self):
         return "<Note '{}'>".format(self.name)
 
+
 class Tool(BaseModel):
     __tablename__ = 'tools'
     name = db.Column(db.String(255), nullable=False)
@@ -114,6 +121,7 @@ class Tool(BaseModel):
 
     def __repr__(self):
         return "<Tool '{}'>".format(self.name)
+
 
 class Room(BaseModel):
     __tablename__ = 'rooms'
@@ -159,6 +167,7 @@ class Room(BaseModel):
     def __repr__(self):
         return "<Room '{}'>".format(self.name)
 
+
 class Message(BaseModel):
     __tablename__ = 'messages'
     comment = db.Column(db.Text, nullable=False)
@@ -185,6 +194,7 @@ class Message(BaseModel):
     def __repr__(self):
         return "<Message '{}'>".format(self.id)
 
+
 class Mail(BaseModel):
     __tablename__ = 'mail'
     subject = db.Column(db.Text, nullable=False)
@@ -206,6 +216,7 @@ class Mail(BaseModel):
 
     def __repr__(self):
         return "<Mail '{}'>".format(self.id)
+
 
 class User(BaseModel):
     __tablename__ = 'users'
@@ -322,6 +333,7 @@ class User(BaseModel):
 
     def __repr__(self):
         return "<User '{}'>".format(self.username)
+
 
 class Score(BaseModel):
     __tablename__ = 'scores'

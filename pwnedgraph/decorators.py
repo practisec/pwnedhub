@@ -1,5 +1,5 @@
 from graphql import GraphQLError
-from common.constants import ROLES
+from pwnedgraph.constants import ROLES
 from functools import wraps
 
 def auth_required(func):

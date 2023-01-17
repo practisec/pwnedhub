@@ -1,11 +1,11 @@
 from flask import Blueprint, current_app, request, session, redirect, url_for, render_template, flash
 from pwnedhub import db
+from pwnedhub.constants import QUESTIONS
 from pwnedhub.decorators import validate
+from pwnedhub.models import Config, Mail, User
 from pwnedhub.oauth import OAuthSignIn, OAuthCallbackError
-from common.models import Config, Mail, User
-from common.constants import QUESTIONS
-from common.utils.auth import xor_encrypt
-from common.validators import is_valid_password
+from pwnedhub.utils import xor_encrypt
+from pwnedhub.validators import is_valid_password
 from hashlib import md5
 from secrets import token_urlsafe
 import os

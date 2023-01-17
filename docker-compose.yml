@@ -105,11 +105,8 @@ services:
         image: mysql:5.7
         environment:
             - MYSQL_ROOT_PASSWORD=adminpass
-            - MYSQL_DATABASE=pwnedhub
-            - MYSQL_USER=pwnedhub
-            - MYSQL_PASSWORD=dbconnectpass
         volumes:
-            - ./pwnedhub.sql:/docker-entrypoint-initdb.d/pwnedhub.sql:ro
+            - ./database/init:/docker-entrypoint-initdb.d:ro
 
     redis:
         image: redis

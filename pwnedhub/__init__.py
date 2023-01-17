@@ -1,11 +1,10 @@
 from flask import Flask
 from flask_session import Session
-from common.database import db
-from common.models import Config
-from common.utils.csrf import generate_csrf_token
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from urllib.parse import unquote
 
+db = SQLAlchemy()
 sess = Session()
 
 def create_app(config='Development'):
@@ -19,11 +18,13 @@ def create_app(config='Development'):
     sess.init_app(app)
 
     # custom jinja global for accessing dynamic configuration values
+    from pwnedhub.models import Config
     app.jinja_env.globals['app_config'] = Config.get_value
     # custom jinja global for the current date
     # used in the layout to keep the current year
     app.jinja_env.globals['date'] = datetime.now()
     # custom jinja global for setting CSRF tokens
+    from pwnedhub.utils import generate_csrf_token
     app.jinja_env.globals['csrf_token'] = generate_csrf_token
     # custom jinja filter to decode urls
     app.jinja_env.filters['urldecode'] = lambda s: unquote(s)

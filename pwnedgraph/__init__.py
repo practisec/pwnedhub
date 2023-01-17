@@ -1,11 +1,10 @@
 from flask import Flask, request, current_app
 from flask_graphql import GraphQLView
+from flask_sqlalchemy import SQLAlchemy
 from pwnedgraph.constants import VOYAGER_HTML
-from pwnedgraph.schema import schema
-from common.database import db
-from common.models import User
-from common.utils import get_bearer_token
 import jwt
+
+db = SQLAlchemy()
 
 def create_app(config='Development'):
 
@@ -18,6 +17,7 @@ def create_app(config='Development'):
     def parse_jwt():
         '''Adds the `jwt` object to the current request for later access.'''
         request.jwt = {}
+        from pwnedgraph.utils import get_bearer_token
         token = get_bearer_token(request.headers)
         try:
             payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
@@ -31,8 +31,10 @@ def create_app(config='Development'):
         request.user = None
         uid = request.jwt.get('sub')
         if uid:
+            from pwnedgraph.models import User
             request.user = User.query.get(uid)
 
+    from pwnedgraph.schema import schema
     app.add_url_rule(
         '/graphql',
         view_func=GraphQLView.as_view(

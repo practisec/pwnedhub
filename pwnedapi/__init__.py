@@ -1,12 +1,12 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_socketio import SocketIO
-from common.database import db
-from common.models import Config
+from flask_sqlalchemy import SQLAlchemy
 from redis import Redis
 import rq
 
 cors = CORS()
+db = SQLAlchemy()
 socketio = SocketIO()
 
 def create_app(config='Development'):
@@ -37,6 +37,7 @@ def create_app(config='Development'):
     # headers created by the extension's `after_request` methods
     @app.after_request
     def config_cors(response):
+        from pwnedapi.models import Config
         if Config.get_value('CORS_RESTRICT'):
             # apply the CORS whitelist from the config
             if not is_allowed_origin(response):

@@ -1,3 +1,21 @@
+ROLES = {
+    0: 'admin',
+    1: 'user',
+}
+
+USER_STATUSES = {
+    0: 'disabled',
+    1: 'enabled',
+}
+
+QUESTIONS = {
+    0: 'Favorite food?',
+    1: 'Pet\'s name?',
+    2: 'High school mascot?',
+    3: 'Birthplace?',
+    4: 'First employer?',
+}
+
 VOYAGER_HTML = """
 <!DOCTYPE html>
 <html>

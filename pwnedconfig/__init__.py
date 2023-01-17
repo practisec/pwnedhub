@@ -1,6 +1,7 @@
 from flask import Flask
-from pwnedconfig.models import Config
-from common.database import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 def create_app(config='Development'):
 
@@ -11,6 +12,7 @@ def create_app(config='Development'):
     db.init_app(app)
 
     # custom jinja global for accessing dynamic configuration values
+    from pwnedconfig.models import Config
     app.jinja_env.globals['app_config'] = Config.get_value
 
     # misc jinja configuration variables

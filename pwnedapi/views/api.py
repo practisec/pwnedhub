@@ -1,14 +1,11 @@
 from flask import Blueprint, g, current_app, request, jsonify, abort, Response, url_for
 from flask_restful import Resource, Api
 from pwnedapi import db
+from pwnedapi.constants import DEFAULT_NOTE
 from pwnedapi.decorators import token_auth_required, roles_required, validate_json, csrf_protect
-from pwnedapi.utils import CsrfToken, send_email
-from common.constants import DEFAULT_NOTE_V2
-from common.models import Config, User, Note, Message, Tool, Scan, Room
-from common.utils import get_bearer_token, get_unverified_jwt_payload
-from common.utils.unfurl import unfurl_url
-from common.utils.jwt import encode_jwt
-from common.validators import is_valid_password, is_valid_command
+from pwnedapi.models import Config, User, Note, Message, Tool, Scan, Room
+from pwnedapi.utils import get_bearer_token, get_unverified_jwt_payload, encode_jwt, unfurl_url, send_email, CsrfToken
+from pwnedapi.validators import is_valid_password, is_valid_command
 from datetime import datetime
 from hashlib import md5
 from secrets import token_urlsafe
@@ -78,10 +75,6 @@ class TokenList(Resource):
             data = {'user': user.serialize_self()}
             # build other claims
             claims = {}
-            path = os.path.join(current_app.config['UPLOAD_FOLDER'], md5(str(user.id).encode()).hexdigest())
-            if not os.path.exists(path):
-                os.makedirs(path)
-            claims['upload_folder'] = path
             # create a JWT
             token = encode_jwt(user.id, claims=claims)
             # send the JWT as a Bearer token when the feature is enabled
@@ -257,7 +250,7 @@ class NoteInst(Resource):
     @token_auth_required
     def get(self):
         note = g.user.notes.first()
-        content = note.content if note else DEFAULT_NOTE_V2
+        content = note.content if note else DEFAULT_NOTE
         return {'content': content}
 
     @token_auth_required

@@ -1,10 +1,65 @@
 from flask import current_app, url_for
-from datetime import datetime
+from datetime import datetime, timedelta
 from hashlib import md5
+from itertools import cycle
+from lxml import etree
 import base64
 import hmac
+import json
 import jsonpickle
+import jwt
 import os
+import requests
+
+def xor_encrypt(s, k):
+    ciphertext = ''.join([ chr(ord(c)^ord(k)) for c,k in zip(s, cycle(k)) ])
+    return base64.b64encode(ciphertext.encode()).decode()
+
+def xor_decrypt(c, k):
+    ciphertext = base64.b64decode(c.encode()).decode()
+    return ''.join([ chr(ord(c)^ord(k)) for c,k in zip(ciphertext, cycle(k)) ])
+
+def get_bearer_token(headers):
+    auth_header = headers.get('Authorization')
+    if auth_header:
+        return auth_header.split()[1]
+    return None
+
+def get_unverified_jwt_payload(token):
+    """Parses the payload from a JWT."""
+    jwt = token.split('.')
+    return json.loads(base64.b64decode(jwt[1] + "==="))
+
+def encode_jwt(user_id, claims={}):
+    payload = {
+        'exp': datetime.utcnow() + timedelta(days=1, seconds=0),
+        'iat': datetime.utcnow(),
+        'sub': user_id
+    }
+    for claim, value in claims.items():
+        payload[claim] = value
+    return jwt.encode(
+        payload,
+        current_app.config['SECRET_KEY'],
+        algorithm='HS256'
+    )
+
+def unfurl_url(url, headers={}):
+    # request resource
+    resp = requests.get(url, headers=headers)
+    # parse meta tags
+    html = etree.HTML(resp.content)
+    data = {'url': url}
+    for kw in ('site_name', 'title', 'description'):
+        # standard
+        prop = kw
+        values = html.xpath('//meta[@property=\'{}\']/@content'.format(prop))
+        data[kw] = ' '.join(values) or None
+        # OpenGraph
+        prop = 'og:{}'.format(kw)
+        values = html.xpath('//meta[@property=\'{}\']/@content'.format(prop))
+        data[kw] = ' '.join(values) or None
+    return data
 
 def send_email(sender, recipient, subject, body):
     # check for and create an inbox folder

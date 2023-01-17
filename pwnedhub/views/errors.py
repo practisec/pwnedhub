@@ -1,4 +1,5 @@
 from flask import Blueprint, request, render_template, render_template_string, jsonify
+from pwnedhub import db
 from urllib.parse import unquote
 import traceback
 
@@ -47,7 +48,6 @@ def method_not_allowed(e):
 
 @errors.app_errorhandler(500)
 def internal_server_error(e):
-    from common.database import db
     db.session.rollback()
     message = traceback.format_exc()
     if request.content_type == CONTENT_TYPE:

@@ -1,7 +1,7 @@
 from flask import g, request, current_app, abort
+from pwnedapi.constants import ROLES
+from pwnedapi.models import Config
 from pwnedapi.utils import CsrfToken, ParamValidator
-from common.constants import ROLES
-from common.models import Config
 from functools import wraps
 import base64
 import jsonpickle

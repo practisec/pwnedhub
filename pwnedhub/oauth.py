@@ -1,5 +1,5 @@
 from flask import current_app, url_for, session
-from common.utils import generate_state, generate_nonce, get_unverified_jwt_payload
+from pwnedhub.utils import generate_state, generate_nonce, get_unverified_jwt_payload
 from time import time
 from urllib.parse import urlencode
 import requests

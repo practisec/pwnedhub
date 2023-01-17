@@ -1,8 +1,7 @@
+-- Attach to database
+USE `pwnedhub`;
+
 -- MySQL dump 10.13  Distrib 5.7.29, for Linux (x86_64)
---
--- Host: db    Database: pwnedhub
--- ------------------------------------------------------
--- Server version 5.7.29
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,31 +13,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `configs`
---
-
-DROP TABLE IF EXISTS `configs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `configs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `value` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `configs`
---
-
-LOCK TABLES `configs` WRITE;
-/*!40000 ALTER TABLE `configs` DISABLE KEYS */;
-INSERT INTO `configs` VALUES (1,'CSRF_PROTECT',0),(2,'BEARER_AUTH_ENABLE',0),(3,'CORS_RESTRICT',0),(4,'OIDC_ENABLE',0),(5,'OSCI_PROTECT',1),(6,'SQLI_PROTECT',1),(7,'CTF_MODE',1);
-/*!40000 ALTER TABLE `configs` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `mail`
@@ -61,7 +35,7 @@ CREATE TABLE `mail` (
   KEY `receiver_id` (`receiver_id`),
   CONSTRAINT `mail_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`),
   CONSTRAINT `mail_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +44,7 @@ CREATE TABLE `mail` (
 
 LOCK TABLES `mail` WRITE;
 /*!40000 ALTER TABLE `mail` DISABLE KEYS */;
-INSERT INTO `mail` VALUES (1,'2019-02-14 14:12:17','2019-02-14 14:12:17','QA Results','Hey Cooper,\r\n\r\nI just finished checking out the latest push of PwnedHub. I encountered a couple of errors as I was testing and placed them in a paste for you to check out at https://pastebin.com/F2mzJJJ0.',5,2,1),(2,'2019-02-17 22:30:14','2019-02-17 22:30:14','Training','Hey Cooper,\r\n\r\nHave you heard about that PWAPT class by Tim Tomes? Sounds like some top notch stuff. We should get him in here to do some training.',4,2,1),(3,'2019-02-17 22:45:38','2019-02-17 22:45:38','RE: Training','Tanner,\r\n\r\nSounds good to me. I\'ll put a request in to Taylor.',2,4,1),(4,'2019-02-17 22:46:29','2019-02-17 22:46:29','PWAPT Training','Taylor,\r\n\r\nTanner and some of the folks have been asking about some training. Specifically, the PWAPT class by Tim Tomes. You ever heard of it?',2,3,1),(5,'2019-02-17 22:48:12','2019-02-17 22:48:12','RE: PWAPT Training','Cooper,\r\n\r\nYeah, I\'ve heard about that guy. He\'s a hack!',3,2,1),(6,'2021-11-03 11:46:29','2021-11-03 11:46:29','PwnedHub v2.0','Hey, As part of my internal security assessment, I decoded the JWT on the client and took note of my upload path. Did you seriously use MD5 for that? You do realize MD5 hashes can be reversed using Google, right?',3,2,1),(7,'2021-11-03 11:48:12','2021-11-03 11:48:12','RE: PwnedHub v2.0','LOL! yeah...',2,3,1),(8,'2022-03-21 09:30:14','2022-03-21 09:30:14','Admin Password','Ugh! I accidentally deleted the shared admin password from my password manager. Can you send it to me real quick? I\'m way behind schedule and need to moderate the message board.',4,2,1),(9,'2022-03-21 09:45:38','2022-03-21 09:45:38','RE: Admin Password','Sure. It\'s <code>RFQ&15sqbx7GCq$3mWh$BzuRT</code>.',2,4,1),(10,'2022-03-21 09:47:14','2022-03-21 09:47:14','RE:RE: Admin Password','OMG thank you! You\'re a lifesaver. For real.',4,2,1);
+INSERT INTO `mail` VALUES (1,'2019-02-14 14:12:17','2019-02-14 14:12:17','QA Results','Hey Cooper,\r\n\r\nI just finished checking out the latest push of PwnedHub. I encountered a couple of errors as I was testing and placed them in a paste for you to check out at https://pastebin.com/F2mzJJJ0.',5,2,1),(2,'2019-02-17 22:30:14','2019-02-17 22:30:14','Training','Hey Cooper,\r\n\r\nHave you heard about that PWAPT class by Tim Tomes? Sounds like some top notch stuff. We should get him in here to do some training.',4,2,1),(3,'2019-02-17 22:45:38','2019-02-17 22:45:38','RE: Training','Tanner,\r\n\r\nSounds good to me. I\'ll put a request in to Taylor.',2,4,1),(4,'2019-02-17 22:46:29','2019-02-17 22:46:29','PWAPT Training','Taylor,\r\n\r\nTanner and some of the folks have been asking about some training. Specifically, the PWAPT class by Tim Tomes. You ever heard of it?',2,3,1),(5,'2019-02-17 22:48:12','2019-02-17 22:48:12','RE: PWAPT Training','Cooper,\r\n\r\nYeah, I\'ve heard about that guy. He\'s a hack!',3,2,1);
 /*!40000 ALTER TABLE `mail` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -341,7 +315,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'2019-02-16 01:51:59','2019-02-16 01:51:59','admin','admin@pwnedhub.com','Administrator','/images/avatars/admin.png','All your base are belong to me.','diMyVFRBOBQbXFIkMRRQeAguTEEhCBAmHw==',1,'Diego',0,1),(2,'2019-02-16 04:46:27','2019-02-16 04:46:27','Cooperman','cooper@pwnedhub.com','Cooper','/images/avatars/c-man.png','Gamer, hacker, and basketball player. Energy sword FTW!','cBdTBwdALwoLAlY=',3,'Augusta',1,1),(3,'2019-02-16 04:47:14','2019-02-16 04:47:14','Babygirl#1','taylor@pwnedhub.com','Taylor','/images/avatars/wolf.jpg','Wolf in a past life. Nerd in the current. Johnny 5 is indeed alive.','RwoRAAAXPw0WVhYG',2,'Rocket',1,1),(4,'2019-02-16 04:48:19','2019-02-16 04:48:19','Hack3rPrincess','tanner@pwnedhub.com','Tanner','/images/avatars/kitty.jpg','I might be small, cute, and cuddly, but remember... dynamite comes in small tightly wrapped packages that go boom.','RgQXBgAGMhYNRRUPFw==',0,'Drumstick',1,1),(5,'2019-02-16 04:49:34','2019-02-16 04:49:34','Baconator','emilee@pwnedhub.com','Emilee','/images/avatars/bacon.png','Late to the party, but still the life of the party.','XA4AFksXJAhWHVZVXQ==',4,'Chick-fil-a',1,1);
+INSERT INTO `users` VALUES (1,'2019-02-16 01:51:59','2019-02-16 01:51:59','admin','admin@pwnedhub.com','Administrator','/images/avatars/admin.png','All your base are belong to me.','QQsEEwIRJgAXUBY=',1,'Diego',0,1),(2,'2019-02-16 04:46:27','2019-02-16 04:46:27','Cooperman','cooper@pwnedhub.com','Cooper','/images/avatars/c-man.png','Gamer, hacker, and basketball player. Energy sword FTW!','cBdTBwdALwoLAlY=',3,'Augusta',1,1),(3,'2019-02-16 04:47:14','2019-02-16 04:47:14','Babygirl#1','taylor@pwnedhub.com','Taylor','/images/avatars/wolf.jpg','Wolf in a past life. Nerd in the current. Johnny 5 is indeed alive.','RwoRAAAXPw0WVhYG',2,'Rocket',1,1),(4,'2019-02-16 04:48:19','2019-02-16 04:48:19','Hack3rPrincess','tanner@pwnedhub.com','Tanner','/images/avatars/kitty.jpg','I might be small, cute, and cuddly, but remember... dynamite comes in small tightly wrapped packages that go boom.','RgQXBgAGMhYNRRUPFw==',0,'Drumstick',1,1),(5,'2019-02-16 04:49:34','2019-02-16 04:49:34','Baconator','emilee@pwnedhub.com','Emilee','/images/avatars/bacon.png','Late to the party, but still the life of the party.','XA4AFksXJAhWHVZVXQ==',4,'Chick-fil-a',1,1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
