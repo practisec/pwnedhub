@@ -9,6 +9,7 @@ import json
 import jsonpickle
 import jwt
 import os
+import random
 import requests
 
 def xor_encrypt(s, k):
@@ -18,6 +19,10 @@ def xor_encrypt(s, k):
 def xor_decrypt(c, k):
     ciphertext = base64.b64decode(c.encode()).decode()
     return ''.join([ chr(ord(c)^ord(k)) for c,k in zip(ciphertext, cycle(k)) ])
+
+def generate_code(length=6):
+    """Generates a pseudorandom number."""
+    return ''.join([str(random.randint(0, 9)) for i in range(length)])
 
 def get_bearer_token(headers):
     auth_header = headers.get('Authorization')
@@ -30,9 +35,9 @@ def get_unverified_jwt_payload(token):
     jwt = token.split('.')
     return json.loads(base64.b64decode(jwt[1] + "==="))
 
-def encode_jwt(user_id, claims={}):
+def encode_jwt(user_id, claims={}, expire_delta={'days': 1, 'seconds': 0}):
     payload = {
-        'exp': datetime.utcnow() + timedelta(days=1, seconds=0),
+        'exp': datetime.utcnow() + timedelta(**expire_delta),
         'iat': datetime.utcnow(),
         'sub': user_id
     }

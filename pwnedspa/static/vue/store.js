@@ -3,6 +3,7 @@ const state = {
     mail: [],
     toasts: [],
     userInfo: null,
+    mfaToken: null,
     authHeader: {},
     csrfHeader: {},
     modalVisible: false,
@@ -33,6 +34,12 @@ const mutations = {
     UNSET_USER_INFO(state) {
         state.userInfo = null
         localStorage.removeItem("user");
+    },
+    SET_MFA_TOKEN(state, token) {
+        state.mfaToken = token;
+    },
+    UNSET_MFA_TOKEN(state) {
+        state.mfaToken = null;
     },
     SET_AUTH_HEADER(state, token) {
         state.authHeader = {"Authorization": "Bearer "+token};
@@ -83,6 +90,12 @@ const actions = {
         setTimeout(() => {
             context.commit("REMOVE_TOAST", id);
         }, 5000)
+    },
+    setMfaToken(context, json) {
+        context.commit("SET_MFA_TOKEN", json.code_token);
+    },
+    unsetMfaToken(context) {
+        context.commit("UNSET_MFA_TOKEN");
     },
     setAuthInfo(context, json) {
         context.commit("SET_USER_INFO", json.user);
@@ -142,6 +155,9 @@ const getters = {
     },
     getUserInfo(state) {
         return state.userInfo;
+    },
+    getMfaToken(state) {
+        return state.mfaToken;
     },
     getAuthHeader(state) {
         return state.authHeader;

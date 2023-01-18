@@ -43,7 +43,7 @@ Vue.component('login-form', {
             <input name="username" type="text" v-model="loginForm.username" />
             <label for="password">Password:</label>
             <password-field name="password" v-model="loginForm.password"></password-field>
-            <input type="button" v-on:click="doFormLogin" value="Login" />
+            <input type="button" v-on:click="doFormLogin" value="Log me in please." />
             <p><router-link v-bind:to="{ name: 'reset-init' }">Forget your password?</router-link></p>
             <div class="gutter-bottom center-content bolded">OR</div>
             <div class="center-content">
@@ -76,34 +76,58 @@ Vue.component('login-form', {
                 method: "POST",
                 body: JSON.stringify(payload),
             })
+            .then(response => this.handleMfa(response))
             .then(handleErrors)
             .then(response => response.json())
             .then(json => this.handleLoginSuccess(json))
             .catch(error => this.handleLoginFailure(error));
         },
-        handleLoginSuccess: function(json) {
-            if (!json.user) {
-                this.handleLoginFailure(json.message);
-                return;
+        handleMfa: function(response) {
+            // since the access-token endpoint doesn't require authz, checking for a
+            // 403 response code should be enough to determine that it is an mfa response
+            if (response.status === 403) {
+                // store mfa data as necessary
+                response.json().then(data => store.dispatch("setMfaToken", data));
+                this.$router.push({
+                    name: "mfa",
+                    params: { nextUrl: this.$route.params.nextUrl }
+                });
+                setTimeout(function() {
+                    alert("You've got mail!");
+                }, 2000);
+                // hack to break the promise chain
+                var error = new Error();
+                error.name = 'BreakChainError';
+                throw error;
             }
-            // store auth data as necessary
-            store.dispatch("setAuthInfo", json);
-            // route appropriately
-            if (this.$route.params.nextUrl != null) {
-                // originally requested location
-                this.$router.push(this.$route.params.nextUrl);
-            } else {
-                // fallback landing page
-                if (json.user.role === "admin") {
-                    this.$router.push({ name: "users" });
+            return Promise.resolve(response);
+        },
+        handleLoginSuccess: function(json) {
+            if (json.access_token && json.user) {
+                // store auth data as necessary
+                store.dispatch("setAuthInfo", json);
+                // route appropriately
+                if (this.$route.params.nextUrl != null) {
+                    // originally requested location
+                    this.$router.push(this.$route.params.nextUrl);
                 } else {
-                    this.$router.push({ name: "notes" });
+                    // fallback landing page
+                    if (json.user.role === "admin") {
+                        this.$router.push({ name: "users" });
+                    } else {
+                        this.$router.push({ name: "notes" });
+                    }
                 }
+            } else {
+                this.handleLoginFailure(json.message);
             }
         },
         handleLoginFailure: function(error) {
-            store.dispatch("unsetAuthInfo");
-            store.dispatch("createToast", error);
+            // hack to break the promise chain
+            if (error.name !== 'BreakChainError') {
+                store.dispatch("unsetAuthInfo");
+                store.dispatch("createToast", error);
+            }
         },
     },
 });

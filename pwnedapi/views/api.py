@@ -4,7 +4,7 @@ from pwnedapi import db
 from pwnedapi.constants import DEFAULT_NOTE
 from pwnedapi.decorators import token_auth_required, roles_required, validate_json, csrf_protect
 from pwnedapi.models import Config, User, Note, Message, Tool, Scan, Room
-from pwnedapi.utils import get_bearer_token, get_unverified_jwt_payload, encode_jwt, unfurl_url, send_email, CsrfToken
+from pwnedapi.utils import generate_code, get_bearer_token, get_unverified_jwt_payload, encode_jwt, unfurl_url, send_email, CsrfToken
 from pwnedapi.validators import is_valid_password, is_valid_command
 from datetime import datetime
 from secrets import token_urlsafe
@@ -42,12 +42,25 @@ class TokenList(Resource):
     def post(self):
         '''Returns a JWT for the user that owns the provided credentials.'''
         json_data = request.get_json(force=True)
+        code = json_data.get('code')
+        code_token = json_data.get('code_token')
         id_token = json_data.get('id_token')
         username = json_data.get('username')
         password = json_data.get('password')
         user = None
+        default_message = 'Invalid username or password.'
+        # process MFA token
+        if code and code_token:
+            try:
+                payload = jwt.decode(code_token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            except:
+                payload = {}
+            if code == payload.get('code'):
+                user = User.query.get(payload.get('sub'))
+            else:
+                default_message = 'Expired or invalid MFA code.'
         # process OIDC credentials
-        if id_token:
+        elif id_token:
             payload = get_unverified_jwt_payload(id_token)
             email = payload['email']
             user = User.get_by_email(email)
@@ -68,6 +81,25 @@ class TokenList(Resource):
             user = User.get_by_username(username)
             if user and not user.check_password(password):
                 user = None
+            # handle mfa - enforced on all admin accounts
+            if user and user.is_admin:
+                code = generate_code(6)
+                # email code to user
+                send_email(
+                    sender = User.query.first().email,
+                    recipient = user.email,
+                    subject = 'PwnedHub Multi-Factor Authentication Reset',
+                    body = f"Hi {user.name}!<br><br>Below is your Multi-Factor Authentication (MFA) code.<br><br>{code}<br><br>If you did not trigger this login attempt, please respond to this email to reach an administrator. Thank you.",
+                )
+                # add random code to claims
+                claims = {'code': code}
+                # create a JWT
+                token = encode_jwt(user.id, claims=claims, expire_delta={'days': 0, 'seconds': 300})
+                data = {
+                    'error': 'mfa_required',
+                    'code_token': token
+                }
+                return data, 403
         # handle authentication
         if user and user.is_enabled:
             data = {'user': user.serialize()}
@@ -87,7 +119,7 @@ class TokenList(Resource):
             data['csrf_token'] = csrf_obj.serialize()
             # set the JWT as a HttpOnly cookie
             return data, 201, {'Set-Cookie': f"access_token={token}; HttpOnly"}
-        abort(400, 'Invalid username or password.')
+        abort(400, default_message)
 
     def delete(self):
         response = Response(None, 204)

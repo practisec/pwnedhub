@@ -18,9 +18,9 @@ def get_bearer_token(headers):
         return auth_header.split()[1]
     return None
 
-def encode_jwt(user_id, claims={}):
+def encode_jwt(user_id, claims={}, expire_delta={'days': 1, 'seconds': 0}):
     payload = {
-        'exp': datetime.utcnow() + timedelta(days=1, seconds=0),
+        'exp': datetime.utcnow() + timedelta(**expire_delta),
         'iat': datetime.utcnow(),
         'sub': user_id
     }

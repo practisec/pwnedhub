@@ -35,7 +35,7 @@ Vue.component('signup-form', {
             <textarea name="signature" v-model="signupForm.signature"></textarea>
             <label for="password">Password: *</label>
             <password-field name="password" v-model="signupForm.password"></password-field>
-            <input type="button" v-on:click="doSignup" value="Signup" />
+            <input type="button" v-on:click="doSignup" value="Sign me up!" />
         </div>
     `,
     data: function() {

@@ -10,6 +10,11 @@ const routes = [
         component: Login,
     },
     {
+        path: "/mfa",
+        name: "mfa",
+        component: Mfa,
+    },
+    {
         path: "/reset",
         name: "reset-init",
         component: ResetInit,
@@ -98,8 +103,8 @@ router.beforeEach((to, from, next) => {
             next();
         }
     } else {
-        // the login view uses similar logic to handle routing of the nextUrl parameter
-        // both must be updated if there is a change
+        // the login/mfa views use similar logic to handle routing of the nextUrl parameter
+        // all must be updated if there is a change
         if (store.getters.isLoggedIn) {
             if (store.getters.isAdmin) {
                 next({ name: "users" });
