@@ -55,10 +55,11 @@ function toggleShow() {
 
 window.addEventListener("load", function() {
     // flash on load if needed
-    var error = document.URL.indexOf("error=");
-    if (error !== -1) {
-        var msg = decodeURI(document.URL.substring(error+6, document.URL.length)).replace(/\+/g, " ");
-        showFlash(msg);
+    var queryString = window.location.search;
+    var urlParams = new URLSearchParams(queryString);
+    var error = urlParams.get('error')
+    if (error !== null) {
+        showFlash(error);
     }
 
     // event handler for tab navigation
