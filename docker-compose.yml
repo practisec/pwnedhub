@@ -17,6 +17,20 @@ services:
         depends_on:
             - db
 
+    sso:
+        build: ./pwnedsso
+        image: pwnedsso-dev
+        expose:
+            - 5005
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - CONFIG=Production
+            - DATABASE_HOST=db
+        command: gunicorn --bind 0.0.0.0:5005 pwnedsso.wsgi:app --error-logfile - --log-level DEBUG
+        depends_on:
+            - db
+
     spa:
         build: ./pwnedspa
         image: pwnedspa-dev
@@ -96,6 +110,7 @@ services:
             - ./proxy/proxy_params:/etc/nginx/proxy_params:ro
         depends_on:
             - app
+            - sso
             - spa
             - api
             - graph

@@ -12,7 +12,11 @@
         </div>
     </div>
 {% else %}
-    <form class="flex-column form" action="{{ url_for('auth.authenticate', next=next) }}" method="post">
+    {% if app_config('SSO_ENABLE') %}
+    <form class="flex-column form" action="http://sso.pwnedhub.com/authenticate{% if next %}?next={{ next }}{% endif %}" method="post">
+    {% else %}
+    <form class="flex-column form" action="{{ url_for('auth.login', next=next) }}" method="post">
+    {% endif %}
         <label for="username">Username:</label>
         <input name="username" type="text" />
         <label for="password">Password:</label>

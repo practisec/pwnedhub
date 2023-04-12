@@ -2,8 +2,5 @@ flask
 flask-mysqldb
 flask-sqlalchemy
 gunicorn
-pyjwt
-lxml
-markdown
 mysqlclient
-requests
+pyjwt

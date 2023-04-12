@@ -46,6 +46,10 @@
                             <input name="oidc_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('OIDC_ENABLE') %}checked {% endif %}/>
                             <span>OpenID Connect Authentication (PwnedHub) - {% if not app_config('OIDC_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
                         </label>
+                        <label for="sso_enable">
+                            <input name="sso_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('SSO_ENABLE') %}checked {% endif %}/>
+                            <span>SSO Authentication (PwnedHub) - {% if not app_config('SSO_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                        </label>
                         <label for="ctf_mode">
                             <input name="ctf_mode" type="checkbox" onchange="this.form.submit()" {% if app_config('CTF_MODE') %}checked {% endif %}/>
                             <span>CTF Mode (Warning: Disables this interface!) - {% if not app_config('CTF_MODE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>

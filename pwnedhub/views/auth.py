@@ -8,6 +8,7 @@ from pwnedhub.utils import xor_encrypt
 from pwnedhub.validators import is_valid_password
 from hashlib import md5
 from secrets import token_urlsafe
+import jwt
 import os
 
 auth = Blueprint('auth', __name__)
@@ -55,43 +56,53 @@ def register():
             flash('Username already exists.')
     return render_template('register.html', questions=QUESTIONS)
 
-@auth.route('/login')
+@auth.route('/login', methods=['GET', 'POST'])
+@validate(['username', 'password'])
 def login():
     # redirect to home if already logged in
     if session.get('user_id'):
         return redirect(url_for('core.home'))
+    if request.method == 'POST':
+        username = request.form['username']
+        # introduce an artificial delay to simulate multiple database queries if the username is valid
+        if User.get_by_username(username):
+            import time
+            time.sleep(0.1)
+        if Config.get_value('SQLI_PROTECT'):
+            user = User.get_by_username(username)
+            if user and not user.check_password(request.form['password']):
+                user = None
+        else:
+            password_hash = xor_encrypt(request.form['password'], current_app.config['SECRET_KEY'])
+            query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
+            user = db.session.execute(query).first()
+            if user: user = User(**user)
+        if user and user.is_enabled:
+            init_session(user.id)
+            return redirect(request.args.get('next') or url_for('core.home'))
+        return redirect(url_for('auth.login', error='Invalid username or password.', next=request.args.get('next')))
     return render_template('login.html', next=request.args.get('next'))
-
-@auth.route('/authenticate', methods=['POST'])
-@validate(['username', 'password'])
-def authenticate():
-    # redirect to home if already logged in
-    if session.get('user_id'):
-        return redirect(url_for('core.home'))
-    username = request.form['username']
-    # introduce an artificial delay to simulate multiple database queries if the username is valid
-    if User.get_by_username(username):
-        import time
-        time.sleep(0.1)
-    if Config.get_value('SQLI_PROTECT'):
-        user = User.get_by_username(username)
-        if user and not user.check_password(request.form['password']):
-            user = None
-    else:
-        password_hash = xor_encrypt(request.form['password'], current_app.config['SECRET_KEY'])
-        query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
-        user = db.session.execute(query).first()
-        if user: user = User(**user)
-    if user and user.status == 1:
-        init_session(user.id)
-        return redirect(request.args.get('next') or url_for('core.home'))
-    return redirect(url_for('auth.login', error='Invalid username or password.'))
 
 @auth.route('/logout')
 def logout():
     session.pop('user_id', None)
     session.clear()
     return redirect(url_for('core.index'))
+
+@auth.route('/sso/login')
+def sso_login():
+    id_token = request.args.get('id_token')
+    if not id_token:
+        return redirect(url_for('auth.login', error='Missing ID token.', next=request.args.get('next')))
+    try:
+        payload = jwt.decode(id_token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+    except:
+        return redirect(url_for('auth.login', error='Invalid ID token.', next=request.args.get('next')))
+    user = User.get_by_username(payload['sub'])
+    if user and user.is_enabled:
+        init_session(user.id)
+        return redirect(request.args.get('next') or url_for('core.home'))
+    return redirect(url_for('auth.login', error='Invalid username or password.', next=request.args.get('next')))
 
 @auth.route('/oauth/login/<string:provider>')
 def oauth_login(provider):
@@ -135,7 +146,7 @@ def oauth_callback(provider):
             db.session.add(user)
             db.session.commit()
             create_welcome_message(user)
-        if user and user.status == 1:
+        if user and user.is_enabled:
             # authenticate the user
             init_session(user.id)
             return redirect(request.args.get('next') or url_for('core.home'))
