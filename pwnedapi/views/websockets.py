@@ -37,12 +37,8 @@ def connect_handler():
     # preload users
     users = [u.serialize() for u in User.query.all()]
     emit('loadUsers', {'users': users})
-    # join membered rooms
-    rooms = [r.serialize_with_context(session.user) for r in session.user.rooms]
-    for room in rooms:
-        join_room(room['name'])
-        emit('log', f"Joined room: id={room['id']}, name={room['name']}")
     # preload rooms
+    rooms = [r.serialize_with_context(session.user) for r in session.user.rooms]
     emit('loadRooms', {'rooms': rooms})
     # load the default room
     emit('loadRoom', rooms[0])
@@ -66,9 +62,6 @@ def create_room_handler(data):
             user.create_membership(room)
         # TODO: if private, emit socket message for all users to update rooms
         emit('log', f"Created room: id={room.id}, name={room.name}")
-        # join created room
-        join_room(room.name)
-        emit('log', f"Joined room: id={room.id}, name={room.name}")
         # reload rooms
         session.user = User.query.get(current_user_id)
         rooms = [r.serialize_with_context(session.user) for r in session.user.rooms]
@@ -76,7 +69,6 @@ def create_room_handler(data):
     # load the room
     emit('loadRoom', room.serialize_with_context(session.user))
 
-#unused
 @socketio.on('join-room')
 def join_room_handler(data):
     join_room(data['name'])

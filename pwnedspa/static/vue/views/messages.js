@@ -41,8 +41,13 @@ var Messaging = Vue.component("messaging", {
             console.log("Users preloaded.");
         },
         loadRooms(data) {
-            this.rooms = data.rooms
-            console.log("Rooms preloaded.");
+            data.rooms.forEach(room => {
+                if (!this.rooms.find(e => e.id === room.id)) {
+                    this.rooms.push(room);
+                    console.log(`Preloaded room: id=${room.id}, name=${room.name}`);
+                    this.$socket.client.emit("join-room", room);
+                }
+            })
         },
         loadRoom(data) {
             this.loadRoom(data);
