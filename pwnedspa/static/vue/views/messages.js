@@ -1,12 +1,14 @@
 var Messaging = Vue.component("messaging", {
     template: `
         <div class="flex-row messaging">
-            <rooms v-bind:selectedRoom="room" v-bind:taggedRooms="taggedRooms" v-on:load="loadRoom"></rooms>
+            <rooms v-bind:users="users" v-bind:rooms="rooms" v-bind:selectedRoom="room" v-bind:taggedRooms="taggedRooms" v-on:load="loadRoom"></rooms>
             <messages v-if="room.id" v-bind:room="room" v-on:tag="tagRoom"></messages>
         </div>
     `,
     data: function() {
         return {
+            users: [],
+            rooms: [],
             room: {},
             taggedRooms: [],
         }
@@ -15,6 +17,7 @@ var Messaging = Vue.component("messaging", {
         loadRoom: function(room) {
             this.room = room;
             this.untagRoom(room);
+            console.log(`Loaded room: id=${room.id}, name=${room.name}`);
         },
         untagRoom: function(room) {
             var index = this.taggedRooms.findIndex(r => r.id === room.id)
@@ -33,6 +36,17 @@ var Messaging = Vue.component("messaging", {
         log(data) {
             console.log(data);
         },
+        loadUsers(data) {
+            this.users = data.users.filter(user => user.id != store.getters.getUserInfo.id);
+            console.log("Users preloaded.");
+        },
+        loadRooms(data) {
+            this.rooms = data.rooms
+            console.log("Rooms preloaded.");
+        },
+        loadRoom(data) {
+            this.loadRoom(data);
+        },
     },
     created: function() {
         // if using Bearer authentication, send the auth token as query string
@@ -50,6 +64,8 @@ var Messaging = Vue.component("messaging", {
 
 Vue.component("rooms", {
     props: {
+        rooms: Array,
+        users: Array,
         selectedRoom: Object,
         taggedRooms: Array,
     },
@@ -70,8 +86,6 @@ Vue.component("rooms", {
     `,
     data: function() {
         return {
-            rooms: [],
-            users: [],
             menuOpen: false,
         }
     },
@@ -85,68 +99,18 @@ Vue.component("rooms", {
         toggleMenu: function() {
             this.menuOpen = !this.menuOpen;
         },
-        joinRooms: function() {
-            this.rooms.forEach(room => {
-                this.$socket.client.emit("join-room", room);
-            })
-        },
-        getRooms: function() {
-            fetch(store.getters.getApiUrl+"/rooms", {
-                credentials: "include",
-            })
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                this.rooms = json.rooms;
-                this.joinRooms();
-                // auto-join default room on load
-                this.loadRoom(this.rooms[0]);
-            })
-            .catch(error => store.dispatch("createToast", error));
-        },
-        getUsers: function() {
-            fetch(store.getters.getApiUrl+"/users", {
-                credentials: "include",
-            })
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                this.users = json.users.filter(user => user.id != store.getters.getUserInfo.id);
-            })
-            .catch(error => store.dispatch("createToast", error));
-        },
         loadRoom: function(room) {
             this.menuOpen = false;
             this.$emit("load", room);
         },
         createRoom: function(payload) {
-            fetch(store.getters.getApiUrl+"/rooms", {
-                credentials: "include",
-                headers: {"Content-Type": "application/json"},
-                method: "POST",
-                body: JSON.stringify(payload),
-            })
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => {
-                // don't add/join room if already exists
-                if (this.rooms.findIndex(r => r.id === json.id) === -1) {
-                    this.rooms.push(json);
-                    this.$socket.client.emit("join-room", json);
-                }
-                this.loadRoom(json);
-            })
-            .catch(error => store.dispatch("createToast", error));
+            this.$socket.client.emit("create-room", payload);
         },
         createPrivateRoom: function(user) {
             var ids = [store.getters.getUserInfo.id, user.id].sort();
             var name = ids.join(':');
             this.createRoom({name: name, private: true, members: ids});
         },
-    },
-    created: function() {
-        this.getRooms();
-        this.getUsers();
     },
 });
 

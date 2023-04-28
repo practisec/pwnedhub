@@ -295,40 +295,6 @@ class NoteInst(Resource):
 api.add_resource(NoteInst, '/notes')
 
 
-class RoomList(Resource):
-
-    @token_auth_required
-    def get(self):
-        rooms = [r.serialize_with_context(g.user) for r in g.user.rooms]
-        return {'rooms': rooms}
-
-    @token_auth_required
-    @validate_json(['name', 'private', 'members'])
-    def post(self):
-        name = request.json.get('name')
-        private = request.json.get('private')
-        members = request.json.get('members')
-        room = Room.get_by_name(name)
-        code = 200
-        if not room:
-            # create the room
-            room = Room(
-                name=name,
-                private=private,
-            )
-            db.session.add(room)
-            db.session.commit()
-            # initialize memberships
-            for member in members:
-                user = User.query.get(member)
-                user.create_membership(room)
-            code = 201
-            # TODO: if private, emit socket message for all users to update rooms
-        return room.serialize_with_context(g.user), code
-
-api.add_resource(RoomList, '/rooms')
-
-
 class RoomMessageList(Resource):
 
     @token_auth_required
