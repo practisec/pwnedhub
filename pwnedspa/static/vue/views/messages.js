@@ -84,7 +84,7 @@ Vue.component("rooms", {
                 </div>
                 <div>
                     <div class="label">Users</div>
-                    <div class="room" v-for="user in users" v-bind:key="'user-'+user.id" v-bind:user="user" v-on:click.stop="createPrivateRoom(user)">{{ user.name }}</div>
+                    <div class="room" v-for="user in users" v-bind:key="'user-'+user.id" v-bind:user="user" v-on:click.stop="createRoom(user)">{{ user.name }}</div>
                 </div>
             </div>
         </div>
@@ -108,13 +108,11 @@ Vue.component("rooms", {
             this.menuOpen = false;
             this.$emit("load", room);
         },
-        createRoom: function(payload) {
-            this.$socket.client.emit("create-room", payload);
-        },
-        createPrivateRoom: function(user) {
+        createRoom: function(user) {
             var ids = [store.getters.getUserInfo.id, user.id].sort();
             var name = ids.join(':');
-            this.createRoom({name: name, private: true, members: ids});
+            var room = {name: name, private: true, members: ids}
+            this.$socket.client.emit("create-room", room);
         },
     },
 });

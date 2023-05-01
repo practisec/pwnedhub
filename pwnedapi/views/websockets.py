@@ -1,5 +1,5 @@
 from flask import request, current_app, session
-from flask_socketio import emit, join_room, leave_room
+from flask_socketio import emit, join_room, leave_room, rooms as joined_rooms
 from pwnedapi.models import Config, User, Message, Room
 from pwnedapi import socketio, db
 from werkzeug.exceptions import Forbidden
@@ -71,7 +71,8 @@ def create_room_handler(data):
 
 @socketio.on('join-room')
 def join_room_handler(data):
-    join_room(data['name'])
+    if data['name'] not in joined_rooms():
+        join_room(data['name'])
     emit('log', f"Joined room: id={data['id']}, name={data['name']}")
 
 # unused
