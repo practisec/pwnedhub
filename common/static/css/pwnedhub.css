@@ -711,12 +711,3 @@ nav .nav .top-menu li:hover .sub-menu {
 }
 
 /* end */
-
-/* FOUC fix */
-
-html {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* end */

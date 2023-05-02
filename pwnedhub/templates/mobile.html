@@ -3,10 +3,12 @@
 <head>
     <title>PwnedHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>html{visibility:hidden;opacity:0;}</style><!-- FOUC fix 1/2 -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton-flexbox.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-flex.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-utility.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub.css') }}">
+    <style>html{visibility:visible;opacity:1;}</style><!-- FOUC fix 2/2 -->
 </head>
 <body>
     <section>
