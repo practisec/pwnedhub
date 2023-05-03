@@ -39,6 +39,7 @@ PwnedHub is a vulnerable application designed exclusively for [PractiSec trainin
 
     ```
     127.0.0.1   www.pwnedhub.com
+    127.0.0.1   sso.pwnedhub.com
     127.0.0.1   test.pwnedhub.com
     127.0.0.1   api.pwnedhub.com
     127.0.0.1   graph.pwnedhub.com
@@ -53,54 +54,6 @@ PwnedHub is a vulnerable application designed exclusively for [PractiSec trainin
     * http://graph.pwnedhub.com/voyager
     * Postman collection files for the REST and GraphQL APIs are available in the Github repository under the "resources" folder.
 8. When done using PwnedHub, clean up the Docker environment with the following command:
-
-    ```
-    docker compose down
-    ```
-
-## Development Usage
-
-The repository includes launch scripts for each part of the application. The scripts still use Docker, but run each service on a development server without a reverse proxy. This allows for auto-reloading and interactive debugging.
-
-1. Conduct steps 1-4 and 6 above.
-2. Start the PwnedHub legacy application.
-
-    ```
-    $ docker compose run -p 5000:5000 app python ./pwnedhub.py
-    ```
-
-3. Open a new tab and start the PwnedHub 2.0 application.
-
-    ```
-    $ docker compose run -p 5001:5001 app python ./pwnedspa.py
-    ```
-
-4. Open a new tab and start the PwnedHub API.
-
-    ```
-    $ docker compose run -p 5002:5002 app python ./pwnedapi.py
-    ```
-
-5. Open a new tab and start the PwnedHub GraphQL API.
-
-    ```
-    $ docker compose run -p 5004:5004 app python ./pwnedgraph.py
-    ```
-
-6. Open a new tab and start the PwnedConfig application.
-
-    ```
-    $ docker compose run -p 5003:5003 app python ./pwnedconfig.py
-    ```
-
-7. Visit the various applications and API interfaces:
-    * http://www.pwnedhub.com:5000
-    * http://test.pwnedhub.com:5001
-    * http://api.pwnedhub.com:5002/swaggerui/index.html
-    * http://graph.pwnedhub.com:5004/graphql
-    * http://graph.pwnedhub.com:5004/voyager
-    * Postman collection files for the REST and GraphQL APIs are available in the Github repository under the "resources" folder.
-8. When done using PwnedHub, close all tabs and clean up the Docker environment with the following command:
 
     ```
     docker compose down
