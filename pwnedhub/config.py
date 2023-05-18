@@ -8,6 +8,7 @@ class BaseConfig(object):
     SECRET_KEY = '$ecretKey'
     # prevents connection pool exhaustion but disables interactive debugging
     PRESERVE_CONTEXT_ON_EXCEPTION = False
+    MESSAGES_PER_PAGE = 5
 
     # database
     DATABASE_HOST = os.environ.get('DATABASE_HOST', 'localhost')

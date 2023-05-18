@@ -218,7 +218,7 @@ def mail_delete(mid):
 @core.route('/messages/page/<int:page>')
 @login_required
 def messages(page=1):
-    messages = Message.query.order_by(Message.created.asc()).paginate(page=page, per_page=10)
+    messages = Message.query.order_by(Message.created.asc()).paginate(page=page, per_page=current_app.config['MESSAGES_PER_PAGE'])
     return render_template('messages.html', messages=messages)
 
 @core.route('/messages/create', methods=['POST'])
@@ -229,7 +229,7 @@ def messages_create():
     msg = Message(comment=message, author=g.user)
     db.session.add(msg)
     db.session.commit()
-    last_page = Message.query.order_by(Message.created.asc()).paginate(page=None, per_page=10).pages
+    last_page = Message.query.order_by(Message.created.asc()).paginate(page=None, per_page=current_app.config['MESSAGES_PER_PAGE']).pages
     return redirect(url_for('core.messages', page=last_page))
 
 @core.route('/messages/delete/<int:mid>')
