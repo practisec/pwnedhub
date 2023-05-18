@@ -4,7 +4,7 @@
     <div><h5>{{ letter.subject }}</h5></div>
     <div class="sender flex-row flex-align-center">
         <div class="avatar"><a href="{{ url_for('core.profile_view', uid=letter.sender.id) }}"><img class="circular bordered-dark" src="{{ letter.sender.avatar_or_default|safe }}" title="Avatar" /></a></div>
-        <div><b>{{ letter.sender.name }} @ {{ letter.created_as_string }}</b></div>
+        <div><b>{{ letter.sender.name }} &#8594; {{ letter.receiver.name }} @ {{ letter.created_as_string }}</b></div>
     </div>
     <div class="content">{{ letter.content|safe }}</div>
     <hr>
