@@ -25,7 +25,7 @@ var mdConverter = new showdown.Converter();
 view.addEventListener("click", function() {
     var text = notes.value;
     var html = mdConverter.makeHtml(text);
-    document.getElementById("pane-2").innerHTML = html;
+    $("#pane-2").html(DOMPurify.sanitize(html));
 });
 
 // register an event to save the notes when focus is lost
