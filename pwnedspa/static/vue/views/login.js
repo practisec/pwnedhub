@@ -103,7 +103,7 @@ Vue.component('login-form', {
             return Promise.resolve(response);
         },
         handleLoginSuccess: function(json) {
-            if (json.access_token && json.user) {
+            if (json.user) {
                 // store auth data as necessary
                 store.dispatch("setAuthInfo", json);
                 // route appropriately
