@@ -25,7 +25,7 @@ class BaseConfig(object):
 
     # cors
     CORS_SUPPORTS_CREDENTIALS = True
-    ALLOWED_ORIGINS = ['http://www.pwnedhub.com:5000', 'http://test.pwnedhub.com:5001']
+    ALLOWED_ORIGINS = ['http://www.pwnedhub.com', 'http://test.pwnedhub.com']
 
     # other
     INBOX_PATH = os.environ.get('INBOX_PATH', '/tmp/inbox')
@@ -48,4 +48,4 @@ class Test(object):
 
 class Production(BaseConfig):
 
-    ALLOWED_ORIGINS = ['http://www.pwnedhub.com', 'http://test.pwnedhub.com']
+    pass

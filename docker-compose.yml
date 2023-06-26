@@ -6,28 +6,29 @@ services:
         build: ./pwnedhub
         image: pwnedhub-dev
         expose:
-            - 5000
+            - 80
         volumes:
             - .:/pwnedhub
             - ~/tmp:/tmp # local mapping to log location
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
-        command: gunicorn --bind 0.0.0.0:5000 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
+            - redis
 
     sso:
         build: ./pwnedsso
         image: pwnedsso-dev
         expose:
-            - 5005
+            - 80
         volumes:
             - .:/pwnedhub
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
-        command: gunicorn --bind 0.0.0.0:5005 pwnedsso.wsgi:app --error-logfile - --log-level DEBUG
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedsso.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
 
@@ -35,18 +36,18 @@ services:
         build: ./pwnedspa
         image: pwnedspa-dev
         expose:
-            - 5001
+            - 80
         volumes:
             - .:/pwnedhub
         environment:
             - CONFIG=Production
-        command: gunicorn --bind 0.0.0.0:5001 pwnedspa.wsgi:app --error-logfile - --log-level DEBUG
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedspa.wsgi:app --error-logfile - --log-level DEBUG
 
     api:
         build: ./pwnedapi
         image: pwnedapi-dev
         expose:
-            - 5002
+            - 80
         volumes:
             - .:/pwnedhub
             - ~/inbox:/tmp/inbox # local mapping to INBOX_PATH
@@ -55,7 +56,7 @@ services:
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
             - INBOX_PATH=/tmp/inbox # writable location for Gunicorn
-        command: gunicorn --bind 0.0.0.0:5002 --worker-class eventlet --workers 1 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
+        command: gunicorn --workers 1 --worker-class eventlet --bind 0.0.0.0:80 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
             - redis
@@ -64,13 +65,13 @@ services:
         build: ./pwnedgraph
         image: pwnedgraph-dev
         expose:
-            - 5004
+            - 80
         volumes:
             - .:/pwnedhub
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
-        command: gunicorn --bind 0.0.0.0:5004 pwnedgraph.wsgi:app --error-logfile - --log-level DEBUG
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedgraph.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
 
@@ -78,13 +79,13 @@ services:
         build: ./pwnedconfig
         image: pwnedconfig-dev
         expose:
-            - 5003
+            - 80
         volumes:
             - .:/pwnedhub
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
-        command: gunicorn --bind 0.0.0.0:5003 pwnedconfig.wsgi:app --error-logfile - --log-level DEBUG
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedconfig.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
 
@@ -96,7 +97,7 @@ services:
             - CONFIG=Production
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
-        command: rq worker -u redis://redis:6379/0 pwnedhub-tasks
+        command: rq worker -u redis://redis:6379/0 pwnedapi-tasks
         depends_on:
             - db
             - redis

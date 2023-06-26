@@ -22,7 +22,7 @@ class BaseConfig(object):
     CSRF_TOKEN_NAME = 'X-Csrf-Token'
 
     # other
-    API_BASE_URL = 'http://api.pwnedhub.com:5002'
+    API_BASE_URL = 'http://api.pwnedhub.com'
 
 
 class Development(BaseConfig):
@@ -38,4 +38,4 @@ class Test(object):
 
 class Production(BaseConfig):
 
-    API_BASE_URL = 'http://api.pwnedhub.com'
+    pass
