@@ -18,6 +18,12 @@ class BaseConfig(object):
     }
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # pwnedhub (for worker)
+    PWNEDHUB_HOST = os.environ.get('PWNEDHUB_HOST', 'www.pwnedhub.com')
+
+    # redis
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://')
+
     # file upload
     UPLOAD_FOLDER = '/tmp/artifacts'
     ALLOWED_EXTENSIONS = set(['txt', 'xml', 'jpg', 'png', 'gif', 'pdf'])

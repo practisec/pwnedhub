@@ -13,7 +13,23 @@ services:
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
+            - PWNEDHUB_HOST=app # host reference for app-worker
+            - REDIS_URL=redis://redis:6379/0
         command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
+        depends_on:
+            - db
+            - redis
+
+    app-worker:
+        image: pwnedhub-dev
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - CONFIG=Production
+            - DATABASE_HOST=db
+            - PWNEDHUB_HOST=app
+            - REDIS_URL=redis://redis:6379/0
+        command: rq worker -u redis://redis:6379/0 pwnedhub-tasks
         depends_on:
             - db
             - redis
@@ -61,6 +77,19 @@ services:
             - db
             - redis
 
+    api-worker:
+        image: pwnedapi-dev
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - CONFIG=Production
+            - DATABASE_HOST=db
+            - REDIS_URL=redis://redis:6379/0
+        command: rq worker -u redis://redis:6379/0 pwnedapi-tasks
+        depends_on:
+            - db
+            - redis
+
     graph:
         build: ./pwnedgraph
         image: pwnedgraph-dev
@@ -88,19 +117,6 @@ services:
         command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedconfig.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
-
-    worker:
-        image: pwnedapi-dev
-        volumes:
-            - .:/pwnedhub
-        environment:
-            - CONFIG=Production
-            - DATABASE_HOST=db
-            - REDIS_URL=redis://redis:6379/0
-        command: rq worker -u redis://redis:6379/0 pwnedapi-tasks
-        depends_on:
-            - db
-            - redis
 
     proxy:
         image: nginx:alpine

@@ -3,6 +3,8 @@ from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from urllib.parse import unquote
+from redis import Redis
+import rq
 
 db = SQLAlchemy()
 sess = Session()
@@ -13,6 +15,9 @@ def create_app(config='Development'):
     # files from the web root, allowing for robots.txt, etc.
     app = Flask(__name__, static_url_path='')
     app.config.from_object('pwnedhub.config.{}'.format(config.title()))
+
+    app.redis = Redis.from_url(app.config['REDIS_URL'])
+    app.task_queue = rq.Queue('pwnedhub-tasks', connection=app.redis)
 
     db.init_app(app)
     sess.init_app(app)

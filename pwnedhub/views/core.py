@@ -178,8 +178,18 @@ def mail_compose():
         letter = Mail(content=content, subject=subject, sender=g.user, receiver=receiver)
         db.session.add(letter)
         db.session.commit()
-        # generate automated Administrator response
         if receiver.role == 0:
+            # read mail with admin bot
+            job = current_app.task_queue.enqueue(
+                'pwnedhub.tasks.login_and_read_first_mail',
+                args=(
+                    current_app.config['PWNEDHUB_HOST'],
+                    receiver.name,
+                    receiver.username,
+                    receiver.password_as_string
+                )
+            )
+            # generate automated administrator response
             content = ADMIN_RESPONSE
             letter = Mail(content=content, subject='RE: '+subject, sender=receiver, receiver=g.user)
             db.session.add(letter)

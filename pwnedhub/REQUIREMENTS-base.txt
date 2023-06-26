@@ -7,3 +7,6 @@ lxml
 markdown
 mysqlclient
 requests
+redis
+rq
+selenium
