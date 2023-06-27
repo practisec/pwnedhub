@@ -1,6 +1,6 @@
 from adminbot.bot import bot_driver, AdminBot
 
-def login_and_read_first_mail(host, name, username, password):
+def login_and_read_first_mail(host, name, username, password, receiver_id, subject, content):
     with bot_driver() as driver:
         # login and read first mail
         admin = AdminBot(driver, host, name)
@@ -9,4 +9,5 @@ def login_and_read_first_mail(host, name, username, password):
             password=password
         )
         admin.read_mail()
+        admin.compose_mail(receiver_id, subject, content)
         admin.log_out()

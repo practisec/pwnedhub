@@ -178,23 +178,25 @@ def mail_compose():
         letter = Mail(content=content, subject=subject, sender=g.user, receiver=receiver)
         db.session.add(letter)
         db.session.commit()
-        if receiver.role == 0:
-            # read mail with admin bot
-            job = current_app.task_queue.enqueue(
-                'pwnedhub.tasks.login_and_read_first_mail',
-                args=(
-                    current_app.config['PWNEDHUB_HOST'],
-                    receiver.name,
-                    receiver.username,
-                    receiver.password_as_string
-                )
-            )
-            # generate automated administrator response
-            content = ADMIN_RESPONSE
-            letter = Mail(content=content, subject='RE: '+subject, sender=receiver, receiver=g.user)
-            db.session.add(letter)
-            db.session.commit()
         flash('Mail sent.')
+        if receiver.role == 0:
+            # determine the response content based on the original content
+            reply_content = ADMIN_RESPONSE['default']
+            if all(k in content.lower() for k in ['forgot', 'password']):
+                reply_content = ADMIN_RESPONSE['password'].format(password=g.user.password_as_string)
+            # read mail with admin bot and generate an automated response
+            current_app.task_queue.enqueue(
+                'pwnedhub.tasks.login_and_read_first_mail',
+                kwargs={
+                    'host': current_app.config['PWNEDHUB_HOST'],
+                    'name': receiver.name,
+                    'username': receiver.username,
+                    'password': receiver.password_as_string,
+                    'receiver_id': g.user.id,
+                    'subject': f"RE: {subject}",
+                    'content': reply_content
+                }
+            )
         return redirect(url_for('core.mail'))
     users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
     return render_template('mail_compose.html', users=users)

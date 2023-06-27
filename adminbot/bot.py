@@ -1,5 +1,6 @@
 ## importing library packages
 from selenium import webdriver
+from selenium.webdriver.support.ui import Select
 
 def bot_driver():
     # setup Firefox webdriver options
@@ -43,6 +44,22 @@ class BaseBot(object):
             for row in rows[:count]:
                 # click first child td to avoid bug with clicking tr elements
                 row.find_elements('xpath', '*')[0].click()
+
+    def compose_mail(self, receiver_id, subject, content):
+        print(f"[BOT] {self.name} is composing a mail.")
+        self.driver.get(f"http://{self.host}/mail/compose")
+
+        print(f"[BOT] {self.name} is setting the inputs.")
+        select_input = Select(self.driver.find_element('name', 'receiver'))
+        select_input.select_by_value(str(receiver_id))
+        subject_input = self.driver.find_element('name', 'subject')
+        subject_input.send_keys(subject)
+        content_input = self.driver.find_element('name', 'content')
+        content_input.send_keys(content)
+
+        print(f"[BOT] {self.name} is sending the mail.")
+        login_button = self.driver.find_element('xpath', '//i[@title="Send"]')
+        login_button.click()
 
     def log_out(self):
         print(f"[BOT] {self.name} is logging out.")

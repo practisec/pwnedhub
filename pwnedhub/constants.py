@@ -37,4 +37,7 @@ Happy hunting!
 
 '''
 
-ADMIN_RESPONSE = "I would be more than happy to help you with that. Unfortunately, the person responsible for that is unavailable at the moment. We'll get back with you soon. Thanks."
+ADMIN_RESPONSE = {
+    'default': 'I would be more than happy to help you with that. Unfortunately, the person responsible for that is unavailable at the moment. We\'ll get back with you soon. Thanks.',
+    'password': 'Hey no problem. We all forget our password every now and then. Your current password is {password}, but you can simply reset it using the Forgot Password link on the login page. I hope this helps. Have a great day!'
+}
