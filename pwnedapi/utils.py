@@ -1,4 +1,5 @@
 from flask import current_app, url_for
+from pwnedapi.constants import EMAIL_TEMPLATE
 from datetime import datetime, timedelta
 from hashlib import md5
 from itertools import cycle
@@ -68,7 +69,7 @@ def unfurl_url(url, headers={}):
 
 def send_email(sender, recipient, subject, body):
     # check for and create an inbox folder
-    inbox = current_app.config['INBOX_PATH']
+    inbox = f"{current_app.config['INBOX_PATH']}/{recipient}"
     if not os.path.exists(inbox):
         os.makedirs(inbox)
     # create a filename based on the subject and time stamp
@@ -76,7 +77,7 @@ def send_email(sender, recipient, subject, body):
     filename = f"{subject} {timestamp}.html".replace(' ', '_')
     # write the email to a file
     filepath = os.path.join(inbox, filename)
-    email = f"<b>From:</b> {sender}<br><br><b>To:</b> {recipient}<br><br><b>Subject:</b> {subject}<br><br><hr><br>{body}"
+    email = EMAIL_TEMPLATE.format(sender=sender, recipient=recipient, subject=subject, body=body)
     with open(filepath, 'w') as fp:
         fp.write(email)
     return filepath
