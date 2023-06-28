@@ -90,20 +90,6 @@ services:
             - db
             - redis
 
-    graph:
-        build: ./pwnedgraph
-        image: pwnedgraph-dev
-        expose:
-            - 80
-        volumes:
-            - .:/pwnedhub
-        environment:
-            - CONFIG=Production
-            - DATABASE_HOST=db
-        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedgraph.wsgi:app --error-logfile - --log-level DEBUG
-        depends_on:
-            - db
-
     config:
         build: ./pwnedconfig
         image: pwnedconfig-dev
@@ -130,7 +116,6 @@ services:
             - sso
             - spa
             - api
-            - graph
             - config
 
     db:

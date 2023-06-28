@@ -445,10 +445,9 @@ def diagnostics():
     log_stats = []
     log_files = [
         '/tmp/gunicorn-pwnedapi.log',
-        '/tmp/gunicorn-pwnedconfig.log',
         '/tmp/gunicorn-pwnedhub.log',
         '/tmp/gunicorn-pwnedspa.log',
-        '/tmp/gunicorn-pwnedgraph.log',
+        '/tmp/gunicorn-pwnedsso.log',
         '/var/log/nginx/access.log',
     ]
     for log_file in log_files:

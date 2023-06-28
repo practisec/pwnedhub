@@ -42,7 +42,6 @@ PwnedHub is a vulnerable application designed exclusively for [PractiSec trainin
     127.0.0.1   sso.pwnedhub.com
     127.0.0.1   test.pwnedhub.com
     127.0.0.1   api.pwnedhub.com
-    127.0.0.1   graph.pwnedhub.com
     127.0.0.1   config.pwnedhub.com
     ```
 
@@ -50,9 +49,7 @@ PwnedHub is a vulnerable application designed exclusively for [PractiSec trainin
     * http://www.pwnedhub.com
     * http://test.pwnedhub.com
     * http://api.pwnedhub.com/swaggerui/index.html
-    * http://graph.pwnedhub.com/graphql
-    * http://graph.pwnedhub.com/voyager
-    * Postman collection files for the REST and GraphQL APIs are available in the Github repository under the "resources" folder.
+    * Postman collection files for the REST API are available in the Github repository under the "resources" folder.
 8. When done using PwnedHub, clean up the Docker environment with the following command:
 
     ```
