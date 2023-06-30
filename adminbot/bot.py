@@ -1,13 +1,15 @@
 ## importing library packages
 from selenium import webdriver
+from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.support.ui import Select
 
 def bot_driver():
     # setup Firefox webdriver options
-    options=webdriver.FirefoxOptions()
-    options.headless = True
+    options = webdriver.FirefoxOptions()
+    options.add_argument('--headless')
     # inizialize Firefox webdriver
-    driver = webdriver.Firefox(options=options)
+    service = FirefoxService(log_path='/tmp/geckodriver.log')
+    driver = webdriver.Firefox(options=options, service=service)
     driver.maximize_window()
     driver.implicitly_wait(5) # removes the need for sleep calls
     return driver
