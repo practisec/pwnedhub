@@ -13,23 +13,9 @@ services:
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
-            - PWNEDHUB_HOST=app # host reference for app-worker
+            - PWNEDHUB_HOST=app # host reference for bot-worker
             - REDIS_URL=redis://redis:6379/0
         command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
-        depends_on:
-            - db
-            - redis
-
-    app-worker:
-        image: pwnedhub-dev
-        volumes:
-            - .:/pwnedhub
-        environment:
-            - CONFIG=Production
-            - DATABASE_HOST=db
-            - PWNEDHUB_HOST=app
-            - REDIS_URL=redis://redis:6379/0
-        command: rq worker -u redis://redis:6379/0 pwnedhub-tasks
         depends_on:
             - db
             - redis
@@ -103,6 +89,15 @@ services:
         command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedconfig.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
+
+    bot-worker:
+        build: ./adminbot
+        image: adminbot-dev
+        volumes:
+            - .:/pwnedhub
+        command: rq worker -u redis://redis:6379/0 adminbot-tasks
+        depends_on:
+            - redis
 
     proxy:
         image: nginx:alpine

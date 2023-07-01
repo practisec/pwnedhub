@@ -186,7 +186,7 @@ def mail_compose():
                 reply_content = ADMIN_RESPONSE['password'].format(password=g.user.password_as_string)
             # read mail with admin bot and generate an automated response
             current_app.task_queue.enqueue(
-                'pwnedhub.tasks.login_and_read_first_mail',
+                'adminbot.tasks.login_and_read_first_mail',
                 kwargs={
                     'host': current_app.config['PWNEDHUB_HOST'],
                     'name': receiver.name,

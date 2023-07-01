@@ -1,7 +1,7 @@
 FROM python:3.10-alpine
 
-ENV BUILD_DEPS="build-base gcc libc-dev libxslt-dev mariadb-dev"
-ENV RUNTIME_DEPS="libxslt mariadb-connector-c-dev"
+ENV BUILD_DEPS=""
+ENV RUNTIME_DEPS="firefox"
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1

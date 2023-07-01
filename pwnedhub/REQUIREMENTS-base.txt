@@ -9,4 +9,3 @@ mysqlclient
 requests
 redis
 rq
-selenium

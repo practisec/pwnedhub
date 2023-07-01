@@ -15,7 +15,7 @@ def bot_driver():
     return driver
 
 
-class BaseBot(object):
+class HubBot(object):
 
     def __init__(self, driver, host, name):
         self.driver = driver
@@ -68,7 +68,6 @@ class BaseBot(object):
         self.driver.get(f"http://{self.host}/logout")
 
 
-class AdminBot(BaseBot):
+class Hub20Bot(object):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
