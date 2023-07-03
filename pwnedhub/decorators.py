@@ -17,8 +17,10 @@ def validate(params, method='POST'):
                         if valid:
                             break
                     if not valid:
-                        flash('Required field(s) missing.')
-                        return redirect(request.referrer)
+                        if request.referrer:
+                            flash('Required field(s) missing.')
+                            return redirect(request.referrer)
+                        abort(400)
             return func(*args, **kwargs)
         return wrapped
     return wrapper
