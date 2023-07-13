@@ -92,9 +92,6 @@ Vue.component('login-form', {
                     name: "mfa",
                     params: { nextUrl: this.$route.params.nextUrl }
                 });
-                setTimeout(function() {
-                    alert("You've got mail!");
-                }, 2000);
                 // hack to break the promise chain
                 var error = new Error();
                 error.name = 'BreakChainError';

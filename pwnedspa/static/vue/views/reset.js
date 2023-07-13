@@ -28,9 +28,6 @@ var ResetInit = Vue.component('reset-init', {
             .then(response => {
                 this.credentialForm.credential = "";
                 store.dispatch("createToast", "Password reset email sent.");
-                setTimeout(function() {
-                    alert("You've got mail!");
-                }, 2000);
             })
             .catch(error => store.dispatch("createToast", error));
         },
