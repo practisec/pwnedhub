@@ -1,13 +1,14 @@
 from adminbot.bot import bot_driver, HubBot
 
-def login_and_read_first_mail(host, name, username, password, receiver_id, subject, content):
+def login_read_first_mail_respond(name, username, password, receiver_id, subject, content):
     with bot_driver() as driver:
-        # login and read first mail
-        admin = HubBot(driver, host, name)
+        # login
+        admin = HubBot(driver, name)
         admin.log_in(
             username=username,
             password=password
         )
+        # read first mail
         admin.read_mail()
+        # respond
         admin.compose_mail(receiver_id, subject, content)
-        admin.log_out()

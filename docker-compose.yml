@@ -13,7 +13,6 @@ services:
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
-            - PWNEDHUB_HOST=app # host reference for bot-worker
             - REDIS_URL=redis://redis:6379/0
         command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
@@ -103,6 +102,14 @@ services:
         image: nginx:alpine
         ports:
             - 80:80
+        networks:
+            default:
+                aliases:
+                    - www.pwnedhub.com
+                    - sso.pwnedhub.com
+                    - test.pwnedhub.com
+                    - api.pwnedhub.com
+                    - config.pwnedhub.com
         volumes:
             - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
             - ./proxy/proxy_params:/etc/nginx/proxy_params:ro

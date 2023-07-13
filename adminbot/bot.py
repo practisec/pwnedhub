@@ -17,14 +17,13 @@ def bot_driver():
 
 class HubBot(object):
 
-    def __init__(self, driver, host, name):
+    def __init__(self, driver, name):
         self.driver = driver
-        self.host = host
         self.name = name
 
     def log_in(self, username, password):
         print(f"[BOT] {self.name} is fetching the login page.")
-        self.driver.get(f"http://{self.host}/login")
+        self.driver.get(f"http://www.pwnedhub.com/login")
 
         print(f"[BOT] {self.name} is setting the inputs.")
         username_input = self.driver.find_element('name', 'username')
@@ -38,7 +37,7 @@ class HubBot(object):
 
     def read_mail(self, count=1):
         print(f"[BOT] {self.name} is visiting their inbox.")
-        self.driver.get(f"http://{self.host}/mail")
+        self.driver.get(f"http://www.pwnedhub.com/mail")
 
         print(f"[BOT] {self.name} is clicking the first mail.")
         rows = self.driver.find_elements('xpath', '//tbody/tr')
@@ -49,7 +48,7 @@ class HubBot(object):
 
     def compose_mail(self, receiver_id, subject, content):
         print(f"[BOT] {self.name} is composing a mail.")
-        self.driver.get(f"http://{self.host}/mail/compose")
+        self.driver.get(f"http://www.pwnedhub.com/mail/compose")
 
         print(f"[BOT] {self.name} is setting the inputs.")
         select_input = Select(self.driver.find_element('name', 'receiver'))
@@ -65,7 +64,7 @@ class HubBot(object):
 
     def log_out(self):
         print(f"[BOT] {self.name} is logging out.")
-        self.driver.get(f"http://{self.host}/logout")
+        self.driver.get(f"http://www.pwnedhub.com/logout")
 
 
 class Hub20Bot(object):
