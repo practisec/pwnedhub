@@ -100,7 +100,7 @@ class SqlAlchemySessionInterface(SessionInterface):
         return binascii.hexlify(os.urandom(16)).decode()
 
     def open_session(self, app, request):
-        untrusted_sid = request.cookies.get(app.session_cookie_name)
+        untrusted_sid = request.cookies.get(app.config['SESSION_COOKIE_NAME'])
         # create a new session if the request does not include a token
         if not untrusted_sid:
             return self.session_class(sid=self._generate_sid())
@@ -135,7 +135,7 @@ class SqlAlchemySessionInterface(SessionInterface):
                 if saved_session:
                     self.db.session.delete(saved_session)
                     self.db.session.commit()
-                response.delete_cookie(app.session_cookie_name, domain=domain, path=path)
+                response.delete_cookie(app.config['SESSION_COOKIE_NAME'], domain=domain, path=path)
                 return
         httponly = self.get_cookie_httponly(app)
         secure = self.get_cookie_secure(app)
@@ -171,7 +171,7 @@ class SqlAlchemySessionInterface(SessionInterface):
             # create a permanent cookie by expiring in 10 years
             expires = datetime.utcnow() + timedelta(0, 315360000)
             response.set_cookie(
-                app.session_cookie_name,
+                app.config['SESSION_COOKIE_NAME'],
                 session.sid,
                 expires=expires,
                 httponly=httponly,

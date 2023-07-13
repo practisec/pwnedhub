@@ -8,6 +8,7 @@ from pwnedhub.utils import xor_encrypt
 from pwnedhub.validators import is_valid_password
 from hashlib import md5
 from secrets import token_urlsafe
+from sqlalchemy import select, text
 import jwt
 import os
 
@@ -74,9 +75,8 @@ def login():
                 user = None
         else:
             password_hash = xor_encrypt(request.form['password'], current_app.config['SECRET_KEY'])
-            query = "SELECT * FROM users WHERE username='"+username+"' AND password_hash='"+password_hash+"'"
-            user = db.session.execute(query).first()
-            if user: user = User(**user)
+            query = select(User).where(text("username='{}' AND password_hash='{}'".format(username, password_hash)))
+            user = db.session.execute(query).scalars().first()
         if user and user.is_enabled:
             init_session(user.id)
             return redirect(request.args.get('next') or url_for('core.home'))
@@ -166,10 +166,10 @@ def reset_flow(message):
 @validate(['username'])
 def reset_init():
     if request.method == 'POST':
-        query = "SELECT * FROM users WHERE username='{}'"
         username = request.form['username']
+        query = select(User).where(text("username='{}'".format(username)))
         try:
-            user = db.session.execute(query.format(username)).first()
+            user = db.session.execute(query).scalars().first()
         except:
             user = None
         if user:

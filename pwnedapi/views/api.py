@@ -8,6 +8,7 @@ from pwnedapi.utils import generate_code, get_bearer_token, get_unverified_jwt_p
 from pwnedapi.validators import is_valid_password, is_valid_command
 from datetime import datetime
 from secrets import token_urlsafe
+from sqlalchemy import select, text
 import jwt
 
 resources = Blueprint('resources', __name__)
@@ -376,12 +377,15 @@ class ToolInst(Resource):
 
     @token_auth_required
     def get(self, tid):
-        query = 'SELECT id, name, path, description FROM tools WHERE id='+tid
+        query = select(Tool.id, Tool.name, Tool.path, Tool.description).where(text('id={}'.format(tid)))
+        tool = {}
         try:
-            tool = db.session.execute(query).first() or {}
+            row = db.session.execute(query).first()
+            if row:
+                tool = dict(row._mapping)
         except:
-            tool = {}
-        return dict(tool)
+            pass
+        return tool
 
     @token_auth_required
     @roles_required('admin')

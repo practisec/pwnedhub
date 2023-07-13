@@ -7,6 +7,7 @@ from pwnedhub.utils import unfurl_url
 from pwnedhub.validators import is_valid_password, is_valid_command, is_valid_filename, is_valid_mimetype
 from datetime import datetime
 from lxml import etree
+from sqlalchemy import select, text
 import os
 import platform
 import subprocess
@@ -269,7 +270,7 @@ def unfurl():
         except Exception as e:
             data = {'error': 'UnfurlError', 'message': str(e)}
             status = 500
-    return jsonify(**data), status
+    return jsonify(data), status
 
 @core.route('/notes')
 @login_required
@@ -389,12 +390,15 @@ def tools():
 @login_required
 @roles_required('user')
 def tools_info(tid):
-    query = 'SELECT * FROM tools WHERE id='+tid
+    query = select(Tool.id, Tool.name, Tool.path, Tool.description).where(text('id={}'.format(tid)))
+    tool = {}
     try:
-        tool = db.session.execute(query).first() or {}
+        row = db.session.execute(query).first()
+        if row:
+            tool = dict(row._mapping)
     except:
-        tool = {}
-    return jsonify(**dict(tool))
+        pass
+    return jsonify(tool)
 
 @core.route('/tools/execute/<string:tid>', methods=['POST'])
 @login_required

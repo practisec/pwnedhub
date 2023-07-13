@@ -30,6 +30,7 @@ class BaseConfig(object):
     ALLOWED_MIMETYPES = set(['text/plain', 'application/xml', 'image/jpeg', 'image/png', 'image/gif', 'application/pdf'])
 
     # session
+    SESSION_COOKIE_NAME = 'session'
     SESSION_COOKIE_HTTPONLY = False
     PERMANENT_SESSION_LIFETIME = 3600 # 1 hour
 
