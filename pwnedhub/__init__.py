@@ -17,7 +17,7 @@ def create_app(config='Development'):
     app.config.from_object('pwnedhub.config.{}'.format(config.title()))
 
     app.redis = Redis.from_url(app.config['REDIS_URL'])
-    app.task_queue = rq.Queue('adminbot-tasks', connection=app.redis)
+    app.bot_task_queue = rq.Queue('adminbot-tasks', connection=app.redis)
 
     db.init_app(app)
     app.config['SESSION_SQLALCHEMY'] = db

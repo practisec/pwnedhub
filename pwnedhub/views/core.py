@@ -186,8 +186,8 @@ def mail_compose():
             if all(k in content.lower() for k in ['forgot', 'password']):
                 reply_content = ADMIN_RESPONSE['password'].format(password=g.user.password_as_string)
             # read mail with admin bot and generate an automated response
-            current_app.task_queue.enqueue(
-                'adminbot.tasks.login_read_first_mail_respond',
+            current_app.bot_task_queue.enqueue(
+                'adminbot.tasks.www_login_read_first_mail_respond',
                 kwargs={
                     'name': receiver.name,
                     'username': receiver.username,

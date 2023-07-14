@@ -4,6 +4,7 @@ from pwnedapi.models import Config, User, Message, Room
 from pwnedapi import socketio, db
 from werkzeug.exceptions import Forbidden
 import jwt
+import re
 import traceback
 
 def parse_jwt():
@@ -73,6 +74,25 @@ def create_room_handler(data):
 def join_room_handler(data):
     if data['name'] not in joined_rooms():
         join_room(data['name'])
+    # send a message to the joined room with admin bot
+    # if the room is private and the user is not a member
+    match = re.match(r'(\d+):(\d+)', data['name'])
+    if match and str(session.user.id) not in match.group(1, 2):
+        sender = User.query.get(int(match.group(1)))
+        receiver = User.query.get(int(match.group(2)))
+        if sender and receiver:
+            current_app.bot_task_queue.enqueue(
+                'adminbot.tasks.test_login_send_private_message',
+                kwargs={
+                    'name': sender.name,
+                    'username': sender.username,
+                    'password': sender.password_as_string,
+                    'email': sender.email,
+                    'inbox_path': current_app.config['INBOX_PATH'],
+                    'receiver_name': receiver.name,
+                    'message': 'Do you ever get the feeling that someone is reading our private messages?'
+                }
+            )
     emit('log', f"Joined room: id={data['id']}, name={data['name']}")
 
 # unused

@@ -51,7 +51,7 @@ services:
             - 80
         volumes:
             - .:/pwnedhub
-            - ~/inbox:/tmp/inbox # local mapping to INBOX_PATH
+            - ~/tmp/inbox:/tmp/inbox # local mapping to INBOX_PATH
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
@@ -94,6 +94,7 @@ services:
         image: adminbot-dev
         volumes:
             - .:/pwnedhub
+            - ~/tmp/inbox:/tmp/inbox
         command: rq worker -u redis://redis:6379/0 adminbot-tasks
         depends_on:
             - redis

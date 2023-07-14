@@ -16,7 +16,8 @@ def create_app(config='Development'):
     app.config.from_object('pwnedapi.config.{}'.format(config.title()))
 
     app.redis = Redis.from_url(app.config['REDIS_URL'])
-    app.task_queue = rq.Queue('pwnedapi-tasks', connection=app.redis)
+    app.api_task_queue = rq.Queue('pwnedapi-tasks', connection=app.redis)
+    app.bot_task_queue = rq.Queue('adminbot-tasks', connection=app.redis)
 
     def is_allowed_origin(response):
         for k, v in response.headers:
