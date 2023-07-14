@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
@@ -8,10 +9,12 @@ import re
 
 def bot_driver():
     # setup Firefox webdriver options
-    options = webdriver.FirefoxOptions()
-    options.add_argument('--headless')
+    options = FirefoxOptions()
+    options.add_argument('-headless')
+    options.log.level = 'trace'
+    options.set_preference('devtools.console.stdout.content', True)
     # inizialize Firefox webdriver
-    service = FirefoxService(log_path='/tmp/geckodriver.log')
+    service = FirefoxService(log_path='/tmp/geckodriver.log', service_args=['--log', 'trace'])
     driver = webdriver.Firefox(options=options, service=service)
     driver.maximize_window()
     driver.implicitly_wait(5) # removes the need for sleep calls
@@ -25,7 +28,7 @@ class BaseBot(object):
         self.name = name
 
     def debug(self, s):
-        print(f"[{self.__class__.__name__}] [{self.name}] {s}")
+        print(f"[{self.__class__.__name__}] [{self.name}] [{self.driver.current_url}] {s}")
 
 
 class HubBot(BaseBot):

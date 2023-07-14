@@ -1,5 +1,4 @@
 .DS_Store
-geckodriver.log
 *.pyc
 *.db
 *sublime*
