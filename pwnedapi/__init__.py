@@ -55,3 +55,9 @@ def create_app(config='Development'):
     from pwnedapi.views import websockets
 
     return app, socketio
+
+def init_db():
+    app, socketio = create_app('Production')
+    with app.app_context():
+        db.create_all()
+    print('Database initialized.')

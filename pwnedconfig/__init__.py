@@ -23,3 +23,9 @@ def create_app(config='Development'):
     app.register_blueprint(core)
 
     return app
+
+def init_db():
+    app = create_app('Production')
+    with app.app_context():
+        db.create_all()
+    print('Database initialized.')
