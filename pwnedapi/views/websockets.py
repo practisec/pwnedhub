@@ -3,9 +3,22 @@ from flask_socketio import emit, join_room, leave_room, rooms as joined_rooms
 from pwnedapi.models import Config, User, Message, Room
 from pwnedapi import socketio, db
 from werkzeug.exceptions import Forbidden
+import hashlib
 import jwt
-import re
 import traceback
+
+# global store for all websocket client sids (rooms names)
+clients = {}
+
+def create_room_name(member_ids):
+    # sort ids to make the name consistent regardless of how the ids are provided
+    member_ids.sort()
+    # create seed date for the hash
+    seed = ':'.join([str(i) for i in member_ids])
+    # create the hash digest
+    digest =  hashlib.sha1(seed.encode()).hexdigest()
+    # return an abbreviated value
+    return digest[:8]
 
 def parse_jwt():
     request.jwt = {}
@@ -34,65 +47,78 @@ def connect_handler():
     load_user()
     if not session.user:
         return False
+    # add client sid to global store
+    clients[session.user.id] = request.sid
     emit('log', f"Socket connected.")
     # preload users
     users = [u.serialize() for u in User.query.all()]
     emit('loadUsers', {'users': users})
     # preload rooms
-    rooms = [r.serialize_with_context(session.user) for r in session.user.rooms]
+    rooms = [r.serialize(session.user) for r in session.user.rooms]
     emit('loadRooms', {'rooms': rooms})
     # load the default room
-    emit('loadRoom', rooms[0])
+    default_room = rooms[0]
+    emit('loadRoom', default_room)
+
+@socketio.on('disconnect')
+def disconnect_handler():
+    # remove client sid from global store
+    del clients[session.user.id]
 
 @socketio.on('create-room')
 def create_room_handler(data):
     # needed to re-establish session.user after commit
     current_user_id = session.user.id
-    room = Room.get_by_name(data['name'])
+    name = create_room_name(data['member_ids'])
+    room = Room.get_by_name(name)
     if not room:
         # create the room
         room = Room(
-            name=data['name'],
+            name=name,
             private=data['private'],
         )
         db.session.add(room)
         db.session.commit()
-        # initialize memberships
-        for member in data['members']:
-            user = User.query.get(member)
-            user.create_membership(room)
-        # TODO: if private, emit socket message for all users to update rooms
         emit('log', f"Created room: id={room.id}, name={room.name}")
-        # reload rooms
         session.user = User.query.get(current_user_id)
-        rooms = [r.serialize_with_context(session.user) for r in session.user.rooms]
-        emit('loadRooms', {'rooms': rooms})
+        # initialize memberships
+        for member_id in data['member_ids']:
+            user = User.query.get(member_id)
+            user.create_membership(room)
+        # reload rooms
+        # must create both memberships before reloading either member
+        for member_id in data['member_ids']:
+            user = User.query.get(member_id)
+            if user.id in clients:
+                rooms = [r.serialize(user) for r in user.rooms]
+                emit('loadRooms', {'rooms': rooms}, room=clients[user.id])
     # load the room
-    emit('loadRoom', room.serialize_with_context(session.user))
+    emit('loadRoom', room.serialize(session.user))
 
 @socketio.on('join-room')
 def join_room_handler(data):
-    if data['name'] not in joined_rooms():
-        join_room(data['name'])
+    room = Room.query.get(data['id'])
+    if room.name not in joined_rooms():
+        join_room(room.name)
     # send a message to the joined room with admin bot
     # if the room is private and the user is not a member
-    match = re.match(r'(\d+):(\d+)', data['name'])
-    if match and str(session.user.id) not in match.group(1, 2):
-        sender = User.query.get(int(match.group(1)))
-        receiver = User.query.get(int(match.group(2)))
-        if sender and receiver:
-            current_app.bot_task_queue.enqueue(
-                'adminbot.tasks.test_login_send_private_message',
-                kwargs={
-                    'name': sender.name,
-                    'username': sender.username,
-                    'password': sender.password_as_string,
-                    'email': sender.email,
-                    'inbox_path': current_app.config['INBOX_PATH'],
-                    'receiver_name': receiver.name,
-                    'message': 'Do you ever get the feeling that someone is reading our private messages?'
-                }
-            )
+    if room.private:
+        if session.user.id not in [m.id for m in room.members]:
+            sender = room.members[0]
+            receiver = room.members[1]
+            if sender and receiver:
+                current_app.bot_task_queue.enqueue(
+                    'adminbot.tasks.test_login_send_private_message',
+                    kwargs={
+                        'name': sender.name,
+                        'username': sender.username,
+                        'password': sender.password_as_string,
+                        'email': sender.email,
+                        'inbox_path': current_app.config['INBOX_PATH'],
+                        'receiver_name': receiver.name,
+                        'message': 'Do you ever get the feeling that someone is reading our private messages?'
+                    }
+                )
     emit('log', f"Joined room: id={data['id']}, name={data['name']}")
 
 # unused

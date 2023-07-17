@@ -15,9 +15,12 @@ var Messaging = Vue.component("messaging", {
     },
     methods: {
         loadRoom: function(room) {
-            this.room = room;
-            this.untagRoom(room);
-            console.log(`Loaded room: id=${room.id}, name=${room.name}`);
+            // don't load the same room over itself
+            if (this.room.id !== room.id) {
+                this.room = room;
+                this.untagRoom(room);
+                console.log(`Loaded room: id=${room.id}, name=${room.name}`);
+            }
         },
         untagRoom: function(room) {
             var index = this.taggedRooms.findIndex(r => r.id === room.id)
@@ -34,7 +37,7 @@ var Messaging = Vue.component("messaging", {
     },
     sockets: {
         log(data) {
-            console.log(data);
+            console.log(`[Server] ${data}`);
         },
         loadUsers(data) {
             this.users = data.users.filter(user => user.id != store.getters.getUserInfo.id);
@@ -78,13 +81,17 @@ Vue.component("rooms", {
         <div class="rooms">
             <div class="tab" v-bind:class="{closed: !menuOpen}" v-on:click="toggleMenu"></div>
             <div class="flex-column rooms-wrapper"" v-bind:class="{closed: !menuOpen}">
-                <div>
-                    <div class="label">Rooms</div>
-                    <div class="room" v-for="room in rooms" v-bind:key="'room-'+room.id" v-bind:room="room" v-on:click.stop="loadRoom(room)" v-bind:class="{ active: isSelected(room), tagged: isTagged(room) }">{{ room.display }}</div>
+                <div v-if="channels">
+                    <div class="label">Channels</div>
+                    <div class="room" v-for="room in channels" v-bind:key="'channel-'+room.id" v-bind:room="room" v-on:click.stop="loadRoom(room)" v-bind:class="{ active: isSelected(room), tagged: isTagged(room) }">#{{ room.name }}</div>
                 </div>
-                <div>
+                <div v-if="channels">
+                    <div class="label">Directs</div>
+                    <div class="room" v-for="room in directs" v-bind:key="'channel-'+room.id" v-bind:room="room" v-on:click.stop="loadRoom(room)" v-bind:class="{ active: isSelected(room), tagged: isTagged(room) }">@{{ room.peer.name }}</div>
+                </div>
+                <div v-if="users">
                     <div class="label">Users</div>
-                    <div class="room" v-for="user in users" v-bind:key="'user-'+user.id" v-bind:user="user" v-on:click.stop="createRoom(user)">{{ user.name }}</div>
+                    <div class="room" v-for="user in filteredUsers" v-bind:key="'user-'+user.id" v-bind:user="user" v-on:click.stop="createRoom(user)">{{ user.name }}</div>
                 </div>
             </div>
         </div>
@@ -109,10 +116,25 @@ Vue.component("rooms", {
             this.$emit("load", room);
         },
         createRoom: function(user) {
-            var ids = [store.getters.getUserInfo.id, user.id].sort();
-            var name = ids.join(':');
-            var room = {name: name, private: true, members: ids}
+            var member_ids = [store.getters.getUserInfo.id, user.id];
+            var room = {private: true, member_ids: member_ids}
             this.$socket.client.emit("create-room", room);
+        },
+    },
+    computed: {
+        channels: function() {
+            return this.rooms.filter(room => { return room.private === false; })
+        },
+        directs: function() {
+            return this.rooms.filter(room => { return room.private === true; })
+        },
+        filteredUsers: function() {
+            directPeers = this.directs.map(d => d.peer)
+            return this.users.filter(object1 => {
+                return !directPeers.some(object2 => {
+                    return object1.id === object2.id;
+                });
+            });
         },
     },
 });
@@ -211,7 +233,7 @@ Vue.component("message-form", {
     },
     template: `
         <div class="flex-row flex-align-center message-form">
-            <input class="flex-grow" type="text" v-model="messageForm.comment" v-on:keyup="handleKeyPress" v-bind:placeholder="'Message '+room.display" />
+            <input class="flex-grow" type="text" v-model="messageForm.comment" v-on:keyup="handleKeyPress" v-bind:placeholder="'Message '+getPlaceholder()" />
             <button class="show" v-on:click="createMessage"><i class="fas fa-paper-plane" title="Send"></i></button>
         </div>
     `,
@@ -223,6 +245,12 @@ Vue.component("message-form", {
         }
     },
     methods: {
+        getPlaceholder: function() {
+            if (this.room.private === true) {
+                return this.room.peer.name;
+            }
+            return this.room.name
+        },
         handleKeyPress: function(event) {
             if (event.keyCode === 13) {
                 this.createMessage();

@@ -4,6 +4,11 @@ from pwnedapi.constants import ROLES, USER_STATUSES
 from pwnedapi.utils import xor_encrypt, xor_decrypt
 import datetime
 
+memberships = db.Table('memberships',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('room_id', db.Integer, db.ForeignKey('rooms.id')),
+)
+
 
 class Config(db.Model):
     __tablename__ = 'configs'
@@ -64,26 +69,6 @@ class Scan(BaseModel):
         return "<Scan '{}'>".format(self.name)
 
 
-class Membership(BaseModel):
-    __tablename__ = 'memberships'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'))
-    level = db.Column(db.Integer, nullable=False, default=1)
-    user = db.relationship("User", backref=db.backref('memberships', lazy='dynamic', cascade="all, delete-orphan"))
-    room = db.relationship("Room", backref=db.backref('memberships', lazy='dynamic', cascade="all, delete-orphan"))
-    __table_args__ = (db.UniqueConstraint('user_id', 'room_id', name='membership_id'),)
-
-    def serialize(self, include_results=False):
-        return {
-            'id': self.id,
-            'created': self.created_as_string,
-            'level': self.level,
-        }
-
-    def __repr__(self):
-        return "<Membership '{}'>".format(self.id)
-
-
 class Note(BaseModel):
     __tablename__ = 'notes'
     name = db.Column(db.String(255), nullable=False)
@@ -126,7 +111,8 @@ class Room(BaseModel):
     name = db.Column(db.String(255), nullable=False, unique=True)
     private = db.Column(db.Boolean, nullable=False)
     messages = db.relationship('Message', backref='room', lazy='dynamic')
-    members = db.relationship("User", secondary="memberships", viewonly=True, lazy='dynamic')
+    members = db.relationship('User', secondary=memberships, back_populates='rooms')
+
 
     @property
     def is_private(self):
@@ -144,22 +130,21 @@ class Room(BaseModel):
     def get_by_name(name):
         return Room.query.filter_by(name=name).first()
 
-    def serialize_with_context(self, user):
-        serialized_room = self.serialize()
-        if self.is_private:
-            peer = self.members.filter(User.id != user.id).first()
-            serialized_room['display'] = f"@{peer.name}"
-        else:
-            serialized_room['display'] = f"#{self.name}"
-        return serialized_room
+    def get_peer(self, user):
+        if user and self.is_private:
+            for member in self.members:
+                if member.id != user.id:
+                    return member
+        return None
 
-    def serialize(self):
+    def serialize(self, user=None):
+        peer = self.get_peer(user)
         return {
             'id': self.id,
             'created': self.created_as_string,
             'name': self.name,
-            'display': self.name,
             'private': self.private,
+            'peer': peer.serialize() if peer else None,
         }
 
     def __repr__(self):
@@ -206,14 +191,13 @@ class User(BaseModel):
     notes = db.relationship('Note', backref='owner', lazy='dynamic')
     scans = db.relationship('Scan', backref='owner', lazy='dynamic')
     messages = db.relationship('Message', backref='author', lazy='dynamic')
-    rooms = db.relationship("Room", secondary="memberships", viewonly=True, lazy='dynamic')
+    rooms = db.relationship('Room', secondary=memberships, back_populates='members')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # create default memberships
         for room in Room.get_public_rooms():
-            membership = Membership(user=self, room=room, level=1)
-            self.rooms.append(membership)
+            self.create_membership(room)
 
     @property
     def role_as_string(self):
@@ -251,12 +235,9 @@ class User(BaseModel):
             return True
         return False
 
-    def create_membership(self, room, level=1):
-        membership = Membership(user=self, room=room, level=level)
-        self.rooms.append(membership)
-        db.session.add(membership)
+    def create_membership(self, room):
+        self.rooms.append(room)
         db.session.commit()
-        return membership
 
     def check_password(self, password):
         if self.password_hash == xor_encrypt(password, current_app.config['SECRET_KEY']):
