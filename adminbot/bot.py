@@ -14,9 +14,10 @@ def bot_driver():
     options.log.level = 'trace'
     options.set_preference('devtools.console.stdout.content', True)
     # inizialize Firefox webdriver
-    service = FirefoxService(service_args=['--log', 'trace'])
-    # patch to fix broken logging
-    service.log_file = open('/tmp/rq-geckodriver.log', "a+", encoding="utf-8")
+    log_path = '/tmp/rq-geckodriver.log'
+    service = FirefoxService(log_path=log_path, service_args=['--log', 'trace'])
+    # monkey patch to fix broken logging
+    service.log_file = open(log_path, "a+", encoding="utf-8")
     # next release of selenium affect this patch
     # https://github.com/SeleniumHQ/selenium/commit/ab6e4f894d58bc3a0f82577e18a7e5f7d3388ccb
     driver = webdriver.Firefox(options=options, service=service)
