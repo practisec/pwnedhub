@@ -115,7 +115,7 @@ def join_room_handler(data):
                         'password': sender.password_as_string,
                         'email': sender.email,
                         'inbox_path': current_app.config['INBOX_PATH'],
-                        'receiver_name': receiver.name,
+                        'room_id': room.id,
                         'message': 'Do you ever get the feeling that someone is reading our private messages?'
                     }
                 )

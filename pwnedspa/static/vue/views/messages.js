@@ -81,15 +81,15 @@ Vue.component("rooms", {
         <div class="rooms">
             <div class="tab" v-bind:class="{closed: !menuOpen}" v-on:click="toggleMenu"></div>
             <div class="flex-column rooms-wrapper"" v-bind:class="{closed: !menuOpen}">
-                <div v-if="channels">
+                <div v-if="channels.length > 0">
                     <div class="label">Channels</div>
-                    <div class="room" v-for="room in channels" v-bind:key="'channel-'+room.id" v-bind:room="room" v-on:click.stop="loadRoom(room)" v-bind:class="{ active: isSelected(room), tagged: isTagged(room) }">#{{ room.name }}</div>
+                    <div class="room" v-for="room in channels" v-bind:id="room.id" v-bind:key="'channel-'+room.id" v-bind:room="room" v-on:click.stop="loadRoom(room)" v-bind:class="{ active: isSelected(room), tagged: isTagged(room) }">#{{ room.name }}</div>
                 </div>
-                <div v-if="channels">
+                <div v-if="directs.length > 0">
                     <div class="label">Directs</div>
-                    <div class="room" v-for="room in directs" v-bind:key="'channel-'+room.id" v-bind:room="room" v-on:click.stop="loadRoom(room)" v-bind:class="{ active: isSelected(room), tagged: isTagged(room) }">@{{ room.peer.name }}</div>
+                    <div class="room" v-for="room in directs" v-bind:id="room.id" v-bind:key="'channel-'+room.id" v-bind:room="room" v-on:click.stop="loadRoom(room)" v-bind:class="{ active: isSelected(room), tagged: isTagged(room) }">@{{ room.peer.name }}</div>
                 </div>
-                <div v-if="users">
+                <div v-if="filteredUsers.length > 0">
                     <div class="label">Users</div>
                     <div class="room" v-for="user in filteredUsers" v-bind:key="'user-'+user.id" v-bind:user="user" v-on:click.stop="createRoom(user)">{{ user.name }}</div>
                 </div>

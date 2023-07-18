@@ -122,15 +122,15 @@ class Hub20Bot(BaseBot):
             mfa_button = self.driver.find_element('xpath', '//input[@type="button" and @value="Yes, it\'s really me."]')
             mfa_button.click()
 
-    def send_private_message(self, receiver_name, message):
+    def send_private_message(self, room_id, message):
         self.debug('Visiting the Messaging view.')
         self.driver.get('http://test.pwnedhub.com/#/messaging')
 
         self.debug('Joining the room.')
-        user_divs = self.driver.find_elements('xpath', '//div[@class="room" and @user]')
-        for user_div in user_divs:
-            if user_div.text == receiver_name:
-                user_div.click()
+        room_divs = self.driver.find_elements('xpath', '//div[@class="room" and @room]')
+        for room_div in room_divs:
+            if room_div.get_dom_attribute('id') == str(room_id):
+                room_div.click()
                 break
 
         self.debug('Setting the inputs.')
