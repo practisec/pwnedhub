@@ -1,0 +1,426 @@
+openapi: 3.0.3
+info:
+  title: PwnedAPI
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: http://api.pwnedhub.com
+paths:
+  /access-token:
+    post:
+      summary: Token Create (Login)
+      description: Token Create (Login)
+      operationId: tokenCreateLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: '{{password}}'
+                username:
+                  type: string
+                  example: '{{username}}'
+            example:
+              password: '{{password}}'
+              username: '{{username}}'
+      responses:
+        '200':
+          description: ''
+    delete:
+      summary: Token Delete (Logout)
+      description: Token Delete (Logout)
+      operationId: tokenDeleteLogout
+      responses:
+        '200':
+          description: ''
+  /users:
+    get:
+      summary: Users Read
+      description: Users Read
+      operationId: usersRead
+      responses:
+        '200':
+          description: ''
+    post:
+      summary: User Create (Register)
+      description: User Create (Register)
+      operationId: userCreateRegister
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  example: >-
+                    https://www.gravatar.com/avatar/0a6d9b1ad59ad436bf9d9d16b2a7133e.png?s=300
+                email:
+                  type: string
+                  example: tjt1980@gmail.com
+                name:
+                  type: string
+                  example: Tim
+                password:
+                  type: string
+                  example: password
+                signature:
+                  type: string
+                  example: This is my signature.
+                username:
+                  type: string
+                  example: tim
+            example:
+              avatar: >-
+                https://www.gravatar.com/avatar/0a6d9b1ad59ad436bf9d9d16b2a7133e.png?s=300
+              email: tjt1980@gmail.com
+              name: Tim
+              password: password
+              signature: This is my signature.
+              username: tim
+      responses:
+        '200':
+          description: ''
+  /users/5:
+    get:
+      summary: User Read
+      description: User Read
+      operationId: userRead
+      responses:
+        '200':
+          description: ''
+    patch:
+      summary: User Update
+      description: User Update
+      operationId: userUpdate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  example: >-
+                    https://www.gravatar.com/avatar/0a6d9b1ad59ad436bf9d9d16b2a7133e.png?s=300
+                email:
+                  type: string
+                  example: tjt1980@gmail.com
+                name:
+                  type: string
+                  example: Tim
+                signature:
+                  type: string
+                  example: This is my signature.
+                username:
+                  type: string
+                  example: tim
+            example:
+              avatar: >-
+                https://www.gravatar.com/avatar/0a6d9b1ad59ad436bf9d9d16b2a7133e.png?s=300
+              email: tjt1980@gmail.com
+              name: Tim
+              signature: This is my signature.
+              username: tim
+      responses:
+        '200':
+          description: ''
+  /admin/users/5:
+    patch:
+      summary: User Update (Admin)
+      description: User Update (Admin)
+      operationId: userUpdateAdmin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: number
+                  example: 0
+                status:
+                  type: number
+                  example: 1
+            example:
+              role: 0
+              status: 1
+      responses:
+        '200':
+          description: ''
+  /password-reset:
+    post:
+      summary: Password Reset Create
+      description: Password Reset Create
+      operationId: passwordResetCreate
+      parameters:
+        - name: Origin
+          in: header
+          schema:
+            type: string
+            example: http://test.pwnedhub.com
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                credential:
+                  type: string
+                  example: tim
+            example:
+              credential: tim
+      responses:
+        '200':
+          description: ''
+  /users/5/password:
+    put:
+      summary: Password Update (Reset)
+      description: Password Update (Reset)
+      operationId: passwordUpdateReset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                new_password:
+                  type: string
+                  example: newpassword
+                token:
+                  type: string
+                  example: >-
+                    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTY2ODY2MDYsImlhdCI6MTY1NjYwMDIwNiwic3ViIjo1fQ.eh8uPzcaNcUzqXNdq2iznvtgy3zKBOaUlKpG_3O47N0
+            example:
+              new_password: newpassword
+              token: >-
+                eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTY2ODY2MDYsImlhdCI6MTY1NjYwMDIwNiwic3ViIjo1fQ.eh8uPzcaNcUzqXNdq2iznvtgy3zKBOaUlKpG_3O47N0
+      responses:
+        '200':
+          description: ''
+  /notes:
+    get:
+      summary: Note Read
+      description: Note Read
+      operationId: noteRead
+      responses:
+        '200':
+          description: ''
+    put:
+      summary: Note Update
+      description: Note Update
+      operationId: noteUpdate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: >+
+                    ##### Welcome to PwnedHub 2.0!
+
+
+                    A collaborative space to conduct hosted security
+                    assessments.
+
+
+                    **Find flaws.**
+
+
+                    * This is your notes space. Keep your personal notes here.
+
+                    * Leverage popular security testing tools right from your
+                    browser in the tools space.
+
+
+                    **Collaborate.**
+
+
+                    * Privately collaborate with coworkers in the messaging
+                    space.
+
+                    * Join public rooms in the messaging space to share
+                    information and socialize.
+
+
+                    **On the Move**
+
+
+                    * PwnedHub 2.0 is built with mobility in mind. No need for a
+                    separate app!
+
+
+                    Happy hunting!
+
+
+                    \- The PwnedHub Team
+
+            example:
+              content: >+
+                ##### Welcome to PwnedHub 2.0!
+
+
+                A collaborative space to conduct hosted security assessments.
+
+
+                **Find flaws.**
+
+
+                * This is your notes space. Keep your personal notes here.
+
+                * Leverage popular security testing tools right from your
+                browser in the tools space.
+
+
+                **Collaborate.**
+
+
+                * Privately collaborate with coworkers in the messaging space.
+
+                * Join public rooms in the messaging space to share information
+                and socialize.
+
+
+                **On the Move**
+
+
+                * PwnedHub 2.0 is built with mobility in mind. No need for a
+                separate app!
+
+
+                Happy hunting!
+
+
+                \- The PwnedHub Team
+
+      responses:
+        '200':
+          description: ''
+  /rooms/1/messages:
+    get:
+      summary: Room Messages Read
+      description: Room Messages Read
+      operationId: roomMessagesRead
+      responses:
+        '200':
+          description: ''
+  /unfurl:
+    post:
+      summary: Unfurl Create
+      description: Unfurl Create
+      operationId: unfurlCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  example: https://www.slack.com
+            example:
+              url: https://www.slack.com
+      responses:
+        '200':
+          description: ''
+  /tools:
+    get:
+      summary: Tools Read
+      description: Tools Read
+      operationId: toolsRead
+      responses:
+        '200':
+          description: ''
+    post:
+      summary: Tool Create
+      description: Tool Create
+      operationId: toolCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  example: Displays the user ID of the current shell user.
+                name:
+                  type: string
+                  example: ID
+                path:
+                  type: string
+                  example: id
+            example:
+              description: Displays the user ID of the current shell user.
+              name: ID
+              path: id
+      responses:
+        '200':
+          description: ''
+  /tools/1:
+    get:
+      summary: Tool Read
+      description: Tool Read
+      operationId: toolRead
+      responses:
+        '200':
+          description: ''
+    delete:
+      summary: Tool Delete
+      description: Tool Delete
+      operationId: toolDelete
+      responses:
+        '200':
+          description: ''
+  /scans:
+    get:
+      summary: Scans Read
+      description: Scans Read
+      operationId: scansRead
+      responses:
+        '200':
+          description: ''
+    post:
+      summary: Scan Create
+      description: Scan Create
+      operationId: scanCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                args:
+                  type: string
+                  example: www.practisec.com
+                tid:
+                  type: number
+                  example: 1
+            example:
+              args: www.practisec.com
+              tid: 1
+      responses:
+        '200':
+          description: ''
+  /scans/d37b3139-5f74-4f00-81ff-5a1db7528f8b:
+    delete:
+      summary: Scan Delete
+      description: Scan Delete
+      operationId: scanDelete
+      responses:
+        '200':
+          description: ''
+  /scans/d37b3139-5f74-4f00-81ff-5a1db7528f8b/results:
+    get:
+      summary: Scan Results Read
+      description: Scan Results Read
+      operationId: scanResultsRead
+      responses:
+        '200':
+          description: ''
+tags: []
