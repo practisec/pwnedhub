@@ -54,7 +54,7 @@ def connect_handler():
     users = [u.serialize() for u in User.query.all()]
     emit('loadUsers', {'users': users})
     # preload rooms
-    rooms = [r.serialize(session.user) for r in session.user.rooms]
+    rooms = [r.serialize(session.user) for r in session.user.rooms.all()]
     emit('loadRooms', {'rooms': rooms})
     # load the default room
     default_room = rooms[0]
@@ -90,7 +90,7 @@ def create_room_handler(data):
         for member_id in data['member_ids']:
             user = User.query.get(member_id)
             if user.id in clients:
-                rooms = [r.serialize(user) for r in user.rooms]
+                rooms = [r.serialize(user) for r in user.rooms.all()]
                 emit('loadRooms', {'rooms': rooms}, room=clients[user.id])
     # load the room
     emit('loadRoom', room.serialize(session.user))
@@ -103,9 +103,10 @@ def join_room_handler(data):
     # send a message to the joined room with admin bot
     # if the room is private and the user is not a member
     if room.private:
-        if session.user.id not in [m.id for m in room.members]:
-            sender = room.members[0]
-            receiver = room.members[1]
+        members = room.members.all()
+        if session.user.id not in [m.id for m in members]:
+            sender = members[0]
+            receiver = members[1]
             if sender and receiver:
                 current_app.bot_task_queue.enqueue(
                     'adminbot.tasks.test_login_send_private_message',

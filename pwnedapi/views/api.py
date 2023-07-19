@@ -301,7 +301,7 @@ class RoomMessageList(Resource):
     @token_auth_required
     def get(self, rid):
         room = Room.query.get_or_404(rid)
-        if room not in g.user.rooms:
+        if room not in g.user.rooms.all():
             abort(403)
         result = {
             'messages': [],

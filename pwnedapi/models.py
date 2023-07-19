@@ -113,7 +113,7 @@ class Room(BaseModel):
     name = db.Column(db.String(255), nullable=False, unique=True)
     private = db.Column(db.Boolean, nullable=False)
     messages = db.relationship('Message', back_populates='room', lazy='dynamic')
-    members = db.relationship('User', secondary=memberships, back_populates='rooms')
+    members = db.relationship('User', secondary=memberships, back_populates='rooms', lazy='dynamic')
 
 
     @property
@@ -134,7 +134,7 @@ class Room(BaseModel):
 
     def get_peer(self, user):
         if user and self.is_private:
-            for member in self.members:
+            for member in self.members.all():
                 if member.id != user.id:
                     return member
         return None
@@ -195,7 +195,7 @@ class User(BaseModel):
     notes = db.relationship('Note', back_populates='owner', lazy='dynamic')
     scans = db.relationship('Scan', back_populates='owner', lazy='dynamic')
     messages = db.relationship('Message', back_populates='author', lazy='dynamic')
-    rooms = db.relationship('Room', secondary=memberships, back_populates='members')
+    rooms = db.relationship('Room', secondary=memberships, back_populates='members', lazy='dynamic')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
