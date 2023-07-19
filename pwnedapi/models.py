@@ -55,6 +55,7 @@ class Scan(BaseModel):
     results = db.Column(db.Text)
     complete = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    owner = db.relationship('User', back_populates='scans')
 
     def serialize(self, include_results=False):
         return {
@@ -74,6 +75,7 @@ class Note(BaseModel):
     name = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    owner = db.relationship('User', back_populates='notes')
 
     def serialize(self):
         return {
@@ -110,7 +112,7 @@ class Room(BaseModel):
     __tablename__ = 'rooms'
     name = db.Column(db.String(255), nullable=False, unique=True)
     private = db.Column(db.Boolean, nullable=False)
-    messages = db.relationship('Message', backref='room', lazy='dynamic')
+    messages = db.relationship('Message', back_populates='room', lazy='dynamic')
     members = db.relationship('User', secondary=memberships, back_populates='rooms')
 
 
@@ -156,6 +158,8 @@ class Message(BaseModel):
     comment = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'), nullable=False)
+    author = db.relationship('User', back_populates='messages')
+    room = db.relationship('Room', back_populates='messages')
 
     def serialize(self):
         return {
@@ -188,9 +192,9 @@ class User(BaseModel):
     password_hash = db.Column(db.String(255))
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
-    notes = db.relationship('Note', backref='owner', lazy='dynamic')
-    scans = db.relationship('Scan', backref='owner', lazy='dynamic')
-    messages = db.relationship('Message', backref='author', lazy='dynamic')
+    notes = db.relationship('Note', back_populates='owner', lazy='dynamic')
+    scans = db.relationship('Scan', back_populates='owner', lazy='dynamic')
+    messages = db.relationship('Message', back_populates='author', lazy='dynamic')
     rooms = db.relationship('Room', secondary=memberships, back_populates='members')
 
     def __init__(self, *args, **kwargs):

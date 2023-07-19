@@ -49,6 +49,7 @@ class Note(BaseModel):
     name = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    owner = db.relationship('User', back_populates='notes')
 
     def __repr__(self):
         return "<Note '{}'>".format(self.name)
@@ -68,6 +69,7 @@ class Message(BaseModel):
     __tablename__ = 'messages'
     comment = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    author = db.relationship('User', back_populates='messages')
 
     def __repr__(self):
         return "<Message '{}'>".format(self.id)
@@ -80,6 +82,8 @@ class Mail(BaseModel):
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     read = db.Column(db.Integer, nullable=False, default=0)
+    sender = db.relationship('User', foreign_keys=[sender_id], back_populates='sent_mail')
+    receiver = db.relationship('User', foreign_keys=[receiver_id], back_populates='received_mail')
 
     def __repr__(self):
         return "<Mail '{}'>".format(self.id)
@@ -97,10 +101,10 @@ class User(BaseModel):
     answer = db.Column(db.String(255), nullable=False, default=token_urlsafe(10))
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
-    notes = db.relationship('Note', backref='owner', lazy='dynamic')
-    messages = db.relationship('Message', backref='author', lazy='dynamic')
-    sent_mail = db.relationship('Mail', foreign_keys='Mail.sender_id', backref='sender', lazy='dynamic')
-    received_mail = db.relationship('Mail', foreign_keys='Mail.receiver_id', backref='receiver', lazy='dynamic')
+    notes = db.relationship('Note', back_populates='owner', lazy='dynamic')
+    messages = db.relationship('Message', back_populates='author', lazy='dynamic')
+    sent_mail = db.relationship('Mail', foreign_keys=[Mail.sender_id], back_populates='sender', lazy='dynamic')
+    received_mail = db.relationship('Mail', foreign_keys=[Mail.receiver_id], back_populates='receiver', lazy='dynamic')
 
     @property
     def role_as_string(self):
