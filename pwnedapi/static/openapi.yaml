@@ -424,3 +424,10 @@ paths:
         '200':
           description: ''
 tags: []
+components:
+  securitySchemes:
+    bearerAuth:
+        scheme: bearer
+        type: http
+security:
+  - bearerAuth: []
