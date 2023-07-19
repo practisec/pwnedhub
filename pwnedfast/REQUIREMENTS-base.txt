@@ -1,6 +1,0 @@
-fastapi
-uvicorn[standard]
-sqlalchemy
-python-multipart
-#mysqlclient
-pyjwt

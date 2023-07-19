@@ -1,9 +1,0 @@
-flask
-flask-graphql
-flask-mysqldb
-flask-sqlalchemy
-graphene
-graphene_sqlalchemy
-gunicorn
-mysqlclient
-pyjwt
