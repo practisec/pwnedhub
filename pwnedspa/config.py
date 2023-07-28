@@ -30,7 +30,7 @@ class Development(BaseConfig):
     DEBUG = True
 
 
-class Test(object):
+class Test(BaseConfig):
 
     DEBUG = True
     TESTING = True
