@@ -1,0 +1,136 @@
+version: '3.7'
+
+services:
+
+    app:
+        #build: ./pwnedhub
+        image: pwnedhub-dev
+        expose:
+            - 80
+        volumes:
+            - .:/pwnedhub
+            - ~/tmp:/tmp # local mapping to log location
+        environment:
+            - CONFIG=Production
+            - DATABASE_HOST=db
+            - REDIS_URL=redis://redis:6379/0
+            - FLASK_APP=pwnedhub/wsgi.py # for debugging?
+        ports:
+            - 5678:5678
+        #command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
+        command: ["sh", "-c", "pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m flask run --no-debugger --no-reload --host 0.0.0.0 --port 80"]
+        depends_on:
+            - db
+            - redis
+
+    sso:
+        #build: ./pwnedsso
+        image: pwnedsso-dev
+        expose:
+            - 80
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - CONFIG=Production
+            - DATABASE_HOST=db
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedsso.wsgi:app --error-logfile - --log-level DEBUG
+        depends_on:
+            - db
+
+    spa:
+        #build: ./pwnedspa
+        image: pwnedspa-dev
+        expose:
+            - 80
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - CONFIG=Production
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedspa.wsgi:app --error-logfile - --log-level DEBUG
+
+    api:
+        #build: ./pwnedapi
+        image: pwnedapi-dev
+        expose:
+            - 80
+        volumes:
+            - .:/pwnedhub
+            - ~/tmp/inbox:/tmp/inbox # local mapping to INBOX_PATH
+        environment:
+            - CONFIG=Production
+            - DATABASE_HOST=db
+            - REDIS_URL=redis://redis:6379/0
+            - INBOX_PATH=/tmp/inbox # writable location for Gunicorn
+        command: gunicorn --workers 1 --worker-class eventlet --bind 0.0.0.0:80 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
+        depends_on:
+            - db
+            - redis
+
+    api-worker:
+        image: pwnedapi-dev
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - CONFIG=Production
+            - DATABASE_HOST=db
+            - REDIS_URL=redis://redis:6379/0
+        command: rq worker -u redis://redis:6379/0 pwnedapi-tasks
+        depends_on:
+            - db
+            - redis
+
+    config:
+        #build: ./pwnedconfig
+        image: pwnedconfig-dev
+        expose:
+            - 80
+        volumes:
+            - .:/pwnedhub
+        environment:
+            - CONFIG=Production
+            - DATABASE_HOST=db
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedconfig.wsgi:app --error-logfile - --log-level DEBUG
+        depends_on:
+            - db
+
+    bot-worker:
+        #build: ./adminbot
+        image: adminbot-dev
+        volumes:
+            - .:/pwnedhub
+            - ~/tmp/inbox:/tmp/inbox
+        command: rq worker -u redis://redis:6379/0 adminbot-tasks
+        depends_on:
+            - redis
+
+    proxy:
+        image: nginx:alpine
+        ports:
+            - 80:80
+        networks:
+            default:
+                aliases:
+                    - www.pwnedhub.com
+                    - sso.pwnedhub.com
+                    - test.pwnedhub.com
+                    - api.pwnedhub.com
+                    - config.pwnedhub.com
+        volumes:
+            - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./proxy/proxy_params:/etc/nginx/proxy_params:ro
+        depends_on:
+            - app
+            - sso
+            - spa
+            - api
+            - config
+
+    db:
+        image: mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=adminpass
+        volumes:
+            - ./database/init:/docker-entrypoint-initdb.d:ro
+
+    redis:
+        image: redis
