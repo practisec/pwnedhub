@@ -5,8 +5,10 @@ flask-mysqldb
 flask-restful
 flask-socketio
 flask-sqlalchemy
+# https://github.com/benoitc/gunicorn/issues/2828
 # https://www.pythonfixing.com/2022/03/fixed-gunicorn-importerror-cannot.html
-https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0
+# https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0
+gunicorn
 jsonpickle
 lxml
 mysqlclient

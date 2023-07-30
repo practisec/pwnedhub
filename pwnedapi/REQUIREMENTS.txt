@@ -14,7 +14,7 @@ Flask-RESTful==0.3.10
 Flask-SocketIO==5.3.4
 Flask-SQLAlchemy==3.0.5
 greenlet==2.0.2
-gunicorn @ https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#sha256=7ca6a8e636ae920ed6aa8d9815ca1ba783aff54fc9b08425dc4b8d4f3ecdcccd
+gunicorn==21.2.0
 idna==3.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
