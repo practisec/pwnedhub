@@ -1,21 +1,18 @@
-Vue.component("toasts", {
-    template: `
-        <transition-group name="toasts" tag="div" class="flex-column toasts">
-            <toast v-for="toast in toasts" v-bind:key="toast.id" v-bind:toast="toast"></toast>
-        </transition-group>
-    `,
-    computed: {
-        toasts: function() {
-            return store.getters.getToasts;
-        }
-    },
-});
+import { useAppStore } from '../stores/app-store.js';
 
-Vue.component("toast", {
-    props: {
-        toast: Object,
+const template = `
+<transition-group name="toasts" tag="div" class="flex-column toasts">
+    <div class="toast" v-for="toast in appStore.toasts" :key="toast.id" :style="{ zIndex: 100-toast.id }">{{ toast.text }}</div>
+</transition-group>
+`;
+
+export default {
+    name: 'Toasts',
+    template,
+    setup () {
+        const appStore = useAppStore();
+        return {
+            appStore,
+        };
     },
-    template: `
-        <div class="toast" v-bind:style="{ zIndex: 100-toast.id }">{{ toast.text }}</div>
-    `,
-});
+};

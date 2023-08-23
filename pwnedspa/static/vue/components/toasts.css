@@ -18,21 +18,18 @@
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
 }
 
+.toasts-move,
 .toasts-enter-active,
 .toasts-leave-active {
     transition: all 1s ease;
     /*transition-delay: .75s;*/
 }
 
-.toasts-enter,
+.toasts-enter-from,
 .toasts-leave-to {
     transform: translateY(-100%);
 }
 
 .toasts-leave-active {
     position: absolute;
-}
-
-.toasts-move {
-    transition: transform 1s;
 }

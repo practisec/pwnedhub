@@ -83,7 +83,7 @@
 }
 
 .messages .message-container {
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 
 .messages .message-container .message {
@@ -116,19 +116,6 @@
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-}
-
-.messages .message-container .message .link-preview a {
-    color: inherit;
-    text-decoration: inherit;
-    font-weight: inherit;
-}
-
-.messages .message-container .message .link-preview p {
-    font-size: 1.25rem;
-    border-left: 2px solid red;
-    padding-left: .5rem;
-    margin-bottom: .5rem;
 }
 
 .messages .message-container .message .timestamp {

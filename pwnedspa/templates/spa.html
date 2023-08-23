@@ -1,83 +1,26 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-    <title>PwnedHub 2.0</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>html{visibility:hidden;opacity:0;}</style><!-- FOUC fix 1/2 -->
-    <!-- third-party styles -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fontawesome.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/normalize.css') }}">
-    <!-- utility styles -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-flex.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-utility.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/baseline.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedspa.css') }}">
-    <!-- component styles -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/modal.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/toasts.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/content.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/navigation.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/components/background.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/users.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/tools.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/messages.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/scans.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/notes.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/profile.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/account.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/reset.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/mfa.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/login.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/views/signup.css') }}">
-    <style>html{visibility:visible;opacity:1;}</style><!-- FOUC fix 2/2 -->
-</head>
-<body>
-    <div class="flex-column" id="app">
-        <!-- fixed components -->
-        <background></background>
-        <toasts></toasts>
-        <modal></modal>
-        <!-- static components -->
-        <content-wrapper></content-wrapper>
-    </div>
-    <script>
-        const API_BASE_URL = "{{ config.API_BASE_URL }}";
-        const CSRF_TOKEN_NAME = "{{ config.CSRF_TOKEN_NAME }}";
-    </script>
-    <meta name="google-signin-client_id" content="{{ config.OAUTH_PROVIDERS.google.CLIENT_ID }}">
-    <!-- base dependencies -->
-    <script src="https://apis.google.com/js/platform.js"></script>
-    <script src="{{ url_for('static', filename='vue/libs/vue.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/libs/vue-router.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/libs/vuex.js') }}"></script>
-    <!-- third-party dependencies -->
-    <script src="{{ url_for('static', filename='vue/libs/vue-infinite-loading.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/libs/marked.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/libs/socket.io.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/libs/vue-socket.io-ext.js') }}"></script>
-    <!-- utility components -->
-    <script src="{{ url_for('static', filename='vue/components/modal.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/components/toasts.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/components/password-field.js') }}"></script>
-    <!-- layout components -->
-    <script src="{{ url_for('static', filename='vue/components/content.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/components/navigation.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/components/background.js') }}"></script>
-    <!-- views -->
-    <script src="{{ url_for('static', filename='vue/views/users.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/views/tools.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/views/messages.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/views/scans.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/views/notes.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/views/profile.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/views/account.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/views/reset.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/views/mfa.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/views/login.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/views/signup.js') }}"></script>
-    <!-- application core -->
-    <script src="{{ url_for('static', filename='vue/router.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/store.js') }}"></script>
-    <script src="{{ url_for('static', filename='vue/app.js') }}"></script>
-</body>
+    <head>
+        <title>PwnedHub 2.0</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>html{visibility:hidden;opacity:0;}</style><!-- FOUC fix 1/2 -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vue/style.css') }}">
+        <style>html{visibility:visible;opacity:1;}</style><!-- FOUC fix 2/2 -->
+    </head>
+    <body>
+        <div class="flex-column" id="app">
+        </div>
+        <script>
+            const API_BASE_URL = '{{ config.API_BASE_URL }}';
+            const CSRF_TOKEN_NAME = '{{ config.CSRF_TOKEN_NAME }}';
+        </script>
+        <meta name="google-signin-client_id" content="{{ config.OAUTH_PROVIDERS.google.CLIENT_ID }}">
+        <script src="https://apis.google.com/js/platform.js"></script>
+        <script src="{{ url_for('static', filename='vue/libs/vue.js') }}"></script><!-- global build -->
+        <script src="{{ url_for('static', filename='vue/libs/vue-router.js') }}"></script><!-- global build -->
+        <script src="{{ url_for('static', filename='vue/libs/vue-demi.js') }}"></script><!-- iife build -->
+        <script src="{{ url_for('static', filename='vue/libs/pinia.js') }}"></script><!-- iife build -->
+        <script src="{{ url_for('static', filename='vue/libs/vue3-infinite-loading.js') }}"></script><!-- umd build -->
+        <script type="module" src="{{ url_for('static', filename='vue/main.js') }}"></script>
+    </body>
 </html>

@@ -1,0 +1,12 @@
+.messages .message-container .message .link-preview a {
+    color: inherit;
+    text-decoration: inherit;
+    font-weight: inherit;
+}
+
+.messages .message-container .message .link-preview p {
+    font-size: 1.25rem;
+    border-left: 2px solid red;
+    padding-left: .5rem;
+    margin-bottom: .5rem;
+}

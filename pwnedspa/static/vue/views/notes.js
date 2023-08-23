@@ -1,64 +1,74 @@
-var Notes = Vue.component("notes", {
-    template: `
-        <div class="flex-column notes">
-            <div class="flex-row flex-wrap tabs">
-                <input id="edit" type="radio" name="grp" v-bind:checked="isActive('edit')" v-on:click="setActive('edit')" />
-                <label for="edit">Edit</label>
-                <input id="view" type="radio" name="grp" v-bind:checked="isActive('view')" v-on:click="[setActive('view'), renderNote()]" />
-                <label for="view">View</label>
-            </div>
-            <div class="flex-grow flex-row tab-content">
-                <div class="flex-grow flex-row" v-bind:class="{ 'active': isActive('edit') }">
-                    <textarea class="flex-grow" name="notes" id="notes" v-model="note" v-on:blur="updateNote"></textarea>
-                </div>
-                <div class="flex-grow markdown" v-bind:class="{ 'active': isActive('view') }" v-html="markdown"></div>
-            </div>
+import { useAppStore } from '../stores/app-store.js';
+import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+import { marked } from '../libs/marked.js'; // esm build
+
+const { ref } = Vue;
+
+const template = `
+<div class="flex-column notes">
+    <div class="flex-row flex-wrap tabs">
+        <input id="edit" type="radio" name="grp" :checked="isActive('edit')" @click="setActive('edit')" />
+        <label for="edit">Edit</label>
+        <input id="view" type="radio" name="grp" :checked="isActive('view')" @click="renderNote(); setActive('view')" />
+        <label for="view">View</label>
+    </div>
+    <div class="flex-grow flex-row tab-content">
+        <div class="flex-grow flex-row" :class="{ 'active': isActive('edit') }">
+            <textarea class="flex-grow" name="notes" id="notes" v-model="note" @blur="updateNote"></textarea>
         </div>
-    `,
-    data: function() {
-        return {
-            note: "",
-            markdown: "",
-            activePane: "view",
-        }
-    },
-    methods: {
-        getNote: function() {
-            fetch(store.getters.getApiUrl+"/notes", {
-                credentials: "include",
-            })
-            .then(handleErrors)
-            .then(response => response.json())
+        <div class="flex-grow markdown" :class="{ 'active': isActive('view') }" v-html="markdown"></div>
+    </div>
+</div>
+`;
+
+export default {
+    name: 'Notes',
+    template,
+    setup () {
+        const appStore = useAppStore();
+
+        const note = ref('');
+        const markdown = ref('');
+        const activePane = ref('view');
+
+        function getNote() {
+            fetchWrapper.get(`${API_BASE_URL}/notes`)
             .then(json => {
-                this.note = json.content;
-                this.renderNote();
+                note.value = json.content;
+                renderNote();
             })
-            .catch(error => store.dispatch("createToast", error));
-        },
-        renderNote: function() {
-            if (this.note != null) {
-                this.markdown = marked(this.note);
-            }
-        },
-        updateNote: function() {
-            fetch(store.getters.getApiUrl+"/notes", {
-                credentials: "include",
-                headers: {"Content-Type": "application/json"},
-                method: "PUT",
-                body: JSON.stringify({content: this.note}),
-            })
-            .then(handleErrors)
-            .then(response => {})
-            .catch(error => store.dispatch("createToast", error));
-        },
-        isActive: function(tab) {
-            return this.activePane === tab;
-        },
-        setActive: function(tab) {
-            this.activePane = tab;
-        },
+            .catch(error => appStore.createToast(error));
+        };
+
+        function renderNote() {
+            if (note.value != null) {
+                markdown.value = marked.parse(note.value);
+            };
+        };
+
+        function updateNote() {
+            fetchWrapper.put(`${API_BASE_URL}/notes`, {content: note.value})
+            .then(json => {})
+            .catch(error => appStore.createToast(error));
+        };
+
+        function isActive(tab) {
+            return activePane.value === tab;
+        };
+
+        function setActive(tab) {
+            activePane.value = tab;
+        };
+
+        getNote();
+
+        return {
+            note,
+            markdown,
+            isActive,
+            setActive,
+            renderNote,
+            updateNote,
+        };
     },
-    created: function() {
-        this.getNote();
-    },
-});
+};

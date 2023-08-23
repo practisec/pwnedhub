@@ -1,157 +1,118 @@
-var Login = Vue.component('login', {
-    template: `
-        <div class="login center">
-            <index-static></index-static>
-            <div>
-                <login-form></login-form>
-            </div>
-            <div class="flex-row flex-wrap flex-justify-space-evenly center-content panels">
-                <div>
-                    <h5>Scan.</h5>
-                    <i class="fas fa-search large" title="Find"></i>
-                </div>
-                <div>
-                    <h5>Find.</h5>
-                    <i class="fas fa-bug large" title="Bug"></i>
-                </div>
-                <div>
-                    <h5>Win.</h5>
-                    <i class="fas fa-dollar-sign large" title="Bounty"></i>
-                </div>
-            </div>
-        </div>
-    `,
-});
+import PasswordField from '../components/password-field.js';
+import GoogleLogin from '../components/google-login.js';
+import { useAuthStore } from '../stores/auth-store.js';
+import { useAppStore } from '../stores/app-store.js';
+import { fetchWrapper } from '../helpers/fetch-wrapper.js';
 
-Vue.component('index-static', {
-    template: `
-        <div class="flex-column">
-            <div>
-                <img style="max-width: 100%;" src="/images/logo.png" />
-            </div>
-            <div class="center-content">
-                <h3>A <span class="red">collaborative</span> space to conduct <span class="red">hosted</span> security assessments.</h3>
-            </div>
-        </div>
-    `,
-});
+const { ref } = Vue;
+const { useRouter, useRoute } = VueRouter;
 
-Vue.component('login-form', {
-    template: `
+const template = `
+<div class="login center">
+    <div class="flex-column flex-justify-center">
+        <div>
+            <img style="max-width: 100%;" src="/images/logo.png" />
+        </div>
+        <div class="center-content">
+            <h3>A <span class="red">collaborative</span> space to conduct <span class="red">hosted</span> security assessments.</h3>
+        </div>
+    </div>
+    <div class="flex-column flex-justify-center">
         <div class="flex-column form rounded">
             <label for="username">Username:</label>
             <input name="username" type="text" v-model="loginForm.username" />
             <label for="password">Password:</label>
-            <password-field name="password" v-model="loginForm.password"></password-field>
-            <input type="button" v-on:click="doFormLogin" value="Log me in please." />
-            <p><router-link v-bind:to="{ name: 'reset-init' }">Forget your password?</router-link></p>
+            <password-field name="password" v-model:value="loginForm.password"></password-field>
+            <input type="button" @click="doFormLogin" value="Log me in please." />
+            <p><router-link :to="{ name: 'reset-init' }">Forget your password?</router-link></p>
             <div class="gutter-bottom center-content bolded">OR</div>
             <div class="center-content">
-                <google-oidc v-on:done="doOIDCLogin" />
+                <google-oidc @done="doOIDCLogin" />
             </div>
         </div>
-    `,
-    data: function() {
-        return {
-            loginForm: {
-                username: "",
-                password: "",
-            },
-        }
+    </div>
+    <div class="flex-row flex-wrap flex-justify-space-evenly center-content panels">
+        <div>
+            <h5>Scan.</h5>
+            <i class="fas fa-search large" title="Find"></i>
+        </div>
+        <div>
+            <h5>Find.</h5>
+            <i class="fas fa-bug large" title="Bug"></i>
+        </div>
+        <div>
+            <h5>Win.</h5>
+            <i class="fas fa-dollar-sign large" title="Bounty"></i>
+        </div>
+    </div>
+</div>
+`;
+
+export default {
+    name: 'Login',
+    template,
+    components: {
+        'password-field': PasswordField,
+        'google-oidc': GoogleLogin,
     },
-    methods: {
-        doFormLogin: function() {
-            this.doLogin(this.loginForm);
-        },
-        doOIDCLogin: function(user) {
+    setup () {
+        const authStore = useAuthStore();
+        const appStore = useAppStore();
+        const router = useRouter();
+        const route = useRoute();
+
+        const loginForm = ref({
+            username: '',
+            password: '',
+        });
+
+        function doFormLogin() {
+            doLogin(loginForm.value);
+        };
+
+        function doOIDCLogin(user) {
             var payload = {
                 id_token: user.getAuthResponse().id_token
             };
-            this.doLogin(payload);
-        },
-        doLogin: function(payload) {
-            fetch(store.getters.getApiUrl+"/access-token", {
-                credentials: "include",
-                headers: {"Content-Type": "application/json"},
-                method: "POST",
-                body: JSON.stringify(payload),
-            })
-            .then(response => this.handleMfa(response))
-            .then(handleErrors)
-            .then(response => response.json())
-            .then(json => this.handleLoginSuccess(json))
-            .catch(error => this.handleLoginFailure(error));
-        },
-        handleMfa: function(response) {
-            // since the access-token endpoint doesn't require authz, checking for a
-            // 403 response code should be enough to determine that it is an mfa response
-            if (response.status === 403) {
-                // store mfa data as necessary
-                response.json().then(data => store.dispatch("setMfaToken", data));
-                this.$router.push({
-                    name: "mfa",
-                    params: { nextUrl: this.$route.params.nextUrl }
-                });
-                // hack to break the promise chain
-                var error = new Error();
-                error.name = 'BreakChainError';
-                throw error;
-            }
-            return Promise.resolve(response);
-        },
-        handleLoginSuccess: function(json) {
+            doLogin(payload);
+        };
+
+        function doLogin(payload) {
+            fetchWrapper.post(`${API_BASE_URL}/access-token`, payload)
+            .then(json => handleLoginSuccess(json))
+            .catch(error => handleLoginFailure(error));
+        };
+
+        function handleLoginSuccess(json) {
             if (json.user) {
                 // store auth data as necessary
-                store.dispatch("setAuthInfo", json);
+                authStore.setAuthInfo(json);
                 // route appropriately
-                if (this.$route.params.nextUrl != null) {
+                if (route.params.nextUrl != null) {
                     // originally requested location
-                    this.$router.push(this.$route.params.nextUrl);
+                    router.push(route.params.nextUrl);
                 } else {
                     // fallback landing page
-                    if (json.user.role === "admin") {
-                        this.$router.push({ name: "users" });
+                    if (json.user.role === 'admin') {
+                        router.push({ name: 'users' });
                     } else {
-                        this.$router.push({ name: "notes" });
-                    }
-                }
+                        router.push({ name: 'notes' });
+                    };
+                };
             } else {
-                this.handleLoginFailure(json.message);
-            }
-        },
-        handleLoginFailure: function(error) {
-            // hack to break the promise chain
-            if (error.name !== 'BreakChainError') {
-                store.dispatch("unsetAuthInfo");
-                store.dispatch("createToast", error);
-            }
-        },
-    },
-});
+                handleLoginFailure(json.message);
+            };
+        };
 
-Vue.component('google-oidc', {
-    template: `
-        <img id="signinBtn" class="oidc-button" src="/images/google_signin.png" />
-    `,
-    mounted: function() {
-        gapi.load('auth2', function() {
-            const auth2 = window.gapi.auth2.init({
-                cookiepolicy: 'single_host_origin',
-            });
-            auth2.attachClickHandler(
-                "signinBtn",
-                {},
-                function(googleUser) {
-                    this.$emit('done', googleUser);
-                }.bind(this),
-                function(error) {
-                    if (error.error === "network_error") {
-                        store.dispatch("createToast", "OpenID Connect provider unreachable.");
-                    } else if (error.error !== "popup_closed_by_user") {
-                        store.dispatch("createToast", "OpenID Connect error ({0}).".format(error.error));
-                    }
-                },
-            );
-        }.bind(this));
+        function handleLoginFailure(error) {
+            authStore.unsetAuthInfo();
+            appStore.createToast(error);
+        };
+
+        return {
+            loginForm,
+            doFormLogin,
+            doOIDCLogin,
+        };
     },
-});
+};

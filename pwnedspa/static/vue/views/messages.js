@@ -1,360 +1,313 @@
-var Messaging = Vue.component("messaging", {
-    template: `
-        <div class="flex-row messaging">
-            <rooms v-bind:users="users" v-bind:rooms="rooms" v-bind:selectedRoom="room" v-bind:taggedRooms="taggedRooms" v-on:load="loadRoom"></rooms>
-            <messages v-if="room.id" v-bind:room="room" v-on:tag="tagRoom"></messages>
-        </div>
-    `,
-    data: function() {
-        return {
-            users: [],
-            rooms: [],
-            room: {},
-            taggedRooms: [],
-        }
-    },
-    methods: {
-        loadRoom: function(room) {
-            // don't load the same room over itself
-            if (this.room.id !== room.id) {
-                this.room = room;
-                this.untagRoom(room);
-                console.log(`Loaded room: id=${room.id}, name=${room.name}`);
-            }
-        },
-        untagRoom: function(room) {
-            var index = this.taggedRooms.findIndex(r => r.id === room.id)
-            if (index !== -1) {
-                this.taggedRooms.splice(index, 1);
-            }
-        },
-        tagRoom: function(room) {
-            var index = this.taggedRooms.findIndex(r => r.id === room.id)
-            if (index === -1) {
-                this.taggedRooms.push(room);
-            }
-        },
-    },
-    sockets: {
-        log(data) {
-            console.log(`[Server] ${data}`);
-        },
-        loadUsers(data) {
-            this.users = data.users.filter(user => user.id != store.getters.getUserInfo.id);
-            console.log("Users preloaded.");
-        },
-        loadRooms(data) {
-            data.rooms.forEach(room => {
-                if (!this.rooms.find(e => e.id === room.id)) {
-                    this.rooms.push(room);
-                    console.log(`Preloaded room: id=${room.id}, name=${room.name}`);
-                    this.$socket.client.emit("join-room", room);
-                }
-            })
-        },
-        loadRoom(data) {
-            this.loadRoom(data);
-        },
-    },
-    created: function() {
-        // if using Bearer authentication, send the auth token as query string
-        // socketio doesn't support custom headers for websocket transports
-        if (store.getters.getAuthHeader.hasOwnProperty("Authorization")) {
-            this.$socket.client.io.opts.query.access_token = store.getters.getAuthHeader.Authorization.split(" ")[1];
-        }
-        this.$socket.client.open();
-    },
-    beforeDestroy: function() {
-        this.$socket.client.close();
-        console.log("Socket disconnected.");
-    },
-});
+import { useAuthStore } from '../stores/auth-store.js';
+import { useAppStore } from '../stores/app-store.js';
+import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+import { socket } from '../helpers/socket.js';
+import LinkPreview from '../components/link-preview.js';
 
-Vue.component("rooms", {
-    props: {
-        rooms: Array,
-        users: Array,
-        selectedRoom: Object,
-        taggedRooms: Array,
-    },
-    template: `
-        <div class="rooms">
-            <div class="tab" v-bind:class="{closed: !menuOpen}" v-on:click="toggleMenu"></div>
-            <div class="flex-column rooms-wrapper"" v-bind:class="{closed: !menuOpen}">
-                <div v-if="channels.length > 0">
-                    <div class="label">Channels</div>
-                    <div class="room" v-for="room in channels" v-bind:id="room.id" v-bind:key="'channel-'+room.id" v-bind:room="room" v-on:click.stop="loadRoom(room)" v-bind:class="{ active: isSelected(room), tagged: isTagged(room) }">#{{ room.name }}</div>
+const { ref, computed, watch, nextTick, onBeforeUnmount } = Vue;
+
+const template = `
+<div class="flex-row messaging">
+    <div class="rooms">
+        <div class="tab" :class="{closed: !menuOpen}" @click="toggleMenu"></div>
+        <div class="flex-column rooms-wrapper" :class="{closed: !menuOpen}">
+            <div v-if="channels.length > 0">
+                <div class="label">Channels</div>
+                <div class="room" v-for="room in channels" :id="room.id" :key="'channel-'+room.id" :room="room" @click.stop="loadRoom(room)" :class="{ active: isSelected(room), tagged: isTagged(room) }">#{{ room.name }}</div>
+            </div>
+            <div v-if="directs.length > 0">
+                <div class="label">Directs</div>
+                <div class="room" v-for="room in directs" :id="room.id" :key="'channel-'+room.id" :room="room" @click.stop="loadRoom(room)" :class="{ active: isSelected(room), tagged: isTagged(room) }">@{{ room.peer.name }}</div>
+            </div>
+            <div v-if="filteredUsers.length > 0">
+                <div class="label">Users</div>
+                <div class="room" v-for="user in filteredUsers" :key="'user-'+user.id" :user="user" @click.stop="createRoom(user)">{{ user.name }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="flex-grow flex-column flex-justify-end messages">
+        <div id="message-container" class="message-container" ref="scrollContainer">
+            <infinite-loading target="#message-container" :top="true" :identifier="infiniteId" :firstload="false" @infinite="infiniteHandler">
+                <template #complete>
+                    <span></span>
+                </template>
+            </infinite-loading>
+            <div v-for="message in messages" v-bind:key="message.id" v-bind:message="message" class="flex-row message">
+                <a class="img-btn" v-if="isEditable(message) === true" @click="deleteMessage(message)">
+                    <i class="fas fa-trash" title="Delete"></i>
+                </a>
+                <div class="avatar">
+                    <router-link :to="{ name: 'profile', params: { userId: message.author.id } }">
+                        <img class="circular bordered-dark" :src="message.author.avatar" title="Avatar" />
+                    </router-link>
                 </div>
-                <div v-if="directs.length > 0">
-                    <div class="label">Directs</div>
-                    <div class="room" v-for="room in directs" v-bind:id="room.id" v-bind:key="'channel-'+room.id" v-bind:room="room" v-on:click.stop="loadRoom(room)" v-bind:class="{ active: isSelected(room), tagged: isTagged(room) }">@{{ room.peer.name }}</div>
-                </div>
-                <div v-if="filteredUsers.length > 0">
-                    <div class="label">Users</div>
-                    <div class="room" v-for="user in filteredUsers" v-bind:key="'user-'+user.id" v-bind:user="user" v-on:click.stop="createRoom(user)">{{ user.name }}</div>
+                <div>
+                    <p class="name">{{ message.author.name }} <span style="font-size: .75em">({{ message.author.username }})</span></p>
+                    <p class="comment">{{ message.comment }}</p>
+                    <link-preview :message="message"></link-preview>
+                    <p class="timestamp">{{ message.created }}</p>
                 </div>
             </div>
         </div>
-    `,
-    data: function() {
-        return {
-            menuOpen: false,
-        }
+        <div class="flex-row flex-align-center message-form">
+            <input class="flex-grow" type="text" v-model="messageForm.comment" @keyup="handleKeyPress" :placeholder="'Message '+getPlaceholder()" />
+            <button class="show" @click="createMessage"><i class="fas fa-paper-plane" title="Send"></i></button>
+        </div>
+    </div>
+</div>
+`;
+
+export default {
+    name: 'Messages',
+    template,
+    components: {
+        'link-preview': LinkPreview,
+        'infinite-loading': V3InfiniteLoading.default,
     },
-    methods: {
-        isSelected: function(room) {
-            return room.id === this.selectedRoom.id
-        },
-        isTagged: function(room) {
-            return (this.taggedRooms.findIndex(r => r.id === room.id) !== -1) ? true : false;
-        },
-        toggleMenu: function() {
-            this.menuOpen = !this.menuOpen;
-        },
-        loadRoom: function(room) {
-            this.menuOpen = false;
-            this.$emit("load", room);
-        },
-        createRoom: function(user) {
-            var member_ids = [store.getters.getUserInfo.id, user.id];
-            var room = {private: true, member_ids: member_ids}
-            this.$socket.client.emit("create-room", room);
-        },
-    },
-    computed: {
-        channels: function() {
-            return this.rooms.filter(room => { return room.private === false; })
-        },
-        directs: function() {
-            return this.rooms.filter(room => { return room.private === true; })
-        },
-        filteredUsers: function() {
-            directPeers = this.directs.map(d => d.peer)
-            return this.users.filter(object1 => {
+    setup () {
+        const authStore = useAuthStore();
+        const appStore = useAppStore();
+
+        // #region rooms
+
+        const users = ref([]);
+        const rooms = ref([]);
+        const currentRoom = ref({});
+        const taggedRooms = ref([]);
+        const menuOpen = ref(false);
+
+        const channels = computed(() => {
+            return rooms.value.filter(room => { return room.private === false; })
+        });
+
+        const directs = computed(() => {
+            return rooms.value.filter(room => { return room.private === true; })
+        });
+
+        const filteredUsers = computed(() => {
+            var directPeers = directs.value.map(d => d.peer)
+            return users.value.filter(object1 => {
                 return !directPeers.some(object2 => {
                     return object1.id === object2.id;
                 });
             });
-        },
-    },
-});
+        });
 
-Vue.component("messages", {
-    props: {
-        room: Object,
-    },
-    template: `
-        <div class="flex-grow flex-column flex-justify-end messages">
-            <div id="message-container" class="message-container" ref="container">
-                <infinite-loading spinner="spiral" v-bind:identifier="infiniteId" v-bind:distance="0" direction="top" v-on:infinite="infiniteHandler">
-                    <span slot="no-results"></span>
-                </infinite-loading>
-                <message v-if="messages.length > 0" v-for="message in messages" v-bind:key="message.id" v-bind:message="message" v-on:delete="deleteMessage"></message>
-            </div>
-            <message-form v-bind:room="room" v-on:create="createMessage"></message-form>
-        </div>
-    `,
-    data: function() {
-        return {
-            messages: [],
-            cursor: null,
-            infiniteId: null,
-        }
-    },
-    watch: {
-        room: function() {
-            this.messages = [];
-            this.cursor = null;
-            this.infiniteId = this.room.id;
-        }
-    },
-    methods: {
-        scrollToEnd: function() {
-            var content = this.$refs.container;
-            content.scrollTop = content.scrollHeight;
-        },
-        infiniteHandler($state) {
-            this.getMessages($state);
-        },
-        getMessages: function($state) {
-            var query = "";
-            if (this.cursor) {
-                query = "?cursor="+this.cursor;
-            }
-            fetch(store.getters.getApiUrl+"/rooms/"+this.room.id+"/messages"+query, {
-                credentials: "include",
-            })
-            .then(handleErrors)
-            .then(response => response.json())
+        function loadRoom(room) {
+            menuOpen.value = false;
+            // don't load the same room over itself
+            if (currentRoom.value.id !== room.id) {
+                currentRoom.value = room;
+                untagRoom(room);
+                console.log(`Loaded room: id=${room.id}, name=${room.name}`);
+            };
+        };
+
+        function createRoom(user) {
+            var member_ids = [authStore.userInfo.id, user.id];
+            var room = {private: true, member_ids: member_ids}
+            socket.emit('create-room', room);
+        };
+
+        function isSelected(room) {
+            return room.id === currentRoom.value.id;
+        };
+
+        function tagRoom(room) {
+            var index = taggedRooms.value.findIndex(r => r.id === room.id);
+            if (index === -1) {
+                taggedRooms.value.push(room);
+            };
+        };
+
+        function untagRoom(room) {
+            var index = taggedRooms.value.findIndex(r => r.id === room.id);
+            if (index !== -1) {
+                taggedRooms.value.splice(index, 1);
+            };
+        };
+
+        function isTagged(room) {
+            return (taggedRooms.value.findIndex(r => r.id === room.id) !== -1) ? true : false;
+        };
+
+        function toggleMenu() {
+            menuOpen.value = !menuOpen.value;
+        };
+
+        // #endregion
+
+        // #region messages
+
+        const messages = ref([]);
+        const cursor = ref(null);
+        const infiniteId = ref(null);
+        const scrollContainer = ref(null);
+        const messageForm = ref({
+            comment: '',
+        });
+        // (1/4) monkey patch for bug in the infinite loading library
+        let prevHeight = 0;
+        // intentionally not reactive to avoid re-rendering on logout
+        const currentUser = authStore.userInfo;
+
+        watch(currentRoom, () => {
+            messages.value = [];
+            cursor.value = null;
+            // (2/4) monkey patch for bug in the infinite loading library
+            prevHeight = 0;
+            infiniteId.value = currentRoom.value.id;
+        });
+
+        function getMessages($state) {
+            // (3/4) monkey patch for bug in the infinite loading library
+            prevHeight = scrollContainer.value.scrollHeight;
+            var query = '';
+            if (cursor.value) {
+                query = '?cursor='+cursor.value;
+            };
+            fetchWrapper.get(`${API_BASE_URL}/rooms/${currentRoom.value.id}/messages${query}`)
             .then(json => {
-                this.cursor = json.cursor;
+                cursor.value = json.cursor;
                 // prepend messages with the older messages
-                this.messages.unshift(...json.messages);
+                messages.value.unshift(...json.messages);
                 if (json.next) {
                     $state.loaded();
                 } else {
-                    $state.complete()
-                }
+                    $state.complete();
+                    // (4/4) monkey patch for bug in the infinite loading library
+                    nextTick(() => {
+                        scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight - prevHeight;
+                    });
+                };
             })
-            .catch(error => store.dispatch("createToast", error));
-        },
-        createMessage: function(message) {
-            this.$socket.client.emit("create-message", {message: message, room: this.room});
-        },
-        deleteMessage: function(message) {
-            this.$socket.client.emit("delete-message", {message: message, room: this.room});
-        },
-    },
-    sockets: {
-        newMessage(message) {
-            if (message.room.id === this.room.id) {
-                this.messages.push(message);
-                this.$nextTick(function () {
-                    this.scrollToEnd();
+            .catch(error => appStore.createToast(error));
+        };
+
+        function infiniteHandler($state) {
+            getMessages($state);
+        };
+
+        function scrollToEnd() {
+            var element = scrollContainer.value;
+            element.scrollTop = element.scrollHeight;
+        };
+
+        function getPlaceholder() {
+            if (currentRoom.value.private === true) {
+                return currentRoom.value.peer.name;
+            };
+            return currentRoom.value.name;
+        };
+
+        function handleKeyPress(event) {
+            if (event.keyCode === 13) {
+                createMessage();
+            };
+        };
+
+        function createMessage() {
+            if (messageForm.value.comment) {
+                socket.emit('create-message', {message: messageForm.value, room: currentRoom.value});
+                messageForm.value.comment = '';
+            };
+        };
+
+        function deleteMessage(message) {
+            socket.emit('delete-message', {message: message, room: currentRoom.value});
+        };
+
+        function isEditable(message) {
+            return currentUser.id === message.author.id || currentUser.role === 'admin';
+        };
+
+        // #endregion
+
+        // #region socket events
+
+        socket.on('log', (data) => {
+            console.log(`[Server] ${data}`);
+        });
+
+        socket.on('loadUsers', (data) => {
+            users.value = data.users.filter(user => user.id != authStore.userInfo.id);
+            console.log('Users preloaded.');
+        });
+
+        socket.on('loadRooms', (data) => {
+            data.rooms.forEach(room => {
+                if (!rooms.value.find(e => e.id === room.id)) {
+                    rooms.value.push(room);
+                    console.log(`Preloaded room: id=${room.id}, name=${room.name}`);
+                    socket.emit('join-room', room);
+                };
+            });
+        });
+
+        socket.on('loadRoom', (data) => {
+            loadRoom(data);
+        });
+
+        socket.on('newMessage', (message) => {
+            if (message.room.id === currentRoom.value.id) {
+                messages.value.push(message);
+                nextTick(() => {
+                    scrollToEnd();
                 });
             } else {
-                this.$emit("tag", message.room);
-            }
-        },
-        delMessage(message) {
-            if (message.room.id === this.room.id) {
-                var index = this.messages.findIndex(m => m.id === message.id)
+                tagRoom(message.room);
+            };
+        });
+
+        socket.on('delMessage', (message) => {
+            if (message.room.id === currentRoom.value.id) {
+                var index = messages.value.findIndex(m => m.id === message.id);
                 if (index !== -1) {
-                    this.messages.splice(index, 1);
-                }
-            }
-        },
-    },
-});
+                    messages.value.splice(index, 1);
+                };
+            };
+        });
 
-Vue.component("message-form", {
-    props: {
-        room: Object,
-    },
-    template: `
-        <div class="flex-row flex-align-center message-form">
-            <input class="flex-grow" type="text" v-model="messageForm.comment" v-on:keyup="handleKeyPress" v-bind:placeholder="'Message '+getPlaceholder()" />
-            <button class="show" v-on:click="createMessage"><i class="fas fa-paper-plane" title="Send"></i></button>
-        </div>
-    `,
-    data: function() {
+        // #endregion
+
+        // if using Bearer authentication, send the auth token as query string
+        // socketio doesn't support custom headers for websocket transports
+        if (authStore.isLoggedIn) {
+            socket.io.opts.query.access_token = authStore.accessToken;
+            socket.open();
+        };
+
+        onBeforeUnmount(() => {
+            socket.close();
+            console.log('Socket disconnected.');
+        });
+
         return {
-            messageForm: {
-                comment: "",
-            },
-        }
+            // rooms
+            users,
+            rooms,
+            currentRoom,
+            taggedRooms,
+            menuOpen,
+            channels,
+            directs,
+            filteredUsers,
+            loadRoom,
+            createRoom,
+            isSelected,
+            isTagged,
+            toggleMenu,
+            // messages
+            messages,
+            scrollContainer,
+            infiniteId,
+            messageForm,
+            infiniteHandler,
+            getPlaceholder,
+            handleKeyPress,
+            createMessage,
+            deleteMessage,
+            isEditable,
+        };
     },
-    methods: {
-        getPlaceholder: function() {
-            if (this.room.private === true) {
-                return this.room.peer.name;
-            }
-            return this.room.name
-        },
-        handleKeyPress: function(event) {
-            if (event.keyCode === 13) {
-                this.createMessage();
-            }
-        },
-        createMessage: function() {
-            if (this.messageForm.comment) {
-                this.$emit("create", this.messageForm);
-                this.messageForm.comment = "";
-            }
-        },
-    },
-});
-
-Vue.component("message", {
-    props: {
-        message: Object,
-    },
-    template: `
-            <div class="flex-row message">
-                <a class="img-btn" v-if="isEditable(message) === true" v-on:click="deleteMessage(message)">
-                    <i class="fas fa-trash" title="Delete"></i>
-                </a>
-                <div class="avatar">
-                    <router-link v-bind:to="{ name: 'profile', params: { userId: message.author.id } }">
-                        <img class="circular bordered-dark" v-bind:src="message.author.avatar" title="Avatar" />
-                    </router-link>
-                </div>
-                <div>
-                    <p class="name">{{ message.author.name }}</span> <span style="font-size: .75em">({{ message.author.username }})</span></p>
-                    <p class="comment" ref="message">{{ message.comment }}</p>
-                    <link-preview v-bind:message="message"></link-preview>
-                    <p class="timestamp">{{ message.created }}</p>
-                </div>
-            </div>
-    `,
-    methods: {
-        isAuthor: function(message) {
-            user = store.getters.getUserInfo;
-            return (user.id === message.author.id) ? true : false;
-        },
-        isEditable: function(message) {
-            return (this.isAuthor(message) || store.getters.isAdmin) ? true : false;
-        },
-        deleteMessage: function(message) {
-            this.$emit('delete', message);
-        },
-    },
-});
-
-Vue.component("link-preview", {
-    props: {
-        message: Object,
-    },
-    template: `
-        <div class="link-preview">
-            <a v-for="(unfurl, index) in unfurls" v-bind:key="index" v-bind:unfurl="unfurl" v-bind:href="unfurl.url">
-                <p>{{ unfurl.values.join(" | ") }}</p>
-            </a>
-        </div>
-    `,
-    data: function() {
-        return {
-            unfurls: [],
-        }
-    },
-    methods: {
-        parseUrls: function(message) {
-            var pattern = /\w+:\/\/[^\s]+/gi;
-            var matches = message.comment.match(pattern);
-            return matches || [];
-        },
-        doUnfurl: function(message) {
-            var urls = this.parseUrls(message);
-            urls.forEach(function(value, key) {
-                // remove punctuation from URLs ending a sentence
-                var url = value.replace(/[!.?]+$/g, '');
-                fetch(store.getters.getApiUrl+"/unfurl", {
-                    credentials: "include",
-                    headers: {"Content-Type": "application/json"},
-                    method: "POST",
-                    body: JSON.stringify({url: url}),
-                })
-                .then(handleErrors)
-                .then(response => response.json())
-                .then(json => {
-                    var unfurl = Object;
-                    unfurl.url = json.url;
-                    unfurl.values = [];
-                    var keys = ["site_name", "title", "description"];
-                    for (var k in keys) {
-                        if (json[keys[k]] !== null) {
-                            unfurl.values.push(json[keys[k]]);
-                        }
-                    }
-                    if (unfurl.values.length > 0) {
-                        this.unfurls.push(unfurl);
-                    }
-                })
-                .catch(error => {});
-            }.bind(this));
-        },
-    },
-    mounted: function() {
-        this.doUnfurl(this.message);
-    },
-});
+};

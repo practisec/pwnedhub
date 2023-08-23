@@ -1,73 +1,29 @@
-var Account = Vue.component("account", {
-    template: `
-        <div v-if="user" class="account">
-            <div class="flex-column flex-justify-end">
-                <div class="flex-grow flex-row flex-align-center">
-                    <div class="avatar">
-                        <router-link v-bind:to="{ name: 'profile', params: {userId: user.id} }" class="flex-grow">
-                            <img class="circular bordered-dark" v-bind:src="user.avatar" title="Avatar" />
-                        </router-link>
-                    </div>
-                </div>
-                <update-password-form v-bind:user="user"></update-password-form>
-            </div>
-            <div class="flex-column flex-justify-end">
-                <update-account-form v-bind:user="user"></update-account-form>
+import PasswordField from '../components/password-field.js';
+import { useAuthStore } from '../stores/auth-store.js';
+import { useAppStore } from '../stores/app-store.js';
+import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+
+const { ref } = Vue;
+
+const template = `
+<div class="account">
+    <div class="flex-column flex-justify-end">
+        <div class="flex-grow flex-row flex-align-center">
+            <div class="avatar">
+                <router-link :to="{ name: 'profile', params: {userId: currentUser.id} }" class="flex-grow">
+                    <img class="circular bordered-dark" :src="currentUser.avatar" title="Avatar" />
+                </router-link>
             </div>
         </div>
-    `,
-    computed: {
-        user: function() {
-            return store.getters.getUserInfo;
-        }
-    },
-});
-
-Vue.component("update-password-form", {
-    props: {
-        user: Object,
-    },
-    template: `
         <div class="flex-column form">
             <label for="new_password">New Password: *</label>
-            <password-field name="new_password" v-model="passwordForm.new_password"></password-field>
+            <password-field name="new_password" v-model:value="passwordForm.new_password"></password-field>
             <label for="current_password">Current Password: *</label>
-            <password-field name="current_password" v-model="passwordForm.current_password"></password-field>
-            <input type="button" v-on:click="updatePassword" value="Update my password." />
+            <password-field name="current_password" v-model:value="passwordForm.current_password"></password-field>
+            <input type="button" @click="updatePassword" value="Update my password." />
         </div>
-    `,
-    data: function() {
-        return {
-            passwordForm: {
-                new_password: "",
-                current_password: "",
-            },
-        }
-    },
-    methods: {
-        updatePassword: function() {
-            fetch(store.getters.getApiUrl+"/users/"+this.user.id+"/password", {
-                credentials: "include",
-                headers: {"Content-Type": "application/json"},
-                method: "PUT",
-                body: JSON.stringify(this.passwordForm),
-            })
-            .then(handleErrors)
-            .then(response => {
-                this.passwordForm.new_password = "";
-                this.passwordForm.current_password = "";
-                store.dispatch("createToast", "Password updated.");
-            })
-            .catch(error => store.dispatch("createToast", error));
-        },
-    },
-});
-
-Vue.component("update-account-form", {
-    props: {
-        user: Object,
-    },
-    template: `
+    </div>
+    <div class="flex-column flex-justify-end">
         <div class="flex-column form">
             <label for="username">Username: *</label>
             <input name="username" type="text" v-model="userForm.username" />
@@ -79,45 +35,71 @@ Vue.component("update-account-form", {
             <textarea name="signature" v-model="userForm.signature"></textarea>
             <label for="name">Display Name: *</label>
             <input name="name" v-model="userForm.name" type="text" />
-            <input type="button" v-on:click="updateUser" value="Update my account information." />
+            <input type="button" @click="updateUser" value="Update my account information." />
         </div>
-    `,
-    data: function() {
-        return {
-            userForm: {
-                username: "",
-                email: "",
-                name: "",
-                avatar: "",
-                signature: "",
-            },
-        }
+    </div>
+</div>
+`;
+
+export default {
+    name: 'Account',
+    template,
+    components: {
+        'password-field': PasswordField,
     },
-    methods: {
-        setFormValues: function(user) {
-            this.userForm.username = user.username
-            this.userForm.email = user.email
-            this.userForm.name = user.name
-            this.userForm.avatar = user.avatar
-            this.userForm.signature = user.signature
-        },
-        updateUser: function() {
-            fetch(store.getters.getApiUrl+"/users/"+this.user.id, {
-                credentials: "include",
-                headers: {"Content-Type": "application/json"},
-                method: "PATCH",
-                body: JSON.stringify(this.userForm),
-            })
-            .then(handleErrors)
-            .then(response => response.json())
+    setup () {
+        const authStore = useAuthStore();
+        const appStore = useAppStore();
+
+        const passwordForm = ref({
+            new_password: '',
+            current_password: '',
+        });
+        const userForm = ref({
+            username: '',
+            email: '',
+            name: '',
+            avatar: '',
+            signature: '',
+        });
+        // intentionally not reactive to avoid re-rendering on logout
+        const currentUser = authStore.userInfo;
+
+        function updatePassword() {
+            fetchWrapper.put(`${API_BASE_URL}/users/${currentUser.id}/password`, passwordForm.value)
             .then(json => {
-                store.dispatch("createToast", 'Account updated.');
-                store.dispatch("setAuthInfo", { user: json });
+                passwordForm.value.new_password = '';
+                passwordForm.value.current_password = '';
+                appStore.createToast('Password updated.');
             })
-            .catch(error => store.dispatch("createToast", error));
-        },
+            .catch(error => appStore.createToast(error));
+        };
+
+        function setFormValues() {
+            userForm.value.username = currentUser.username;
+            userForm.value.email = currentUser.email;
+            userForm.value.name = currentUser.name;
+            userForm.value.avatar = currentUser.avatar;
+            userForm.value.signature = currentUser.signature;
+        };
+
+        function updateUser() {
+            fetchWrapper.patch(`${API_BASE_URL}/users/${currentUser.id}`, userForm.value)
+            .then(json => {
+                appStore.createToast('Account updated.');
+                authStore.setAuthInfo({ user: json });
+            })
+            .catch(error => appStore.createToast(error));
+        };
+
+        setFormValues();
+
+        return {
+            currentUser,
+            passwordForm,
+            userForm,
+            updatePassword,
+            updateUser,
+        };
     },
-    created: function() {
-        this.setFormValues(this.user);
-    },
-});
+};
