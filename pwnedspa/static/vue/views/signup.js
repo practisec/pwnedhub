@@ -48,7 +48,7 @@ export default {
         function doSignup() {
             fetchWrapper.post(`${API_BASE_URL}/users`, signupForm.value)
             .then(json => {
-                appStore.createToast('Account created. Please log in.');
+                appStore.createToast('Account activation email sent. Please activate your account to log in.');
                 router.push({ name: 'login' });
             })
             .catch(error => appStore.createToast(error));

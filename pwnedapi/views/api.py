@@ -48,18 +48,42 @@ class TokenList(Resource):
         id_token = json_data.get('id_token')
         username = json_data.get('username')
         user = None
-        default_message = 'Invalid username.'
+        message = None
+        # initialize passwordless authentication
+        if username:
+            user = User.get_by_username(username)
+            if user:
+                code = generate_code(6)
+                # email code to user
+                send_email(
+                    sender = User.query.first().email,
+                    recipient = user.email,
+                    subject = 'PwnedHub Passwordless Authentication',
+                    body = f"Hi {user.name}!<br><br>Below is your Passwordless Authentication code.<br><br>{code}<br><br>If you did not trigger a login attempt, please contact an administrator. Thank you.",
+                )
+                # add random code to claims
+                claims = {'code': code}
+                # create a JWT
+                code_token = encode_jwt(user.id, claims=claims, expire_delta={'days': 0, 'seconds': 300})
+                data = {
+                    'error': 'code_required',
+                    'code_token': code_token
+                }
+                return data, 403
         # process passwordless credentials
-        if code and code_token:
+        elif code and code_token:
             try:
-                payload = decode_jwt(code_token)
+                if Config.get_value('JWT_VERIFY'):
+                    payload = decode_jwt(code_token)
+                else:
+                    payload = decode_jwt(code_token, options={'verify_signature': False})
             except:
                 payload = {}
             if code == payload.get('code'):
                 user = User.query.get(payload.get('sub'))
             else:
-                default_message = 'Expired or invalid Passwordless Authentication code.'
-        # process OIDC credentials (ID token)
+                message = 'Expired or invalid Passwordless Authentication code.'
+        # process OIDC credentials
         elif id_token:
             try:
                 if Config.get_value('JWT_VERIFY'):
@@ -91,28 +115,7 @@ class TokenList(Resource):
                     db.session.add(user)
                     db.session.commit()
             else:
-                default_message = 'Expired or invalid ID token.'
-        # initialize passwordless authentication
-        elif username:
-            user = User.get_by_username(username)
-            if user:
-                code = generate_code(6)
-                # email code to user
-                send_email(
-                    sender = User.query.first().email,
-                    recipient = user.email,
-                    subject = 'PwnedHub Passwordless Authentication',
-                    body = f"Hi {user.name}!<br><br>Below is your Passwordless Authentication code.<br><br>{code}<br><br>If you did not trigger a login attempt, please respond to this email to reach an administrator. Thank you.",
-                )
-                # add random code to claims
-                claims = {'code': code}
-                # create a JWT
-                code_token = encode_jwt(user.id, claims=claims, expire_delta={'days': 0, 'seconds': 300})
-                data = {
-                    'error': 'code_required',
-                    'code_token': code_token
-                }
-                return data, 403
+                message = 'Expired or invalid ID token.'
         # handle authentication
         if user and user.is_enabled:
             data = {'user': user.serialize()}
@@ -132,7 +135,7 @@ class TokenList(Resource):
             data['csrf_token'] = csrf_obj.serialize()
             # set the JWT as a HttpOnly cookie
             return data, 201, {'Set-Cookie': f"access_token={token}; HttpOnly"}
-        abort(400, default_message)
+        abort(400, message or 'Invalid username.')
 
     def delete(self):
         response = Response(None, 204)
@@ -149,19 +152,46 @@ class UserList(Resource):
         users = [u.serialize() for u in User.query.all()]
         return {'users': users}
 
-    @validate_json(['username', 'email', 'name'])
     def post(self):
-        '''Creates an account.'''
-        username = request.json.get('username')
-        if User.query.filter_by(username=username).first():
-            abort(400, 'Username already exists.')
-        email = request.json.get('email')
-        if User.query.filter_by(email=email).first():
-            abort(400, 'Email already exists.')
-        user = User(**request.json)
-        db.session.add(user)
-        db.session.commit()
-        return {'success': True}, 201
+        '''Creates and activates a user account.'''
+        json_data = request.get_json(force=True)
+        activate_token = json_data.get('activate_token')
+        username = json_data.get('username')
+        email = json_data.get('email')
+        name = json_data.get('name')
+        # initialize signup
+        if username and email and name:
+            # create a JWT
+            activate_token = encode_jwt('new_user', claims=json_data)
+            # send an email with an activation link using the token
+            base_url = request.headers['origin']
+            link = f"{base_url}/#/signup/activate/{activate_token}"
+            send_email(
+                sender = User.query.first().email,
+                recipient = email,
+                subject = 'PwnedHub Account Activation',
+                body = f"Hi {name}!<br><br>Thank you for joining the PwnedHub community! Visit the following link to activate your account.<br><br><a href=\"{link}\">{link}</a><br><br>See you soon!",
+            )
+            return {'success': True}, 201
+        # process activation
+        elif activate_token:
+            try:
+                if Config.get_value('JWT_VERIFY'):
+                    payload = decode_jwt(activate_token)
+                else:
+                    payload = decode_jwt(activate_token, options={'verify_signature': False})
+            except:
+                payload = {}
+            user = { k:v for (k,v) in payload.items() if k not in ['exp', 'iat', 'sub']}
+            if User.query.filter_by(username=user.get('username')).first():
+                abort(400, 'Username already exists.')
+            if User.query.filter_by(email=user.get('email')).first():
+                abort(400, 'Email already exists.')
+            user = User(**user)
+            db.session.add(user)
+            db.session.commit()
+            return {'success': True}, 201
+        abort(400, 'Invalid request.')
 
 api.add_resource(UserList, '/users')
 

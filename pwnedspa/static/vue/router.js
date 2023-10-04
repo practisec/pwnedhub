@@ -1,4 +1,5 @@
 import Signup from './views/signup.js';
+import Activate from './views/activate.js';
 import Login from './views/login.js';
 import PasswordlessAuth from './views/passwordless.js';
 import Account from './views/account.js';
@@ -16,6 +17,12 @@ const routes = [
         path: '/signup',
         name: 'signup',
         component: Signup,
+    },
+    {
+        path: '/signup/activate/:activateToken',
+        name: 'activate',
+        component: Activate,
+        props: true,
     },
     {
         path: '/login',
