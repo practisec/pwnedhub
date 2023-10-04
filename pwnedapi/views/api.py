@@ -4,12 +4,13 @@ from pwnedapi import db
 from pwnedapi.constants import DEFAULT_NOTE
 from pwnedapi.decorators import token_auth_required, roles_required, validate_json, csrf_protect
 from pwnedapi.models import Config, User, Note, Message, Tool, Scan, Room
-from pwnedapi.utils import generate_code, get_bearer_token, get_unverified_jwt_payload, encode_jwt, unfurl_url, send_email, CsrfToken
+from pwnedapi.utils import generate_code, get_bearer_token, encode_jwt, unfurl_url, send_email, CsrfToken
 from pwnedapi.validators import is_valid_password, is_valid_command
 from datetime import datetime
 from secrets import token_urlsafe
 from sqlalchemy import select, text
 import jwt
+import requests
 
 resources = Blueprint('resources', __name__)
 api = Api()
@@ -60,23 +61,38 @@ class TokenList(Resource):
                 user = User.query.get(payload.get('sub'))
             else:
                 default_message = 'Expired or invalid MFA code.'
-        # process OIDC credentials
+        # process OIDC credentials (ID token)
         elif id_token:
-            payload = get_unverified_jwt_payload(id_token)
-            email = payload['email']
-            user = User.get_by_email(email)
-            if not user:
-                # register the user
-                user = User(
-                    username=email.split('@')[0],
-                    email=email,
-                    avatar=payload['picture'],
-                    signature='',
-                    name=payload['name'],
-                    password=token_urlsafe(20),
-                )
-                db.session.add(user)
-                db.session.commit()
+            try:
+                if Config.get_value('JWT_VERIFY'):
+                    well_known_url = current_app.config['OAUTH_PROVIDERS']['google']['DISCOVERY_DOC']
+                    with requests.get(well_known_url) as response:
+                        jwks_url = response.json()['jwks_uri']
+                    jwks_client = jwt.PyJWKClient(jwks_url)
+                    header = jwt.get_unverified_header(id_token)
+                    key = jwks_client.get_signing_key(header['kid']).key
+                    payload = jwt.decode(id_token, key, algorithms=[header['alg']], options={'verify_aud': False})
+                else:
+                    payload = jwt.decode(id_token, options={'verify_signature': False})
+            except:
+                payload = {}
+            email = payload.get('email')
+            if email:
+                user = User.get_by_email(email)
+                if not user:
+                    # register the user
+                    user = User(
+                        username=email.split('@')[0],
+                        email=email,
+                        avatar=payload['picture'],
+                        signature='',
+                        name=payload['name'],
+                        password=token_urlsafe(20),
+                    )
+                    db.session.add(user)
+                    db.session.commit()
+            else:
+                default_message = 'Expired or invalid ID token.'
         # process username and password credentials
         elif username and password:
             user = User.get_by_username(username)
@@ -257,8 +273,14 @@ class PasswordInst(Resource):
             new_password = request.json.get('new_password')
         # process reset token
         elif token:
-            payload = get_unverified_jwt_payload(token)
-            if payload['sub'] != user.id:
+            try:
+                if Config.get_value('JWT_VERIFY'):
+                    payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+                else:
+                    payload = jwt.decode(token, options={'verify_signature': False})
+            except:
+                payload = {}
+            if payload.get('sub') != user.id:
                 abort(400, 'Invalid token.')
             new_password = request.json.get('new_password')
         # handle password update

@@ -17,5 +17,6 @@ def config():
         Config.get_by_name('SQLI_PROTECT').value = request.form.get('sqli_protect') == 'on' or False
         Config.get_by_name('CTF_MODE').value = request.form.get('ctf_mode') == 'on' or False
         Config.get_by_name('SSO_ENABLE').value = request.form.get('sso_enable') == 'on' or False
+        Config.get_by_name('JWT_VERIFY').value = request.form.get('jwt_verify') == 'on' or False
         db.session.commit()
     return render_template('config.html')

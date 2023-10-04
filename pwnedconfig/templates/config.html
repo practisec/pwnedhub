@@ -35,6 +35,10 @@
                             <input name="cors_restrict" type="checkbox" onchange="this.form.submit()" {% if app_config('CORS_RESTRICT') %}checked {% endif %}/>
                             <span>Restricted CORS (PwnedAPI) - {% if not app_config('CORS_RESTRICT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
                         </label>
+                        <label for="jwt_verify">
+                            <input name="jwt_verify" type="checkbox" onchange="this.form.submit()" {% if app_config('JWT_VERIFY') %}checked {% endif %}/>
+                            <span>Verify JWT Signatures (PwnedAPI) - {% if not app_config('JWT_VERIFY') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                        </label>
                     </div>
                     <div class="panel rounded">
                         <div>Features</div>

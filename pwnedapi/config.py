@@ -27,6 +27,15 @@ class BaseConfig(object):
     CORS_SUPPORTS_CREDENTIALS = True
     ALLOWED_ORIGINS = ['http://www.pwnedhub.com', 'http://test.pwnedhub.com']
 
+    # oidc
+    OAUTH_PROVIDERS = {
+        'google': {
+            'CLIENT_ID': '1098478339188-pvi39gpsvclmmucvu16vhrh0179sd100.apps.googleusercontent.com',
+            'CLIENT_SECRET': '5LFAbNk7rLa00PZOHceQfudp',
+            'DISCOVERY_DOC': 'https://accounts.google.com/.well-known/openid-configuration',
+        },
+    }
+
     # other
     INBOX_PATH = os.environ.get('INBOX_PATH', '/tmp/inbox')
 

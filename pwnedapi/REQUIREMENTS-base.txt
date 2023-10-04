@@ -16,3 +16,4 @@ pyjwt
 redis
 rq
 requests
+cryptography
