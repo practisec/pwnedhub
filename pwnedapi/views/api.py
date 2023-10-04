@@ -23,9 +23,9 @@ def parse_jwt():
     request.jwt = {}
     token = request.cookies.get('access_token')
     if Config.get_value('BEARER_AUTH_ENABLE'):
-        token = get_bearer_token(request.headers)
+        bearer_token = get_bearer_token(request.headers)
     try:
-        payload = decode_jwt(token)
+        payload = decode_jwt(bearer_token)
     except:
         return
     request.jwt = payload
@@ -113,10 +113,10 @@ class TokenList(Resource):
                 # add random code to claims
                 claims = {'code': code}
                 # create a JWT
-                token = encode_jwt(user.id, claims=claims, expire_delta={'days': 0, 'seconds': 300})
+                code_token = encode_jwt(user.id, claims=claims, expire_delta={'days': 0, 'seconds': 300})
                 data = {
                     'error': 'mfa_required',
-                    'code_token': token
+                    'code_token': code_token
                 }
                 return data, 403
         # handle authentication
@@ -241,10 +241,10 @@ class PasswordResetList(Resource):
         if not user or not user.is_enabled:
             abort(400, 'Invalid email address or username.')
         # create a JWT
-        token = encode_jwt(user.id)
+        reset_token = encode_jwt(user.id)
         # "send an email" with a reset link using the token
         base_url = request.headers['origin']
-        link = f"{base_url}/#/reset/{user.id}/{token}"
+        link = f"{base_url}/#/reset/{user.id}/{reset_token}"
         send_email(
             sender = User.query.first().email,
             recipient = user.email,
@@ -261,7 +261,7 @@ class PasswordInst(Resource):
     def put(self, uid):
         '''Updates a user's password.'''
         current_password = request.json.get('current_password')
-        token = request.json.get('token')
+        reset_token = request.json.get('reset_token')
         user = User.query.get_or_404(uid)
         new_password = None
         # process current password
@@ -274,12 +274,12 @@ class PasswordInst(Resource):
                 abort(400, 'Invalid current password.')
             new_password = request.json.get('new_password')
         # process reset token
-        elif token:
+        elif reset_token:
             try:
                 if Config.get_value('JWT_VERIFY'):
-                    payload = decode_jwt(token)
+                    payload = decode_jwt(reset_token)
                 else:
-                    payload = decode_jwt(token, options={'verify_signature': False})
+                    payload = decode_jwt(reset_token, options={'verify_signature': False})
             except:
                 payload = {}
             if payload.get('sub') != user.id:

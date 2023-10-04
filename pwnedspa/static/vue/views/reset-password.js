@@ -22,7 +22,7 @@ export default {
     template,
     props: {
         userId: [Number, String],
-        token: String,
+        resetToken: String,
     },
     components: {
         'password-field': PasswordField,
@@ -33,7 +33,7 @@ export default {
 
         const passwordForm = ref({
             new_password: '',
-            token: props.token,
+            reset_token: props.resetToken,
         });
 
         function resetPassword() {
