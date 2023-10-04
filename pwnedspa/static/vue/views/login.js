@@ -1,4 +1,3 @@
-import PasswordField from '../components/password-field.js';
 import GoogleLogin from '../components/google-login.js';
 import { useAuthStore } from '../stores/auth-store.js';
 import { useAppStore } from '../stores/app-store.js';
@@ -21,10 +20,7 @@ const template = `
         <div class="flex-column form rounded">
             <label for="username">Username:</label>
             <input name="username" type="text" v-model="loginForm.username" />
-            <label for="password">Password:</label>
-            <password-field name="password" v-model:value="loginForm.password"></password-field>
             <input type="button" @click="doFormLogin" value="Log me in please." />
-            <p><router-link :to="{ name: 'reset-init' }">Forget your password?</router-link></p>
             <div class="gutter-bottom center-content bolded">OR</div>
             <div class="center-content">
                 <google-oidc @done="doOIDCLogin" />
@@ -52,7 +48,6 @@ export default {
     name: 'Login',
     template,
     components: {
-        'password-field': PasswordField,
         'google-oidc': GoogleLogin,
     },
     setup () {
@@ -63,7 +58,6 @@ export default {
 
         const loginForm = ref({
             username: '',
-            password: '',
         });
 
         function doFormLogin() {

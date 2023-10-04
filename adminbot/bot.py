@@ -92,36 +92,32 @@ class Hub20Bot(BaseBot):
     def __init__(self, driver, name):
         super().__init__(driver, name)
 
-    def log_in(self, username, password, inbox_path, email):
+    def log_in(self, username, inbox_path, email):
         self.debug('Fetching the login page.')
         self.driver.get('http://test.pwnedhub.com/#/login')
 
         self.debug('Setting the inputs.')
         username_input = self.driver.find_element('name', 'username')
-        password_input = self.driver.find_element('name', 'password')
         username_input.send_keys(username)
-        password_input.send_keys(password)
 
         self.debug('Logging in.')
         login_button = self.driver.find_element('xpath', '//input[@type="button" and @value="Log me in please."]')
         login_button.click()
 
+        self.debug('Fetching the Passwordless Authentication code.')
+        email_files = glob.glob(os.path.join(inbox_path, email, '*.html'))
+        latest_email = max(email_files, key=os.path.getctime)
+        with open(latest_email) as fp:
+            match = re.search(r'<br><br>(\d{6})<br><br>', fp.read())
+            code = match.group(1)
+
+        self.debug('Setting the inputs.')
         code_input = self.driver.find_element('name', 'code')
-        if code_input:
+        code_input.send_keys(code)
 
-            self.debug('Fetching the MFA code.')
-            email_files = glob.glob(os.path.join(inbox_path, email, '*.html'))
-            latest_email = max(email_files, key=os.path.getctime)
-            with open(latest_email) as fp:
-                match = re.search(r'<br><br>(\d{6})<br><br>', fp.read())
-                code = match.group(1)
-
-            self.debug('Setting the inputs.')
-            code_input.send_keys(code)
-
-            self.debug('Sending the MFA token.')
-            mfa_button = self.driver.find_element('xpath', '//input[@type="button" and @value="Yes, it\'s really me."]')
-            mfa_button.click()
+        self.debug('Submitting the Passwordless Authentication code.')
+        code_button = self.driver.find_element('xpath', '//input[@type="button" and @value="Yes, it\'s really me."]')
+        code_button.click()
 
     def send_private_message(self, room_id, message):
         self.debug('Visiting the Messaging view.')

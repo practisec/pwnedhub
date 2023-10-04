@@ -1,4 +1,3 @@
-import PasswordField from '../components/password-field.js';
 import { useAuthStore } from '../stores/auth-store.js';
 import { useAppStore } from '../stores/app-store.js';
 import { fetchWrapper } from '../helpers/fetch-wrapper.js';
@@ -14,13 +13,6 @@ const template = `
                     <img class="circular bordered-dark" :src="currentUser.avatar" title="Avatar" />
                 </router-link>
             </div>
-        </div>
-        <div class="flex-column form">
-            <label for="new_password">New Password: *</label>
-            <password-field name="new_password" v-model:value="passwordForm.new_password"></password-field>
-            <label for="current_password">Current Password: *</label>
-            <password-field name="current_password" v-model:value="passwordForm.current_password"></password-field>
-            <input type="button" @click="updatePassword" value="Update my password." />
         </div>
     </div>
     <div class="flex-column flex-justify-end">
@@ -44,17 +36,10 @@ const template = `
 export default {
     name: 'Account',
     template,
-    components: {
-        'password-field': PasswordField,
-    },
     setup () {
         const authStore = useAuthStore();
         const appStore = useAppStore();
 
-        const passwordForm = ref({
-            new_password: '',
-            current_password: '',
-        });
         const userForm = ref({
             username: '',
             email: '',
@@ -64,16 +49,6 @@ export default {
         });
         // intentionally not reactive to avoid re-rendering on logout
         const currentUser = authStore.userInfo;
-
-        function updatePassword() {
-            fetchWrapper.put(`${API_BASE_URL}/users/${currentUser.id}/password`, passwordForm.value)
-            .then(json => {
-                passwordForm.value.new_password = '';
-                passwordForm.value.current_password = '';
-                appStore.createToast('Password updated.');
-            })
-            .catch(error => appStore.createToast(error));
-        };
 
         function setFormValues() {
             userForm.value.username = currentUser.username;
@@ -96,9 +71,7 @@ export default {
 
         return {
             currentUser,
-            passwordForm,
             userForm,
-            updatePassword,
             updateUser,
         };
     },

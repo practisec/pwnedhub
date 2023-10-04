@@ -1,7 +1,6 @@
 from flask import current_app, url_for
 from pwnedapi import db
 from pwnedapi.constants import ROLES, USER_STATUSES
-from pwnedapi.utils import xor_encrypt, xor_decrypt
 import datetime
 
 memberships = db.Table('memberships',
@@ -189,7 +188,6 @@ class User(BaseModel):
     name = db.Column(db.String(255), nullable=False)
     avatar = db.Column(db.Text)
     signature = db.Column(db.Text)
-    password_hash = db.Column(db.String(255))
     role = db.Column(db.Integer, nullable=False, default=1)
     status = db.Column(db.Integer, nullable=False, default=1)
     notes = db.relationship('Note', back_populates='owner', lazy='dynamic')
@@ -212,18 +210,6 @@ class User(BaseModel):
         return USER_STATUSES[self.status]
 
     @property
-    def password_as_string(self):
-        return xor_decrypt(self.password_hash, current_app.config['SECRET_KEY'])
-
-    @property
-    def password(self):
-        raise AttributeError('password: write-only field')
-
-    @password.setter
-    def password(self, password):
-        self.password_hash = xor_encrypt(password, current_app.config['SECRET_KEY'])
-
-    @property
     def avatar_or_default(self):
         return self.avatar or url_for('static', filename='images/avatars/default.png')
 
@@ -242,11 +228,6 @@ class User(BaseModel):
     def create_membership(self, room):
         self.rooms.append(room)
         db.session.commit()
-
-    def check_password(self, password):
-        if self.password_hash == xor_encrypt(password, current_app.config['SECRET_KEY']):
-            return True
-        return False
 
     @staticmethod
     def get_by_username(username):

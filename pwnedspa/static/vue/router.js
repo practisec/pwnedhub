@@ -1,8 +1,6 @@
 import Signup from './views/signup.js';
 import Login from './views/login.js';
-import MultiFactorAuth from './views/mfa.js';
-import ResetInit from './views/reset-init.js';
-import ResetPassword from './views/reset-password.js';
+import PasswordlessAuth from './views/passwordless.js';
 import Account from './views/account.js';
 import Profile from './views/profile.js';
 import Notes from './views/notes.js';
@@ -25,20 +23,9 @@ const routes = [
         component: Login,
     },
     {
-        path: '/mfa',
-        name: 'mfa',
-        component: MultiFactorAuth,
-    },
-    {
-        path: '/reset',
-        name: 'reset-init',
-        component: ResetInit,
-    },
-    {
-        path: '/reset/:userId/:resetToken',
-        name: 'reset-password',
-        component: ResetPassword,
-        props: true,
+        path: '/login/passwordless',
+        name: 'passwordless',
+        component: PasswordlessAuth,
     },
     {
         path: '/account',
@@ -120,7 +107,7 @@ router.beforeEach((to, from, next) => {
             next();
         };
     } else {
-        // the login/mfa views use similar logic to handle routing of the nextUrl parameter
+        // the login/passwordless views use similar logic to handle routing of the nextUrl parameter
         // all must be updated if there is a change
         if (authStore.isLoggedIn) {
             if (authStore.isAdmin) {

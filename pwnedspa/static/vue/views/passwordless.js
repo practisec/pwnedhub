@@ -6,11 +6,11 @@ const { ref, onBeforeUnmount } = Vue;
 const { useRouter, useRoute } = VueRouter;
 
 const template = `
-<div class="flex-column mfa">
+<div class="flex-column passwordless">
     <div class="flex-column form rounded">
         <h3>Check your email.</h3>
-        <p>A Multi-Factor Authentication code has been emailed to you.</p>
-        <label for="code">MFA code:</label>
+        <p>A Passwordless Authentication code has been emailed to you.</p>
+        <label for="code">Code:</label>
         <input name="code" type="text" v-model="codeForm.code" />
         <input type="button" @click="submitCode" value="Yes, it's really me." />
     </div>
@@ -18,7 +18,7 @@ const template = `
 `;
 
 export default {
-    name: 'MultiFactorAuth',
+    name: 'PasswordlessAuth',
     template,
     setup () {
         const authStore = useAuthStore();
@@ -32,13 +32,13 @@ export default {
         });
 
         function submitCode() {
-            codeForm.value.code_token = authStore.mfaToken;
+            codeForm.value.code_token = authStore.codeToken;
             fetchWrapper.post(`${API_BASE_URL}/access-token`, codeForm.value)
-            .then(json => handleMfaSuccess(json))
-            .catch(error => handleMfaFailure(error));
+            .then(json => handlePasswordlessSuccess(json))
+            .catch(error => handlePasswordlessFailure(error));
         };
 
-        function handleMfaSuccess(json) {
+        function handlePasswordlessSuccess(json) {
             if (json.user) {
                 // store auth data as necessary
                 authStore.setAuthInfo(json);
@@ -59,13 +59,13 @@ export default {
             };
         };
 
-        function handleMfaFailure(error) {
+        function handlePasswordlessFailure(error) {
             authStore.unsetAuthInfo();
             appStore.createToast(error);
         };
 
         onBeforeUnmount(() => {
-            authStore.unsetMfaToken();
+            authStore.unsetCodeToken();
         });
 
         return {

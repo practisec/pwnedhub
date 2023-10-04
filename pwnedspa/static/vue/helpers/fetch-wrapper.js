@@ -48,11 +48,11 @@ function handleErrors(response) {
     // treat everything else like an error
     } else {
         return response.json().then(json => {
-            // handle MFA
-            if (json.error === 'mfa_required') {
+            // handle Passwordless
+            if (json.error === 'code_required') {
                 const authStore = useAuthStore();
-                authStore.setMfaToken(json.code_token);
-                router.push({ name: 'mfa', params: { nextUrl: router.currentRoute.value.params.nextUrl } });
+                authStore.setCodeToken(json.code_token);
+                router.push({ name: 'passwordless', params: { nextUrl: router.currentRoute.value.params.nextUrl } });
                 breakPromiseChain();
             // reject back to the catch callback
             } else {

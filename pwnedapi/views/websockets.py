@@ -114,7 +114,6 @@ def join_room_handler(data):
                     kwargs={
                         'name': sender.name,
                         'username': sender.username,
-                        'password': sender.password_as_string,
                         'email': sender.email,
                         'inbox_path': current_app.config['INBOX_PATH'],
                         'room_id': room.id,

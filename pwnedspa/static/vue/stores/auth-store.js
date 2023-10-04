@@ -3,7 +3,7 @@ const { ref, computed } = Vue;
 
 export const useAuthStore = defineStore('auth', () => {
     const userInfo = ref(JSON.parse(localStorage.getItem('user')));
-    const mfaToken = ref(null);
+    const codeToken = ref(null);
     const accessToken = ref(localStorage.getItem('access_token'));
     const csrfToken = ref(localStorage.getItem('csrf_token'));
 
@@ -30,12 +30,12 @@ export const useAuthStore = defineStore('auth', () => {
     });
 
 
-    function setMfaToken(token) {
-        mfaToken.value = token;
+    function setCodeToken(token) {
+        codeToken.value = token;
     };
 
-    function unsetMfaToken() {
-        mfaToken.value = null;
+    function unsetCodeToken() {
+        codeToken.value = null;
     };
 
     function setAuthInfo(json) {
@@ -62,14 +62,14 @@ export const useAuthStore = defineStore('auth', () => {
 
     return {
         userInfo,
-        mfaToken,
+        codeToken,
         accessToken,
         csrfToken,
         isLoggedIn,
         isAdmin,
         getUserRole,
-        setMfaToken,
-        unsetMfaToken,
+        setCodeToken,
+        unsetCodeToken,
         setAuthInfo,
         unsetAuthInfo,
     };

@@ -2,7 +2,6 @@ from flask import current_app, url_for
 from pwnedapi.constants import EMAIL_TEMPLATE
 from datetime import datetime, timedelta
 from hashlib import md5
-from itertools import cycle
 from lxml import etree
 import base64
 import hmac
@@ -11,14 +10,6 @@ import jwt
 import os
 import random
 import requests
-
-def xor_encrypt(s, k):
-    ciphertext = ''.join([ chr(ord(c)^ord(k)) for c,k in zip(s, cycle(k)) ])
-    return base64.b64encode(ciphertext.encode()).decode()
-
-def xor_decrypt(c, k):
-    ciphertext = base64.b64decode(c.encode()).decode()
-    return ''.join([ chr(ord(c)^ord(k)) for c,k in zip(ciphertext, cycle(k)) ])
 
 def generate_code(length=6):
     """Generates a pseudorandom number."""
@@ -55,15 +46,15 @@ from jwcrypto import jwt as _jwt, jwk
 import hashlib
 
 def encrypt_jwt(signed_token):
-    password = hashlib.md5(current_app.config['SECRET_KEY'].encode('utf-8')).hexdigest()
-    key = jwk.JWK.from_password(password)
+    secret_key = hashlib.md5(current_app.config['SECRET_KEY'].encode('utf-8')).hexdigest()
+    key = jwk.JWK.from_password(secret_key)
     encrypted_token = _jwt.JWT(header={"alg": "A256KW", "enc": "A256CBC-HS512"}, claims=signed_token)
     encrypted_token.make_encrypted_token(key)
     return encrypted_token.serialize()
 
 def decrypt_jwt(encrypted_token):
-    password = hashlib.md5(current_app.config['SECRET_KEY'].encode('utf-8')).hexdigest()
-    key = jwk.JWK.from_password(password)
+    secret_key = hashlib.md5(current_app.config['SECRET_KEY'].encode('utf-8')).hexdigest()
+    key = jwk.JWK.from_password(secret_key)
     decrypted_token = _jwt.JWT(key=key, jwt=encrypted_token, expected_type="JWE")
     return decrypted_token.claims
 
@@ -163,7 +154,7 @@ class ParamValidator(object):
         return False
 
     validate_tid = any_int
-    validate_args = validate_name = validate_username = validate_email = validate_password = validate_new_password = validate_current_password = validate_credential = validate_path = validate_description = validate_content = non_zero_len_str
+    validate_args = validate_name = validate_username = validate_email = validate_credential = validate_path = validate_description = validate_content = non_zero_len_str
     validate_private = boolean
     validate_members = array_of_ints
 
