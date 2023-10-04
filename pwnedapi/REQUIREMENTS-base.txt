@@ -17,3 +17,4 @@ redis
 rq
 requests
 cryptography
+jwcrypto

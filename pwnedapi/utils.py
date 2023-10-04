@@ -38,7 +38,34 @@ def encode_jwt(user_id, claims={}, expire_delta={'days': 1, 'seconds': 0}):
     }
     for claim, value in claims.items():
         payload[claim] = value
-    return jwt.encode(payload, current_app.config['SECRET_KEY'], algorithm='HS256')
+    from pwnedapi.models import Config
+    if Config.get_value('JWT_ENCRYPT'):
+        return encrypt_jwt(jwt.encode(payload, key=current_app.config['SECRET_KEY'], algorithm='HS256'))
+    else:
+        return jwt.encode(payload, key=current_app.config['SECRET_KEY'], algorithm='HS256')
+
+def decode_jwt(token, options={}):
+    from pwnedapi.models import Config
+    if Config.get_value('JWT_ENCRYPT'):
+        return jwt.decode(decrypt_jwt(token), key=current_app.config['SECRET_KEY'], algorithms=['HS256'], options=options)
+    else:
+        return jwt.decode(token, key=current_app.config['SECRET_KEY'], algorithms=['HS256'], options=options)
+
+from jwcrypto import jwt as _jwt, jwk
+import hashlib
+
+def encrypt_jwt(signed_token):
+    password = hashlib.md5(current_app.config['SECRET_KEY'].encode('utf-8')).hexdigest()
+    key = jwk.JWK.from_password(password)
+    encrypted_token = _jwt.JWT(header={"alg": "A256KW", "enc": "A256CBC-HS512"}, claims=signed_token)
+    encrypted_token.make_encrypted_token(key)
+    return encrypted_token.serialize()
+
+def decrypt_jwt(encrypted_token):
+    password = hashlib.md5(current_app.config['SECRET_KEY'].encode('utf-8')).hexdigest()
+    key = jwk.JWK.from_password(password)
+    decrypted_token = _jwt.JWT(key=key, jwt=encrypted_token, expected_type="JWE")
+    return decrypted_token.claims
 
 def unfurl_url(url, headers={}):
     # request resource

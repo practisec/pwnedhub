@@ -39,6 +39,10 @@
                             <input name="jwt_verify" type="checkbox" onchange="this.form.submit()" {% if app_config('JWT_VERIFY') %}checked {% endif %}/>
                             <span>Verify JWT Signatures (PwnedAPI) - {% if not app_config('JWT_VERIFY') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
                         </label>
+                        <label for="jwt_encrypt">
+                            <input name="jwt_encrypt" type="checkbox" onchange="this.form.submit()" {% if app_config('JWT_ENCRYPT') %}checked {% endif %}/>
+                            <span>Encrypt JWTs (PwnedAPI) - {% if not app_config('JWT_ENCRYPT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                        </label>
                     </div>
                     <div class="panel rounded">
                         <div>Features</div>

@@ -4,7 +4,7 @@ from pwnedapi import db
 from pwnedapi.constants import DEFAULT_NOTE
 from pwnedapi.decorators import token_auth_required, roles_required, validate_json, csrf_protect
 from pwnedapi.models import Config, User, Note, Message, Tool, Scan, Room
-from pwnedapi.utils import generate_code, get_bearer_token, encode_jwt, unfurl_url, send_email, CsrfToken
+from pwnedapi.utils import generate_code, get_bearer_token, encode_jwt, decode_jwt, unfurl_url, send_email, CsrfToken
 from pwnedapi.validators import is_valid_password, is_valid_command
 from datetime import datetime
 from secrets import token_urlsafe
@@ -25,7 +25,7 @@ def parse_jwt():
     if Config.get_value('BEARER_AUTH_ENABLE'):
         token = get_bearer_token(request.headers)
     try:
-        payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+        payload = decode_jwt(token)
     except:
         return
     request.jwt = payload
@@ -54,7 +54,7 @@ class TokenList(Resource):
         # process MFA token
         if code and code_token:
             try:
-                payload = jwt.decode(code_token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+                payload = decode_jwt(code_token)
             except:
                 payload = {}
             if code == payload.get('code'):
@@ -71,8 +71,10 @@ class TokenList(Resource):
                     jwks_client = jwt.PyJWKClient(jwks_url)
                     header = jwt.get_unverified_header(id_token)
                     key = jwks_client.get_signing_key(header['kid']).key
-                    payload = jwt.decode(id_token, key, algorithms=[header['alg']], options={'verify_aud': False})
+                    # Google doesn't encrypt the ID token, so no need for the wrapper
+                    payload = jwt.decode(id_token, key=key, algorithms=[header['alg']], options={'verify_aud': False})
                 else:
+                    # Google doesn't encrypt the ID token, so no need for the wrapper
                     payload = jwt.decode(id_token, options={'verify_signature': False})
             except:
                 payload = {}
@@ -275,9 +277,9 @@ class PasswordInst(Resource):
         elif token:
             try:
                 if Config.get_value('JWT_VERIFY'):
-                    payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+                    payload = decode_jwt(token)
                 else:
-                    payload = jwt.decode(token, options={'verify_signature': False})
+                    payload = decode_jwt(token, options={'verify_signature': False})
             except:
                 payload = {}
             if payload.get('sub') != user.id:

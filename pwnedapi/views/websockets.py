@@ -1,6 +1,7 @@
 from flask import request, current_app, session
 from flask_socketio import emit, join_room, leave_room, rooms as joined_rooms
 from pwnedapi.models import Config, User, Message, Room
+from pwnedapi.utils import decode_jwt
 from pwnedapi import socketio, db
 from werkzeug.exceptions import Forbidden
 import hashlib
@@ -26,7 +27,7 @@ def parse_jwt():
     if Config.get_value('BEARER_AUTH_ENABLE'):
         token = request.args.get('access_token')
     try:
-        payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+        payload = decode_jwt(token)
     except:
         return
     request.jwt = payload
