@@ -4,7 +4,6 @@ from lxml import etree
 from uuid import uuid4
 import base64
 import hashlib
-import json
 import os
 import random
 import requests
@@ -31,11 +30,6 @@ def generate_token():
 def generate_csrf_token():
     session['csrf_token'] = generate_token()
     return session['csrf_token']
-
-def get_unverified_jwt_payload(token):
-    """Parses the payload from a JWT."""
-    jwt = token.split('.')
-    return json.loads(base64.b64decode(jwt[1] + "==="))
 
 def unfurl_url(url, headers={}):
     # request resource

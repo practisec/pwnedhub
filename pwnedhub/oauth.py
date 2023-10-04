@@ -1,7 +1,8 @@
 from flask import current_app, url_for, session
-from pwnedhub.utils import generate_state, generate_nonce, get_unverified_jwt_payload
+from pwnedhub.utils import generate_state, generate_nonce
 from time import time
 from urllib.parse import urlencode
+import jwt
 import requests
 
 def validate_id_token(token, provider, client, c_time, nonce=None):
@@ -87,7 +88,8 @@ class OAuthSignIn(object):
                 #user_resp = requests.get(self.doc['userinfo_endpoint'], headers={'Authorization': 'Bearer '+access_token})
                 id_token = resp.json().get('id_token')
                 # obtain payload information from the ID token
-                jwt_payload = get_unverified_jwt_payload(id_token)
+                # OIDC server flow does not require ID token signature verification
+                jwt_payload = jwt.decode(id_token, options={'verify_signature': False})
                 # validate the received ID token
                 if validate_id_token(
                         token=jwt_payload,

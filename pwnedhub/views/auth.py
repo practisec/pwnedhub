@@ -98,7 +98,7 @@ def sso_login():
         payload = jwt.decode(id_token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
     except:
         return redirect(url_for('auth.login', error='Invalid ID token.', next=request.args.get('next')))
-    user = User.get_by_username(payload['sub'])
+    user = User.get_by_username(payload.get('sub'))
     if user and user.is_enabled:
         init_session(user.id)
         return redirect(request.args.get('next') or url_for('core.home'))

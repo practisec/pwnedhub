@@ -6,7 +6,6 @@ from itertools import cycle
 from lxml import etree
 import base64
 import hmac
-import json
 import jsonpickle
 import jwt
 import os
@@ -31,11 +30,6 @@ def get_bearer_token(headers):
         return auth_header.split()[1]
     return None
 
-def get_unverified_jwt_payload(token):
-    """Parses the payload from a JWT."""
-    jwt = token.split('.')
-    return json.loads(base64.b64decode(jwt[1] + "==="))
-
 def encode_jwt(user_id, claims={}, expire_delta={'days': 1, 'seconds': 0}):
     payload = {
         'exp': datetime.utcnow() + timedelta(**expire_delta),
@@ -44,11 +38,7 @@ def encode_jwt(user_id, claims={}, expire_delta={'days': 1, 'seconds': 0}):
     }
     for claim, value in claims.items():
         payload[claim] = value
-    return jwt.encode(
-        payload,
-        current_app.config['SECRET_KEY'],
-        algorithm='HS256'
-    )
+    return jwt.encode(payload, current_app.config['SECRET_KEY'], algorithm='HS256')
 
 def unfurl_url(url, headers={}):
     # request resource
