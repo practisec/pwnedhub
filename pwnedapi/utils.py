@@ -21,11 +21,11 @@ def get_bearer_token(headers):
         return auth_header.split()[1]
     return None
 
-def encode_jwt(user_id, claims={}, expire_delta={'days': 1, 'seconds': 0}):
+def encode_jwt(subscriber, claims={}, expire_delta={'days': 1, 'seconds': 0}):
     payload = {
         'exp': datetime.utcnow() + timedelta(**expire_delta),
         'iat': datetime.utcnow(),
-        'sub': user_id
+        'sub': subscriber
     }
     for claim, value in claims.items():
         payload[claim] = value
@@ -121,7 +121,7 @@ class ParamValidator(object):
         if not self.failed_params:
             return 'Validation successful.'
         else:
-            return f"Required field(s) not valid: {', '.join(self.failed_params)}"
+            return f"Required field(s) missing or invalid: {', '.join(self.failed_params)}"
 
     def validate(self):
         for param in self.params:
