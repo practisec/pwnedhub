@@ -117,7 +117,7 @@ class TokenList(Resource):
                 message = 'Expired or invalid ID token.'
         # handle authentication
         if user and user.is_enabled:
-            data = {'user': user.serialize()}
+            data = {}
             # build other claims
             claims = {}
             # create a JWT
@@ -196,6 +196,8 @@ class UserInst(Resource):
 
     @token_auth_required
     def get(self, uid):
+        if uid == 'me':
+            uid = str(g.user.id)
         user = User.query.get_or_404(uid)
         return user.serialize()
 

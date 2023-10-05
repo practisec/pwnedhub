@@ -16,13 +16,11 @@ function request(method) {
         options.credentials = 'include';
         options.headers = {};
         const authStore = useAuthStore();
-        if (authStore.isLoggedIn) {
-            if (authStore.accessToken) {
-                options.headers['Authorization'] = `Bearer ${authStore.accessToken}`;
-            };
-            if (authStore.csrfToken) {
-                options.headers[CSRF_TOKEN_NAME] = authStore.csrfToken;
-            };
+        if (authStore.accessToken) {
+            options.headers['Authorization'] = `Bearer ${authStore.accessToken}`;
+        };
+        if (authStore.csrfToken) {
+            options.headers[CSRF_TOKEN_NAME] = authStore.csrfToken;
         };
         if (body) {
             options.headers['Content-Type'] = 'application/json';

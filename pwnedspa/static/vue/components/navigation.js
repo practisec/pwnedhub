@@ -1,9 +1,7 @@
 import { useAuthStore } from '../stores/auth-store.js';
-import { useAppStore } from '../stores/app-store.js';
-import { fetchWrapper } from '../helpers/fetch-wrapper.js';
 
 const { ref, watch } = Vue;
-const { useRouter, useRoute } = VueRouter;
+const { useRoute } = VueRouter;
 
 const template = `
 <div class="nav">
@@ -18,7 +16,7 @@ const template = `
         <li class="item" v-for="route in permissions[authStore.getUserRole]" :key="route.id" :route="route">
             <router-link :to="{ name: route.name, params: route.params || {} }">{{ route.text }}</router-link>
         </li>
-        <li class="item" v-if="authStore.isLoggedIn"><span @click="doLogout">Logout</span></li>
+        <li class="item" v-if="authStore.isLoggedIn"><span @click="authStore.doLogout">Logout</span></li>
     </ul>
 </div>
 `;
@@ -28,8 +26,6 @@ export default {
     template,
     setup () {
         const authStore = useAuthStore();
-        const appStore = useAppStore();
-        const router = useRouter();
         const route = useRoute();
 
         const isOpen = ref(false);
@@ -86,15 +82,6 @@ export default {
             isOpen.value = false;
         });
 
-        function doLogout() {
-            fetchWrapper.delete(`${API_BASE_URL}/access-token`)
-            .then(json => {
-                authStore.unsetAuthInfo();
-                router.push({ name: 'login' });
-            })
-            .catch(error => appStore.createToast(error));
-        };
-
         function toggleMenu() {
             isOpen.value = !isOpen.value;
         };
@@ -103,7 +90,6 @@ export default {
             authStore,
             isOpen,
             permissions,
-            doLogout,
             toggleMenu,
         };
     },

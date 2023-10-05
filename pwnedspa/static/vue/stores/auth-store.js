@@ -1,5 +1,5 @@
 import { useAppStore } from './app-store.js';
-import { AccessToken } from '../services/api.js';
+import { AccessToken, User } from '../services/api.js';
 
 const { defineStore } = Pinia;
 const { ref, computed } = Vue;
@@ -46,18 +46,22 @@ export const useAuthStore = defineStore('auth', () => {
         codeToken.value = null;
     };
 
-    function setAuthInfo(json) {
-        userInfo.value = json.user;
-        localStorage.setItem('user', JSON.stringify(json.user));
-        if (json.csrf_token) {
-            csrfToken.value = json.csrf_token;
-            localStorage.setItem('csrf_token', json.csrf_token);
+    function setAuthTokenInfo(tokens) {
+        if (tokens.csrf_token) {
+            csrfToken.value = tokens.csrf_token;
+            localStorage.setItem('csrf_token', tokens.csrf_token);
         };
-        if (json.access_token) {
-            accessToken.value = json.access_token;
-            localStorage.setItem('access_token', json.access_token);
+        if (tokens.access_token) {
+            accessToken.value = tokens.access_token;
+            localStorage.setItem('access_token', tokens.access_token);
         };
     };
+
+    function setAuthUserInfo(user) {
+        userInfo.value = user;
+        localStorage.setItem('user', JSON.stringify(user));
+    };
+
 
     function unsetAuthInfo() {
         userInfo.value = null
@@ -68,28 +72,39 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('csrf_token');
     };
 
-    function doLogin(payload) {
-        AccessToken.create(payload)
-        .then(json => {
+    async function doLogin(payload) {
+        try {
             // store auth data as necessary
-            setAuthInfo(json);
+            const tokens = await AccessToken.create(payload);
+            setAuthTokenInfo(tokens);
+            const user = await User.get('me');
+            setAuthUserInfo(user);
             // route appropriately
             if (route.params.nextUrl != null) {
                 // originally requested location
                 router.push(route.params.nextUrl);
             } else {
                 // fallback landing page
-                if (json.user.role === 'admin') {
+                if (user.role === 'admin') {
                     router.push({ name: 'users' });
                 } else {
                     router.push({ name: 'notes' });
                 };
             };
-        })
-        .catch(error => {
+        } catch (error) {
             unsetAuthInfo();
             appStore.createToast(error);
-        });
+        }
+    };
+
+    async function doLogout() {
+        try {
+            await AccessToken.delete();
+            unsetAuthInfo();
+            router.push({ name: 'login' });
+        } catch (error) {
+            appStore.createToast(error);
+        }
     };
 
     return {
@@ -102,8 +117,10 @@ export const useAuthStore = defineStore('auth', () => {
         getUserRole,
         setCodeToken,
         unsetCodeToken,
-        setAuthInfo,
+        setAuthTokenInfo,
+        setAuthUserInfo,
         unsetAuthInfo,
         doLogin,
+        doLogout,
     };
 });

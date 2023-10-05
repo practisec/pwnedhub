@@ -57,8 +57,8 @@ export default {
         function updateUser() {
             fetchWrapper.patch(`${API_BASE_URL}/users/${currentUser.id}`, userForm.value)
             .then(json => {
+                authStore.setAuthUserInfo(json);
                 appStore.createToast('Account updated.');
-                authStore.setAuthInfo({ user: json });
             })
             .catch(error => appStore.createToast(error));
         };
