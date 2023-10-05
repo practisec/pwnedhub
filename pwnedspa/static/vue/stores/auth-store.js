@@ -1,7 +1,15 @@
+import { useAppStore } from './app-store.js';
+import { AccessToken } from '../services/api.js';
+
 const { defineStore } = Pinia;
 const { ref, computed } = Vue;
+const { useRouter, useRoute } = VueRouter;
 
 export const useAuthStore = defineStore('auth', () => {
+    const appStore = useAppStore();
+    const router = useRouter();
+    const route = useRoute();
+
     const userInfo = ref(JSON.parse(localStorage.getItem('user')));
     const codeToken = ref(null);
     const accessToken = ref(localStorage.getItem('access_token'));
@@ -60,6 +68,30 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('csrf_token');
     };
 
+    function doLogin(payload) {
+        AccessToken.create(payload)
+        .then(json => {
+            // store auth data as necessary
+            setAuthInfo(json);
+            // route appropriately
+            if (route.params.nextUrl != null) {
+                // originally requested location
+                router.push(route.params.nextUrl);
+            } else {
+                // fallback landing page
+                if (json.user.role === 'admin') {
+                    router.push({ name: 'users' });
+                } else {
+                    router.push({ name: 'notes' });
+                };
+            };
+        })
+        .catch(error => {
+            unsetAuthInfo();
+            appStore.createToast(error);
+        });
+    };
+
     return {
         userInfo,
         codeToken,
@@ -72,5 +104,6 @@ export const useAuthStore = defineStore('auth', () => {
         unsetCodeToken,
         setAuthInfo,
         unsetAuthInfo,
+        doLogin,
     };
 });

@@ -1,3 +1,4 @@
+import { useAuthStore } from '../stores/auth-store.js';
 import { useAppStore } from '../stores/app-store.js';
 
 const { onMounted } = Vue;
@@ -10,6 +11,7 @@ export default {
     name: 'GoogleLogin',
     template,
     setup (props, context) {
+        const authStore = useAuthStore();
         const appStore = useAppStore();
 
         onMounted(() => {
@@ -21,7 +23,7 @@ export default {
                     'signinBtn',
                     {},
                     (googleUser) => {
-                        context.emit('done', googleUser);
+                        authStore.doLogin({id_token: googleUser.getAuthResponse().id_token});
                     },
                     (error) => {
                         if (error.error === 'network_error') {

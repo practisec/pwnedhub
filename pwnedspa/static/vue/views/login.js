@@ -1,10 +1,7 @@
 import GoogleLogin from '../components/google-login.js';
 import { useAuthStore } from '../stores/auth-store.js';
-import { useAppStore } from '../stores/app-store.js';
-import { fetchWrapper } from '../helpers/fetch-wrapper.js';
 
 const { ref } = Vue;
-const { useRouter, useRoute } = VueRouter;
 
 const template = `
 <div class="login center">
@@ -23,7 +20,7 @@ const template = `
             <input type="button" @click="doFormLogin" value="Log me in please." />
             <div class="gutter-bottom center-content bolded">OR</div>
             <div class="center-content">
-                <google-oidc @done="doOIDCLogin" />
+                <google-oidc />
             </div>
         </div>
     </div>
@@ -52,61 +49,18 @@ export default {
     },
     setup () {
         const authStore = useAuthStore();
-        const appStore = useAppStore();
-        const router = useRouter();
-        const route = useRoute();
 
         const loginForm = ref({
             email: '',
         });
 
         function doFormLogin() {
-            doLogin(loginForm.value);
-        };
-
-        function doOIDCLogin(user) {
-            var payload = {
-                id_token: user.getAuthResponse().id_token
-            };
-            doLogin(payload);
-        };
-
-        function doLogin(payload) {
-            fetchWrapper.post(`${API_BASE_URL}/access-token`, payload)
-            .then(json => handleLoginSuccess(json))
-            .catch(error => handleLoginFailure(error));
-        };
-
-        function handleLoginSuccess(json) {
-            if (json.user) {
-                // store auth data as necessary
-                authStore.setAuthInfo(json);
-                // route appropriately
-                if (route.params.nextUrl != null) {
-                    // originally requested location
-                    router.push(route.params.nextUrl);
-                } else {
-                    // fallback landing page
-                    if (json.user.role === 'admin') {
-                        router.push({ name: 'users' });
-                    } else {
-                        router.push({ name: 'notes' });
-                    };
-                };
-            } else {
-                handleLoginFailure(json.message);
-            };
-        };
-
-        function handleLoginFailure(error) {
-            authStore.unsetAuthInfo();
-            appStore.createToast(error);
+            authStore.doLogin(loginForm.value);
         };
 
         return {
             loginForm,
             doFormLogin,
-            doOIDCLogin,
         };
     },
 };
