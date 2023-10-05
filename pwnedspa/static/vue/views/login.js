@@ -18,8 +18,8 @@ const template = `
     </div>
     <div class="flex-column flex-justify-center">
         <div class="flex-column form rounded">
-            <label for="username">Username:</label>
-            <input name="username" type="text" v-model="loginForm.username" />
+            <label for="email">Email:</label>
+            <input name="email" type="text" v-model="loginForm.email" />
             <input type="button" @click="doFormLogin" value="Log me in please." />
             <div class="gutter-bottom center-content bolded">OR</div>
             <div class="center-content">
@@ -57,7 +57,7 @@ export default {
         const route = useRoute();
 
         const loginForm = ref({
-            username: '',
+            email: '',
         });
 
         function doFormLogin() {

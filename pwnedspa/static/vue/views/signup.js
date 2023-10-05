@@ -14,8 +14,6 @@ const template = `
     </div>
     <div class="flex-column flex-justify-center">
         <div class="flex-column form rounded">
-            <label for="username">Username: *</label>
-            <input name="username" type="text" v-model="signupForm.username" />
             <label for="email">Email: *</label>
             <input name="email" type="text" v-model="signupForm.email" />
             <label for="name">Display Name: *</label>
@@ -38,7 +36,6 @@ export default {
         const router = useRouter();
 
         const signupForm = ref({
-            username: '',
             email: '',
             name: '',
             avatar: '',

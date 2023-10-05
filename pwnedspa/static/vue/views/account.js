@@ -17,8 +17,6 @@ const template = `
     </div>
     <div class="flex-column flex-justify-end">
         <div class="flex-column form">
-            <label for="username">Username: *</label>
-            <input name="username" type="text" v-model="userForm.username" />
             <label for="email">Email: *</label>
             <input name="email" type="text" v-model="userForm.email" />
             <label for="avatar">Avatar URL:</label>
@@ -41,7 +39,6 @@ export default {
         const appStore = useAppStore();
 
         const userForm = ref({
-            username: '',
             email: '',
             name: '',
             avatar: '',
@@ -51,7 +48,6 @@ export default {
         const currentUser = authStore.userInfo;
 
         function setFormValues() {
-            userForm.value.username = currentUser.username;
             userForm.value.email = currentUser.email;
             userForm.value.name = currentUser.name;
             userForm.value.avatar = currentUser.avatar;

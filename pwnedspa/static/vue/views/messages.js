@@ -42,7 +42,7 @@ const template = `
                     </router-link>
                 </div>
                 <div>
-                    <p class="name">{{ message.author.name }} <span style="font-size: .75em">({{ message.author.username }})</span></p>
+                    <p class="name">{{ message.author.name }}</p>
                     <p class="comment">{{ message.comment }}</p>
                     <link-preview :message="message"></link-preview>
                     <p class="timestamp">{{ message.created }}</p>

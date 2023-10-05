@@ -113,7 +113,6 @@ def join_room_handler(data):
                     'adminbot.tasks.test_login_send_private_message',
                     kwargs={
                         'name': sender.name,
-                        'username': sender.username,
                         'email': sender.email,
                         'inbox_path': current_app.config['INBOX_PATH'],
                         'room_id': room.id,

@@ -7,16 +7,15 @@ const template = `
 <div class="flex-column users">
     <div v-if="users.length > 0" class="responsive-table users-table">
         <div class="responsive-table-headers">
-            <div class="responsive-table-header" style="flex-basis: 20%;">{{ headings.name }}</div>
-            <div class="responsive-table-header" style="flex-basis: 20%;">{{ headings.username }}</div>
-            <div class="responsive-table-header" style="flex-basis: 30%;">{{ headings.email }}</div>
+            <div class="responsive-table-header" style="flex-basis: 30%;">{{ headings.name }}</div>
+            <div class="responsive-table-header" style="flex-basis: 40%;">{{ headings.email }}</div>
             <div class="responsive-table-header" style="flex-basis: 10%;">{{ headings.role }}</div>
             <div class="responsive-table-header" style="flex-basis: 10%;">{{ headings.status }}</div>
             <div class="responsive-table-header" style="flex-basis: 10%;"></div>
         </div>
         <div class="responsive-table-body">
             <div class="responsive-table-row users-table-row shaded-light rounded" v-for="user in users" :key="user.id">
-                <div class="responsive-table-cell" style="flex-basis: 20%;">
+                <div class="responsive-table-cell" style="flex-basis: 30%;">
                     <div class="mobile-header">{{ headings.name }}</div>
                     <div class="flex-row flex-align-center">
                         <div class="avatar">
@@ -27,11 +26,7 @@ const template = `
                         <div>{{ user.name }}</div>
                     </div>
                 </div>
-                <div class="responsive-table-cell" style="flex-basis: 20%;">
-                    <div class="mobile-header">{{ headings.username }}</div>
-                    <div>{{ user.username }}</div>
-                </div>
-                <div class="responsive-table-cell" style="flex-basis: 30%;">
+                <div class="responsive-table-cell" style="flex-basis: 40%;">
                     <div class="mobile-header">{{ headings.email }}</div>
                     <div>{{ user.email }}</div>
                 </div>
@@ -75,7 +70,6 @@ export default {
         const users = ref([]);
         const headings = ref({
             name: 'Display',
-            username: 'Username',
             email: 'Email',
             role: 'Role',
             status: 'Status',

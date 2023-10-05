@@ -92,13 +92,13 @@ class Hub20Bot(BaseBot):
     def __init__(self, driver, name):
         super().__init__(driver, name)
 
-    def log_in(self, username, inbox_path, email):
+    def log_in(self, inbox_path, email):
         self.debug('Fetching the login page.')
         self.driver.get('http://test.pwnedhub.com/#/login')
 
         self.debug('Setting the inputs.')
-        username_input = self.driver.find_element('name', 'username')
-        username_input.send_keys(username)
+        email_input = self.driver.find_element('name', 'email')
+        email_input.send_keys(email)
 
         self.debug('Logging in.')
         login_button = self.driver.find_element('xpath', '//input[@type="button" and @value="Log me in please."]')

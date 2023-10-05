@@ -168,7 +168,7 @@ class Message(BaseModel):
             'author': {
                 'id': self.author.id,
                 'name': self.author.name,
-                'username': self.author.username,
+                'email': self.author.email,
                 'avatar': self.author.avatar_or_default,
             },
             'room': {
@@ -183,7 +183,6 @@ class Message(BaseModel):
 
 class User(BaseModel):
     __tablename__ = 'users'
-    username = db.Column(db.String(255), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     name = db.Column(db.String(255), nullable=False)
     avatar = db.Column(db.Text)
@@ -230,10 +229,6 @@ class User(BaseModel):
         db.session.commit()
 
     @staticmethod
-    def get_by_username(username):
-        return User.query.filter_by(username=username).first()
-
-    @staticmethod
     def get_by_email(email):
         return User.query.filter_by(email=email).first()
 
@@ -241,7 +236,6 @@ class User(BaseModel):
         return {
             'id': self.id,
             'created': self.created_as_string,
-            'username': self.username,
             'name': self.name,
             'email': self.email,
             'avatar': self.avatar_or_default,
@@ -251,4 +245,4 @@ class User(BaseModel):
         }
 
     def __repr__(self):
-        return "<User '{}'>".format(self.username)
+        return "<User '{}'>".format(self.email)

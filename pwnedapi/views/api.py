@@ -46,12 +46,12 @@ class TokenList(Resource):
         code = json_data.get('code')
         code_token = json_data.get('code_token')
         id_token = json_data.get('id_token')
-        username = json_data.get('username')
+        email = json_data.get('email')
         user = None
         message = None
         # initialize passwordless authentication
-        if username:
-            user = User.get_by_username(username)
+        if email:
+            user = User.get_by_email(email)
             if user:
                 code = generate_code(6)
                 # email code to user
@@ -106,7 +106,6 @@ class TokenList(Resource):
                 if not user:
                     # register the user
                     user = User(
-                        username=email.split('@')[0],
                         email=email,
                         avatar=payload['picture'],
                         signature='',
@@ -135,7 +134,7 @@ class TokenList(Resource):
             data['csrf_token'] = csrf_obj.serialize()
             # set the JWT as a HttpOnly cookie
             return data, 201, {'Set-Cookie': f"access_token={token}; HttpOnly"}
-        abort(400, message or 'Invalid username.')
+        abort(400, message or 'Invalid user.')
 
     def delete(self):
         response = Response(None, 204)
@@ -156,11 +155,10 @@ class UserList(Resource):
         '''Creates and activates a user account.'''
         json_data = request.get_json(force=True)
         activate_token = json_data.get('activate_token')
-        username = json_data.get('username')
         email = json_data.get('email')
         name = json_data.get('name')
         # initialize signup
-        if username and email and name:
+        if email and name:
             # create a JWT
             activate_token = encode_jwt('new_user', claims=json_data)
             # send an email with an activation link using the token
@@ -183,8 +181,6 @@ class UserList(Resource):
             except:
                 payload = {}
             user = { k:v for (k,v) in payload.items() if k not in ['exp', 'iat', 'sub']}
-            if User.query.filter_by(username=user.get('username')).first():
-                abort(400, 'Username already exists.')
             if User.query.filter_by(email=user.get('email')).first():
                 abort(400, 'Email already exists.')
             user = User(**user)
@@ -205,23 +201,17 @@ class UserInst(Resource):
 
     @token_auth_required
     @csrf_protect
-    @validate_json(['username', 'email', 'name'])
+    @validate_json(['email', 'name'])
     def patch(self, uid):
         if uid != 'me' and uid != str(g.user.id):
             abort(403)
         user = g.user
-        # validate that the provided username doesn't belong to another user
-        username = request.json.get('username', user.username)
-        untrusted_user = User.query.filter_by(username=username).first()
-        if untrusted_user and untrusted_user != g.user:
-            abort(400, 'Username already exists.')
         # validate that the provided email doesn't belong to another user
         email = request.json.get('email', user.email)
         untrusted_user = User.query.filter_by(email=email).first()
         if untrusted_user and untrusted_user != g.user:
             abort(400, 'Email already exists.')
         # update the user object
-        user.username = username
         user.email = email
         user.name = request.json.get('name', user.name)
         user.avatar = request.json.get('avatar', user.avatar)
