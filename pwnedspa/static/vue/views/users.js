@@ -41,17 +41,11 @@ const template = `
                 <div class="responsive-table-cell" style="flex-basis: 10%;">
                     <div class="mobile-header">Actions</div>
                     <div class="actions-cell">
-                        <a v-if="user.role == 'admin'" class="img-btn" @click.stop="updateUser(user, 'demote')">
-                            <i class="fas fa-user-minus" title="Demote"></i>
+                        <a class="img-btn" @click.stop="updateUser(user, user.role == 'admin' ? 'demote' : 'promote')">
+                            <i class="fas fa-crown" :class="{ red: user.role == 'admin' }" title="Toggle Role"></i>
                         </a>
-                        <a v-if="user.role == 'user'" class="img-btn" @click.stop="updateUser(user, 'promote')">
-                            <i class="fas fa-user-plus" title="Promote"></i>
-                        </a>
-                        <a v-if="user.status == 'enabled'" class="img-btn" @click.stop="updateUser(user, 'disable')">
-                            <i class="fas fa-user-slash" title="Disable"></i>
-                        </a>
-                        <a v-if="user.status == 'disabled'" class="img-btn" @click.stop="updateUser(user, 'enable')">
-                            <i class="fas fa-user" title="Enable"></i>
+                        <a class="img-btn" @click.stop="updateUser(user, user.status == 'disabled' ? 'enable' : 'disable')">
+                            <i class="fas fa-user-slash" :class="{ red: user.status == 'disabled' }" title="Toggle Status"></i>
                         </a>
                     </div>
                 </div>
