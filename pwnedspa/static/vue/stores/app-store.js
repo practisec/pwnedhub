@@ -9,19 +9,9 @@ export const useAppStore = defineStore('app', () => {
 
     let maxToastId = 0;
 
-    function createToast(error) {
-        // handle non-string input such as errors
-        // errors from processing successful responses can end up here
-        if (typeof(error) != 'string') {
-            // hack to break the promise chain
-            // see breakPromiseChain in fetch-wrapper.js
-            if (error.name !== 'BreakPromiseChain') {
-                console.error(error);
-            };
-            return;
-        };
+    function createToast(message) {
         const id = ++maxToastId;
-        toasts.value.push({id: id, text: error});
+        toasts.value.push({id: id, text: message});
         setTimeout(() => {
             toasts.value = toasts.value.filter(t => t.id !== id)
         }, 5000);

@@ -1,5 +1,5 @@
 import { useAppStore } from '../stores/app-store.js';
-import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+import { User, AdminUser } from '../services/api.js';
 
 const { ref } = Vue;
 
@@ -69,15 +69,16 @@ export default {
             status: 'Status',
         });
 
-        function getUsers() {
-            fetchWrapper.get(`${API_BASE_URL}/users`)
-            .then(json => {
+        async function getUsers() {
+            try {
+                const json = await User.all();
                 users.value = json.users;
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
-        function updateUser(user, action) {
+        async function updateUser(user, action) {
             var userForm = {};
             switch (action) {
                 case 'demote':
@@ -93,11 +94,12 @@ export default {
                     userForm.status = 1;
                     break;
             };
-            fetchWrapper.patch(`${API_BASE_URL}/admin/users/${user.id}`, userForm)
-            .then(json => {
-                users.value.splice(users.value.findIndex(u => u.id === user.id), 1, json)
-            })
-            .catch(error => appStore.createToast(error));
+            try {
+                const json = await AdminUser.update(user.id, userForm);
+                users.value.splice(users.value.findIndex(u => u.id === user.id), 1, json);
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
         getUsers();

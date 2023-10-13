@@ -108,7 +108,7 @@ router.beforeEach((to, from, next) => {
         if (!authStore.isLoggedIn) {
             next({
                 name: 'login',
-                params: { nextUrl: to.fullPath }
+                params: { nextUrl: to.fullPath },
             });
         } else {
             next();

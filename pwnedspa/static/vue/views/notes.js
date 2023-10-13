@@ -1,5 +1,5 @@
 import { useAppStore } from '../stores/app-store.js';
-import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+import { Note } from '../services/api.js';
 import { marked } from '../libs/marked.js'; // esm build
 
 const { ref } = Vue;
@@ -31,13 +31,14 @@ export default {
         const markdown = ref('');
         const activePane = ref('view');
 
-        function getNote() {
-            fetchWrapper.get(`${API_BASE_URL}/notes`)
-            .then(json => {
+        async function getNote() {
+            try {
+                const json = await Note.all();
                 note.value = json.content;
                 renderNote();
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
         function renderNote() {
@@ -46,10 +47,12 @@ export default {
             };
         };
 
-        function updateNote() {
-            fetchWrapper.put(`${API_BASE_URL}/notes`, {content: note.value})
-            .then(json => {})
-            .catch(error => appStore.createToast(error));
+        async function updateNote() {
+            try {
+                await Note.replace({content: note.value});
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
         function isActive(tab) {

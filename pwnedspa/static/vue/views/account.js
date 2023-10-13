@@ -1,6 +1,6 @@
 import { useAuthStore } from '../stores/auth-store.js';
 import { useAppStore } from '../stores/app-store.js';
-import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+import { User } from '../services/api.js';
 
 const { ref } = Vue;
 
@@ -54,13 +54,14 @@ export default {
             userForm.value.signature = currentUser.signature;
         };
 
-        function updateUser() {
-            fetchWrapper.patch(`${API_BASE_URL}/users/${currentUser.id}`, userForm.value)
-            .then(json => {
+        async function updateUser() {
+            try {
+                const json = await User.update(currentUser.id, userForm.value);
                 authStore.setAuthUserInfo(json);
                 appStore.createToast('Account updated.');
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
         setFormValues();

@@ -1,6 +1,6 @@
 import { useAuthStore } from '../stores/auth-store.js';
 import { useAppStore } from '../stores/app-store.js';
-import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+import { Message } from '../services/api.js';
 import { socket } from '../helpers/socket.js';
 import LinkPreview from '../components/link-preview.js';
 
@@ -105,7 +105,7 @@ export default {
 
         function createRoom(user) {
             var member_ids = [authStore.userInfo.id, user.id];
-            var room = {private: true, member_ids: member_ids}
+            var room = {private: true, member_ids: member_ids};
             socket.emit('create-room', room);
         };
 
@@ -159,15 +159,15 @@ export default {
             infiniteId.value = currentRoom.value.id;
         });
 
-        function getMessages($state) {
+        async function getMessages($state) {
             // (3/4) monkey patch for bug in the infinite loading library
             prevHeight = scrollContainer.value.scrollHeight;
-            var query = '';
+            let query = '';
             if (cursor.value) {
-                query = '?cursor='+cursor.value;
+                query = '?cursor=' + cursor.value;
             };
-            fetchWrapper.get(`${API_BASE_URL}/rooms/${currentRoom.value.id}/messages${query}`)
-            .then(json => {
+            try {
+                const json = await Message.all(currentRoom.value.id, query);
                 cursor.value = json.cursor;
                 // prepend messages with the older messages
                 messages.value.unshift(...json.messages);
@@ -180,8 +180,9 @@ export default {
                         scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight - prevHeight;
                     });
                 };
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
         function infiniteHandler($state) {

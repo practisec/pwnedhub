@@ -1,5 +1,5 @@
 import { useAppStore } from '../stores/app-store.js';
-import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+import { User } from '../services/api.js';
 
 const { ref } = Vue;
 
@@ -23,12 +23,13 @@ export default {
 
         const user = ref(null);
 
-        function getUser() {
-            fetchWrapper.get(`${API_BASE_URL}/users/${props.userId}`)
-            .then(json => {
+        async function getUser() {
+            try {
+                const json = await User.get(props.userId);
                 user.value = json;
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
         getUser();

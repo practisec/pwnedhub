@@ -93,8 +93,8 @@ export const useAuthStore = defineStore('auth', () => {
             };
         } catch (error) {
             unsetAuthInfo();
-            appStore.createToast(error);
-        }
+            appStore.createToast(error.message);
+        };
     };
 
     async function doLogout() {
@@ -103,8 +103,8 @@ export const useAuthStore = defineStore('auth', () => {
             unsetAuthInfo();
             router.push({ name: 'login' });
         } catch (error) {
-            appStore.createToast(error);
-        }
+            appStore.createToast(error.message);
+        };
     };
 
     return {

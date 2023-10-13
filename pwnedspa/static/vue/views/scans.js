@@ -1,6 +1,6 @@
 import ScansModal from '../modals/scans-modal.js';
 import { useAppStore } from '../stores/app-store.js';
-import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+import { Tool, Scan } from '../services/api.js';
 
 const { ref, onBeforeUnmount } = Vue;
 
@@ -87,12 +87,13 @@ export default {
 
         let polling = null;
 
-        function getScans() {
-            fetchWrapper.get(`${API_BASE_URL}/scans`)
-            .then(json => {
+        async function getScans() {
+            try {
+                const json = await Scan.all();
                 scans.value = json.scans;
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
         function pollScans() {
@@ -101,12 +102,13 @@ export default {
             }, 10000);
         };
 
-        function getTools() {
-            fetchWrapper.get(`${API_BASE_URL}/tools`)
-            .then(json => {
+        async function getTools() {
+            try {
+                const json = await Tool.all();
                 tools.value = json.tools;
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
         function selectTool(tool_id) {
@@ -119,28 +121,31 @@ export default {
             };
         };
 
-        function createScan() {
-            fetchWrapper.post(`${API_BASE_URL}/scans`, scanForm.value)
-            .then(json => {
-                scans.value.push(json)
-            })
-            .catch(error => appStore.createToast(error));
+        async function createScan() {
+            try {
+                const json = await Scan.create(scanForm.value);
+                scans.value.push(json);
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
-        function deleteScan(scan) {
-            fetchWrapper.delete(`${API_BASE_URL}/scans/${scan.id}`)
-            .then(json => {
+        async function deleteScan(scan) {
+            try {
+                await Scan.delete(scan.id);
                 scans.value.splice(scans.value.findIndex(s => s.id === scan.id), 1);
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
-        function getResults(scan) {
-            fetchWrapper.get(`${API_BASE_URL}/scans/${scan.id}/results`)
-            .then(json => {
+        async function getResults(scan) {
+            try {
+                const json = await Scan.get(scan.id);
                 showModal(json.results);
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
         function showModal(results) {

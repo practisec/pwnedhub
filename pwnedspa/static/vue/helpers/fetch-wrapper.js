@@ -10,11 +10,12 @@ export const fetchWrapper = {
 };
 
 function request(method) {
-    return (url, body) => {
-        var options = {};
-        options.method = method;
-        options.credentials = 'include';
-        options.headers = {};
+    return async (url, body) => {
+        const options = {
+            method: method,
+            credentials: 'include',
+            headers: {},
+        };
         const authStore = useAuthStore();
         if (authStore.accessToken) {
             options.headers['Authorization'] = `Bearer ${authStore.accessToken}`;
@@ -26,45 +27,36 @@ function request(method) {
             options.headers['Content-Type'] = 'application/json';
             options.body = JSON.stringify(body);
         };
-        return fetch(url, options).then(handleErrors);
+        const response = await fetch(url, options);
+        return handleErrors(response);
     };
 };
 
-function handleErrors(response) {
+async function handleErrors(response) {
     // handle empty responses
     if (response.status === 204) {
-        return Promise.resolve({});
+        return {};
     // handle good responses
     } else if (response.ok) {
-        return Promise.resolve(response.json());
+        return await response.json();
     // route unauthenticated users to login
     } else if (response.status === 401) {
         const authStore = useAuthStore();
         authStore.unsetAuthInfo();
         router.push('login');
-        breakPromiseChain();
+        throw new Error('Unauthenticated.');
     // treat everything else like an error
     } else {
-        return response.json().then(json => {
-            // handle Passwordless
-            if (json.error === 'code_required') {
-                const authStore = useAuthStore();
-                authStore.setCodeToken(json.code_token);
-                router.push({ name: 'passwordless', params: { nextUrl: router.currentRoute.value.params.nextUrl } });
-                breakPromiseChain();
-            // reject back to the catch callback
-            } else {
-                var error = new Error(json.message || response.statusText);
-                return Promise.reject(error.message);
-            };
-        });
+        const json = await response.json();
+        // handle Passwordless
+        if (json.error === 'code_required') {
+            const authStore = useAuthStore();
+            authStore.setCodeToken(json.code_token);
+            router.push({ name: 'passwordless', params: { nextUrl: router.currentRoute.value.params.nextUrl } });
+            throw new Error('Code required for Passwordless Authentication.');
+        // raise an error to trigger the catch block
+        } else {
+            throw new Error(json.message || response.statusText);
+        };
     };
-};
-
-function breakPromiseChain() {
-    // hack to break the promise chain
-    // see createToast in app-store.js
-    var error = new Error();
-    error.name = 'BreakPromiseChain';
-    throw error;
 };

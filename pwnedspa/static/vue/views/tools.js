@@ -1,5 +1,5 @@
 import { useAppStore } from '../stores/app-store.js';
-import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+import { Tool } from '../services/api.js';
 
 const { ref } = Vue;
 
@@ -65,31 +65,34 @@ export default {
             description: 'Description',
         });
 
-        function getTools() {
-            fetchWrapper.get(`${API_BASE_URL}/tools`)
-            .then(json => {
+        async function getTools() {
+            try {
+                const json = await Tool.all();
                 tools.value = json.tools;
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
-        function createTool() {
-            fetchWrapper.post(`${API_BASE_URL}/tools`, toolForm.value)
-            .then(json => {
+        async function createTool() {
+            try {
+                const json = await Tool.create(toolForm.value);
                 tools.value.push(json);
                 toolForm.value.name = '';
                 toolForm.value.path = '';
                 toolForm.value.description = '';
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
-        function deleteTool(tool) {
-            fetchWrapper.delete(`${API_BASE_URL}/tools/${tool.id}`)
-            .then(json => {
+        async function deleteTool(tool) {
+            try {
+                await Tool.delete(tool.id);
                 tools.value.splice(tools.value.findIndex(s => s.id === tool.id), 1);
-            })
-            .catch(error => appStore.createToast(error));
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
         };
 
         getTools();

@@ -1,11 +1,11 @@
-import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+import { LinkPreview } from '../services/api.js';
 
 const { ref } = Vue;
 
 const template = `
 <div class="link-preview">
-    <a v-for="(unfurl, index) in unfurls" :key="index" :unfurl="unfurl" :href="unfurl.url">
-        <p>{{ unfurl.values.join(" | ") }}</p>
+    <a v-for="(preview, index) in previews" :key="index" :preview="preview" :href="preview.url">
+        <p>{{ preview.values.join(" | ") }}</p>
     </a>
 </div>
 `;
@@ -17,7 +17,7 @@ export default  {
         message: Object,
     },
     setup (props) {
-        const unfurls = ref([]);
+        const previews = ref([]);
 
         function parseUrls(message) {
             var pattern = /\w+:\/\/[^\s]+/gi;
@@ -25,34 +25,34 @@ export default  {
             return matches || [];
         };
 
-        function doUnfurl(message) {
-            var urls = parseUrls(message);
-            urls.forEach((value, key) => {
+        async function doPreview(message) {
+            const urls = parseUrls(message);
+            for (let url of urls) {
                 // remove punctuation from URLs ending a sentence
-                var url = value.replace(/[!.?]+$/g, '');
-                fetchWrapper.post(`${API_BASE_URL}/unfurl`, {url: url})
-                .then(json => {
-                    var unfurl = Object;
-                    unfurl.url = json.url;
-                    unfurl.values = [];
-                    var keys = ['site_name', 'title', 'description'];
-                    for (var k in keys) {
-                        if (json[keys[k]] !== null) {
-                            unfurl.values.push(json[keys[k]]);
+                const sanitizedUrl = url.replace(/[!.?]+$/g, '');
+                try {
+                    const json = await LinkPreview.create({url: sanitizedUrl});
+                    const preview = {
+                        url: json.url,
+                        values: []
+                    };
+                    const keys = ['site_name', 'title', 'description'];
+                    for (let key of keys) {
+                        if (json[key] !== null) {
+                            preview.values.push(json[key]);
                         };
                     };
-                    if (unfurl.values.length > 0) {
-                        unfurls.value.push(unfurl);
+                    if (preview.values.length > 0) {
+                        previews.value.push(preview);
                     };
-                })
-                .catch(error => {});
-            });
+                } catch (error) {};
+            };
         };
 
-        doUnfurl(props.message);
+        doPreview(props.message);
 
         return {
-            unfurls,
+            previews,
         };
     },
 };

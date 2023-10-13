@@ -1,5 +1,5 @@
 import { useAppStore } from '../stores/app-store.js';
-import { fetchWrapper } from '../helpers/fetch-wrapper.js';
+import { User } from '../services/api.js';
 
 const { ref } = Vue;
 const { useRouter } = VueRouter;
@@ -17,14 +17,13 @@ export default {
             activate_token: props.activateToken,
         });
 
-        function activateUser() {
-            fetchWrapper.post(`${API_BASE_URL}/users`, activateForm.value)
-            .then(json => {
+        async function activateUser() {
+            try {
+                await User.create(activateForm.value);
                 appStore.createToast('Account activated. Please log in.');
-            })
-            .catch(error => {
-                appStore.createToast(error);
-            });
+            } catch (error) {
+                appStore.createToast(error.message);
+            };
             router.push({ name: 'login' });
         };
 
