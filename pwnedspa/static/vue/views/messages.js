@@ -271,10 +271,12 @@ export default {
 
         // #endregion
 
-        // if using Bearer authentication, send the auth token as query string
-        // socketio doesn't support custom headers for websocket transports
         if (authStore.isLoggedIn) {
-            socket.io.opts.query.access_token = authStore.accessToken;
+            // if using Bearer authentication, send the access token as a query string parameter
+            // socketio doesn't support custom headers for websocket transports
+            if (authStore.accessToken !== null) {
+                socket.io.opts.query.access_token = authStore.accessToken;
+            }
             socket.open();
         };
 

@@ -25,9 +25,9 @@ def parse_jwt():
     request.jwt = {}
     token = request.cookies.get('access_token')
     if Config.get_value('BEARER_AUTH_ENABLE'):
-        bearer_token = request.args.get('access_token')
+        token = request.args.get('access_token')
     try:
-        payload = decode_jwt(bearer_token)
+        payload = decode_jwt(token)
     except:
         return
     request.jwt = payload
