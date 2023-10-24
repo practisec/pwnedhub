@@ -64,7 +64,7 @@ class TokenList(Resource):
                 # add random code to claims
                 claims = {'code': code}
                 # create a JWT
-                code_token = encode_jwt(user.id, claims=claims, expire_delta={'days': 0, 'seconds': 300})
+                code_token = encode_jwt(user.id, claims=claims)
                 data = {
                     'error': 'code_required',
                     'code_token': code_token
