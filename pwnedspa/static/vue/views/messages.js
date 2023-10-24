@@ -281,6 +281,7 @@ export default {
         };
 
         onBeforeUnmount(() => {
+            socket.off();
             socket.close();
             console.log('Socket disconnected.');
         });
