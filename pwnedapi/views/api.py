@@ -8,11 +8,28 @@ from pwnedapi.utils import generate_code, get_bearer_token, encode_jwt, decode_j
 from pwnedapi.validators import is_valid_command
 from datetime import datetime
 from sqlalchemy import select, text
+from sqlalchemy.exc import SQLAlchemyError, PendingRollbackError
 import jwt
 import requests
 
+class CustomApi(Api):
+    def error_router(self, original_handler, e):
+        # clean up any open rollbacks before processing the error
+        if isinstance(e, SQLAlchemyError):
+            try:
+                _ = db.session.connection()
+            except PendingRollbackError:
+                db.session.rollback()
+        # original error_router code
+        if self._has_fr_route():
+            try:
+                return self.handle_error(e)
+            except Exception:
+                pass  # Fall through to original handler
+        return original_handler(e)
+
 resources = Blueprint('resources', __name__)
-api = Api()
+api = CustomApi()
 api.init_app(resources)
 
 # PRE-REQUEST FUNCTIONS
