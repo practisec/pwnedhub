@@ -4,16 +4,15 @@
     <title>PwnedHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>html{visibility:hidden;opacity:0;}</style><!-- FOUC fix 1/2 -->
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.6.2.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/pwnedhub.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/showdown.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/purify.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fontawesome.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton-flexbox.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-flex.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-utility.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub.css') }}">
-    <style>html{visibility:visible;opacity:1;}</style><!-- FOUC fix 2/2 -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.6.2.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/pwnedhub.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/showdown.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/purify.min.js') }}"></script>
 </head>
 <body class="flex-column">
     <div id="flash" class="flash"></div>
@@ -91,5 +90,6 @@
         {% endfor %}
     </script>
     {% endif %}
+    <style>html{visibility:visible;opacity:1;}</style><!-- FOUC fix 2/2 -->
 </body>
 </html>
