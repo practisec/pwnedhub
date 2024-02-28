@@ -1,0 +1,41 @@
+name: Docker Scout
+
+on:
+  push:
+
+jobs:
+  docker_scout:
+    name: Docker container image scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.1
+        with:
+          path: ./code
+
+      - name: Setup Docker
+        uses: docker-practice/actions-setup-docker@v1
+        with:
+          docker_version: "25.0.3"
+
+      - name: Build Docker image
+        run: docker build -f code/pwnedhub/Dockerfile -t pwnedhub:latest ./code/pwnedhub
+
+      - name: Run Docker Scout scan
+        uses: docker/scout-action@v1.5.0
+        with:
+          # `exit-zero: false` for success exit code
+          # `only-severities: critical,high` for highs and criticals
+          dockerhub-user: ${{ secrets.DOCKER_USER }}
+          dockerhub-password: ${{ secrets.DOCKER_PASS }}
+          command: quickview,cves
+          sarif-file: docker-scout-report.sarif
+          exit-code: false
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: docker-scout-findings
+          path: docker-scout-report.sarif
+        #if: always()

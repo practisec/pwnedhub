@@ -1,0 +1,30 @@
+name: njsscan
+
+on:
+  push:
+
+jobs:
+  njsscan:
+    name: njsscan SAST scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.1
+        with:
+          path: ./code
+
+      - name: njsscan scan
+        uses: ajinabraham/njsscan-action@master
+        with:
+          # `|| true` for success exit code
+          # no command line severity filter
+          args: './code --sarif --output njsscan-report.sarif || true'
+
+      - name: Upload Semgrep artifact
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: njsscan-findings
+          path: njsscan-report.sarif
+        #if: always()
+  
