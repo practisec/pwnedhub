@@ -143,7 +143,7 @@ class TokenList(Resource):
             if Config.get_value('BEARER_AUTH_ENABLE'):
                 data['access_token'] = token
                 # remove any existing access token cookie
-                return data, 201, {'Set-Cookie': 'access_token=; Expires=Thu, 01-Jan-1970 00:00:00 GMT'}
+                return data, 201
             # default to cookie authentication
             # return a CSRF token when using cookie authentication
             csrf_obj = CsrfToken(user.id)

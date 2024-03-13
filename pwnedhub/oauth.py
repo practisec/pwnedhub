@@ -84,6 +84,7 @@ class OAuthSignIn(object):
             }
             resp = requests.post(self.doc['token_endpoint'], payload)
             if resp.status_code == requests.codes.ok:
+                # obtain user details from the user info endpoint
                 #access_token = resp.json().get('access_token')
                 #user_resp = requests.get(self.doc['userinfo_endpoint'], headers={'Authorization': 'Bearer '+access_token})
                 id_token = resp.json().get('id_token')
