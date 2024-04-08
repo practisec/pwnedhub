@@ -1,3 +1,3 @@
-Copyright 2023 Timothy J. Tomes
+Copyright 2015-2024 Practical Security Services LLC
 
-This software is intended for personal use only. This license prohibits the distibution, modification, sublicensing and/or commercial use of this software.
+This software is intended for private use only. This license prohibits the distibution, modification, sublicensing and/or commercial use of this software.
