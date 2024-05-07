@@ -112,32 +112,6 @@ INSERT INTO `notes` VALUES (1,'2023-05-31 14:39:06','2023-05-31 15:09:26','Notes
 UNLOCK TABLES;
 
 --
--- Table structure for table `sessions`
---
-
-DROP TABLE IF EXISTS `sessions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sessions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `session_id` varchar(255) DEFAULT NULL,
-  `data` blob,
-  `expiry` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `session_id` (`session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sessions`
---
-
-LOCK TABLES `sessions` WRITE;
-/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tools`
 --
 

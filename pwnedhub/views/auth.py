@@ -29,7 +29,7 @@ def init_session(user_id):
     if not os.path.exists(path):
         os.makedirs(path)
     session['upload_folder'] = path
-    session.rotate()
+    current_app.session_interface.regenerate(session)
 
 # authenticaton controllers
 

@@ -111,32 +111,6 @@ LOCK TABLES `notes` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sessions`
---
-
-DROP TABLE IF EXISTS `sessions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sessions` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `session_id` varchar(255) DEFAULT NULL,
-  `data` blob,
-  `expiry` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `session_id` (`session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sessions`
---
-
-LOCK TABLES `sessions` WRITE;
-/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tools`
 --
 

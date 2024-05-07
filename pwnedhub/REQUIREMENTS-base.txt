@@ -1,5 +1,6 @@
 flask
 flask-mysqldb
+flask-session
 flask-sqlalchemy
 gunicorn
 pyjwt

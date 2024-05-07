@@ -1,3 +1,4 @@
+from cachelib.file import FileSystemCache
 import os
 
 
@@ -27,6 +28,9 @@ class BaseConfig(object):
     ALLOWED_MIMETYPES = set(['text/plain', 'application/xml', 'image/jpeg', 'image/png', 'image/gif', 'application/pdf'])
 
     # session
+    SESSION_TYPE = 'cachelib'
+    SESSION_SERIALIZATION_FORMAT = 'json'
+    SESSION_CACHELIB = FileSystemCache(threshold=500, cache_dir='/tmp/sessions')
     SESSION_COOKIE_NAME = 'session'
     SESSION_COOKIE_HTTPONLY = False
     PERMANENT_SESSION_LIFETIME = 3600 # 1 hour

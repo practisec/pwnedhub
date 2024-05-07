@@ -20,7 +20,6 @@ def create_app(config='Development'):
     app.bot_task_queue = rq.Queue('adminbot-tasks', connection=app.redis)
 
     db.init_app(app)
-    app.config['SESSION_SQLALCHEMY'] = db
     sess.init_app(app)
 
     # custom jinja global for accessing dynamic configuration values
