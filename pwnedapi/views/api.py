@@ -73,7 +73,7 @@ class TokenList(Resource):
                 code = generate_code(6)
                 # email code to user
                 send_email(
-                    sender = User.query.first().email,
+                    sender = 'no-reply@pwnedhub.com',
                     recipient = user.email,
                     subject = 'PwnedHub Passwordless Authentication',
                     body = f"Hi {user.name}!<br><br>Below is your Passwordless Authentication code.<br><br>{code}<br><br>If you did not trigger a login attempt, please contact an administrator. Thank you.",
@@ -182,7 +182,7 @@ class UserList(Resource):
             base_url = request.headers['origin']
             link = f"{base_url}/#/signup/activate/{activate_token}"
             send_email(
-                sender = User.query.first().email,
+                sender = 'no-reply@pwnedhub.com',
                 recipient = email,
                 subject = 'PwnedHub Account Activation',
                 body = f"Hi {name}!<br><br>Thank you for joining the PwnedHub community! Visit the following link to activate your account.<br><br><a href=\"{link}\">{link}</a><br><br>See you soon!",
@@ -198,7 +198,7 @@ class UserList(Resource):
             except:
                 payload = {}
             user = { k:v for (k,v) in payload.items() if k not in ['exp', 'iat', 'sub']}
-            if User.query.filter_by(email=user.get('email')).first():
+            if User.get_by_email(user.get('email')):
                 abort(400, 'Email already exists.')
             user = User(**user)
             db.session.add(user)
@@ -227,7 +227,7 @@ class UserInst(Resource):
         user = g.user
         # validate that the provided email doesn't belong to another user
         email = request.json.get('email', user.email)
-        untrusted_user = User.query.filter_by(email=email).first()
+        untrusted_user = User.get_by_email(email)
         if untrusted_user and untrusted_user != g.user:
             abort(400, 'Email already exists.')
         # update the user object

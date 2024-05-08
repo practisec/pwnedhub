@@ -32,9 +32,7 @@ Happy hunting!
 
 '''
 
-EMAIL_TEMPLATE = '''
-
-<!DOCTYPE html>
+EMAIL_TEMPLATE = '''<!DOCTYPE html>
 <html>
 <head>
     <style>

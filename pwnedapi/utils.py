@@ -32,15 +32,13 @@ def encode_jwt(subscriber, claims={}, expire_delta={'days': 1, 'seconds': 0}):
     from pwnedapi.models import Config
     if Config.get_value('JWT_ENCRYPT'):
         return encrypt_jwt(jwt.encode(payload, key=current_app.config['SECRET_KEY'], algorithm='HS256'))
-    else:
-        return jwt.encode(payload, key=current_app.config['SECRET_KEY'], algorithm='HS256')
+    return jwt.encode(payload, key=current_app.config['SECRET_KEY'], algorithm='HS256')
 
 def decode_jwt(token, options={}):
     from pwnedapi.models import Config
     if Config.get_value('JWT_ENCRYPT'):
         return jwt.decode(decrypt_jwt(token), key=current_app.config['SECRET_KEY'], algorithms=['HS256'], options=options)
-    else:
-        return jwt.decode(token, key=current_app.config['SECRET_KEY'], algorithms=['HS256'], options=options)
+    return jwt.decode(token, key=current_app.config['SECRET_KEY'], algorithms=['HS256'], options=options)
 
 from jwcrypto import jwt as _jwt, jwk
 import hashlib
