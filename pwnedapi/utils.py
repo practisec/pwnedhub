@@ -23,8 +23,8 @@ def get_bearer_token(headers):
 
 def encode_jwt(subscriber, claims={}, expire_delta={'days': 1, 'seconds': 0}):
     payload = {
-        'exp': datetime.utcnow() + timedelta(**expire_delta),
-        'iat': datetime.utcnow(),
+        'exp': datetime.now() + timedelta(**expire_delta),
+        'iat': datetime.now(),
         'sub': subscriber
     }
     for claim, value in claims.items():

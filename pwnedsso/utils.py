@@ -10,8 +10,8 @@ def xor_encrypt(s, k):
 
 def encode_jwt(user_id, claims={}, expire_delta={'days': 1, 'seconds': 0}):
     payload = {
-        'exp': datetime.utcnow() + timedelta(**expire_delta),
-        'iat': datetime.utcnow(),
+        'exp': datetime.now() + timedelta(**expire_delta),
+        'iat': datetime.now(),
         'sub': user_id
     }
     for claim, value in claims.items():
