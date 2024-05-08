@@ -52,6 +52,9 @@ class BaseConfig(object):
         'markdown.extensions.fenced_code',
     ]
 
+    # other
+    INBOX_PATH = os.environ.get('INBOX_PATH', '/tmp/inbox')
+
 
 class Development(BaseConfig):
 

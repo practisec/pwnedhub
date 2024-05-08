@@ -47,8 +47,8 @@
                     <div class="panel rounded">
                         <div>Features</div>
                         <hr>
-                        <label for="bearer_enable">
-                            <input name="bearer_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('BEARER_AUTH_ENABLE') %}checked {% endif %}/>
+                        <label for="bearer_auth_enable">
+                            <input name="bearer_auth_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('BEARER_AUTH_ENABLE') %}checked {% endif %}/>
                             <span>Bearer Token Authentication (PwnedAPI) - {% if not app_config('BEARER_AUTH_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
                         </label>
                         <label for="oidc_enable">
@@ -58,6 +58,10 @@
                         <label for="sso_enable">
                             <input name="sso_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('SSO_ENABLE') %}checked {% endif %}/>
                             <span>SSO Authentication (PwnedHub) - {% if not app_config('SSO_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                        </label>
+                        <label for="oob_reset_enable">
+                            <input name="oob_reset_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('OOB_RESET_ENABLE') %}checked {% endif %}/>
+                            <span>Out-of-Band Password Reset (PwnedHub) - {% if not app_config('OOB_RESET_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
                         </label>
                         <label for="ctf_mode">
                             <input name="ctf_mode" type="checkbox" onchange="this.form.submit()" {% if app_config('CTF_MODE') %}checked {% endif %}/>

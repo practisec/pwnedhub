@@ -4,7 +4,7 @@ from pwnedhub.constants import QUESTIONS
 from pwnedhub.decorators import validate
 from pwnedhub.models import Config, Mail, User
 from pwnedhub.oauth import OAuthSignIn, OAuthCallbackError
-from pwnedhub.utils import xor_encrypt
+from pwnedhub.utils import xor_encrypt, generate_timestamp_token, send_email
 from pwnedhub.validators import is_valid_password
 from hashlib import md5
 from secrets import token_urlsafe
@@ -38,9 +38,9 @@ def init_session(user_id):
 def register():
     if request.method == 'POST':
         username = request.form['username']
-        if not User.query.filter_by(username=username).first():
+        if not User.get_by_username(username):
             email = request.form['email']
-            if not User.query.filter_by(email=email).first():
+            if not User.get_by_email(email):
                 password = request.form['password']
                 if is_valid_password(password):
                     user = User(**request.form.to_dict())
@@ -156,9 +156,8 @@ def oauth_callback(provider):
 # password recovery flow controllers
 
 def reset_flow(message):
-    # clear recovery values from the session, but don't empty the
-    # session because it is used to carry the flash messages
-    session['reset_id'] = 0
+    session.pop('reset_id', None)
+    session.pop('reset_token', None)
     flash(message)
     return redirect(url_for('auth.reset_init'))
 
@@ -173,8 +172,21 @@ def reset_init():
         except:
             user = None
         if user:
-            # add to session to begin the reset flow
             session['reset_id'] = user.id
+            if Config.get_value('OOB_RESET_ENABLE'):
+                # begin the out-of-band reset flow
+                reset_token = generate_timestamp_token()
+                session['reset_token'] = reset_token
+                link = url_for('auth.reset_verify', code=reset_token, _external=True)
+                send_email(
+                    sender = 'no-reply@pwnedhub.com',
+                    recipient = user.email,
+                    subject = 'PwnedHub Password Reset',
+                    body = f"Hi {user.name}!<br><br>Visit the following link to reset your password.<br><br><a href=\"{link}\">{link}</a><br><br>See you soon!",
+                )
+                flash('Check your email to reset your password.')
+                return redirect(url_for('auth.reset_init'))
+            # begin the in-band reset flow
             return redirect(url_for('auth.reset_question'))
         else:
             flash('User not recognized.')
@@ -191,9 +203,19 @@ def reset_question():
         answer = request.form['answer']
         if user.answer == answer:
             return redirect(url_for('auth.reset_password'))
-        else:
-            return reset_flow('Incorrect answer.')
+        return reset_flow('Incorrect answer.')
     return render_template('reset_question.html', question=user.question_as_string)
+
+@auth.route('/reset/verify')
+@validate(['code'], method='GET')
+def reset_verify():
+    # validate flow control
+    if not session.get('reset_id'):
+        return reset_flow('Reset improperly initialized.')
+    code = request.args.get('code')
+    if code == session.pop('reset_token', None):
+        return redirect(url_for('auth.reset_password'))
+    return reset_flow('Invalid reset token.')
 
 @auth.route('/reset/password', methods=['GET', 'POST'])
 @validate(['password'])
@@ -201,10 +223,11 @@ def reset_password():
     # validate flow control
     if not session.get('reset_id'):
         return reset_flow('Reset improperly initialized.')
+    user = User.query.get(session.get('reset_id'))
     if request.method == 'POST':
         password = request.form['password']
         if is_valid_password(password):
-            user = User.query.get(session.pop('reset_id'))
+            session.pop('reset_id', None)
             user.password = password
             db.session.add(user)
             db.session.commit()
@@ -212,4 +235,4 @@ def reset_password():
             return redirect(url_for('auth.login'))
         else:
             flash('Password does not meet complexity requirements.')
-    return render_template('reset_password.html')
+    return render_template('reset_password.html', user=user)

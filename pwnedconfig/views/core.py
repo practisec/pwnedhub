@@ -9,15 +9,20 @@ def config():
     if Config.get_value('CTF_MODE'):
         abort(404)
     if request.method == 'POST':
-        Config.get_by_name('CSRF_PROTECT').value = request.form.get('csrf_protect') == 'on' or False
-        Config.get_by_name('BEARER_AUTH_ENABLE').value = request.form.get('bearer_enable') == 'on' or False
-        Config.get_by_name('CORS_RESTRICT').value = request.form.get('cors_restrict') == 'on' or False
-        Config.get_by_name('OIDC_ENABLE').value = request.form.get('oidc_enable') == 'on' or False
-        Config.get_by_name('OSCI_PROTECT').value = request.form.get('osci_protect') == 'on' or False
-        Config.get_by_name('SQLI_PROTECT').value = request.form.get('sqli_protect') == 'on' or False
-        Config.get_by_name('CTF_MODE').value = request.form.get('ctf_mode') == 'on' or False
-        Config.get_by_name('SSO_ENABLE').value = request.form.get('sso_enable') == 'on' or False
-        Config.get_by_name('JWT_VERIFY').value = request.form.get('jwt_verify') == 'on' or False
-        Config.get_by_name('JWT_ENCRYPT').value = request.form.get('jwt_encrypt') == 'on' or False
+        options = [
+            'CSRF_PROTECT',
+            'BEARER_AUTH_ENABLE',
+            'CORS_RESTRICT',
+            'OIDC_ENABLE',
+            'OSCI_PROTECT',
+            'SQLI_PROTECT',
+            'CTF_MODE',
+            'SSO_ENABLE',
+            'JWT_VERIFY',
+            'JWT_ENCRYPT',
+            'OOB_RESET_ENABLE',
+        ]
+        for option in options:
+            Config.get_by_name(option.upper()).value = request.form.get(option.lower()) == 'on'
         db.session.commit()
     return render_template('config.html')
