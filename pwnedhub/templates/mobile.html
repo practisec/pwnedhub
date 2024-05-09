@@ -4,10 +4,10 @@
     <title>PwnedHub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>html{visibility:hidden;opacity:0;}</style><!-- FOUC fix 1/2 -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton-flexbox.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-flex.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-utility.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/skeleton-flexbox.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-flex.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-utility.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/pwnedhub.css') }}">
     <style>html{visibility:visible;opacity:1;}</style><!-- FOUC fix 2/2 -->
 </head>
 <body>
@@ -18,10 +18,10 @@
                 <p>This application is not suited for use with mobile browsers. Download our mobile application for an enhanced mobile experience!</p>
                 <div style="max-width: 250px;">
                     <a href="https://play.google.com/store">
-                        <img style="width: 100%" src="{{ url_for('static', filename='images/play-store.png') }}" />
+                        <img style="width: 100%" src="{{ url_for('common.static', filename='images/play-store.png') }}" />
                     </a>
                     <a href="https://www.apple.com/ios/app-store/">
-                        <img style="width: 100%" src="{{ url_for('static', filename='images/app-store.png') }}" />
+                        <img style="width: 100%" src="{{ url_for('common.static', filename='images/app-store.png') }}" />
                     </a>
                 </div>
             </div>

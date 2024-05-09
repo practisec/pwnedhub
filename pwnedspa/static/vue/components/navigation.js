@@ -6,7 +6,7 @@ const { useRoute } = VueRouter;
 const template = `
 <div class="nav">
     <ul class="menu" :class="{ active: isOpen }">
-        <li class="brand"><img src="/images/logo.png" /></li>
+        <li class="brand"><img src="/static/common/images/logo.png" /></li>
         <li class="toggle"><a href="#" @click.prevent="toggleMenu"><i class="fas fa-bars"></i></a></li>
         <li class="item avatar" v-if="authStore.isLoggedIn">
             <router-link :to="{ name: 'account' }">

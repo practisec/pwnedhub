@@ -4,7 +4,7 @@ import { useAppStore } from '../stores/app-store.js';
 const { onMounted } = Vue;
 
 const template = `
-<img id="signinBtn" class="oidc-button" src="/images/google_signin.png" />
+<img id="signinBtn" class="oidc-button" src="/static/common/images/google_signin.png" />
 `;
 
 export default {

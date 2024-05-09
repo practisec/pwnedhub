@@ -1,5 +1,4 @@
-from flask import session, current_app
-from pwnedhub.constants import EMAIL_TEMPLATE
+from flask import session
 from datetime import datetime
 from hashlib import md5
 from itertools import cycle
@@ -53,17 +52,3 @@ def unfurl_url(url, headers={}):
         values = html.xpath('//meta[@property=\'{}\']/@content'.format(prop))
         data[kw] = ' '.join(values) or None
     return data
-
-def send_email(sender, recipient, subject, body):
-    # check for and create an inbox folder
-    inbox = f"{current_app.config['INBOX_PATH']}/{recipient}"
-    if not os.path.exists(inbox):
-        os.makedirs(inbox)
-    # create a filename based on the subject and nonce
-    filename = f"{subject} {generate_nonce(6)}.html".replace(' ', '_')
-    # write the email to a file
-    filepath = os.path.join(inbox, filename)
-    email = EMAIL_TEMPLATE.format(sender=sender, recipient=recipient, subject=subject, body=body)
-    with open(filepath, 'w') as fp:
-        fp.write(email)
-    return filepath

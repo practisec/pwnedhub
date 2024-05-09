@@ -3,11 +3,11 @@ from pwnedsso.models import User
 from pwnedsso.utils import encode_jwt
 from urllib.parse import urlencode
 
-sso = Blueprint('sso', __name__)
+blp = Blueprint('sso', __name__)
 
 # sso controllers
 
-@sso.route('/authenticate', methods=['POST'])
+@blp.route('/authenticate', methods=['POST'])
 def authenticate():
     username = request.form.get('username')
     password = request.form.get('password')

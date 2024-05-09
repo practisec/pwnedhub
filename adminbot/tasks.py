@@ -10,10 +10,10 @@ def www_login_read_first_mail_respond(name, username, password, receiver_id, sub
         # respond
         bot.compose_mail(receiver_id, subject, content)
 
-def test_login_send_private_message(name, email, inbox_path, room_id, message):
+def test_login_send_private_message(name, email, room_id, message):
     with bot_driver() as driver:
         bot = Hub20Bot(driver, name)
         # login
-        bot.log_in(inbox_path, email)
+        bot.log_in(email)
         # send private message
         bot.send_private_message(room_id, message)

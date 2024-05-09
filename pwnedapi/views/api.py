@@ -3,8 +3,8 @@ from flask_restful import Resource, Api
 from pwnedapi import db
 from pwnedapi.constants import DEFAULT_NOTE
 from pwnedapi.decorators import token_auth_required, roles_required, validate_json, csrf_protect
-from pwnedapi.models import Config, User, Note, Message, Tool, Scan, Room
-from pwnedapi.utils import generate_code, get_bearer_token, encode_jwt, decode_jwt, unfurl_url, send_email, CsrfToken
+from pwnedapi.models import Config, Email, User, Note, Message, Tool, Scan, Room
+from pwnedapi.utils import generate_code, get_bearer_token, encode_jwt, decode_jwt, unfurl_url, CsrfToken
 from pwnedapi.validators import is_valid_command
 from datetime import datetime
 from sqlalchemy import select, text
@@ -28,13 +28,13 @@ class CustomApi(Api):
                 pass  # Fall through to original handler
         return original_handler(e)
 
-resources = Blueprint('resources', __name__)
+blp = Blueprint('resources', __name__)
 api = CustomApi()
-api.init_app(resources)
+api.init_app(blp)
 
 # PRE-REQUEST FUNCTIONS
 
-@resources.before_app_request
+@blp.before_app_request
 def parse_jwt():
     request.jwt = {}
     token = request.cookies.get('access_token')
@@ -46,7 +46,7 @@ def parse_jwt():
         return
     request.jwt = payload
 
-@resources.before_app_request
+@blp.before_app_request
 def load_user():
     g.user = None
     uid = request.jwt.get('sub')
@@ -72,12 +72,14 @@ class TokenList(Resource):
             if user:
                 code = generate_code(6)
                 # email code to user
-                send_email(
+                email = Email(
                     sender = 'no-reply@pwnedhub.com',
                     recipient = user.email,
                     subject = 'PwnedHub Passwordless Authentication',
                     body = f"Hi {user.name}!<br><br>Below is your Passwordless Authentication code.<br><br>{code}<br><br>If you did not trigger a login attempt, please contact an administrator. Thank you.",
                 )
+                db.session.add(email)
+                db.session.commit()
                 # add random code to claims
                 claims = {'code': code}
                 # create a JWT
@@ -181,12 +183,14 @@ class UserList(Resource):
             # send an email with an activation link using the token
             base_url = request.headers['origin']
             link = f"{base_url}/#/signup/activate/{activate_token}"
-            send_email(
+            email = Email(
                 sender = 'no-reply@pwnedhub.com',
                 recipient = email,
                 subject = 'PwnedHub Account Activation',
                 body = f"Hi {name}!<br><br>Thank you for joining the PwnedHub community! Visit the following link to activate your account.<br><br><a href=\"{link}\">{link}</a><br><br>See you soon!",
             )
+            db.session.add(email)
+            db.session.commit()
             return {'success': True}, 201
         # process activation
         elif activate_token:

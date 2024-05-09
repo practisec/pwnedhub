@@ -25,6 +25,24 @@ class Config(db.Model):
         return "<Config '{}'>".format(self.name)
 
 
+class Email(db.Model):
+    __tablename__ = 'emails'
+    __bind_key__ = 'config'
+    id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+    sender = db.Column(db.String(255), nullable=False)
+    recipient = db.Column(db.String(255), nullable=False)
+    subject = db.Column(db.Text, nullable=False)
+    body = db.Column(db.Text, nullable=False)
+
+    @property
+    def created_as_string(self):
+        return self.created.strftime("%Y-%m-%d %H:%M:%S")
+
+    def __repr__(self):
+        return "<Email '{}'>".format(self.id)
+
+
 class BaseModel(db.Model):
     __abstract__ = True
     id = db.Column(db.Integer, primary_key=True)
@@ -132,7 +150,7 @@ class User(BaseModel):
 
     @property
     def avatar_or_default(self):
-        return self.avatar or url_for('static', filename='images/avatars/default.png')
+        return self.avatar or url_for('common.static', filename='images/avatars/default.png')
 
     @property
     def is_admin(self):

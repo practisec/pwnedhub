@@ -92,7 +92,7 @@ class Hub20Bot(BaseBot):
     def __init__(self, driver, name):
         super().__init__(driver, name)
 
-    def log_in(self, inbox_path, email):
+    def log_in(self, email):
         self.debug('Fetching the login page.')
         self.driver.get('http://test.pwnedhub.com/#/login')
 
@@ -105,11 +105,12 @@ class Hub20Bot(BaseBot):
         login_button.click()
 
         self.debug('Fetching the Passwordless Authentication code.')
-        email_files = glob.glob(os.path.join(inbox_path, email, '*.html'))
-        latest_email = max(email_files, key=os.path.getctime)
-        with open(latest_email) as fp:
-            match = re.search(r'<br><br>(\d{6})<br><br>', fp.read())
-            code = match.group(1)
+        inbox_url = 'http://admin.pwnedhub.com/inbox/'
+        import urllib.request
+        contents = urllib.request.urlopen(inbox_url).read().decode()
+        match = re.search(r'<br><br>(\d{6})<br><br>', contents)
+        code = match.group(1)
+        print(f"\n\n{code}\n\n")
 
         self.debug('Setting the inputs.')
         code_input = self.driver.find_element('name', 'code')

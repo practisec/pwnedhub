@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from flask_cors import CORS
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
@@ -12,7 +12,7 @@ socketio = SocketIO()
 def create_app(config='Development'):
 
     # setting the static_url_path to blank serves static files from the web root
-    app = Flask(__name__, static_url_path='')
+    app = Flask(__name__, static_url_path='/static')
     app.config.from_object('pwnedapi.config.{}'.format(config.title()))
 
     app.redis = Redis.from_url(app.config['REDIS_URL'])
@@ -49,8 +49,11 @@ def create_app(config='Development'):
     cors.init_app(app)
     socketio.init_app(app, cors_allowed_origins=app.config['ALLOWED_ORIGINS'])
 
-    from pwnedapi.views.api import resources
-    app.register_blueprint(resources)
+    StaticBlueprint = Blueprint('common', __name__, static_url_path='/static/common', static_folder='../common/static')
+    app.register_blueprint(StaticBlueprint)
+
+    from pwnedapi.views.api import blp as ApiBlueprint
+    app.register_blueprint(ApiBlueprint)
 
     from pwnedapi.views import websockets
 

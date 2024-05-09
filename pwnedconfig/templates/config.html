@@ -1,75 +1,73 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>PwnedConfig</title>
+    <title>Config</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>html{visibility:hidden;opacity:0;}</style><!-- FOUC fix 1/2 -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fontawesome.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/skeleton-flexbox.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-flex.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom-utility.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/fontawesome.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/skeleton-flexbox.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-flex.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-utility.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/pwnedhub.css') }}">
     <style>html{visibility:visible;opacity:1;}</style><!-- FOUC fix 2/2 -->
 </head>
 <body class="flex-column">
-    <section class="flex-grow flex-no-shrink flex-row">
-        <div class="flex-grow container-fluid flex-row">
-            <div class="flex-width-10 flex-offset-1 flex-basis-10 config">
-                <form class="flex-column" action="{{ url_for('core.config') }}" method="post">
-                    <div class="panel rounded">
-                        <div>Security Controls</div>
-                        <hr>
-                        <label for="csrf_protect">
-                            <input name="csrf_protect" type="checkbox" onchange="this.form.submit()" {% if app_config('CSRF_PROTECT') %}checked {% endif %}/>
-                            <span>Profile CSRF Protection (PwnedHub) - {% if not app_config('CSRF_PROTECT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-                        </label>
-                        <label for="osci_protect">
-                            <input name="osci_protect" type="checkbox" onchange="this.form.submit()" {% if app_config('OSCI_PROTECT') %}checked {% endif %}/>
-                            <span>Tools OSCI Protection (PwnedHub) - {% if not app_config('OSCI_PROTECT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-                        </label>
-                        <label for="sqli_protect">
-                            <input name="sqli_protect" type="checkbox" onchange="this.form.submit()" {% if app_config('SQLI_PROTECT') %}checked {% endif %}/>
-                            <span>Login SQLi Protection (PwnedHub) - {% if not app_config('SQLI_PROTECT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-                        </label>
-                        <label for="cors_restrict">
-                            <input name="cors_restrict" type="checkbox" onchange="this.form.submit()" {% if app_config('CORS_RESTRICT') %}checked {% endif %}/>
-                            <span>Restricted CORS (PwnedAPI) - {% if not app_config('CORS_RESTRICT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-                        </label>
-                        <label for="jwt_verify">
-                            <input name="jwt_verify" type="checkbox" onchange="this.form.submit()" {% if app_config('JWT_VERIFY') %}checked {% endif %}/>
-                            <span>Verify JWT Signatures (PwnedAPI) - {% if not app_config('JWT_VERIFY') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-                        </label>
-                        <label for="jwt_encrypt">
-                            <input name="jwt_encrypt" type="checkbox" onchange="this.form.submit()" {% if app_config('JWT_ENCRYPT') %}checked {% endif %}/>
-                            <span>Encrypt JWTs (PwnedAPI) - {% if not app_config('JWT_ENCRYPT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-                        </label>
-                    </div>
-                    <div class="panel rounded">
-                        <div>Features</div>
-                        <hr>
-                        <label for="bearer_auth_enable">
-                            <input name="bearer_auth_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('BEARER_AUTH_ENABLE') %}checked {% endif %}/>
-                            <span>Bearer Token Authentication (PwnedAPI) - {% if not app_config('BEARER_AUTH_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-                        </label>
-                        <label for="oidc_enable">
-                            <input name="oidc_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('OIDC_ENABLE') %}checked {% endif %}/>
-                            <span>OpenID Connect Authentication (PwnedHub) - {% if not app_config('OIDC_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-                        </label>
-                        <label for="sso_enable">
-                            <input name="sso_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('SSO_ENABLE') %}checked {% endif %}/>
-                            <span>SSO Authentication (PwnedHub) - {% if not app_config('SSO_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-                        </label>
-                        <label for="oob_reset_enable">
-                            <input name="oob_reset_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('OOB_RESET_ENABLE') %}checked {% endif %}/>
-                            <span>Out-of-Band Password Reset (PwnedHub) - {% if not app_config('OOB_RESET_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-                        </label>
-                        <label for="ctf_mode">
-                            <input name="ctf_mode" type="checkbox" onchange="this.form.submit()" {% if app_config('CTF_MODE') %}checked {% endif %}/>
-                            <span>CTF Mode (Warning: Disables this interface!) - {% if not app_config('CTF_MODE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
-                        </label>
-                    </div>
-                </form>
-            </div>
+    <section class="flex-grow flex-row">
+        <div class="flex-grow container-fluid config flex-column">
+            <form action="{{ url_for('config.index') }}" method="post">
+                <div class="panel rounded">
+                    <div>Security Controls</div>
+                    <hr>
+                    <label for="csrf_protect">
+                        <input name="csrf_protect" type="checkbox" onchange="this.form.submit()" {% if app_config('CSRF_PROTECT') %}checked {% endif %}/>
+                        <span>Profile CSRF Protection (PwnedHub) - {% if not app_config('CSRF_PROTECT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                    </label>
+                    <label for="osci_protect">
+                        <input name="osci_protect" type="checkbox" onchange="this.form.submit()" {% if app_config('OSCI_PROTECT') %}checked {% endif %}/>
+                        <span>Tools OSCI Protection (PwnedHub) - {% if not app_config('OSCI_PROTECT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                    </label>
+                    <label for="sqli_protect">
+                        <input name="sqli_protect" type="checkbox" onchange="this.form.submit()" {% if app_config('SQLI_PROTECT') %}checked {% endif %}/>
+                        <span>Login SQLi Protection (PwnedHub) - {% if not app_config('SQLI_PROTECT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                    </label>
+                    <label for="cors_restrict">
+                        <input name="cors_restrict" type="checkbox" onchange="this.form.submit()" {% if app_config('CORS_RESTRICT') %}checked {% endif %}/>
+                        <span>Restricted CORS (PwnedAPI) - {% if not app_config('CORS_RESTRICT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                    </label>
+                    <label for="jwt_verify">
+                        <input name="jwt_verify" type="checkbox" onchange="this.form.submit()" {% if app_config('JWT_VERIFY') %}checked {% endif %}/>
+                        <span>Verify JWT Signatures (PwnedAPI) - {% if not app_config('JWT_VERIFY') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                    </label>
+                    <label for="jwt_encrypt">
+                        <input name="jwt_encrypt" type="checkbox" onchange="this.form.submit()" {% if app_config('JWT_ENCRYPT') %}checked {% endif %}/>
+                        <span>Encrypt JWTs (PwnedAPI) - {% if not app_config('JWT_ENCRYPT') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                    </label>
+                </div>
+                <div class="panel rounded">
+                    <div>Features</div>
+                    <hr>
+                    <label for="bearer_auth_enable">
+                        <input name="bearer_auth_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('BEARER_AUTH_ENABLE') %}checked {% endif %}/>
+                        <span>Bearer Token Authentication (PwnedAPI) - {% if not app_config('BEARER_AUTH_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                    </label>
+                    <label for="oidc_enable">
+                        <input name="oidc_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('OIDC_ENABLE') %}checked {% endif %}/>
+                        <span>OpenID Connect Authentication (PwnedHub) - {% if not app_config('OIDC_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                    </label>
+                    <label for="sso_enable">
+                        <input name="sso_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('SSO_ENABLE') %}checked {% endif %}/>
+                        <span>SSO Authentication (PwnedHub) - {% if not app_config('SSO_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                    </label>
+                    <label for="oob_reset_enable">
+                        <input name="oob_reset_enable" type="checkbox" onchange="this.form.submit()" {% if app_config('OOB_RESET_ENABLE') %}checked {% endif %}/>
+                        <span>Out-of-Band Password Reset (PwnedHub) - {% if not app_config('OOB_RESET_ENABLE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                    </label>
+                    <label for="ctf_mode">
+                        <input name="ctf_mode" type="checkbox" onchange="this.form.submit()" {% if app_config('CTF_MODE') %}checked {% endif %}/>
+                        <span>CTF Mode (Warning: Disables this interface!) - {% if not app_config('CTF_MODE') %}<span class="red">DISABLED</span>{% else %}<span class="green">ENABLED</span>{% endif %}</span>
+                    </label>
+                </div>
+            </form>
         </div>
     </section>
 </body>

@@ -7,7 +7,7 @@ const template = `
 <div class="login center">
     <div class="flex-column flex-justify-center">
         <div>
-            <img style="max-width: 100%;" src="/images/logo.png" />
+            <img style="max-width: 100%;" src="/static/common/images/logo.png" />
         </div>
         <div class="center-content">
             <h3>A <span class="red">collaborative</span> space to conduct <span class="red">hosted</span> security assessments.</h3>

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -13,7 +13,7 @@ def create_app(config='Development'):
 
     # setting the static_url_path to blank serves static
     # files from the web root, allowing for robots.txt, etc.
-    app = Flask(__name__, static_url_path='')
+    app = Flask(__name__, static_url_path='/static')
     app.config.from_object('pwnedhub.config.{}'.format(config.title()))
 
     app.redis = Redis.from_url(app.config['REDIS_URL'])
@@ -46,12 +46,15 @@ def create_app(config='Development'):
         from markdown import markdown
         return Markup(markdown(data or '', extensions=app.config['MARKDOWN_EXTENSIONS']))
 
-    from pwnedhub.views.core import core
-    from pwnedhub.views.auth import auth
-    from pwnedhub.views.errors import errors
-    app.register_blueprint(core)
-    app.register_blueprint(auth)
-    app.register_blueprint(errors)
+    StaticBlueprint = Blueprint('common', __name__, static_url_path='/static/common', static_folder='../common/static')
+    app.register_blueprint(StaticBlueprint)
+
+    from pwnedhub.views.core import blp as CoreBlueprint
+    from pwnedhub.views.auth import blp as AuthBlueprint
+    from pwnedhub.views.errors import blp as ErrorsBlueprint
+    app.register_blueprint(CoreBlueprint)
+    app.register_blueprint(AuthBlueprint)
+    app.register_blueprint(ErrorsBlueprint)
 
     return app
 

@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Inbox</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>html{visibility:hidden;opacity:0;}</style><!-- FOUC fix 1/2 -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/fontawesome.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/skeleton-flexbox.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-flex.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-utility.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/pwnedhub.css') }}">
+    <style>html{visibility:visible;opacity:1;}</style><!-- FOUC fix 2/2 -->
+</head>
+<body class="flex-column">
+    <div class="flex-grow flex-row">
+        <div class="flex-grow email flex-column">
+                <table>
+                    <thead>
+                        <th>Time</th>
+                        <th>Sender</th>
+                        <th>Recipient</th>
+                        <th>Subject</th>
+                        <th>Body</th>
+                    </thead>
+                    <tbody>
+                        {% for email in emails %}
+                        <tr>
+                            <td>{{ email.created_as_string }}</td>
+                            <td>{{ email.sender }}</td>
+                            <td>{{ email.recipient }}</td>
+                            <td>{{ email.subject }}</td>
+                            <td>{{ email.body|safe }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        </div>
+    </div>
+</body>
+</html>

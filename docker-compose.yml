@@ -49,12 +49,10 @@ services:
             - 80
         volumes:
             - .:/pwnedhub
-            - ~/tmp/inbox:/tmp/inbox # local mapping to INBOX_PATH
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
-            - INBOX_PATH=/tmp/inbox # writable location for Gunicorn
         command: gunicorn --workers 1 --worker-class eventlet --bind 0.0.0.0:80 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
@@ -73,7 +71,7 @@ services:
             - db
             - redis
 
-    config:
+    admin:
         build: ./pwnedconfig
         image: pwnedconfig-dev
         expose:
@@ -92,7 +90,6 @@ services:
         image: adminbot-dev
         volumes:
             - .:/pwnedhub
-            - ~/tmp/inbox:/tmp/inbox
         command: rq worker -u redis://redis:6379/0 adminbot-tasks
         depends_on:
             - redis
@@ -108,7 +105,7 @@ services:
                     - sso.pwnedhub.com
                     - test.pwnedhub.com
                     - api.pwnedhub.com
-                    - config.pwnedhub.com
+                    - admin.pwnedhub.com
         volumes:
             - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
             - ./proxy/proxy_params:/etc/nginx/proxy_params:ro
@@ -117,7 +114,7 @@ services:
             - sso
             - spa
             - api
-            - config
+            - admin
 
     db:
         image: mysql

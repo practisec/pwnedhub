@@ -1,5 +1,4 @@
 from flask import current_app, url_for
-from pwnedapi.constants import EMAIL_TEMPLATE
 from datetime import datetime, timedelta
 from hashlib import md5
 from lxml import etree
@@ -7,7 +6,6 @@ import base64
 import hmac
 import jsonpickle
 import jwt
-import os
 import random
 import requests
 
@@ -72,21 +70,6 @@ def unfurl_url(url, headers={}):
         values = html.xpath('//meta[@property=\'{}\']/@content'.format(prop))
         data[kw] = ' '.join(values) or None
     return data
-
-def send_email(sender, recipient, subject, body):
-    # check for and create an inbox folder
-    inbox = f"{current_app.config['INBOX_PATH']}/{recipient}"
-    if not os.path.exists(inbox):
-        os.makedirs(inbox)
-    # create a filename based on the subject and time stamp
-    timestamp = datetime.now().strftime('%Y-%m-%d %H-%M-%S')
-    filename = f"{subject} {timestamp}.html".replace(' ', '_')
-    # write the email to a file
-    filepath = os.path.join(inbox, filename)
-    email = EMAIL_TEMPLATE.format(sender=sender, recipient=recipient, subject=subject, body=body)
-    with open(filepath, 'w') as fp:
-        fp.write(email)
-    return filepath
 
 
 class CsrfToken(object):

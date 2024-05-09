@@ -42,6 +42,33 @@ LOCK TABLES `configs` WRITE;
 INSERT INTO `configs` VALUES (1,'CSRF_PROTECT',1),(2,'BEARER_AUTH_ENABLE',1),(3,'CORS_RESTRICT',1),(4,'OIDC_ENABLE',0),(5,'OSCI_PROTECT',0),(6,'SQLI_PROTECT',0),(7,'CTF_MODE',0),(8,'SSO_ENABLE',0),(9,'JWT_VERIFY',1),(10,'JWT_ENCRYPT',0),(11,'OOB_RESET_ENABLE',0);
 /*!40000 ALTER TABLE `configs` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `emails`
+--
+
+DROP TABLE IF EXISTS `emails`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `emails` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `created` datetime NOT NULL,
+  `sender` varchar(255) NOT NULL,
+  `recipient` varchar(255) NOT NULL,
+  `subject` text NOT NULL,
+  `body` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `emails`
+--
+
+LOCK TABLES `emails` WRITE;
+/*!40000 ALTER TABLE `emails` DISABLE KEYS */;
+/*!40000 ALTER TABLE `emails` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

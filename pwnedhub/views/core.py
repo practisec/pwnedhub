@@ -12,27 +12,27 @@ import os
 import platform
 import subprocess
 
-core = Blueprint('core', __name__)
+blp = Blueprint('core', __name__)
 
-@core.before_app_request
+@blp.before_app_request
 def render_mobile():
     if any(x in request.user_agent.string.lower() for x in ['android', 'iphone', 'ipad']):
         if not request.endpoint.startswith('static'):
             return render_template('mobile.html')
 
-@core.before_app_request
+@blp.before_app_request
 def load_user():
     g.user = None
     if session.get('user_id'):
         g.user = User.query.get(session.get('user_id'))
 
-@core.after_app_request
+@blp.after_app_request
 def add_header(response):
     response.headers['X-Powered-By'] = 'Flask/{}'.format(__version__)
     response.headers['X-XSS-Protection'] = '1; mode=block'
     return response
 
-@core.after_app_request
+@blp.after_app_request
 def restrict_flashes(response):
     flashes = session.get('_flashes')
     if flashes and len(flashes) > 5:
@@ -41,11 +41,11 @@ def restrict_flashes(response):
 
 # general controllers
 
-@core.route('/')
+@blp.route('/')
 def index():
     return render_template('index.html')
 
-@core.route('/home')
+@blp.route('/home')
 def home():
     if g.user:
         if g.user.is_admin:
@@ -53,20 +53,20 @@ def home():
         return redirect(url_for('core.notes'))
     return redirect(url_for('core.index'))
 
-@core.route('/about')
+@blp.route('/about')
 def about():
     return render_template('about.html')
 
 # admin controllers
 
-@core.route('/admin/tools')
+@blp.route('/admin/tools')
 @login_required
 @roles_required('admin')
 def admin_tools():
     tools = Tool.query.order_by(Tool.name.asc()).all()
     return render_template('admin_tools.html', tools=tools)
 
-@core.route('/admin/tools/add', methods=['POST'])
+@blp.route('/admin/tools/add', methods=['POST'])
 @login_required
 @roles_required('admin')
 @validate(['name', 'path', 'description'])
@@ -81,7 +81,7 @@ def admin_tools_add():
     flash('Tool added.')
     return redirect(url_for('core.admin_tools'))
 
-@core.route('/admin/tools/remove/<int:tid>')
+@blp.route('/admin/tools/remove/<int:tid>')
 @login_required
 @roles_required('admin')
 def admin_tools_remove(tid):
@@ -91,14 +91,14 @@ def admin_tools_remove(tid):
     flash('Tool removed.')
     return redirect(url_for('core.admin_tools'))
 
-@core.route('/admin/users')
+@blp.route('/admin/users')
 @login_required
 @roles_required('admin')
 def admin_users():
     users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
     return render_template('admin_users.html', users=users)
 
-@core.route('/admin/users/<string:action>/<int:uid>')
+@blp.route('/admin/users/<string:action>/<int:uid>')
 @login_required
 def admin_users_modify(action, uid):
     user = User.query.get_or_404(uid)
@@ -131,7 +131,7 @@ def admin_users_modify(action, uid):
 
 # user controllers
 
-@core.route('/profile', methods=['GET', 'POST'])
+@blp.route('/profile', methods=['GET', 'POST'])
 @login_required
 @validate(['name', 'question', 'answer'])
 @csrf_protect
@@ -154,19 +154,19 @@ def profile():
         flash('Account information changed.')
     return render_template('profile.html', user=user, questions=QUESTIONS)
 
-@core.route('/profile/view/<int:uid>')
+@blp.route('/profile/view/<int:uid>')
 @login_required
 def profile_view(uid):
     user = User.query.get_or_404(uid)
     return render_template('profile_view.html', user=user)
 
-@core.route('/mail')
+@blp.route('/mail')
 @login_required
 def mail():
     mail = g.user.received_mail.order_by(Mail.created.desc()).all()
     return render_template('mail_inbox.html', mail=mail)
 
-@core.route('/mail/compose', methods=['GET', 'POST'])
+@blp.route('/mail/compose', methods=['GET', 'POST'])
 @login_required
 @validate(['receiver', 'subject', 'content'])
 def mail_compose():
@@ -201,13 +201,13 @@ def mail_compose():
     users = User.query.filter(User.id != g.user.id).order_by(User.username.asc()).all()
     return render_template('mail_compose.html', users=users)
 
-@core.route('/mail/reply/<int:mid>')
+@blp.route('/mail/reply/<int:mid>')
 @login_required
 def mail_reply(mid=0):
     letter = Mail.query.get_or_404(mid)
     return render_template('mail_reply.html', letter=letter)
 
-@core.route('/mail/view/<int:mid>')
+@blp.route('/mail/view/<int:mid>')
 @login_required
 def mail_view(mid):
     letter = Mail.query.get_or_404(mid)
@@ -217,7 +217,7 @@ def mail_view(mid):
         db.session.commit()
     return render_template('mail_view.html', letter=letter)
 
-@core.route('/mail/delete/<int:mid>')
+@blp.route('/mail/delete/<int:mid>')
 @login_required
 def mail_delete(mid):
     letter = Mail.query.get_or_404(mid)
@@ -226,14 +226,14 @@ def mail_delete(mid):
     flash('Mail deleted.')
     return redirect(url_for('core.mail'))
 
-@core.route('/messages')
-@core.route('/messages/page/<int:page>')
+@blp.route('/messages')
+@blp.route('/messages/page/<int:page>')
 @login_required
 def messages(page=1):
     messages = Message.query.order_by(Message.created.asc()).paginate(page=page, per_page=current_app.config['MESSAGES_PER_PAGE'])
     return render_template('messages.html', messages=messages)
 
-@core.route('/messages/create', methods=['POST'])
+@blp.route('/messages/create', methods=['POST'])
 @login_required
 @validate(['message'])
 def messages_create():
@@ -244,7 +244,7 @@ def messages_create():
     last_page = Message.query.order_by(Message.created.asc()).paginate(page=None, per_page=current_app.config['MESSAGES_PER_PAGE']).pages
     return redirect(url_for('core.messages', page=last_page))
 
-@core.route('/messages/delete/<int:mid>')
+@blp.route('/messages/delete/<int:mid>')
 @login_required
 def messages_delete(mid):
     message = Message.query.get_or_404(mid)
@@ -256,7 +256,7 @@ def messages_delete(mid):
         abort(403)
     return redirect(url_for('core.messages'))
 
-@core.route('/messages/unfurl', methods=['POST'])
+@blp.route('/messages/unfurl', methods=['POST'])
 def unfurl():
     url = request.json.get('url')
     headers = {}
@@ -271,7 +271,7 @@ def unfurl():
             status = 500
     return jsonify(data), status
 
-@core.route('/notes')
+@blp.route('/notes')
 @login_required
 @roles_required('user')
 def notes():
@@ -279,7 +279,7 @@ def notes():
     notes = note.content if note else DEFAULT_NOTE
     return render_template('notes.html', notes=notes)
 
-@core.route('/notes', methods=['PUT'])
+@blp.route('/notes', methods=['PUT'])
 @login_required
 @roles_required('user')
 def notes_update():
@@ -291,7 +291,7 @@ def notes_update():
     db.session.commit()
     return jsonify(notes=notes.content)
 
-@core.route('/artifacts')
+@blp.route('/artifacts')
 @login_required
 @roles_required('user')
 def artifacts():
@@ -305,7 +305,7 @@ def artifacts():
         break
     return render_template('artifacts.html', artifacts=artifacts)
 
-@core.route('/artifacts/save', methods=['POST'])
+@blp.route('/artifacts/save', methods=['POST'])
 @login_required
 @roles_required('user')
 @validate(['file'])
@@ -327,7 +327,7 @@ def artifacts_save():
         flash('Invalid file extension. Only {} extensions allowed.'.format(', '.join(current_app.config['ALLOWED_EXTENSIONS'])))
     return redirect(url_for('core.artifacts'))
 
-@core.route('/artifacts/create', methods=['POST'])
+@blp.route('/artifacts/create', methods=['POST'])
 @login_required
 @roles_required('user')
 def artifacts_create():
@@ -353,7 +353,7 @@ def artifacts_create():
     xml = '<xml><message>{}</message></xml>'.format(msg)
     return Response(xml, mimetype='application/xml')
 
-@core.route('/artifacts/delete', methods=['POST'])
+@blp.route('/artifacts/delete', methods=['POST'])
 @login_required
 @roles_required('user')
 @validate(['filename'])
@@ -366,7 +366,7 @@ def artifacts_delete():
         flash('Unable to remove the artifact.')
     return redirect(url_for('core.artifacts'))
 
-@core.route('/artifacts/view', methods=['POST'])
+@blp.route('/artifacts/view', methods=['POST'])
 @login_required
 @roles_required('user')
 @validate(['filename'])
@@ -378,14 +378,14 @@ def artifacts_view():
         flash('Unable to load the artifact.')
     return redirect(url_for('core.artifacts'))
 
-@core.route('/tools')
+@blp.route('/tools')
 @login_required
 @roles_required('user')
 def tools():
     tools = Tool.query.all()
     return render_template('tools.html', tools=tools)
 
-@core.route('/tools/info/<string:tid>', methods=['GET'])
+@blp.route('/tools/info/<string:tid>', methods=['GET'])
 @login_required
 @roles_required('user')
 def tools_info(tid):
@@ -399,7 +399,7 @@ def tools_info(tid):
         pass
     return jsonify(tool)
 
-@core.route('/tools/execute/<string:tid>', methods=['POST'])
+@blp.route('/tools/execute/<string:tid>', methods=['POST'])
 @login_required
 @roles_required('user')
 def tools_execute(tid):
@@ -419,7 +419,7 @@ def tools_execute(tid):
         error = True
     return jsonify(cmd=cmd, output=output, error=error)
 
-@core.route('/diagnostics')
+@blp.route('/diagnostics')
 def diagnostics():
     # borrowed from https://github.com/balarsen/FlaskStatus
     platform_stats = {

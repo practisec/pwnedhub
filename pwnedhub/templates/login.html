@@ -8,7 +8,7 @@
             <hr>
             <p>No need to register or remember another pesky password! Just click the button below to register and/or sign-in and get started.</p>
             <hr>
-            <img class="oidc-button" src="{{ url_for('static', filename='images/google_signin.png') }}" onclick="window.location='{{ url_for('auth.oauth_login', provider='google') }}';" />
+            <img class="oidc-button" src="{{ url_for('common.static', filename='images/google_signin.png') }}" onclick="window.location='{{ url_for('auth.oauth_login', provider='google') }}';" />
         </div>
     </div>
 {% else %}

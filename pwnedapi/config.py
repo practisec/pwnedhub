@@ -36,9 +36,6 @@ class BaseConfig(object):
         },
     }
 
-    # other
-    INBOX_PATH = os.environ.get('INBOX_PATH', '/tmp/inbox')
-
     # unused
     API_CONFIG_KEY_NAME = 'X-API-Key'
     API_CONFIG_KEY_VALUE = 'verysekrit'

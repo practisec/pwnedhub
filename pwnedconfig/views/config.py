@@ -2,10 +2,10 @@ from flask import Blueprint, request, render_template, abort
 from pwnedconfig.models import Config
 from pwnedconfig import db
 
-core = Blueprint('core', __name__)
+blp = Blueprint('config', __name__, url_prefix='/config')
 
-@core.route('/', methods=['GET', 'POST'])
-def config():
+@blp.route('/', methods=['GET', 'POST'])
+def index():
     if Config.get_value('CTF_MODE'):
         abort(404)
     if request.method == 'POST':

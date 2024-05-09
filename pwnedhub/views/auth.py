@@ -2,9 +2,9 @@ from flask import Blueprint, current_app, request, session, redirect, url_for, r
 from pwnedhub import db
 from pwnedhub.constants import QUESTIONS
 from pwnedhub.decorators import validate
-from pwnedhub.models import Config, Mail, User
+from pwnedhub.models import Config, Email, Mail, User
 from pwnedhub.oauth import OAuthSignIn, OAuthCallbackError
-from pwnedhub.utils import xor_encrypt, generate_timestamp_token, send_email
+from pwnedhub.utils import xor_encrypt, generate_timestamp_token
 from pwnedhub.validators import is_valid_password
 from hashlib import md5
 from secrets import token_urlsafe
@@ -12,7 +12,7 @@ from sqlalchemy import select, text
 import jwt
 import os
 
-auth = Blueprint('auth', __name__)
+blp = Blueprint('auth', __name__)
 
 def create_welcome_message(user):
     sender = User.query.get(1)
@@ -33,7 +33,7 @@ def init_session(user_id):
 
 # authenticaton controllers
 
-@auth.route('/register', methods=['GET', 'POST'])
+@blp.route('/register', methods=['GET', 'POST'])
 @validate(['username', 'email', 'name', 'password', 'question', 'answer'])
 def register():
     if request.method == 'POST':
@@ -57,7 +57,7 @@ def register():
             flash('Username already exists.')
     return render_template('register.html', questions=QUESTIONS)
 
-@auth.route('/login', methods=['GET', 'POST'])
+@blp.route('/login', methods=['GET', 'POST'])
 @validate(['username', 'password'])
 def login():
     # redirect to home if already logged in
@@ -83,13 +83,13 @@ def login():
         return redirect(url_for('auth.login', error='Invalid username or password.', next=request.args.get('next')))
     return render_template('login.html', next=request.args.get('next'))
 
-@auth.route('/logout')
+@blp.route('/logout')
 def logout():
     session.pop('user_id', None)
     session.clear()
     return redirect(url_for('core.index'))
 
-@auth.route('/sso/login')
+@blp.route('/sso/login')
 def sso_login():
     id_token = request.args.get('id_token')
     if not id_token:
@@ -104,7 +104,7 @@ def sso_login():
         return redirect(request.args.get('next') or url_for('core.home'))
     return redirect(url_for('auth.login', error='Invalid username or password.', next=request.args.get('next')))
 
-@auth.route('/oauth/login/<string:provider>')
+@blp.route('/oauth/login/<string:provider>')
 def oauth_login(provider):
     # redirect to home if logged in
     if session.get('user_id'):
@@ -119,7 +119,7 @@ def oauth_login(provider):
     url = oauth.authorize()
     return redirect(url)
 
-@auth.route('/oauth/callback/<string:provider>')
+@blp.route('/oauth/callback/<string:provider>')
 def oauth_callback(provider):
     # validate the provider
     if provider not in current_app.config['OAUTH_PROVIDERS']:
@@ -161,7 +161,7 @@ def reset_flow(message):
     flash(message)
     return redirect(url_for('auth.reset_init'))
 
-@auth.route('/reset', methods=['GET', 'POST'])
+@blp.route('/reset', methods=['GET', 'POST'])
 @validate(['username'])
 def reset_init():
     if request.method == 'POST':
@@ -178,12 +178,14 @@ def reset_init():
                 reset_token = generate_timestamp_token()
                 session['reset_token'] = reset_token
                 link = url_for('auth.reset_verify', code=reset_token, _external=True)
-                send_email(
+                email = Email(
                     sender = 'no-reply@pwnedhub.com',
                     recipient = user.email,
                     subject = 'PwnedHub Password Reset',
                     body = f"Hi {user.name}!<br><br>Visit the following link to reset your password.<br><br><a href=\"{link}\">{link}</a><br><br>See you soon!",
                 )
+                db.session.add(email)
+                db.session.commit()
                 flash('Check your email to reset your password.')
                 return redirect(url_for('auth.reset_init'))
             # begin the in-band reset flow
@@ -192,7 +194,7 @@ def reset_init():
             flash('User not recognized.')
     return render_template('reset_init.html')
 
-@auth.route('/reset/question', methods=['GET', 'POST'])
+@blp.route('/reset/question', methods=['GET', 'POST'])
 @validate(['answer'])
 def reset_question():
     # validate flow control
@@ -206,7 +208,7 @@ def reset_question():
         return reset_flow('Incorrect answer.')
     return render_template('reset_question.html', question=user.question_as_string)
 
-@auth.route('/reset/verify')
+@blp.route('/reset/verify')
 @validate(['code'], method='GET')
 def reset_verify():
     # validate flow control
@@ -217,7 +219,7 @@ def reset_verify():
         return redirect(url_for('auth.reset_password'))
     return reset_flow('Invalid reset token.')
 
-@auth.route('/reset/password', methods=['GET', 'POST'])
+@blp.route('/reset/password', methods=['GET', 'POST'])
 @validate(['password'])
 def reset_password():
     # validate flow control

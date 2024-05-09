@@ -5,7 +5,6 @@ from pwnedapi.utils import decode_jwt
 from pwnedapi import socketio, db
 from werkzeug.exceptions import Forbidden
 import hashlib
-import jwt
 import traceback
 
 # global store for all websocket client sids (rooms names)
@@ -114,7 +113,6 @@ def join_room_handler(data):
                     kwargs={
                         'name': sender.name,
                         'email': sender.email,
-                        'inbox_path': current_app.config['INBOX_PATH'],
                         'room_id': room.id,
                         'message': 'Do you ever get the feeling that someone is reading our private messages?'
                     }

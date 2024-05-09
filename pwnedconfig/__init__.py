@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -6,7 +6,7 @@ db = SQLAlchemy()
 def create_app(config='Development'):
 
     # setting the static_url_path to blank serves static
-    app = Flask(__name__, static_url_path='')
+    app = Flask(__name__, static_url_path='/static')
     app.config.from_object('pwnedconfig.config.{}'.format(config.title()))
 
     db.init_app(app)
@@ -19,8 +19,13 @@ def create_app(config='Development'):
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
 
-    from pwnedconfig.views.core import core
-    app.register_blueprint(core)
+    StaticBlueprint = Blueprint('common', __name__, static_url_path='/static/common', static_folder='../common/static')
+    app.register_blueprint(StaticBlueprint)
+
+    from pwnedconfig.views.config import blp as ConfigBlurprint
+    from pwnedconfig.views.email import blp as EmailBlurprint
+    app.register_blueprint(ConfigBlurprint)
+    app.register_blueprint(EmailBlurprint)
 
     return app
 
