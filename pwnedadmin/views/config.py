@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, abort
-from pwnedconfig.models import Config
-from pwnedconfig import db
+from pwnedadmin.models import Config
+from pwnedadmin import db
 
 blp = Blueprint('config', __name__, url_prefix='/config')
 

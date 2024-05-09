@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from pwnedconfig.models import Email
+from pwnedadmin.models import Email
 
 blp = Blueprint('email', __name__, url_prefix='/inbox')
 

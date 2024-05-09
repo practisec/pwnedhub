@@ -1,4 +1,4 @@
-from pwnedconfig import db
+from pwnedadmin import db
 import datetime
 
 

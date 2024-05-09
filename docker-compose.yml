@@ -72,8 +72,8 @@ services:
             - redis
 
     admin:
-        build: ./pwnedconfig
-        image: pwnedconfig-dev
+        build: ./pwnedadmin
+        image: pwnedadmin-dev
         expose:
             - 80
         volumes:
@@ -81,7 +81,7 @@ services:
         environment:
             - CONFIG=Production
             - DATABASE_HOST=db
-        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedconfig.wsgi:app --error-logfile - --log-level DEBUG
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedadmin.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
 

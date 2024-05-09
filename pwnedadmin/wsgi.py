@@ -1,4 +1,4 @@
-from pwnedconfig import create_app
+from pwnedadmin import create_app
 import os
 
 app = create_app(os.environ.get('CONFIG', 'Production'))
