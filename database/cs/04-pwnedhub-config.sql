@@ -54,7 +54,7 @@ CREATE TABLE `emails` (
   `id` int NOT NULL AUTO_INCREMENT,
   `created` datetime NOT NULL,
   `sender` varchar(255) NOT NULL,
-  `recipient` varchar(255) NOT NULL,
+  `receiver` varchar(255) NOT NULL,
   `subject` text NOT NULL,
   `body` text NOT NULL,
   PRIMARY KEY (`id`)

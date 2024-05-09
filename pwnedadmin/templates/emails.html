@@ -18,7 +18,7 @@
                     <thead>
                         <th>Time</th>
                         <th>Sender</th>
-                        <th>Recipient</th>
+                        <th>Receiver</th>
                         <th>Subject</th>
                         <th>Body</th>
                     </thead>
@@ -27,7 +27,7 @@
                         <tr>
                             <td>{{ email.created_as_string }}</td>
                             <td>{{ email.sender }}</td>
-                            <td>{{ email.recipient }}</td>
+                            <td>{{ email.receiver }}</td>
                             <td>{{ email.subject }}</td>
                             <td>{{ email.body|safe }}</td>
                         </tr>

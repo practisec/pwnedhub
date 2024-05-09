@@ -180,7 +180,7 @@ def reset_init():
                 link = url_for('auth.reset_verify', code=reset_token, _external=True)
                 email = Email(
                     sender = 'no-reply@pwnedhub.com',
-                    recipient = user.email,
+                    receiver = user.email,
                     subject = 'PwnedHub Password Reset',
                     body = f"Hi {user.name}!<br><br>Visit the following link to reset your password.<br><br><a href=\"{link}\">{link}</a><br><br>See you soon!",
                 )

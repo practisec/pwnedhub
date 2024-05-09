@@ -74,7 +74,7 @@ class TokenList(Resource):
                 # email code to user
                 email = Email(
                     sender = 'no-reply@pwnedhub.com',
-                    recipient = user.email,
+                    receiver = user.email,
                     subject = 'PwnedHub Passwordless Authentication',
                     body = f"Hi {user.name}!<br><br>Below is your Passwordless Authentication code.<br><br>{code}<br><br>If you did not trigger a login attempt, please contact an administrator. Thank you.",
                 )
@@ -185,7 +185,7 @@ class UserList(Resource):
             link = f"{base_url}/#/signup/activate/{activate_token}"
             email = Email(
                 sender = 'no-reply@pwnedhub.com',
-                recipient = email,
+                receiver = email,
                 subject = 'PwnedHub Account Activation',
                 body = f"Hi {name}!<br><br>Thank you for joining the PwnedHub community! Visit the following link to activate your account.<br><br><a href=\"{link}\">{link}</a><br><br>See you soon!",
             )

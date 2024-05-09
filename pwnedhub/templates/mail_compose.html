@@ -4,7 +4,7 @@
     <form class="flex-column" action="{{ url_for('core.mail_compose') }}" method="post">
         <label for="receiver">To: *</label>
         <select name="receiver">
-            <option value="" disabled selected>recipient...</option>
+            <option value="" disabled selected>receiver...</option>
         {% for user in users %}
             <option value="{{ user.id }}">{{ user.name }}</option>
         {% endfor %}
