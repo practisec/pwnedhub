@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+        <style>html{visibility:hidden;opacity:0;}</style><!-- FOUC fix 1/2 -->
+        <!--script src="https://cdn.tailwindcss.com"></script-->
+        <script src="{{ url_for('common.static', filename='js/tailwind-3.4.3.min.js') }}"></script>
+        <style>html{visibility:visible;opacity:1;}</style><!-- FOUC fix 2/2 -->
+    </head>
+    <body class="flex flex-col">
+        {% block content %}{% endblock %}
+    </body>
+</html>

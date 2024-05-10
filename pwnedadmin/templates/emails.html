@@ -1,40 +1,37 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-    <title>PwnedAdmin | Inbox</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>html{visibility:hidden;opacity:0;}</style><!-- FOUC fix 1/2 -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/fontawesome.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/skeleton-flexbox.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-flex.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-utility.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/pwnedhub.css') }}">
-    <style>html{visibility:visible;opacity:1;}</style><!-- FOUC fix 2/2 -->
-</head>
-<body class="flex-column">
-    <div class="flex-grow flex-row">
-        <div class="flex-grow email flex-column">
-                <table>
-                    <thead>
-                        <th>Time</th>
-                        <th>Sender</th>
-                        <th>Receiver</th>
-                        <th>Subject</th>
-                        <th>Body</th>
-                    </thead>
-                    <tbody>
-                        {% for email in emails %}
-                        <tr>
-                            <td>{{ email.created_as_string }}</td>
-                            <td>{{ email.sender }}</td>
-                            <td>{{ email.receiver }}</td>
-                            <td>{{ email.subject }}</td>
-                            <td>{{ email.body|safe }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+{% extends 'layout.html' %}
+{% block title %}PwnedAdmin | Inbox{% endblock %}
+{% block content %}
+<div class="flex flex-col m-4 gap-4">
+    <div class="flex flex-row justify-end">
+        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Empty</button>
+    </div>
+    {% if emails|length > 0 %}
+    {% for email in emails %}
+    <div class="flex flex-col rounded-lg border-2 border-black">
+        <div class="flex flex-col gap-2 p-4 rounded-t-lg bg-gray-200">
+            <div class="flex flex-row justify-between">
+                <div class="text-xl font-bold">{{ email.subject }}</div>
+                <div><code>{{ email.created_as_string }}</code></div>
+            </div>
+            <div><code>From:</code> <span>{{ email.sender }}</span></div>
+            <div><code>To:</code> <span class="font-bold">{{ email.receiver }}</span></div>
+        </div>
+        <div class="flex flex-col p-4 rounded-b-lg border-t-2 border-black">
+            <div class="break-all">{{ email.body|safe }}</div>
         </div>
     </div>
-</body>
-</html>
+    {% endfor %}
+    {% else %}
+    <div class="flex flex-row justify-center">
+        <div class="text-xl font-bold">Inbox is empty.</div>
+    </div>
+    {% endif %}
+</div>
+<script>
+document.querySelector("button").addEventListener("click", (e) => {
+    if (confirm("Are you sure?")) {
+        window.location="{{ url_for('email.empty') }}";
+    };
+});
+</script>
+{% endblock %}

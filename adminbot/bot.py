@@ -105,7 +105,7 @@ class Hub20Bot(BaseBot):
         login_button.click()
 
         self.debug('Fetching the Passwordless Authentication code.')
-        inbox_url = 'http://admin.pwnedhub.com/inbox/'
+        inbox_url = 'http://admin.pwnedhub.com/inbox/?user=admin@pwnedhub.com'
         import urllib.request
         contents = urllib.request.urlopen(inbox_url).read().decode()
         match = re.search(r'<br><br>(\d{6})<br><br>', contents)

@@ -14,6 +14,8 @@ class Config(db.Model):
     __bind_key__ = 'admin'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    type = db.Column(db.String(255), nullable=False)
     value = db.Column(db.Boolean, nullable=False)
 
     @staticmethod

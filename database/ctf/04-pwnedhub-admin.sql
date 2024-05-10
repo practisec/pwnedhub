@@ -28,6 +28,8 @@ DROP TABLE IF EXISTS `configs`;
 CREATE TABLE `configs` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `type` varchar(255) NOT NULL,
   `value` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -39,7 +41,7 @@ CREATE TABLE `configs` (
 
 LOCK TABLES `configs` WRITE;
 /*!40000 ALTER TABLE `configs` DISABLE KEYS */;
-INSERT INTO `configs` VALUES (1,'CSRF_PROTECT',0),(2,'BEARER_AUTH_ENABLE',0),(3,'CORS_RESTRICT',0),(4,'OIDC_ENABLE',0),(5,'OSCI_PROTECT',1),(6,'SQLI_PROTECT',1),(7,'CTF_MODE',1),(8,'SSO_ENABLE',0),(9,'JWT_VERIFY',1),(10,'JWT_ENCRYPT',0),(11,'OOB_RESET_ENABLE',1);
+INSERT INTO `configs` VALUES (1,'CSRF_PROTECT','Profile CSRF Protection (PwnedHub)','security control',0),(2,'OSCI_PROTECT','Tools OSCI Protection (PwnedHub)','security control',1),(3,'SQLI_PROTECT','Login SQLi Protection (PwnedHub)','security control',1),(4,'CORS_RESTRICT','Restricted CORS (PwnedAPI)','security control',0),(5,'JWT_VERIFY','Verify JWT Signatures (PwnedAPI)','security control',1),(6,'JWT_ENCRYPT','Encrypt JWTs (PwnedAPI)','security control',0),(7,'BEARER_AUTH_ENABLE','Bearer Token Authentication (PwnedAPI)','feature',0),(8,'OIDC_ENABLE','OpenID Connect Authentication (PwnedHub)','feature',0),(9,'SSO_ENABLE','SSO Authentication (PwnedHub)','feature',0),(10,'OOB_RESET_ENABLE','Out-of-Band Password Reset (PwnedHub)','feature',1),(11,'CTF_MODE','CTF Mode (Warning: Disables this interface!)','feature',1);
 /*!40000 ALTER TABLE `configs` ENABLE KEYS */;
 UNLOCK TABLES;
 
