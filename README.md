@@ -27,7 +27,7 @@ PwnedHub is a vulnerable application designed exclusively for [PractiSec trainin
     docker compose build
     ```
 
-5. Launch the PwnedHub architecture using Docker Compose.
+5. Launch the PwnedHub environment using Docker Compose.
 
     ```
     docker compose up
@@ -42,16 +42,25 @@ PwnedHub is a vulnerable application designed exclusively for [PractiSec trainin
     127.0.0.1   sso.pwnedhub.com
     127.0.0.1   test.pwnedhub.com
     127.0.0.1   api.pwnedhub.com
-    127.0.0.1   config.pwnedhub.com
+    127.0.0.1   admin.pwnedhub.com
     ```
 
-7. Visit the various applications and API interfaces:
+7. Visit the various target applications:
     * http://www.pwnedhub.com
     * http://test.pwnedhub.com
-    * http://api.pwnedhub.com/swaggerui/index.html
-    * Postman collection files for the REST API are available in the Github repository under the "resources" folder.
-8. When done using PwnedHub, clean up the Docker environment with the following command:
+    * http://api.pwnedhub.com
+    * http://sso.pwnedhub.com
+8. When done using PwnedHub, shut down the Docker environment with the following command:
 
     ```
     docker compose down
     ```
+
+## Information
+
+The PwnedHub environment includes several resources that are not targets.
+
+1. http://admin.pwnedhub.com/inbox/ - A webmail interface for receiving email from out-of-band systems. PwnedHub does not send email to external mail services, so when an application sends an email, this is where the user will receive it.
+2. http://admin.pwnedhub.com/config/ - A configuration interface for enabling/disabling security controls and features. Modifying these settings change how the target applications behave.
+
+Postman collection files for the REST API are available in the "resources" folder.
