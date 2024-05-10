@@ -11,7 +11,7 @@ class BaseConfig(object):
 
     # database
     DATABASE_HOST = os.environ.get('DATABASE_HOST', 'localhost')
-    SQLALCHEMY_DATABASE_URI = f"mysql://pwnedhub:dbconnectpass@{DATABASE_HOST}/pwnedhub-config"
+    SQLALCHEMY_DATABASE_URI = f"mysql://pwnedhub:dbconnectpass@{DATABASE_HOST}/pwnedhub-admin"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

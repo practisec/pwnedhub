@@ -1,9 +1,9 @@
 -- Attach to database
-USE `pwnedhub-config`;
+USE `pwnedhub-admin`;
 
 -- MySQL dump 10.13  Distrib 8.0.33, for Linux (x86_64)
 --
--- Host: localhost    Database: pwnedhub-config
+-- Host: localhost    Database: pwnedhub-admin
 -- ------------------------------------------------------
 -- Server version	8.0.33
 

@@ -11,7 +11,7 @@ memberships = db.Table('memberships',
 
 class Config(db.Model):
     __tablename__ = 'configs'
-    __bind_key__ = 'config'
+    __bind_key__ = 'admin'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     value = db.Column(db.Boolean, nullable=False)
@@ -30,7 +30,7 @@ class Config(db.Model):
 
 class Email(db.Model):
     __tablename__ = 'emails'
-    __bind_key__ = 'config'
+    __bind_key__ = 'admin'
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=get_current_utc_time)
     sender = db.Column(db.String(255), nullable=False)
