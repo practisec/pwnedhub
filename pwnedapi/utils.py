@@ -1,5 +1,5 @@
 from flask import current_app, url_for
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from hashlib import md5
 from lxml import etree
 import base64
@@ -8,6 +8,12 @@ import jsonpickle
 import jwt
 import random
 import requests
+
+def get_current_utc_time():
+    return datetime.now(timezone.utc)
+
+def get_local_from_utc(dtg):
+    return dtg.replace(tzinfo=timezone.utc).astimezone(tz=None)
 
 def generate_code(length=6):
     """Generates a pseudorandom number."""
@@ -21,8 +27,8 @@ def get_bearer_token(headers):
 
 def encode_jwt(subscriber, claims={}, expire_delta={'days': 1, 'seconds': 0}):
     payload = {
-        'exp': datetime.now() + timedelta(**expire_delta),
-        'iat': datetime.now(),
+        'exp': get_current_utc_time() + timedelta(**expire_delta),
+        'iat': get_current_utc_time(),
         'sub': subscriber
     }
     for claim, value in claims.items():
@@ -76,7 +82,7 @@ class CsrfToken(object):
 
     def __init__(self, uid, ts=None):
         self.uid = uid
-        self.ts = ts or int(datetime.now().timestamp())
+        self.ts = ts or int(get_current_utc_time().timestamp())
         self.sig = None
 
     def sign(self, key):

@@ -3,7 +3,7 @@ from pwnedhub import db
 from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
 from pwnedhub.decorators import login_required, roles_required, validate, csrf_protect
 from pwnedhub.models import Note, Mail, Message, Tool, User
-from pwnedhub.utils import unfurl_url
+from pwnedhub.utils import get_current_utc_time, unfurl_url
 from pwnedhub.validators import is_valid_password, is_valid_command, is_valid_filename, is_valid_mimetype
 from datetime import datetime
 from lxml import etree
@@ -337,7 +337,7 @@ def artifacts_create():
     content = doc.find('content').text
     filename = doc.find('filename').text
     if all((content, filename)):
-        filename += '-{}.txt'.format(datetime.now().strftime('%s'))
+        filename += '-{}.txt'.format(get_current_utc_time().strftime('%s'))
         msg = 'Artifact created \'{}\'.'.format(filename)
         path = os.path.join(session.get('upload_folder'), filename)
         if not os.path.isfile(path):

@@ -1,5 +1,5 @@
 from flask import session
-from datetime import datetime
+from datetime import datetime, timezone
 from hashlib import md5
 from itertools import cycle
 from lxml import etree
@@ -9,6 +9,12 @@ import hashlib
 import os
 import random
 import requests
+
+def get_current_utc_time():
+    return datetime.now(timezone.utc)
+
+def get_local_from_utc(dtg):
+    return dtg.replace(tzinfo=timezone.utc).astimezone(tz=None)
 
 def xor_encrypt(s, k):
     ciphertext = ''.join([ chr(ord(c)^ord(k)) for c,k in zip(s, cycle(k)) ])
@@ -30,7 +36,7 @@ def generate_token():
     return str(uuid4())
 
 def generate_timestamp_token():
-    return md5(str(int(datetime.now().timestamp()*100)).encode()).hexdigest()
+    return md5(str(int(get_current_utc_time().timestamp()*100)).encode()).hexdigest()
 
 def generate_csrf_token():
     session['csrf_token'] = generate_token()

@@ -4,7 +4,7 @@ from pwnedapi import db
 from pwnedapi.constants import DEFAULT_NOTE
 from pwnedapi.decorators import token_auth_required, roles_required, validate_json, csrf_protect
 from pwnedapi.models import Config, Email, User, Note, Message, Tool, Scan, Room
-from pwnedapi.utils import generate_code, get_bearer_token, encode_jwt, decode_jwt, unfurl_url, CsrfToken
+from pwnedapi.utils import get_current_utc_time, generate_code, get_bearer_token, encode_jwt, decode_jwt, unfurl_url, CsrfToken
 from pwnedapi.validators import is_valid_command
 from datetime import datetime
 from sqlalchemy import select, text
@@ -297,7 +297,7 @@ class RoomMessageList(Resource):
             'cursor': None,
             'next': None,
         }
-        cursor = float(request.args.get('cursor', datetime.now().timestamp()))
+        cursor = float(request.args.get('cursor', get_current_utc_time().timestamp()))
         size = request.args.get('size', 8)
         messages = room.messages.filter(Message.created < datetime.fromtimestamp(cursor)).order_by(Message.created.desc()).all()
         if messages:

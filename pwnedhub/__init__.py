@@ -1,7 +1,7 @@
 from flask import Flask, Blueprint
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from pwnedhub.utils import get_current_utc_time
 from urllib.parse import unquote
 from redis import Redis
 import rq
@@ -27,7 +27,7 @@ def create_app(config='Development'):
     app.jinja_env.globals['app_config'] = Config.get_value
     # custom jinja global for the current date
     # used in the layout to keep the current year
-    app.jinja_env.globals['date'] = datetime.now()
+    app.jinja_env.globals['date'] = get_current_utc_time()
     # custom jinja global for setting CSRF tokens
     from pwnedhub.utils import generate_csrf_token
     app.jinja_env.globals['csrf_token'] = generate_csrf_token

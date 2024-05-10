@@ -1,5 +1,5 @@
 from pwnedadmin import db
-import datetime
+from pwnedadmin.utils import get_current_utc_time, get_local_from_utc
 
 
 class Config(db.Model):
@@ -23,7 +23,7 @@ class Config(db.Model):
 class Email(db.Model):
     __tablename__ = 'emails'
     id = db.Column(db.Integer, primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+    created = db.Column(db.DateTime, nullable=False, default=get_current_utc_time)
     sender = db.Column(db.String(255), nullable=False)
     receiver = db.Column(db.String(255), nullable=False)
     subject = db.Column(db.Text, nullable=False)
@@ -31,7 +31,7 @@ class Email(db.Model):
 
     @property
     def created_as_string(self):
-        return self.created.strftime("%Y-%m-%d %H:%M:%S")
+        return get_local_from_utc(self.created).strftime("%Y-%m-%d %H:%M:%S")
 
     def __repr__(self):
         return "<Email '{}'>".format(self.id)

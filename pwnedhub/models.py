@@ -1,9 +1,8 @@
 from flask import current_app, url_for
 from pwnedhub import db
 from pwnedhub.constants import ROLES, QUESTIONS, USER_STATUSES
-from pwnedhub.utils import xor_encrypt, xor_decrypt
+from pwnedhub.utils import get_current_utc_time, get_local_from_utc, xor_encrypt, xor_decrypt
 from secrets import token_urlsafe
-import datetime
 
 
 class Config(db.Model):
@@ -29,7 +28,7 @@ class Email(db.Model):
     __tablename__ = 'emails'
     __bind_key__ = 'config'
     id = db.Column(db.Integer, primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+    created = db.Column(db.DateTime, nullable=False, default=get_current_utc_time)
     sender = db.Column(db.String(255), nullable=False)
     receiver = db.Column(db.String(255), nullable=False)
     subject = db.Column(db.Text, nullable=False)
@@ -37,7 +36,7 @@ class Email(db.Model):
 
     @property
     def created_as_string(self):
-        return self.created.strftime("%Y-%m-%d %H:%M:%S")
+        return get_local_from_utc(self.created).strftime("%Y-%m-%d %H:%M:%S")
 
     def __repr__(self):
         return "<Email '{}'>".format(self.id)
@@ -46,8 +45,8 @@ class Email(db.Model):
 class BaseModel(db.Model):
     __abstract__ = True
     id = db.Column(db.Integer, primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
-    modified = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+    created = db.Column(db.DateTime, nullable=False, default=get_current_utc_time)
+    modified = db.Column(db.DateTime, nullable=False, default=get_current_utc_time, onupdate=get_current_utc_time)
 
     @property
     def _name(self):
@@ -55,11 +54,11 @@ class BaseModel(db.Model):
 
     @property
     def created_as_string(self):
-        return self.created.strftime("%Y-%m-%d %H:%M:%S")
+        return get_local_from_utc(self.created).strftime("%Y-%m-%d %H:%M:%S")
 
     @property
     def modified_as_string(self):
-        return self.modified.strftime("%Y-%m-%d %H:%M:%S")
+        return get_local_from_utc(self.modified).strftime("%Y-%m-%d %H:%M:%S")
 
 
 class Note(BaseModel):

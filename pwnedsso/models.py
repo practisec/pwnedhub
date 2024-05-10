@@ -1,15 +1,14 @@
 from flask import current_app
 from pwnedsso import db
-from pwnedsso.utils import xor_encrypt
+from pwnedsso.utils import get_current_utc_time, get_local_from_utc, xor_encrypt
 from secrets import token_urlsafe
-import datetime
 
 
 class BaseModel(db.Model):
     __abstract__ = True
     id = db.Column(db.Integer, primary_key=True)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
-    modified = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+    created = db.Column(db.DateTime, nullable=False, default=get_current_utc_time)
+    modified = db.Column(db.DateTime, nullable=False, default=get_current_utc_time, onupdate=get_current_utc_time)
 
     @property
     def _name(self):
@@ -17,11 +16,11 @@ class BaseModel(db.Model):
 
     @property
     def created_as_string(self):
-        return self.created.strftime("%Y-%m-%d %H:%M:%S")
+        return get_local_from_utc(self.created).strftime("%Y-%m-%d %H:%M:%S")
 
     @property
     def modified_as_string(self):
-        return self.modified.strftime("%Y-%m-%d %H:%M:%S")
+        return get_local_from_utc(self.modified).strftime("%Y-%m-%d %H:%M:%S")
 
 
 class User(BaseModel):

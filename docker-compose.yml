@@ -9,6 +9,7 @@ services:
             - .:/pwnedhub
             - ~/tmp:/tmp # local mapping to log location
         environment:
+            - TZ=America/New_York
             - CONFIG=Production
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
@@ -25,6 +26,7 @@ services:
         volumes:
             - .:/pwnedhub
         environment:
+            - TZ=America/New_York
             - CONFIG=Production
             - DATABASE_HOST=db
         command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedsso.wsgi:app --error-logfile - --log-level DEBUG
@@ -50,6 +52,7 @@ services:
         volumes:
             - .:/pwnedhub
         environment:
+            - TZ=America/New_York
             - CONFIG=Production
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
@@ -63,6 +66,7 @@ services:
         volumes:
             - .:/pwnedhub
         environment:
+            - TZ=America/New_York
             - CONFIG=Production
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
@@ -79,6 +83,7 @@ services:
         volumes:
             - .:/pwnedhub
         environment:
+            - TZ=America/New_York
             - CONFIG=Production
             - DATABASE_HOST=db
         command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedadmin.wsgi:app --error-logfile - --log-level DEBUG
