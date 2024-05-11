@@ -1,7 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import glob
 import os.path
@@ -35,6 +36,8 @@ class BaseBot(object):
     def debug(self, s):
         print(f"[{self.__class__.__name__}] [{self.name}] [{self.driver.current_url}] {s}")
 
+    def wait_until_url(self, url):
+        WebDriverWait(self.driver, 10).until(EC.url_to_be(url))
 
 class HubBot(BaseBot):
 
@@ -103,6 +106,7 @@ class Hub20Bot(BaseBot):
         self.debug('Logging in.')
         login_button = self.driver.find_element('xpath', '//input[@type="button" and @value="Log me in please."]')
         login_button.click()
+        self.wait_until_url('http://test.pwnedhub.com/#/login/passwordless')
 
         self.debug('Fetching the Passwordless Authentication code.')
         inbox_url = 'http://admin.pwnedhub.com/inbox/?user=admin@pwnedhub.com'
@@ -110,7 +114,6 @@ class Hub20Bot(BaseBot):
         contents = urllib.request.urlopen(inbox_url).read().decode()
         match = re.search(r'<br><br>(\d{6})<br><br>', contents)
         code = match.group(1)
-        print(f"\n\n{code}\n\n")
 
         self.debug('Setting the inputs.')
         code_input = self.driver.find_element('name', 'code')
@@ -119,6 +122,7 @@ class Hub20Bot(BaseBot):
         self.debug('Submitting the Passwordless Authentication code.')
         code_button = self.driver.find_element('xpath', '//input[@type="button" and @value="Yes, it\'s really me."]')
         code_button.click()
+        self.wait_until_url('http://test.pwnedhub.com/#/admin/users')
 
     def send_private_message(self, room_id, message):
         self.debug('Visiting the Messaging view.')
