@@ -6,7 +6,7 @@ from pwnedapi.decorators import token_auth_required, roles_required, validate_js
 from pwnedapi.models import Config, Email, User, Note, Message, Tool, Scan, Room
 from pwnedapi.utils import get_current_utc_time, generate_code, get_bearer_token, encode_jwt, decode_jwt, unfurl_url, CsrfToken
 from pwnedapi.validators import is_valid_command
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import select, text
 from sqlalchemy.exc import SQLAlchemyError, PendingRollbackError
 import jwt
@@ -299,10 +299,10 @@ class RoomMessageList(Resource):
         }
         cursor = float(request.args.get('cursor', get_current_utc_time().timestamp()))
         size = request.args.get('size', 8)
-        messages = room.messages.filter(Message.created < datetime.fromtimestamp(cursor)).order_by(Message.created.desc()).all()
+        messages = room.messages.filter(Message.created < datetime.fromtimestamp(cursor, tz=timezone.utc)).order_by(Message.created.desc()).all()
         if messages:
             paged_messages = messages[:size]
-            next_cursor = str(paged_messages[-1].created.timestamp())
+            next_cursor = str(paged_messages[-1].created.replace(tzinfo=timezone.utc).timestamp())
             next_url = None
             if messages[-1].created < paged_messages[-1].created:
                 next_url = url_for('resources.roommessagelist', rid=room.id, cursor=next_cursor, _external=True)
