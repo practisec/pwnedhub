@@ -85,7 +85,7 @@
     </footer>
     {% if get_flashed_messages() %}
     <script>
-        {% for message in get_flashed_messages() %}
+        {% for message in get_flashed_messages()|unique %}
         showFlash("{{ message }}");
         {% endfor %}
     </script>
