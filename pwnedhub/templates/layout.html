@@ -9,10 +9,10 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-flex.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-utility.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/pwnedhub.css') }}">
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.6.2.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/pwnedhub.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/showdown.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/purify.min.js') }}"></script>
+    <script nonce="{{ g.nonce }}" type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.6.2.min.js') }}"></script>
+    <script nonce="{{ g.nonce }}" type="text/javascript" src="{{ url_for('static', filename='js/pwnedhub.js') }}"></script>
+    <script nonce="{{ g.nonce }}" type="text/javascript" src="{{ url_for('static', filename='js/showdown.js') }}"></script>
+    <script nonce="{{ g.nonce }}" type="text/javascript" src="{{ url_for('static', filename='js/purify.min.js') }}"></script>
 </head>
 <body class="flex-column">
     <div id="flash" class="flash"></div>
@@ -84,7 +84,7 @@
         </div>
     </footer>
     {% if get_flashed_messages() %}
-    <script>
+    <script nonce="{{ g.nonce }}">
         {% for message in get_flashed_messages()|unique %}
         showFlash("{{ message }}");
         {% endfor %}

@@ -1,7 +1,7 @@
-from flask import Flask, request, render_template, Blueprint, __version__
+from flask import Flask, request, render_template, g, Blueprint, __version__
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
-from pwnedhub.utils import get_current_utc_time
+from pwnedhub.utils import get_current_utc_time, generate_nonce
 from urllib.parse import unquote
 from redis import Redis
 import rq
@@ -52,10 +52,16 @@ def create_app(config='Development'):
             if not request.endpoint.startswith('static'):
                 return render_template('mobile.html')
 
+    @app.before_request
+    def add_nonce():
+        g.nonce = generate_nonce()
+
     @app.after_request
     def add_header(response):
         response.headers['X-Powered-By'] = 'Flask/{}'.format(__version__)
         response.headers['X-XSS-Protection'] = '1; mode=block'
+        if Config.get_value('CSP_PROTECT'):
+            response.headers['Content-Security-Policy'] = f"script-src 'unsafe-inline' 'nonce-{g.nonce}'; script-src-attr 'unsafe-inline'; object-src 'none'; base-uri 'none'"
         return response
 
     StaticBlueprint = Blueprint('common', __name__, static_url_path='/static/common', static_folder='../common/static')

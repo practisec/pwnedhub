@@ -15,7 +15,7 @@
         <div id="pane-2" class="flex-grow markdown"></div>
     </div>
 </div>
-<script>
+<script nonce="{{ g.nonce }}">
 var notes = document.getElementById("notes")
 var view = document.getElementById("tab-two")
 var key = "{{ g.user.username|safe }}-notes";

@@ -32,7 +32,7 @@
     </form>
     </div>
 </div>
-<script>
+<script nonce="{{ g.nonce }}">
 function reply(id) {
     var template = "<blockquote>" + document.getElementById("comment-" + id).innerHTML + "</blockquote>\n\n";
     var reply = document.getElementById("reply")
