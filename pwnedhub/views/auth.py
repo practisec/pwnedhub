@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, request, session, redirect, url_for, render_template, flash
+from flask import Blueprint, current_app, request, g, session, redirect, url_for, render_template, flash
 from pwnedhub import db
 from pwnedhub.constants import QUESTIONS
 from pwnedhub.decorators import validate
@@ -13,6 +13,12 @@ import jwt
 import os
 
 blp = Blueprint('auth', __name__)
+
+@blp.before_app_request
+def load_user():
+    g.user = None
+    if session.get('user_id'):
+        g.user = User.query.get(session.get('user_id'))
 
 def create_welcome_message(user):
     sender = User.query.get(1)

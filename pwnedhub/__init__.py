@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint
+from flask import Flask, request, render_template, session, Blueprint, __version__
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from pwnedhub.utils import get_current_utc_time
@@ -45,6 +45,25 @@ def create_app(config='Development'):
         from flask import Markup
         from markdown import markdown
         return Markup(markdown(data or '', extensions=app.config['MARKDOWN_EXTENSIONS']))
+
+    @app.before_request
+    def render_mobile():
+        if any(x in request.user_agent.string.lower() for x in ['android', 'iphone', 'ipad']):
+            if not request.endpoint.startswith('static'):
+                return render_template('mobile.html')
+
+    @app.after_request
+    def add_header(response):
+        response.headers['X-Powered-By'] = 'Flask/{}'.format(__version__)
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        return response
+
+    @app.after_app_request
+    def restrict_flashes(response):
+        flashes = session.get('_flashes')
+        if flashes and len(flashes) > 5:
+            del session['_flashes'][0]
+        return response
 
     StaticBlueprint = Blueprint('common', __name__, static_url_path='/static/common', static_folder='../common/static')
     app.register_blueprint(StaticBlueprint)

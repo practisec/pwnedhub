@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, flash, jsonify, Response, send_file, abort, __version__
+from flask import Blueprint, current_app, request, session, g, redirect, url_for, render_template, flash, jsonify, Response, send_file, abort
 from pwnedhub import db
 from pwnedhub.constants import QUESTIONS, DEFAULT_NOTE, ADMIN_RESPONSE
 from pwnedhub.decorators import login_required, roles_required, validate, csrf_protect
@@ -13,31 +13,6 @@ import platform
 import subprocess
 
 blp = Blueprint('core', __name__)
-
-@blp.before_app_request
-def render_mobile():
-    if any(x in request.user_agent.string.lower() for x in ['android', 'iphone', 'ipad']):
-        if not request.endpoint.startswith('static'):
-            return render_template('mobile.html')
-
-@blp.before_app_request
-def load_user():
-    g.user = None
-    if session.get('user_id'):
-        g.user = User.query.get(session.get('user_id'))
-
-@blp.after_app_request
-def add_header(response):
-    response.headers['X-Powered-By'] = 'Flask/{}'.format(__version__)
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    return response
-
-@blp.after_app_request
-def restrict_flashes(response):
-    flashes = session.get('_flashes')
-    if flashes and len(flashes) > 5:
-        del session['_flashes'][0]
-    return response
 
 # general controllers
 
