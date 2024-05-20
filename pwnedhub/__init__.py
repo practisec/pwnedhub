@@ -49,7 +49,7 @@ def create_app(config='Development'):
     @app.before_request
     def render_mobile():
         if any(x in request.user_agent.string.lower() for x in ['android', 'iphone', 'ipad']):
-            if not request.endpoint.startswith('static'):
+            if not request.endpoint in ('static', 'common.static'):
                 return render_template('mobile.html')
 
     @app.before_request
