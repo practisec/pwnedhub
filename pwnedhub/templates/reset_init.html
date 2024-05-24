@@ -2,6 +2,7 @@
 {% block body %}
 <div class="flex-width-4 flex-offset-4 flex-basis-4">
     <form class="flex-column" action="{{ url_for('auth.reset_init') }}" method="post">
+        <h3 style="text-align: center;">Password trouble?</h3>
         <label for="username">Username:</label>
         <input name="username" type="text" value="" />
         <input type="submit" value="Submit" onclick="cleanSubmit(event, this.form);" />

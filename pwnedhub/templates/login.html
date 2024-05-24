@@ -17,6 +17,7 @@
     {% else %}
     <form class="flex-column form" action="{{ url_for('auth.login', next=next) }}" method="post">
     {% endif %}
+        <h3 style="text-align: center;">Please log in.</h3>
         <label for="username">Username:</label>
         <input name="username" type="text" />
         <label for="password">Password:</label>

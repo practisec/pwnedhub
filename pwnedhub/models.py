@@ -122,6 +122,7 @@ class User(BaseModel):
     status = db.Column(db.Integer, nullable=False, default=1)
     notes = db.relationship('Note', back_populates='owner', lazy='dynamic')
     messages = db.relationship('Message', back_populates='author', lazy='dynamic')
+    tokens = db.relationship('Token', back_populates='owner', lazy='dynamic')
     sent_mail = db.relationship('Mail', foreign_keys=[Mail.sender_id], back_populates='sender', lazy='dynamic')
     received_mail = db.relationship('Mail', foreign_keys=[Mail.receiver_id], back_populates='receiver', lazy='dynamic')
 
@@ -187,3 +188,33 @@ class User(BaseModel):
 
     def __repr__(self):
         return "<User '{}'>".format(self.username)
+
+
+class Token(BaseModel):
+    __tablename__ = 'tokens'
+    value = db.Column(db.String(255), nullable=False)
+    ttl = db.Column(db.Integer, nullable=False, default=600)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    owner = db.relationship('User', back_populates='tokens')
+
+    @property
+    def is_valid(self):
+        current = get_current_utc_time().replace(tzinfo=None)
+        diff = current - self.created
+        if diff.total_seconds() > self.ttl:
+            return False
+        return True
+
+    @staticmethod
+    def get_by_value(value):
+        return Token.query.filter_by(value=value).first()
+
+    @staticmethod
+    def purge():
+        invalid_tokens = [t for t in Token.query.all() if not t.is_valid]
+        for invalid_token in invalid_tokens:
+            db.session.delete(invalid_token)
+        db.session.commit()
+
+    def __repr__(self):
+        return "<Token '{}'>".format(self.value)

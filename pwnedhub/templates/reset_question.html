@@ -2,6 +2,7 @@
 {% block body %}
 <div class="flex-width-4 flex-offset-4 flex-basis-4">
     <form class="flex-column" action="{{ url_for('auth.reset_question') }}" method="post">
+        <h3 style="text-align: center;">Verify your identity.</h3>
         <label for="answer">{{ question }}</label>
         <input name="answer" type="text" value="" />
         <input type="submit" value="Submit" onclick="cleanSubmit(event, this.form);" />

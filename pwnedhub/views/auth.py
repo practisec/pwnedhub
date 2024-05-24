@@ -1,8 +1,8 @@
-from flask import Blueprint, current_app, request, g, session, redirect, url_for, render_template, flash
+from flask import Blueprint, current_app, request, g, session, redirect, url_for, render_template, flash, abort
 from pwnedhub import db
 from pwnedhub.constants import QUESTIONS
 from pwnedhub.decorators import validate
-from pwnedhub.models import Config, Email, Mail, User
+from pwnedhub.models import Config, Email, Mail, User, Token
 from pwnedhub.oauth import OAuthSignIn, OAuthCallbackError
 from pwnedhub.utils import xor_encrypt, generate_timestamp_token
 from pwnedhub.validators import is_valid_password
@@ -178,12 +178,15 @@ def reset_init():
         except:
             user = None
         if user:
-            session['reset_id'] = user.id
             if Config.get_value('OOB_RESET_ENABLE'):
-                # begin the out-of-band reset flow
-                reset_token = generate_timestamp_token()
-                session['reset_token'] = reset_token
-                link = url_for('auth.reset_verify', code=reset_token, _external=True)
+                # initialize the out-of-band reset flow
+                reset_token = Token(
+                    value=generate_timestamp_token(),
+                    owner=user
+                )
+                db.session.add(reset_token)
+                db.session.commit()
+                link = url_for('auth.reset_password_oob', token=reset_token.value, _external=True)
                 email = Email(
                     sender = 'no-reply@pwnedhub.com',
                     receiver = user.email,
@@ -194,7 +197,8 @@ def reset_init():
                 db.session.commit()
                 flash('Check your email to reset your password.')
                 return redirect(url_for('auth.reset_init'))
-            # begin the in-band reset flow
+            # initialize the in-band reset flow
+            session['reset_id'] = user.id
             return redirect(url_for('auth.reset_question'))
         else:
             flash('User not recognized.')
@@ -203,6 +207,8 @@ def reset_init():
 @blp.route('/reset/question', methods=['GET', 'POST'])
 @validate(['answer'])
 def reset_question():
+    if Config.get_value('OOB_RESET_ENABLE'):
+        abort(404)
     # validate flow control
     if not session.get('reset_id'):
         return reset_flow('Reset improperly initialized.')
@@ -214,20 +220,11 @@ def reset_question():
         return reset_flow('Incorrect answer.')
     return render_template('reset_question.html', question=user.question_as_string)
 
-@blp.route('/reset/verify')
-@validate(['code'], method='GET')
-def reset_verify():
-    # validate flow control
-    if not session.get('reset_id'):
-        return reset_flow('Reset improperly initialized.')
-    code = request.args.get('code')
-    if code == session.pop('reset_token', None):
-        return redirect(url_for('auth.reset_password'))
-    return reset_flow('Invalid reset token.')
-
 @blp.route('/reset/password', methods=['GET', 'POST'])
 @validate(['password'])
 def reset_password():
+    if Config.get_value('OOB_RESET_ENABLE'):
+        abort(404)
     # validate flow control
     if not session.get('reset_id'):
         return reset_flow('Reset improperly initialized.')
@@ -237,10 +234,31 @@ def reset_password():
         if is_valid_password(password):
             session.pop('reset_id', None)
             user.password = password
-            db.session.add(user)
             db.session.commit()
             flash('Password reset. Please log in.')
             return redirect(url_for('auth.login'))
-        else:
-            flash('Password does not meet complexity requirements.')
+        flash('Password does not meet complexity requirements.')
     return render_template('reset_password.html', user=user)
+
+@blp.route('/reset/password/<string:token>', methods=['GET', 'POST'])
+@validate(['password'])
+def reset_password_oob(token):
+    if not Config.get_value('OOB_RESET_ENABLE'):
+        abort(404)
+    # validate the reset token
+    reset_token = Token.get_by_value(token)
+    if not reset_token:
+        return reset_flow('Invalid reset token.')
+    if not reset_token.is_valid:
+        Token.purge()
+        return reset_flow('Invalid reset token.')
+    if request.method == 'POST':
+        password = request.form['password']
+        if is_valid_password(password):
+            reset_token.owner.password = password
+            db.session.delete(reset_token)
+            db.session.commit()
+            flash('Password reset. Please log in.')
+            return redirect(url_for('auth.login'))
+        flash('Password does not meet complexity requirements.')
+    return render_template('reset_password.html', token=reset_token.value, user=reset_token.owner)
