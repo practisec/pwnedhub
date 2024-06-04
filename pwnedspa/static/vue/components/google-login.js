@@ -15,25 +15,31 @@ export default {
         const appStore = useAppStore();
 
         onMounted(() => {
-            gapi.load('auth2', () => {
-                const auth2 = window.gapi.auth2.init({
-                    cookiepolicy: 'single_host_origin',
+            if (window.hasOwnProperty("gapi")) {
+                gapi.load('auth2', () => {
+                    const auth2 = window.gapi.auth2.init({
+                        cookiepolicy: 'single_host_origin',
+                    });
+                    auth2.attachClickHandler(
+                        'signinBtn',
+                        {},
+                        (googleUser) => {
+                            authStore.doLogin({id_token: googleUser.getAuthResponse().id_token});
+                        },
+                        (error) => {
+                            if (error.error === 'network_error') {
+                                appStore.createToast('OpenID Connect provider unreachable.');
+                            } else if (error.error !== 'popup_closed_by_user') {
+                                appStore.createToast('OpenID Connect error ({0}).'.format(error.error));
+                            };
+                        },
+                    );
                 });
-                auth2.attachClickHandler(
-                    'signinBtn',
-                    {},
-                    (googleUser) => {
-                        authStore.doLogin({id_token: googleUser.getAuthResponse().id_token});
-                    },
-                    (error) => {
-                        if (error.error === 'network_error') {
-                            appStore.createToast('OpenID Connect provider unreachable.');
-                        } else if (error.error !== 'popup_closed_by_user') {
-                            appStore.createToast('OpenID Connect error ({0}).'.format(error.error));
-                        };
-                    },
-                );
-            });
+            } else {
+                document.getElementById("signinBtn").addEventListener("click", (e) => {
+                    appStore.createToast('Google sign-in is not available. Check your internet connection and TLS configuration.');
+                });
+            }
         });
     },
 };
