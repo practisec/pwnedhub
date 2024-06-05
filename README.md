@@ -45,11 +45,11 @@ PwnedHub is a vulnerable application designed exclusively for [PractiSec trainin
     127.0.0.1   admin.pwnedhub.com
     ```
 
-7. Visit the various target applications:
+7. Access the various target applications and interfaces:
     * http://www.pwnedhub.com
     * http://test.pwnedhub.com
-    * http://api.pwnedhub.com
-    * http://sso.pwnedhub.com
+    * http://api.pwnedhub.com/static/swaggerui/index.html
+    * http://api.pwnedhub.com/static/postman.json (for use with [Postman](https://www.postman.com/))
 8. When done using PwnedHub, shut down the Docker environment with the following command:
 
     ```
@@ -60,7 +60,5 @@ PwnedHub is a vulnerable application designed exclusively for [PractiSec trainin
 
 The PwnedHub environment includes several resources that are not targets.
 
-1. http://admin.pwnedhub.com/inbox/ - A webmail interface for receiving email from out-of-band systems. PwnedHub does not send email to external mail services, so when an application sends an email, this is where the user will receive it.
-2. http://admin.pwnedhub.com/config/ - A configuration interface for enabling/disabling security controls and features. Modifying these settings change how the target applications behave.
-
-Postman collection files for the REST API are available in the "resources" folder.
+* http://admin.pwnedhub.com/inbox/ - A webmail interface for receiving email from out-of-band systems. PwnedHub does not send email to external mail services, so when an application sends an email, this is where the user will receive it.
+* http://admin.pwnedhub.com/config/ - A configuration interface for enabling/disabling security controls and features. Modifying these settings change how the target applications behave.

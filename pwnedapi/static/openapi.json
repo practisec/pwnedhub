@@ -1,0 +1,596 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "PwnedAPI",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "servers": [
+    {
+      "url": "http://api.pwnedhub.com"
+    }
+  ],
+  "paths": {
+    "/access-token": {
+      "post": {
+        "summary": "Token Create Init (Login)",
+        "description": "Token Create Init (Login)",
+        "operationId": "tokenCreateInitLogin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id_token": {
+                    "type": "string",
+                    "example": ""
+                  }
+                }
+              },
+              "examples": {
+                "Token Create Code (Login)": {
+                  "value": {
+                    "code": "",
+                    "code_token": ""
+                  }
+                },
+                "Token Create Google (Login)": {
+                  "value": {
+                    "id_token": ""
+                  }
+                },
+                "Token Create Init (Login)": {
+                  "value": {
+                    "email": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "summary": "Token Delete (Logout)",
+        "description": "Token Delete (Logout)",
+        "operationId": "tokenDeleteLogout",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Users Read",
+        "description": "Users Read",
+        "operationId": "usersRead",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "User Create Init (Register)",
+        "description": "User Create Init (Register)",
+        "operationId": "userCreateInitRegister",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "activate_token": {
+                    "type": "string",
+                    "example": ""
+                  }
+                }
+              },
+              "examples": {
+                "User Create Activation (Register)": {
+                  "value": {
+                    "activate_token": ""
+                  }
+                },
+                "User Create Init (Register)": {
+                  "value": {
+                    "avatar": "https://www.gravatar.com/avatar/0a6d9b1ad59ad436bf9d9d16b2a7133e.png?s=300",
+                    "email": "",
+                    "name": "Test User",
+                    "signature": "This is my signature."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "summary": "User Read",
+        "description": "User Read",
+        "operationId": "userRead",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "summary": "User Update",
+        "description": "User Update",
+        "operationId": "userUpdate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "example": "https://www.gravatar.com/avatar/0a6d9b1ad59ad436bf9d9d16b2a7133e.png?s=300"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": ""
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Test User"
+                  },
+                  "signature": {
+                    "type": "string",
+                    "example": "This is my signature."
+                  }
+                }
+              },
+              "examples": {
+                "User Update": {
+                  "value": {
+                    "avatar": "https://www.gravatar.com/avatar/0a6d9b1ad59ad436bf9d9d16b2a7133e.png?s=300",
+                    "email": "",
+                    "name": "Test User",
+                    "signature": "This is my signature."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/admin/users/5": {
+      "patch": {
+        "summary": "User Update (Admin)",
+        "description": "User Update (Admin)",
+        "operationId": "userUpdateAdmin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "status": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "examples": {
+                "User Update (Admin)": {
+                  "value": {
+                    "role": 0,
+                    "status": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/notes": {
+      "get": {
+        "summary": "Note Read",
+        "description": "Note Read",
+        "operationId": "noteRead",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Note Update",
+        "description": "Note Update",
+        "operationId": "noteUpdate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "example": "##### Welcome to PwnedHub 2.0!\n\nA collaborative space to conduct hosted security assessments.\n\n**Find flaws.**\n\n* This is your notes space. Keep your personal notes here.\n* Leverage popular security testing tools right from your browser in the tools space.\n\n**Collaborate.**\n\n* Privately collaborate with coworkers in the messaging space.\n* Join public rooms in the messaging space to share information and socialize.\n\n**On the Move**\n\n* PwnedHub 2.0 is built with mobility in mind. No need for a separate app!\n\nHappy hunting!\n\n\\- The PwnedHub Team\n\n"
+                  }
+                }
+              },
+              "examples": {
+                "Note Update": {
+                  "value": {
+                    "content": "##### Welcome to PwnedHub 2.0!\n\nA collaborative space to conduct hosted security assessments.\n\n**Find flaws.**\n\n* This is your notes space. Keep your personal notes here.\n* Leverage popular security testing tools right from your browser in the tools space.\n\n**Collaborate.**\n\n* Privately collaborate with coworkers in the messaging space.\n* Join public rooms in the messaging space to share information and socialize.\n\n**On the Move**\n\n* PwnedHub 2.0 is built with mobility in mind. No need for a separate app!\n\nHappy hunting!\n\n\\- The PwnedHub Team\n\n"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/rooms/1/messages": {
+      "get": {
+        "summary": "Room Messages Read",
+        "description": "Room Messages Read",
+        "operationId": "roomMessagesRead",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/unfurl": {
+      "post": {
+        "summary": "Unfurl Create",
+        "description": "Unfurl Create",
+        "operationId": "unfurlCreate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "example": "https://www.slack.com"
+                  }
+                }
+              },
+              "examples": {
+                "Unfurl Create": {
+                  "value": {
+                    "url": "https://www.slack.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tools": {
+      "get": {
+        "summary": "Tools Read",
+        "description": "Tools Read",
+        "operationId": "toolsRead",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Tool Create",
+        "description": "Tool Create",
+        "operationId": "toolCreate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "example": "Displays the user ID of the current shell user."
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "ID"
+                  },
+                  "path": {
+                    "type": "string",
+                    "example": "id"
+                  }
+                }
+              },
+              "examples": {
+                "Tool Create": {
+                  "value": {
+                    "description": "Displays the user ID of the current shell user.",
+                    "name": "ID",
+                    "path": "id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tools/1": {
+      "get": {
+        "summary": "Tool Read",
+        "description": "Tool Read",
+        "operationId": "toolRead",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Tool Delete",
+        "description": "Tool Delete",
+        "operationId": "toolDelete",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/scans": {
+      "get": {
+        "summary": "Scans Read",
+        "description": "Scans Read",
+        "operationId": "scansRead",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Scan Create",
+        "description": "Scan Create",
+        "operationId": "scanCreate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "args": {
+                    "type": "string",
+                    "example": "www.practisec.com"
+                  },
+                  "tid": {
+                    "type": "number",
+                    "example": 1
+                  }
+                }
+              },
+              "examples": {
+                "Scan Create": {
+                  "value": {
+                    "args": "www.practisec.com",
+                    "tid": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/scans/{scan_id}": {
+      "delete": {
+        "summary": "Scan Delete",
+        "description": "Scan Delete",
+        "operationId": "scanDelete",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "scan_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/scans/{scan_id}/results": {
+      "get": {
+        "summary": "Scan Results Read",
+        "description": "Scan Results Read",
+        "operationId": "scanResultsRead",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "scan_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "tags": []
+}

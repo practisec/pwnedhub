@@ -7,16 +7,61 @@
 	},
 	"item": [
 		{
-			"name": "Token Create (Login)",
+			"name": "Token Create Init (Login)",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"loginTest\", function () {",
+							"pm.test(\"Login passwordless initialization test\", function () {",
+							"    pm.response.to.have.status(403);",
 							"    var jsonData = pm.response.json();",
-							"    pm.collectionVariables.set(\"access_token\",jsonData.access_token);",
-							"});"
+							"    pm.collectionVariables.set(\"code_token\", jsonData.code_token);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{email}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}/access-token",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"access-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Token Create Code (Login)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login passwordless code test\", function () {",
+							"    pm.response.to.have.status(201);",
+							"    var jsonData = pm.response.json();",
+							"    pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -27,7 +72,49 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}",
+					"raw": "{\n    \"code\": \"{{code}}\",\n    \"code_token\": \"{{code_token}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}/access-token",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"access-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Token Create Google (Login)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login Google OIDC test\", function () {",
+							"    pm.response.to.have.status(201);",
+							"    var jsonData = pm.response.json();",
+							"    pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id_token\": \"{{google_id_token}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -48,6 +135,22 @@
 		},
 		{
 			"name": "Token Delete (Logout)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Logout test\", function () {",
+							"    pm.response.to.have.status(204);",
+							"    pm.collectionVariables.set(\"access_token\", null);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -75,6 +178,21 @@
 		},
 		{
 			"name": "Users Read",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Users read list test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -101,19 +219,16 @@
 			"response": []
 		},
 		{
-			"name": "User Create (Register)",
+			"name": "User Create Init (Register)",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"registerTest\", function () {",
-							"    if (pm.response.code == 201) {",
-							"        var jsonData = JSON.parse(pm.request.body.raw)",
-							"        pm.collectionVariables.set(\"username\",jsonData.username);",
-							"        pm.collectionVariables.set(\"password\",jsonData.password);",
-							"    }",
-							"});"
+							"pm.test(\"Registration initialization test\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -127,7 +242,51 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"tim\",\n    \"email\": \"tjt1980@gmail.com\",\n    \"name\": \"Tim\",\n    \"avatar\": \"https://www.gravatar.com/avatar/0a6d9b1ad59ad436bf9d9d16b2a7133e.png?s=300\",\n    \"signature\": \"This is my signature.\",\n    \"password\": \"password\"\n}",
+					"raw": "{\n    \"email\": \"{{email}}\",\n    \"name\": \"Test User\",\n    \"avatar\": \"https://www.gravatar.com/avatar/0a6d9b1ad59ad436bf9d9d16b2a7133e.png?s=300\",\n    \"signature\": \"This is my signature.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{endpoint}}/users",
+					"host": [
+						"{{endpoint}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Create Activation (Register)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Registration activation test\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"activate_token\": \"{{activate_token}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -148,6 +307,21 @@
 		},
 		{
 			"name": "User Read",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Users read instance test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -162,13 +336,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{endpoint}}/users/5",
+					"raw": "{{endpoint}}/users/{{user_id}}",
 					"host": [
 						"{{endpoint}}"
 					],
 					"path": [
 						"users",
-						"5"
+						"{{user_id}}"
 					]
 				}
 			},
@@ -176,6 +350,20 @@
 		},
 		{
 			"name": "User Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Users update instance test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -191,7 +379,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"tim\",\n    \"email\": \"tjt1980@gmail.com\",\n    \"name\": \"Tim\",\n    \"avatar\": \"https://www.gravatar.com/avatar/0a6d9b1ad59ad436bf9d9d16b2a7133e.png?s=300\",\n    \"signature\": \"This is my signature.\"\n}",
+					"raw": "{\n    \"email\": \"{{email}}\",\n    \"name\": \"Test User\",\n    \"avatar\": \"https://www.gravatar.com/avatar/0a6d9b1ad59ad436bf9d9d16b2a7133e.png?s=300\",\n    \"signature\": \"This is my signature.\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -199,13 +387,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{endpoint}}/users/5",
+					"raw": "{{endpoint}}/users/{{user_id}}",
 					"host": [
 						"{{endpoint}}"
 					],
 					"path": [
 						"users",
-						"5"
+						"{{user_id}}"
 					]
 				}
 			},
@@ -213,6 +401,21 @@
 		},
 		{
 			"name": "User Update (Admin)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Users admin update instance test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -250,105 +453,22 @@
 			"response": []
 		},
 		{
-			"name": "Password Reset Create",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Origin",
-						"value": "http://test.pwnedhub.com",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"credential\": \"tim\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{endpoint}}/password-reset",
-					"host": [
-						"{{endpoint}}"
-					],
-					"path": [
-						"password-reset"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Password Update (Profile)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{access_token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"new_password\": \"newpassword\",\n    \"current_password\": \"password\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{endpoint}}/users/5/password",
-					"host": [
-						"{{endpoint}}"
-					],
-					"path": [
-						"users",
-						"5",
-						"password"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Password Update (Reset)",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"new_password\": \"newpassword\",\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTY2ODY2MDYsImlhdCI6MTY1NjYwMDIwNiwic3ViIjo1fQ.eh8uPzcaNcUzqXNdq2iznvtgy3zKBOaUlKpG_3O47N0\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{endpoint}}/users/5/password",
-					"host": [
-						"{{endpoint}}"
-					],
-					"path": [
-						"users",
-						"5",
-						"password"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Note Read",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Note read test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -376,6 +496,21 @@
 		},
 		{
 			"name": "Note Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Note update test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -412,6 +547,40 @@
 		},
 		{
 			"name": "Room Messages Read",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Room messages read test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.cursor === null) {",
+							"        pm.collectionVariables.set(\"cursor\", \"\");",
+							"    } else {",
+							"        pm.collectionVariables.set(\"cursor\", jsonData.cursor);",
+							"    } ",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (pm.collectionVariables.get(\"cursor\") === \"\") {",
+							"    pm.request.url.query.remove(\"cursor\");",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -426,7 +595,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{endpoint}}/rooms/1/messages",
+					"raw": "{{endpoint}}/rooms/1/messages?cursor={{cursor}}",
 					"host": [
 						"{{endpoint}}"
 					],
@@ -434,6 +603,12 @@
 						"rooms",
 						"1",
 						"messages"
+					],
+					"query": [
+						{
+							"key": "cursor",
+							"value": "{{cursor}}"
+						}
 					]
 				}
 			},
@@ -441,6 +616,21 @@
 		},
 		{
 			"name": "Unfurl Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Link expansion test\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -477,6 +667,21 @@
 		},
 		{
 			"name": "Tools Read",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Tools read list test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -504,6 +709,21 @@
 		},
 		{
 			"name": "Tool Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Tool create instance test\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -540,6 +760,21 @@
 		},
 		{
 			"name": "Tool Read",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Tools read instance test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -568,6 +803,21 @@
 		},
 		{
 			"name": "Tool Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Tool delete instance test\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -596,6 +846,21 @@
 		},
 		{
 			"name": "Scans Read",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Scans read list test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -623,6 +888,23 @@
 		},
 		{
 			"name": "Scan Create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Scans create instance test\", function () {",
+							"    pm.response.to.have.status(201);",
+							"    var jsonData = pm.response.json();",
+							"    pm.collectionVariables.set(\"scan_id\", jsonData.id);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -659,6 +941,21 @@
 		},
 		{
 			"name": "Scan Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Scans delete instance test\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -673,13 +970,13 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{endpoint}}/scans/d37b3139-5f74-4f00-81ff-5a1db7528f8b",
+					"raw": "{{endpoint}}/scans/{{scan_id}}",
 					"host": [
 						"{{endpoint}}"
 					],
 					"path": [
 						"scans",
-						"d37b3139-5f74-4f00-81ff-5a1db7528f8b"
+						"{{scan_id}}"
 					]
 				}
 			},
@@ -687,6 +984,21 @@
 		},
 		{
 			"name": "Scan Results Read",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Scans read instance test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -701,13 +1013,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{endpoint}}/scans/d37b3139-5f74-4f00-81ff-5a1db7528f8b/results",
+					"raw": "{{endpoint}}/scans/{{scan_id}}/results",
 					"host": [
 						"{{endpoint}}"
 					],
 					"path": [
 						"scans",
-						"d37b3139-5f74-4f00-81ff-5a1db7528f8b",
+						"{{scan_id}}",
 						"results"
 					]
 				}
@@ -742,17 +1054,47 @@
 			"type": "string"
 		},
 		{
-			"key": "username",
+			"key": "email",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "password",
+			"key": "code_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "code",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "google_id_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "activate_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
 			"value": "",
 			"type": "string"
 		},
 		{
 			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "cursor",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "scan_id",
 			"value": "",
 			"type": "string"
 		}
