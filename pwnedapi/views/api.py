@@ -157,7 +157,8 @@ class TokenList(Resource):
 
     def delete(self):
         response = Response(None, 204)
-        response.delete_cookie('access_token')
+        if not Config.get_value('BEARER_AUTH_ENABLE'):
+            response.delete_cookie('access_token')
         return response
 
 api.add_resource(TokenList, '/access-token')
