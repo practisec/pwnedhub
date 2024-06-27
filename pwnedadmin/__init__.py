@@ -1,5 +1,6 @@
 from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
+import click
 
 db = SQLAlchemy()
 
@@ -27,21 +28,39 @@ def create_app(config='Development'):
     app.register_blueprint(ConfigBlurprint)
     app.register_blueprint(EmailBlurprint)
 
-    @app.cli.command("init")
-    def init_data():
+    @app.cli.command('init')
+    @click.argument('dataset')
+    def init_data(dataset):
+        from flask import current_app
         from pwnedadmin import models
-        db.create_all()
+        import json
+        import os
+        db.create_all(bind_key=None)
+        for cls in models.BaseModel.__subclasses__():
+            fixture_path = os.path.join(current_app.root_path, 'fixtures', dataset, f"{cls.__table__.name}.json")
+            if os.path.exists(fixture_path):
+                print(f"Processing {fixture_path}.")
+                with open(fixture_path) as fp:
+                    for row in json.load(fp):
+                        db.session.add(cls(**row))
+        db.session.commit()
         print('Database initialized.')
 
-    @app.cli.command("export")
+    @app.cli.command('export')
     def export_data():
-        from pwnedadmin.models import Config, Email
+        from pwnedadmin.models import BaseModel
         import json
-        for cls in [Config, Email]:
+        for cls in BaseModel.__subclasses__():
             objs = [obj.serialize_for_export() for obj in cls.query.all()]
             if objs:
                 print(f"\n***** {cls.__table__.name}.json *****\n")
                 print(json.dumps(objs, indent=4, default=str))
         print('Database exported.')
+
+    @app.cli.command('purge')
+    def purge_data():
+        db.drop_all(bind_key=None)
+        db.session.commit()
+        print('Database purged.')
 
     return app

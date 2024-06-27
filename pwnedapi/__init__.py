@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from redis import Redis
+import click
 import rq
 
 cors = CORS()
@@ -57,21 +58,39 @@ def create_app(config='Development'):
 
     from pwnedapi.views import websockets
 
-    @app.cli.command("init")
-    def init_data():
+    @app.cli.command('init')
+    @click.argument('dataset')
+    def init_data(dataset):
+        from flask import current_app
         from pwnedapi import models
-        db.create_all()
+        import json
+        import os
+        db.create_all(bind_key=None)
+        for cls in models.BaseModel.__subclasses__():
+            fixture_path = os.path.join(current_app.root_path, 'fixtures', dataset, f"{cls.__table__.name}.json")
+            if os.path.exists(fixture_path):
+                print(f"Processing {fixture_path}.")
+                with open(fixture_path) as fp:
+                    for row in json.load(fp):
+                        db.session.add(cls(**row))
+        db.session.commit()
         print('Database initialized.')
 
-    @app.cli.command("export")
+    @app.cli.command('export')
     def export_data():
-        from pwnedapi.models import Scan, Note, Tool, Room, Message, User
+        from pwnedapi.models import BaseModel
         import json
-        for cls in [Scan, Note, Tool, Room, Message, User]:
+        for cls in BaseModel.__subclasses__():
             objs = [obj.serialize_for_export() for obj in cls.query.all()]
             if objs:
                 print(f"\n***** {cls.__table__.name}.json *****\n")
                 print(json.dumps(objs, indent=4, default=str))
         print('Database exported.')
+
+    @app.cli.command('purge')
+    def purge_data():
+        db.drop_all(bind_key=None)
+        db.session.commit()
+        print('Database purged.')
 
     return app, socketio

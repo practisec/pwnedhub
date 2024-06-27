@@ -1,0 +1,86 @@
+[
+    {
+        "id": 1,
+        "name": "CSRF_PROTECT",
+        "description": "Profile CSRF Protection (PwnedHub)",
+        "type": "security control",
+        "value": true
+    },
+    {
+        "id": 2,
+        "name": "OSCI_PROTECT",
+        "description": "Tools OSCI Protection (PwnedHub)",
+        "type": "security control",
+        "value": false
+    },
+    {
+        "id": 3,
+        "name": "SQLI_PROTECT",
+        "description": "Login SQLi Protection (PwnedHub)",
+        "type": "security control",
+        "value": false
+    },
+    {
+        "id": 4,
+        "name": "CSP_PROTECT",
+        "description": "Content Security Policy (PwnedHub)",
+        "type": "security control",
+        "value": false
+    },
+    {
+        "id": 5,
+        "name": "CORS_RESTRICT",
+        "description": "Restricted CORS (PwnedAPI)",
+        "type": "security control",
+        "value": true
+    },
+    {
+        "id": 6,
+        "name": "JWT_VERIFY",
+        "description": "Verify JWT Signatures (PwnedAPI)",
+        "type": "security control",
+        "value": true
+    },
+    {
+        "id": 7,
+        "name": "JWT_ENCRYPT",
+        "description": "Encrypt JWTs (PwnedAPI)",
+        "type": "security control",
+        "value": false
+    },
+    {
+        "id": 8,
+        "name": "BEARER_AUTH_ENABLE",
+        "description": "Bearer Token Authentication (PwnedAPI)",
+        "type": "feature",
+        "value": true
+    },
+    {
+        "id": 9,
+        "name": "OIDC_ENABLE",
+        "description": "OpenID Connect Authentication (PwnedHub)",
+        "type": "feature",
+        "value": false
+    },
+    {
+        "id": 10,
+        "name": "SSO_ENABLE",
+        "description": "SSO Authentication (PwnedHub)",
+        "type": "feature",
+        "value": false
+    },
+    {
+        "id": 11,
+        "name": "OOB_RESET_ENABLE",
+        "description": "Out-of-Band Password Reset (PwnedHub)",
+        "type": "feature",
+        "value": false
+    },
+    {
+        "id": 12,
+        "name": "CTF_MODE",
+        "description": "CTF Mode (Warning: Disables this interface!)",
+        "type": "feature",
+        "value": false
+    }
+]

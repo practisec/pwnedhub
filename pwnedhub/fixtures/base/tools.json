@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Dig",
+        "path": "dig",
+        "description": "(Domain Internet Groper) Network administration tool for Domain Name System (DNS) name server interrogation.",
+        "id": 1,
+        "created": "2019-02-16 02:09:59",
+        "modified": "2019-02-16 02:09:59"
+    },
+    {
+        "name": "Nmap",
+        "path": "nmap",
+        "description": "(Network Mapper) Utility for network discovery and security auditing.",
+        "id": 2,
+        "created": "2019-02-16 02:10:29",
+        "modified": "2019-02-16 02:10:29"
+    },
+    {
+        "name": "Nikto",
+        "path": "nikto",
+        "description": "Signature-based web server scanner.",
+        "id": 3,
+        "created": "2019-02-16 02:10:59",
+        "modified": "2019-02-16 02:10:59"
+    },
+    {
+        "name": "SSLyze",
+        "path": "sslyze",
+        "description": "Fast and powerful SSL/TLS server scanning library.",
+        "id": 4,
+        "created": "2019-02-16 02:11:29",
+        "modified": "2019-02-16 02:11:29"
+    },
+    {
+        "name": "SQLmap",
+        "path": "sqlmap --batch",
+        "description": "Penetration testing tool that automates the process of detecting and exploiting SQL injection flaws.",
+        "id": 5,
+        "created": "2019-02-16 02:11:59",
+        "modified": "2019-02-16 02:11:59"
+    }
+]

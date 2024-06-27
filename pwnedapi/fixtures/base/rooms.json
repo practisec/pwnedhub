@@ -1,0 +1,37 @@
+[
+    {
+        "name": "general",
+        "private": false,
+        "id": 1,
+        "created": "2019-02-16 01:51:59",
+        "modified": "2019-02-16 01:51:59"
+    },
+    {
+        "name": "f9adeea0",
+        "private": true,
+        "id": 2,
+        "created": "2023-07-17 04:58:05",
+        "modified": "2023-07-17 04:58:05"
+    },
+    {
+        "name": "a28b1e3e",
+        "private": true,
+        "id": 3,
+        "created": "2023-07-17 04:58:06",
+        "modified": "2023-07-17 04:58:06"
+    },
+    {
+        "name": "2ce70a5f",
+        "private": true,
+        "id": 4,
+        "created": "2023-07-17 04:58:08",
+        "modified": "2023-07-17 04:58:08"
+    },
+    {
+        "name": "ae206386",
+        "private": true,
+        "id": 5,
+        "created": "2023-07-17 04:58:09",
+        "modified": "2023-07-17 04:58:09"
+    }
+]

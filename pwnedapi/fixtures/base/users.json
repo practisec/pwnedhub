@@ -1,0 +1,57 @@
+[
+    {
+        "email": "admin@pwnedhub.com",
+        "name": "Administrator",
+        "avatar": "/static/common/images/avatars/admin.png",
+        "signature": "All your base are belong to me.",
+        "role": 0,
+        "status": 1,
+        "id": 1,
+        "created": "2019-02-16 01:51:59",
+        "modified": "2019-02-16 01:51:59"
+    },
+    {
+        "email": "cooper@pwnedhub.com",
+        "name": "Cooper",
+        "avatar": "/static/common/images/avatars/c-man.png",
+        "signature": "Gamer, hacker, and basketball player. Energy sword FTW!",
+        "role": 1,
+        "status": 1,
+        "id": 2,
+        "created": "2019-02-16 04:46:27",
+        "modified": "2019-02-16 04:46:27"
+    },
+    {
+        "email": "taylor@pwnedhub.com",
+        "name": "Taylor",
+        "avatar": "/static/common/images/avatars/wolf.jpg",
+        "signature": "Wolf in a past life. Nerd in the current. Johnny 5 is indeed alive.",
+        "role": 1,
+        "status": 1,
+        "id": 3,
+        "created": "2019-02-16 04:47:14",
+        "modified": "2019-02-16 04:47:14"
+    },
+    {
+        "email": "tanner@pwnedhub.com",
+        "name": "Tanner",
+        "avatar": "/static/common/images/avatars/kitty.jpg",
+        "signature": "I might be small, cute, and cuddly, but remember... dynamite comes in small tightly wrapped packages that go boom.",
+        "role": 1,
+        "status": 1,
+        "id": 4,
+        "created": "2019-02-16 04:48:19",
+        "modified": "2019-02-16 04:48:19"
+    },
+    {
+        "email": "emilee@pwnedhub.com",
+        "name": "Emilee",
+        "avatar": "/static/common/images/avatars/bacon.png",
+        "signature": "Late to the party, but still the life of the party.",
+        "role": 1,
+        "status": 1,
+        "id": 5,
+        "created": "2019-02-16 04:49:34",
+        "modified": "2019-02-16 04:49:34"
+    }
+]
