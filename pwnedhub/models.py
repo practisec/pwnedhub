@@ -62,6 +62,9 @@ class BaseModel(db.Model):
     def modified_as_string(self):
         return get_local_from_utc(self.modified).strftime("%Y-%m-%d %H:%M:%S")
 
+    def serialize_for_export(self):
+        return {c.name: getattr(self, c.name) for c in self.__mapper__.columns}
+
 
 class Note(BaseModel):
     __tablename__ = 'notes'

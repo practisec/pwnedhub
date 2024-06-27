@@ -74,10 +74,21 @@ def create_app(config='Development'):
     app.register_blueprint(AuthBlueprint)
     app.register_blueprint(ErrorsBlueprint)
 
-    return app
-
-def init_db():
-    app = create_app('Production')
-    with app.app_context():
+    @app.cli.command("init")
+    def init_data():
+        from pwnedhub import models
         db.create_all()
-    print('Database initialized.')
+        print('Database initialized.')
+
+    @app.cli.command("export")
+    def export_data():
+        from pwnedhub.models import Note, Tool, Message, Mail, User, Token
+        import json
+        for cls in [Note, Tool, Message, Mail, User, Token]:
+            objs = [obj.serialize_for_export() for obj in cls.query.all()]
+            if objs:
+                print(f"\n***** {cls.__table__.name}.json *****\n")
+                print(json.dumps(objs, indent=4, default=str))
+        print('Database exported.')
+
+    return app

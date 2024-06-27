@@ -57,10 +57,21 @@ def create_app(config='Development'):
 
     from pwnedapi.views import websockets
 
-    return app, socketio
-
-def init_db():
-    app, socketio = create_app('Production')
-    with app.app_context():
+    @app.cli.command("init")
+    def init_data():
+        from pwnedapi import models
         db.create_all()
-    print('Database initialized.')
+        print('Database initialized.')
+
+    @app.cli.command("export")
+    def export_data():
+        from pwnedapi.models import Scan, Note, Tool, Room, Message, User
+        import json
+        for cls in [Scan, Note, Tool, Room, Message, User]:
+            objs = [obj.serialize_for_export() for obj in cls.query.all()]
+            if objs:
+                print(f"\n***** {cls.__table__.name}.json *****\n")
+                print(json.dumps(objs, indent=4, default=str))
+        print('Database exported.')
+
+    return app, socketio

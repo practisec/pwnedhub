@@ -27,10 +27,21 @@ def create_app(config='Development'):
     app.register_blueprint(ConfigBlurprint)
     app.register_blueprint(EmailBlurprint)
 
-    return app
-
-def init_db():
-    app = create_app('Production')
-    with app.app_context():
+    @app.cli.command("init")
+    def init_data():
+        from pwnedadmin import models
         db.create_all()
-    print('Database initialized.')
+        print('Database initialized.')
+
+    @app.cli.command("export")
+    def export_data():
+        from pwnedadmin.models import Config, Email
+        import json
+        for cls in [Config, Email]:
+            objs = [obj.serialize_for_export() for obj in cls.query.all()]
+            if objs:
+                print(f"\n***** {cls.__table__.name}.json *****\n")
+                print(json.dumps(objs, indent=4, default=str))
+        print('Database exported.')
+
+    return app

@@ -13,6 +13,7 @@ services:
             - CONFIG=Production
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
+            - FLASK_APP=pwnedhub/wsgi.py
         command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
@@ -56,6 +57,7 @@ services:
             - CONFIG=Production
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
+            - FLASK_APP=pwnedapi/wsgi.py
         command: gunicorn --workers 1 --worker-class eventlet --bind 0.0.0.0:80 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db
@@ -86,6 +88,7 @@ services:
             - TZ=America/New_York
             - CONFIG=Production
             - DATABASE_HOST=db
+            - FLASK_APP=pwnedadmin/wsgi.py
         command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedadmin.wsgi:app --error-logfile - --log-level DEBUG
         depends_on:
             - db

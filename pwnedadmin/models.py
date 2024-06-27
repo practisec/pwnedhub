@@ -3,7 +3,14 @@ from pwnedadmin.constants import RESTRICTED_USERS
 from pwnedadmin.utils import get_current_utc_time, get_local_from_utc
 
 
-class Config(db.Model):
+class BaseModel(db.Model):
+    __abstract__ = True
+
+    def serialize_for_export(self):
+        return {c.name: getattr(self, c.name) for c in self.__mapper__.columns}
+
+
+class Config(BaseModel):
     __tablename__ = 'configs'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
@@ -23,7 +30,7 @@ class Config(db.Model):
         return "<Config '{}'>".format(self.name)
 
 
-class Email(db.Model):
+class Email(BaseModel):
     __tablename__ = 'emails'
     id = db.Column(db.Integer, primary_key=True)
     created = db.Column(db.DateTime, nullable=False, default=get_current_utc_time)
