@@ -6,11 +6,11 @@ ENV RUNTIME_DEPS="firefox"
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir -p /adminbot
+RUN mkdir -p /src
 
-WORKDIR /adminbot
+WORKDIR /src
 
-ADD ./REQUIREMENTS.txt /adminbot/REQUIREMENTS.txt
+ADD ./REQUIREMENTS.txt /src/REQUIREMENTS.txt
 
 RUN apk update &&\
     apk add --no-cache $BUILD_DEPS $RUNTIME_DEPS &&\

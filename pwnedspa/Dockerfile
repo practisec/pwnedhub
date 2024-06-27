@@ -6,11 +6,11 @@ ENV RUNTIME_DEPS=""
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir -p /pwnedspa
+RUN mkdir -p /src
 
-WORKDIR /pwnedspa
+WORKDIR /src
 
-ADD ./REQUIREMENTS.txt /pwnedspa/REQUIREMENTS.txt
+ADD ./REQUIREMENTS.txt /src/REQUIREMENTS.txt
 
 RUN apk update &&\
     apk add --no-cache $BUILD_DEPS $RUNTIME_DEPS &&\

@@ -6,11 +6,11 @@ ENV RUNTIME_DEPS="mariadb-connector-c-dev"
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir -p /pwnedsso
+RUN mkdir -p /src
 
-WORKDIR /pwnedsso
+WORKDIR /src
 
-ADD ./REQUIREMENTS.txt /pwnedsso/REQUIREMENTS.txt
+ADD ./REQUIREMENTS.txt /src/REQUIREMENTS.txt
 
 RUN apk update &&\
     apk add --no-cache $BUILD_DEPS $RUNTIME_DEPS &&\

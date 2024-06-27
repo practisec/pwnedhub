@@ -6,7 +6,7 @@ services:
         expose:
             - 80
         volumes:
-            - .:/pwnedhub
+            - .:/src
             - ~/tmp:/tmp
         environment:
             - TZ=America/New_York
@@ -25,7 +25,7 @@ services:
         expose:
             - 80
         volumes:
-            - .:/pwnedsso
+            - .:/src
         environment:
             - TZ=America/New_York
             - CONFIG=Production
@@ -40,7 +40,7 @@ services:
         expose:
             - 80
         volumes:
-            - .:/pwnedspa
+            - .:/src
         environment:
             - CONFIG=Production
         command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedspa.wsgi:app --error-logfile - --log-level DEBUG
@@ -51,7 +51,7 @@ services:
         expose:
             - 80
         volumes:
-            - .:/pwnedapi
+            - .:/src
         environment:
             - TZ=America/New_York
             - CONFIG=Production
@@ -66,7 +66,7 @@ services:
     api-worker:
         image: pwnedapi-dev
         volumes:
-            - .:/pwnedapi
+            - .:/src
         environment:
             - TZ=America/New_York
             - CONFIG=Production
@@ -83,7 +83,7 @@ services:
         expose:
             - 80
         volumes:
-            - .:/pwnedadmin
+            - .:/src
         environment:
             - TZ=America/New_York
             - CONFIG=Production
@@ -97,7 +97,7 @@ services:
         build: ./adminbot
         image: adminbot-dev
         volumes:
-            - .:/adminbot
+            - .:/src
             - ~/tmp:/tmp
         command: rq worker -u redis://redis:6379/0 adminbot-tasks
         depends_on:

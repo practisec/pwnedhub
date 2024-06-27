@@ -6,11 +6,11 @@ ENV RUNTIME_DEPS="libxslt mariadb-connector-c-dev"
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN mkdir -p /pwnedapi
+RUN mkdir -p /src
 
-WORKDIR /pwnedapi
+WORKDIR /src
 
-ADD ./REQUIREMENTS.txt /pwnedapi/REQUIREMENTS.txt
+ADD ./REQUIREMENTS.txt /src/REQUIREMENTS.txt
 
 RUN apk update &&\
     apk add --no-cache $BUILD_DEPS $RUNTIME_DEPS &&\
