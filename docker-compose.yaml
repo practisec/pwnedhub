@@ -7,7 +7,7 @@ services:
             - 80
         volumes:
             - .:/pwnedhub
-            - ~/tmp:/tmp # local mapping to log location
+            - ~/tmp:/tmp
         environment:
             - TZ=America/New_York
             - CONFIG=Production
@@ -98,6 +98,7 @@ services:
         image: adminbot-dev
         volumes:
             - .:/adminbot
+            - ~/tmp:/tmp
         command: rq worker -u redis://redis:6379/0 adminbot-tasks
         depends_on:
             - redis
