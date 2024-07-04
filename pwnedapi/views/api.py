@@ -182,7 +182,7 @@ class UserList(Resource):
             # create a JWT
             activate_token = encode_jwt('new_user', claims=json_data)
             # send an email with an activation link using the token
-            base_url = f"http://{request.headers['host']}"
+            base_url = request.headers['origin']
             link = f"{base_url}/#/signup/activate/{activate_token}"
             email = Email(
                 sender = 'no-reply@pwnedhub.com',
