@@ -1,7 +1,5 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from pwnedsso.extensions import db
 
 def create_app(config='Development'):
 
@@ -10,7 +8,7 @@ def create_app(config='Development'):
 
     db.init_app(app)
 
-    from pwnedsso.views.sso import blp as SsoBlueprint
+    from pwnedsso.routes.sso import blp as SsoBlueprint
     app.register_blueprint(SsoBlueprint)
 
     return app

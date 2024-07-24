@@ -1,8 +1,6 @@
 from flask import Flask, Blueprint
-from flask_sqlalchemy import SQLAlchemy
+from pwnedadmin.extensions import db
 import click
-
-db = SQLAlchemy()
 
 def create_app(config='Development'):
 
@@ -23,8 +21,8 @@ def create_app(config='Development'):
     StaticBlueprint = Blueprint('common', __name__, static_url_path='/static/common', static_folder='../common/static')
     app.register_blueprint(StaticBlueprint)
 
-    from pwnedadmin.views.config import blp as ConfigBlurprint
-    from pwnedadmin.views.email import blp as EmailBlurprint
+    from pwnedadmin.routes.config import blp as ConfigBlurprint
+    from pwnedadmin.routes.email import blp as EmailBlurprint
     app.register_blueprint(ConfigBlurprint)
     app.register_blueprint(EmailBlurprint)
 

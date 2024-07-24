@@ -13,7 +13,7 @@ def create_app(config='Development'):
     StaticBlueprint = Blueprint('common', __name__, static_url_path='/static/common', static_folder='../common/static')
     app.register_blueprint(StaticBlueprint)
 
-    from pwnedspa.views.core import blp as CoreBlueprint
+    from pwnedspa.routes.core import blp as CoreBlueprint
     app.register_blueprint(CoreBlueprint)
 
     return app

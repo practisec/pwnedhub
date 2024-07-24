@@ -1,14 +1,10 @@
 from flask import Flask, request, render_template, g, Blueprint, __version__
-from flask_session import Session
-from flask_sqlalchemy import SQLAlchemy
+from pwnedhub.extensions import db, sess
 from pwnedhub.utils import get_current_utc_time, generate_nonce
 from urllib.parse import unquote
 from redis import Redis
 import click
 import rq
-
-db = SQLAlchemy()
-sess = Session()
 
 def create_app(config='Development'):
 
@@ -68,9 +64,9 @@ def create_app(config='Development'):
     StaticBlueprint = Blueprint('common', __name__, static_url_path='/static/common', static_folder='../common/static')
     app.register_blueprint(StaticBlueprint)
 
-    from pwnedhub.views.core import blp as CoreBlueprint
-    from pwnedhub.views.auth import blp as AuthBlueprint
-    from pwnedhub.views.errors import blp as ErrorsBlueprint
+    from pwnedhub.routes.core import blp as CoreBlueprint
+    from pwnedhub.routes.auth import blp as AuthBlueprint
+    from pwnedhub.routes.errors import blp as ErrorsBlueprint
     app.register_blueprint(CoreBlueprint)
     app.register_blueprint(AuthBlueprint)
     app.register_blueprint(ErrorsBlueprint)

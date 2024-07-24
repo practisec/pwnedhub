@@ -1,14 +1,8 @@
 from flask import Flask, Blueprint
-from flask_cors import CORS
-from flask_socketio import SocketIO
-from flask_sqlalchemy import SQLAlchemy
+from pwnedapi.extensions import db, cors, socketio
 from redis import Redis
 import click
 import rq
-
-cors = CORS()
-db = SQLAlchemy()
-socketio = SocketIO()
 
 def create_app(config='Development'):
 
@@ -53,10 +47,10 @@ def create_app(config='Development'):
     StaticBlueprint = Blueprint('common', __name__, static_url_path='/static/common', static_folder='../common/static')
     app.register_blueprint(StaticBlueprint)
 
-    from pwnedapi.views.api import blp as ApiBlueprint
+    from pwnedapi.routes.api import blp as ApiBlueprint
     app.register_blueprint(ApiBlueprint)
 
-    from pwnedapi.views import websockets
+    from pwnedapi.routes import websockets
 
     @app.cli.command('init')
     @click.argument('dataset')
