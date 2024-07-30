@@ -1,12 +1,16 @@
 from flask import Flask, Blueprint
 from pwnedadmin.extensions import db
 import click
+import os
 
-def create_app(config='Development'):
+def create_app():
 
-    # setting the static_url_path to blank serves static
+    # create the Flask application
     app = Flask(__name__, static_url_path='/static')
-    app.config.from_object('pwnedadmin.config.{}'.format(config.title()))
+
+    # configure the Flask application
+    config_class = os.getenv('CONFIG', default='Development')
+    app.config.from_object('pwnedadmin.config.{}'.format(config_class.title()))
 
     db.init_app(app)
 

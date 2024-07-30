@@ -1,10 +1,14 @@
 from flask import Flask, Blueprint
+import os
 
-def create_app(config='Development'):
+def create_app():
 
-    # setting the static_url_path to blank serves static
+    # create the Flask application
     app = Flask(__name__, static_url_path='/static')
-    app.config.from_object('pwnedspa.config.{}'.format(config.title()))
+
+    # configure the Flask application
+    config_class = os.getenv('CONFIG', default='Development')
+    app.config.from_object('pwnedspa.config.{}'.format(config_class.title()))
 
     # misc jinja configuration variables
     app.jinja_env.trim_blocks = True

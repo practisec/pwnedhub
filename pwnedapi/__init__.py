@@ -2,13 +2,17 @@ from flask import Flask, Blueprint
 from pwnedapi.extensions import db, cors, socketio
 from redis import Redis
 import click
+import os
 import rq
 
-def create_app(config='Development'):
+def create_app():
 
-    # setting the static_url_path to blank serves static files from the web root
+    # create the Flask application
     app = Flask(__name__, static_url_path='/static')
-    app.config.from_object('pwnedapi.config.{}'.format(config.title()))
+
+    # configure the Flask application
+    config_class = os.getenv('CONFIG', default='Development')
+    app.config.from_object('pwnedapi.config.{}'.format(config_class.title()))
 
     app.redis = Redis.from_url(app.config['REDIS_URL'])
     app.api_task_queue = rq.Queue('pwnedapi-tasks', connection=app.redis)

@@ -4,14 +4,17 @@ from pwnedhub.utils import get_current_utc_time, generate_nonce
 from urllib.parse import unquote
 from redis import Redis
 import click
+import os
 import rq
 
-def create_app(config='Development'):
+def create_app():
 
-    # setting the static_url_path to blank serves static
-    # files from the web root, allowing for robots.txt, etc.
+    # create the Flask application
     app = Flask(__name__, static_url_path='/static')
-    app.config.from_object('pwnedhub.config.{}'.format(config.title()))
+
+    # configure the Flask application
+    config_class = os.getenv('CONFIG', default='Development')
+    app.config.from_object('pwnedhub.config.{}'.format(config_class.title()))
 
     app.redis = Redis.from_url(app.config['REDIS_URL'])
     app.bot_task_queue = rq.Queue('adminbot-tasks', connection=app.redis)
