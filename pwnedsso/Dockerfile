@@ -3,8 +3,8 @@ FROM python:3.10-alpine
 ENV BUILD_DEPS="build-base gcc libc-dev mariadb-dev"
 ENV RUNTIME_DEPS="mariadb-connector-c-dev"
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 RUN mkdir -p /src
 
