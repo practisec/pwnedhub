@@ -33,7 +33,7 @@ A collaborative space to conduct hosted security assessments.
 
 Happy hunting!
 
-\- The PwnedHub Team
+\\- The PwnedHub Team
 
 '''
 
