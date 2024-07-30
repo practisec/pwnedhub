@@ -5,7 +5,8 @@ class BaseConfig(object):
 
     # base
     DEBUG = False
-    SECRET_KEY = '$ecretKey'
+    TESTING = False
+    SECRET_KEY = os.getenv('SECRET_KEY', default='$ecretKey')
     # prevents connection pool exhaustion but disables interactive debugging
     PRESERVE_CONTEXT_ON_EXCEPTION = False
 
