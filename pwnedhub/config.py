@@ -34,6 +34,7 @@ class BaseConfig(object):
     SESSION_CACHELIB = FileSystemCache(threshold=500, cache_dir='/tmp/sessions')
     SESSION_COOKIE_NAME = 'session'
     SESSION_COOKIE_HTTPONLY = False
+    SESSION_REFRESH_EACH_REQUEST = False
     PERMANENT_SESSION_LIFETIME = 3600 # 1 hour
 
     # oidc
