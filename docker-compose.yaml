@@ -127,6 +127,7 @@ services:
 
     db:
         image: mysql
+        command: --skip-auto-generate-certs
         environment:
             - MYSQL_ROOT_PASSWORD=adminpass
         volumes:

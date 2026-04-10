@@ -17,4 +17,5 @@ RUN apk update &&\
     pip install --no-cache-dir --upgrade pip &&\
     pip install --no-cache-dir -r REQUIREMENTS.txt &&\
     apk del $BUILD_DEPS &&\
-    rm -rf /var/cache/apk/*
+    rm -rf /var/cache/apk/* &&\
+    echo -e "[client]\nssl=0" > /etc/my.cnf
