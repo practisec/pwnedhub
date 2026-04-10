@@ -12,7 +12,7 @@ PwnedHub is a vulnerable application designed exclusively for [PractiSec trainin
 2. Clone the PwnedHub repository.
 
     ```
-    $ git clone https://github.com/lanmaster53/pwnedhub.git
+    $ git clone https://github.com/practisec/pwnedhub.git
     ```
 
 3. Change into the PwnedHub directory.
