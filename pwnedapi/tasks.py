@@ -21,7 +21,7 @@ def execute_tool(cmd):
             output = traceback.format_exc()
         finally:
             job = get_current_job()
-            scan = Scan.query.get(job.get_id())
+            scan = db.session.get(Scan, job.get_id())
             scan.complete = True
             scan.results = output
             db.session.commit()

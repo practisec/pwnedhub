@@ -51,7 +51,7 @@ def load_user():
     g.user = None
     uid = request.jwt.get('sub')
     if uid:
-        g.user = User.query.get(uid)
+        g.user = db.session.get(User, uid)
 
 # API RESOURCE CLASSES
 
@@ -99,7 +99,7 @@ class TokenList(Resource):
             except:
                 payload = {}
             if code == payload.get('code'):
-                user = User.query.get(payload.get('sub'))
+                user = db.session.get(User, payload.get('sub'))
             else:
                 message = 'Expired or invalid Passwordless Authentication code.'
         # process OIDC credentials
@@ -131,6 +131,7 @@ class TokenList(Resource):
                         name=payload['name'],
                     )
                     db.session.add(user)
+                    user.join_public_rooms()
                     db.session.commit()
             else:
                 message = 'Expired or invalid ID token.'
@@ -207,6 +208,7 @@ class UserList(Resource):
                 abort(400, 'Email already exists.')
             user = User(**user)
             db.session.add(user)
+            user.join_public_rooms()
             db.session.commit()
             return {'success': True}, 201
         abort(400, 'Invalid request.')
@@ -220,7 +222,7 @@ class UserInst(Resource):
     def get(self, uid):
         if uid == 'me':
             uid = str(g.user.id)
-        user = User.query.get_or_404(uid)
+        user = db.get_or_404(User, uid)
         return user.serialize()
 
     @token_auth_required
@@ -252,7 +254,7 @@ class AdminUserInst(Resource):
     @token_auth_required
     @roles_required('admin')
     def patch(self, uid):
-        user = User.query.get_or_404(uid)
+        user = db.get_or_404(User, uid)
         if user == g.user:
             abort(400, 'Self-administration not permitted.')
         user.role = request.json.get('role', user.role)
@@ -290,7 +292,7 @@ class RoomMessageList(Resource):
 
     @token_auth_required
     def get(self, rid):
-        room = Room.query.get_or_404(rid)
+        room = db.get_or_404(Room, rid)
         if room not in g.user.rooms.all():
             abort(403)
         result = {
@@ -380,7 +382,7 @@ class ToolInst(Resource):
     @token_auth_required
     @roles_required('admin')
     def delete(self, tid):
-        tool = Tool.query.get_or_404(tid)
+        tool = db.get_or_404(Tool, tid)
         db.session.delete(tool)
         db.session.commit()
         return '', 204
@@ -398,7 +400,7 @@ class ScanList(Resource):
     @token_auth_required
     @validate_json(['tid', 'args'])
     def post(self):
-        tool = Tool.query.get(request.json.get('tid') or -1)
+        tool = db.session.get(Tool, request.json.get('tid') or -1)
         if not tool:
             abort(400, 'Invalid tool ID.')
         path = tool.path
@@ -421,7 +423,7 @@ class ScanInst(Resource):
 
     @token_auth_required
     def delete(self, sid):
-        scan = Scan.query.get_or_404(sid)
+        scan = db.get_or_404(Scan, sid)
         if scan.owner != g.user:
             abort(403)
         db.session.delete(scan)
@@ -435,7 +437,7 @@ class ResultsInst(Resource):
 
     @token_auth_required
     def get(self, sid):
-        scan = Scan.query.get_or_404(sid)
+        scan = db.get_or_404(Scan, sid)
         if scan.owner != g.user:
             abort(403)
         return {'results': scan.results}

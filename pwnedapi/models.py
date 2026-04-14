@@ -137,7 +137,6 @@ class Room(BaseModel):
     messages = db.relationship('Message', back_populates='room', lazy='dynamic')
     members = db.relationship('User', secondary=memberships, back_populates='rooms', lazy='dynamic')
 
-
     @property
     def is_private(self):
         return self.private
@@ -217,12 +216,6 @@ class User(BaseModel):
     messages = db.relationship('Message', back_populates='author', lazy='dynamic')
     rooms = db.relationship('Room', secondary=memberships, back_populates='members', lazy='dynamic')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # create default memberships
-        for room in Room.get_public_rooms():
-            self.create_membership(room)
-
     @property
     def role_as_string(self):
         return ROLES[self.role]
@@ -247,9 +240,12 @@ class User(BaseModel):
             return True
         return False
 
+    def join_public_rooms(self):
+        for room in Room.get_public_rooms():
+            self.create_membership(room)
+
     def create_membership(self, room):
         self.rooms.append(room)
-        db.session.commit()
 
     @staticmethod
     def get_by_email(email):

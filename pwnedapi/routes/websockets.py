@@ -39,7 +39,7 @@ def load_user():
     session.user = None
     uid = request.jwt.get('sub')
     if uid:
-        session.user = User.query.get(uid)
+        session.user = db.session.get(User, uid)
 
 @socketio.on('connect')
 def connect_handler():
@@ -80,15 +80,16 @@ def create_room_handler(data):
         db.session.add(room)
         db.session.commit()
         emit('log', f"Created room: id={room.id}, name={room.name}")
-        session.user = User.query.get(current_user_id)
+        session.user = db.session.get(User, current_user_id)
         # initialize memberships
         for member_id in data['member_ids']:
-            user = User.query.get(member_id)
+            user = db.session.get(User, member_id)
             user.create_membership(room)
+        db.session.commit()
         # reload rooms
         # must create both memberships before reloading either member
         for member_id in data['member_ids']:
-            user = User.query.get(member_id)
+            user = db.session.get(User, member_id)
             if user.id in clients:
                 rooms = [r.serialize(user) for r in user.rooms.all()]
                 emit('loadRooms', {'rooms': rooms}, room=clients[user.id])
@@ -97,7 +98,7 @@ def create_room_handler(data):
 
 @socketio.on('join-room')
 def join_room_handler(data):
-    room = Room.query.get(data['id'])
+    room = db.session.get(Room, data['id'])
     if room.name not in joined_rooms():
         join_room(room.name)
     # send a message to the joined room with admin bot
@@ -138,7 +139,7 @@ def create_message_handler(data):
 
 @socketio.on('delete-message')
 def delete_message_handler(data):
-    message = Message.query.get(data['message']['id'])
+    message = db.session.get(Message, data['message']['id'])
     if message.author.id != session.user.id and session.user.is_admin == False:
         raise Forbidden('Unauthorized deletion attempt.')
     # create response object before deleting it

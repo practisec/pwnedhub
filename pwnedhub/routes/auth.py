@@ -18,10 +18,10 @@ blp = Blueprint('auth', __name__)
 def load_user():
     g.user = None
     if session.get('user_id'):
-        g.user = User.query.get(session.get('user_id'))
+        g.user = db.session.get(User, session.get('user_id'))
 
 def create_welcome_message(user):
-    sender = User.query.get(1)
+    sender = db.session.get(User, 1)
     receiver = user
     subject = 'Welcome to PwnedHub!'
     content = "We're glad you've chosen PwnedHub to help you take your next step in becoming a more efficient security consultant. We're here to help. If you have any questions or concerns, please don't hesitate to reach out to this account for assistance. Together, we can make security testing great again!"
@@ -212,7 +212,7 @@ def reset_question():
     # validate flow control
     if not session.get('reset_id'):
         return reset_flow('Reset improperly initialized.')
-    user = User.query.get(session.get('reset_id'))
+    user = db.session.get(User, session.get('reset_id'))
     if request.method == 'POST':
         answer = request.form['answer']
         if user.answer == answer:
@@ -228,7 +228,7 @@ def reset_password():
     # validate flow control
     if not session.get('reset_id'):
         return reset_flow('Reset improperly initialized.')
-    user = User.query.get(session.get('reset_id'))
+    user = db.session.get(User, session.get('reset_id'))
     if request.method == 'POST':
         password = request.form['password']
         if is_valid_password(password):

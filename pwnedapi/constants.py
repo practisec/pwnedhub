@@ -8,7 +8,7 @@ USER_STATUSES = {
     1: 'enabled',
 }
 
-DEFAULT_NOTE = '''##### Welcome to PwnedHub 2.0!
+DEFAULT_NOTE = r'''##### Welcome to PwnedHub 2.0!
 
 A collaborative space to conduct hosted security assessments.
 

@@ -60,7 +60,7 @@ def admin_tools_add():
 @login_required
 @roles_required('admin')
 def admin_tools_remove(tid):
-    tool = Tool.query.get_or_404(tid)
+    tool = db.get_or_404(Tool, tid)
     db.session.delete(tool)
     db.session.commit()
     flash('Tool removed.')
@@ -76,7 +76,7 @@ def admin_users():
 @blp.route('/admin/users/<string:action>/<int:uid>')
 @login_required
 def admin_users_modify(action, uid):
-    user = User.query.get_or_404(uid)
+    user = db.get_or_404(User, uid)
     if user != g.user:
         if action == 'promote':
             user.role = 0
@@ -132,7 +132,7 @@ def profile():
 @blp.route('/profile/view/<int:uid>')
 @login_required
 def profile_view(uid):
-    user = User.query.get_or_404(uid)
+    user = db.get_or_404(User, uid)
     return render_template('profile_view.html', user=user)
 
 @blp.route('/mail')
@@ -146,7 +146,7 @@ def mail():
 @validate(['receiver', 'subject', 'content'])
 def mail_compose():
     if request.method == 'POST':
-        receiver = User.query.get(request.form['receiver'])
+        receiver = db.session.get(User, request.form['receiver'])
         if not receiver:
             abort(400, 'Invalid receiver.')
         content = request.form['content']
@@ -179,13 +179,13 @@ def mail_compose():
 @blp.route('/mail/reply/<int:mid>')
 @login_required
 def mail_reply(mid=0):
-    letter = Mail.query.get_or_404(mid)
+    letter = db.get_or_404(Mail, mid)
     return render_template('mail_reply.html', letter=letter)
 
 @blp.route('/mail/view/<int:mid>')
 @login_required
 def mail_view(mid):
-    letter = Mail.query.get_or_404(mid)
+    letter = db.get_or_404(Mail, mid)
     if letter.read == 0:
         letter.read = 1
         db.session.add(letter)
@@ -195,7 +195,7 @@ def mail_view(mid):
 @blp.route('/mail/delete/<int:mid>')
 @login_required
 def mail_delete(mid):
-    letter = Mail.query.get_or_404(mid)
+    letter = db.get_or_404(Mail, mid)
     db.session.delete(letter)
     db.session.commit()
     flash('Mail deleted.')
@@ -222,7 +222,7 @@ def messages_create():
 @blp.route('/messages/delete/<int:mid>')
 @login_required
 def messages_delete(mid):
-    message = Message.query.get_or_404(mid)
+    message = db.get_or_404(Message, mid)
     if message.author == g.user or g.user.is_admin:
         db.session.delete(message)
         db.session.commit()
@@ -378,7 +378,7 @@ def tools_info(tid):
 @login_required
 @roles_required('user')
 def tools_execute(tid):
-    tool = Tool.query.get_or_404(tid)
+    tool = db.get_or_404(Tool, tid)
     path = tool.path
     args = request.json.get('args')
     cmd = '{} {}'.format(path, args)

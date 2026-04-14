@@ -16,7 +16,7 @@ QUESTIONS = {
     4: 'First employer?',
 }
 
-DEFAULT_NOTE = '''##### Welcome to PwnedHub!
+DEFAULT_NOTE = r'''##### Welcome to PwnedHub!
 
 A collaborative space to conduct hosted security assessments.
 
@@ -33,7 +33,7 @@ A collaborative space to conduct hosted security assessments.
 
 Happy hunting!
 
-\\- The PwnedHub Team
+\- The PwnedHub Team
 
 '''
 
