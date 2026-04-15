@@ -307,7 +307,7 @@ def artifacts_save():
 @roles_required('user')
 def artifacts_create():
     xml = request.data
-    parser = etree.XMLParser(no_network=False)
+    parser = etree.XMLParser(no_network=False, load_dtd=True, resolve_entities=True)
     doc = etree.fromstring(xml, parser)
     content = doc.find('content').text
     filename = doc.find('filename').text

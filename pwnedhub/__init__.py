@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template, g, Blueprint, __version__
+from flask import Flask, request, render_template, g, Blueprint
+from importlib.metadata import version as get_version
 from pwnedhub.extensions import db, sess
 from pwnedhub.utils import get_current_utc_time, generate_nonce
 from urllib.parse import unquote
@@ -42,7 +43,7 @@ def create_app():
         '''
         Use: {{ comment.content|markdown }}
         '''
-        from flask import Markup
+        from markupsafe import Markup
         from markdown import markdown
         return Markup(markdown(data or '', extensions=app.config['MARKDOWN_EXTENSIONS']))
 
@@ -58,7 +59,7 @@ def create_app():
 
     @app.after_request
     def add_header(response):
-        response.headers['X-Powered-By'] = 'Flask/{}'.format(__version__)
+        response.headers['X-Powered-By'] = 'Flask/{}'.format(get_version('flask'))
         response.headers['X-XSS-Protection'] = '1; mode=block'
         if Config.get_value('CSP_PROTECT'):
             response.headers['Content-Security-Policy'] = f"script-src 'unsafe-inline' 'nonce-{g.nonce}'; script-src-attr 'unsafe-inline'; object-src 'none'; base-uri 'none'"

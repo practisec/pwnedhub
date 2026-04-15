@@ -248,8 +248,8 @@ class TestRoomMessageList:
         """GET /rooms/<rid>/messages returns messages for room user is in."""
         _, _, _, _, _, _, _, Room = _get_models()
         public_room = Room.query.filter_by(name='General').first()
-        rid = public_room.id
-        resp = _set_cookie_and_get(client, app, user, f'/rooms/{rid}/messages')
+        room_id = public_room.id
+        resp = _set_cookie_and_get(client, app, user, f'/rooms/{room_id}/messages')
         assert resp.status_code == 200
         data = resp.get_json(force=True)
         assert 'messages' in data
@@ -264,8 +264,8 @@ class TestRoomMessageList:
             private_room = Room(name='PrivateTestRoom', private=True)
             db.session.add(private_room)
             db.session.commit()
-        rid = private_room.id
-        resp = _set_cookie_and_get(client, app, user, f'/rooms/{rid}/messages')
+        room_id = private_room.id
+        resp = _set_cookie_and_get(client, app, user, f'/rooms/{room_id}/messages')
         assert resp.status_code == 403
 
 
@@ -375,39 +375,39 @@ class TestToolInst:
         db.session.commit()
         return tool.id
 
-    def _cleanup_tool(self, app, tid):
+    def _cleanup_tool(self, app, tool_id):
         _, _, _, _, _, Tool, _, _ = _get_models()
         db = _get_db()
-        tool = db.session.get(Tool, tid)
+        tool = db.session.get(Tool, tool_id)
         if tool:
             db.session.delete(tool)
             db.session.commit()
 
     def test_get_tool(self, client, app, user):
         """GET /tools/<id> returns tool info."""
-        tid = self._create_tool(app)
+        tool_id = self._create_tool(app)
         try:
-            resp = _set_cookie_and_get(client, app, user, f'/tools/{tid}')
+            resp = _set_cookie_and_get(client, app, user, f'/tools/{tool_id}')
             assert resp.status_code == 200
             data = resp.get_json()
             assert data['name'] == 'LookupTool'
         finally:
-            self._cleanup_tool(app, tid)
+            self._cleanup_tool(app, tool_id)
 
     def test_delete_tool_admin(self, client, app, admin_user):
         """Admin can delete a tool."""
-        tid = self._create_tool(app)
-        resp = _set_cookie_and_request(client, app, admin_user, 'DELETE', f'/tools/{tid}')
+        tool_id = self._create_tool(app)
+        resp = _set_cookie_and_request(client, app, admin_user, 'DELETE', f'/tools/{tool_id}')
         assert resp.status_code == 204
 
     def test_delete_tool_non_admin(self, client, app, user):
         """Regular user gets 403 when deleting a tool."""
-        tid = self._create_tool(app)
+        tool_id = self._create_tool(app)
         try:
-            resp = _set_cookie_and_request(client, app, user, 'DELETE', f'/tools/{tid}')
+            resp = _set_cookie_and_request(client, app, user, 'DELETE', f'/tools/{tool_id}')
             assert resp.status_code == 403
         finally:
-            self._cleanup_tool(app, tid)
+            self._cleanup_tool(app, tool_id)
 
 
 # ===========================================================================
@@ -438,24 +438,26 @@ class TestScanList:
         """POST /scans creates a scan with valid tool and args (task queue mocked)."""
         _, _, _, _, _, Tool, Scan, _ = _get_models()
         db = _get_db()
-        tid = self._create_tool_for_scan(app)
+        tool_id = self._create_tool_for_scan(app)
 
         # Mock the task queue enqueue to return a job-like object
+        import uuid
+        scan_id = str(uuid.uuid4())
         mock_job = MagicMock()
-        mock_job.get_id.return_value = 'test-scan-id-001'
+        mock_job.get_id.return_value = scan_id
         app.api_task_queue.enqueue.return_value = mock_job
 
         resp = _set_cookie_and_request(client, app, user, 'POST', '/scans', json_data={
-            'tid': tid,
+            'tid': tool_id,
             'args': '127.0.0.1',
         })
         assert resp.status_code == 201
         data = resp.get_json()
-        assert data['id'] == 'test-scan-id-001'
+        assert data['id'] == scan_id
         assert data['complete'] is False
 
         # Cleanup
-        scan = db.session.get(Scan, 'test-scan-id-001')
+        scan = db.session.get(Scan, scan_id)
         if scan:
             db.session.delete(scan)
             db.session.commit()
@@ -472,6 +474,7 @@ class TestScanList:
 class TestScanInst:
 
     def _create_scan_for_user(self, app, user_obj):
+        import uuid
         _, _, _, _, _, Tool, Scan, _ = _get_models()
         db = _get_db()
         tool = Tool.query.filter_by(name='ScanToolInst').first()
@@ -480,7 +483,7 @@ class TestScanInst:
             db.session.add(tool)
             db.session.commit()
         scan = Scan(
-            id='test-scan-inst-001',
+            id=str(uuid.uuid4()),
             command='/usr/bin/scantoolinst 127.0.0.1',
             results='scan output here',
             complete=True,
@@ -490,41 +493,37 @@ class TestScanInst:
         db.session.commit()
         return scan.id
 
-    def _cleanup_scan(self, app):
+    def _cleanup_scan(self, app, scan_id):
         _, _, _, _, _, Tool, Scan, _ = _get_models()
         db = _get_db()
-        scan = db.session.get(Scan, 'test-scan-inst-001')
+        scan = db.session.get(Scan, scan_id)
         if scan:
             db.session.delete(scan)
-            db.session.commit()
-        tool = Tool.query.filter_by(name='ScanToolInst').first()
-        if tool:
-            db.session.delete(tool)
             db.session.commit()
 
     def test_delete_scan_owner(self, client, app, user):
         """Owner can delete their own scan."""
-        sid = self._create_scan_for_user(app, user)
-        resp = _set_cookie_and_request(client, app, user, 'DELETE', f'/scans/{sid}')
+        scan_id = self._create_scan_for_user(app, user)
+        resp = _set_cookie_and_request(client, app, user, 'DELETE', f'/scans/{scan_id}')
         assert resp.status_code == 204
-        self._cleanup_scan(app)
+        self._cleanup_scan(app, scan_id)
 
     def test_delete_scan_non_owner(self, client, app, user, admin_user):
         """Non-owner gets 403 when deleting another user's scan."""
-        sid = self._create_scan_for_user(app, user)
+        scan_id = self._create_scan_for_user(app, user)
         try:
-            resp = _set_cookie_and_request(client, app, admin_user, 'DELETE', f'/scans/{sid}')
+            resp = _set_cookie_and_request(client, app, admin_user, 'DELETE', f'/scans/{scan_id}')
             assert resp.status_code == 403
         finally:
-            self._cleanup_scan(app)
+            self._cleanup_scan(app, scan_id)
 
     def test_get_results(self, client, app, user):
-        """GET /scans/<sid>/results returns scan results."""
-        sid = self._create_scan_for_user(app, user)
+        """GET /scans/<scan_id>/results returns scan results."""
+        scan_id = self._create_scan_for_user(app, user)
         try:
-            resp = _set_cookie_and_get(client, app, user, f'/scans/{sid}/results')
+            resp = _set_cookie_and_get(client, app, user, f'/scans/{scan_id}/results')
             assert resp.status_code == 200
             data = resp.get_json()
             assert data['results'] == 'scan output here'
         finally:
-            self._cleanup_scan(app)
+            self._cleanup_scan(app, scan_id)

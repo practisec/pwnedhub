@@ -29,7 +29,7 @@ def encode_jwt(subscriber, claims={}, expire_delta={'days': 1, 'seconds': 0}):
     payload = {
         'exp': get_current_utc_time() + timedelta(**expire_delta),
         'iat': get_current_utc_time(),
-        'sub': subscriber
+        'sub': str(subscriber)
     }
     for claim, value in claims.items():
         payload[claim] = value

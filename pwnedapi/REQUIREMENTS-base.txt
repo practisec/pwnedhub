@@ -1,4 +1,5 @@
-eventlet
+gevent
+gevent-websocket
 flask
 flask-cors
 flask-mysqldb
