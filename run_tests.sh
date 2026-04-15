@@ -10,7 +10,7 @@ run_tests() {
     echo " Running $test_dir tests in '$service' container"
     echo "================================================================"
     docker compose run --rm --no-deps -e CONFIG=Test "$service" \
-        sh -c "pip install -q pytest && python -m pytest $test_dir $PYTEST_ARGS"
+        python -m pytest $test_dir $PYTEST_ARGS
     return $?
 }
 

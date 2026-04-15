@@ -15,7 +15,7 @@ ADD ./REQUIREMENTS.txt /src/REQUIREMENTS.txt
 RUN apk update &&\
     apk add --no-cache $BUILD_DEPS $RUNTIME_DEPS &&\
     pip install --no-cache-dir --upgrade pip &&\
-    pip install --no-cache-dir -r REQUIREMENTS.txt &&\
+    pip install --no-cache-dir -r REQUIREMENTS.txt pytest &&\
     apk del $BUILD_DEPS &&\
     rm -rf /var/cache/apk/* &&\
     echo -e "[client]\nssl=0" > /etc/my.cnf
