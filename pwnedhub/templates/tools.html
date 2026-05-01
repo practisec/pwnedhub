@@ -1,30 +1,35 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-grow tools flex-column">
-    <div class="flex-width-10 flex-offset-1 flex-row flex-align-center">
-        <select class="gutter-right" id="tool" onchange="info(this);">
-        {% for tool in tools %}
-            <option value="{{ tool.id }}">{{ tool.name }}</option>
-        {% endfor %}
-        </select>
-        <input class="flex-grow gutter-right" type="text" id="args" placeholder="Command arguments..." />
-        <input type="button" onclick="execute();" value="Execute" />
+<div class="page tools">
+    <div class="page-header">
+        <h3 class="page-title">Tools</h3>
+        <p class="page-subtitle">Execute security testing tools from your browser.</p>
     </div>
-    <div class="flex-grow output flex-column flex-no-basis">
-        <pre id="output"></pre>
-        <a class="img-btn" onclick="save_artifact();"><i class="fas fa-save" title="Save as artifact"></i></a>
-        <div id="spinner" class="spinner"></div>
+    <div class="card">
+        <div class="tools-control-row">
+            <select class="form-select" id="tool" onchange="info(this);">
+            {% for tool in tools %}
+                <option value="{{ tool.id }}">{{ tool.name }}</option>
+            {% endfor %}
+            </select>
+            <input class="form-input" type="text" id="args" placeholder="Command arguments..." />
+            <input class="btn btn-primary" type="button" onclick="execute();" value="Execute" />
+        </div>
+        <div id="tool-description" class="tool-description"></div>
+        <div class="output">
+            <pre id="output"></pre>
+            <a class="btn-icon" onclick="save_artifact();"><i class="icon fas fa-save" title="Save as artifact"></i></a>
+            <div id="spinner" class="spinner"></div>
+        </div>
     </div>
 </div>
 <script nonce="{{ g.nonce }}">
 function info(e) {
     var tid = e.options[e.selectedIndex].value;
-    // get the description
     $.ajax({
         url: "{{ url_for('core.tools_info', tid='{0}') | urldecode }}".format(tid),
         success: function(data){
-            // update the textarea with the description
-            document.getElementById("output").innerHTML = data.description;
+            document.getElementById("tool-description").textContent = data.description;
         }
     });
 }
@@ -34,7 +39,6 @@ function execute() {
     spinner.style.visibility = "visible";
     var tid = document.getElementById("tool").options[document.getElementById("tool").selectedIndex].value;
     var args = document.getElementById("args").value;
-    // execute the command
     $.ajax({
         url: "{{ url_for('core.tools_execute', tid='{0}') | urldecode }}".format(tid),
         type: "POST",
@@ -43,10 +47,8 @@ function execute() {
         success: function(data){
             spinner.style.visibility = "hidden";
             if (data.error === true) {
-                // flash error message
                 showFlash(data.output);
             } else {
-                // update the textarea with the command output
                 document.getElementById("output").innerHTML = "$ {0}\n{1}".format(data.cmd, data.output);
             }
         }
@@ -69,7 +71,6 @@ function save_artifact() {
     }
 }
 
-// populate the default tool's description onload
 document.getElementById("tool").onchange()
 </script>
 {% endblock %}

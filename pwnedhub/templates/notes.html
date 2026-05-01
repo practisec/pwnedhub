@@ -1,65 +1,104 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-grow notes flex-column">
-    <a class="img-btn" onclick="save_artifact(event);"><i class="fas fa-save" title="Save as artifact"></i></a>
-    <div class="tabs">
-        <input id="tab-one" type="radio" name="grp" value="#pane-1" checked="checked"/>
-        <label for="tab-one">Edit</label>
-        <input id="tab-two" type="radio" name="grp" value="#pane-2" />
-        <label for="tab-two">View</label>
-    </div>
-    <div class="flex-grow tab-content flex-row">
-        <div id="pane-1" class="flex-grow flex-row active">
-            <textarea class="flex-grow" name="notes" id="notes">{{ notes }}</textarea>
+<div class="page notes">
+    <div class="page-header notes-header">
+        <h3 class="page-title no-margin-bottom">Notes</h3>
+        <span class="notes-status" id="notes-status" title="Synced"><i class="fas fa-circle-check" aria-hidden="true"></i></span>
+        <div class="notes-actions">
+            <button type="button" class="btn-icon" id="notes-toggle" title="Preview" aria-label="Preview"><i class="icon fas fa-eye"></i></button>
+            <button type="button" class="btn-icon" onclick="save_artifact(event);" title="Save as artifact" aria-label="Save as artifact"><i class="icon fas fa-save"></i></button>
         </div>
-        <div id="pane-2" class="flex-grow markdown"></div>
+    </div>
+    <div class="notes-card">
+        <textarea class="notes-editor" name="notes" id="notes">{{ notes }}</textarea>
+        <div class="notes-preview markdown" id="notes-preview" hidden></div>
     </div>
 </div>
 <script nonce="{{ g.nonce }}">
-var notes = document.getElementById("notes")
-var view = document.getElementById("tab-two")
+var notes = document.getElementById("notes");
+var preview = document.getElementById("notes-preview");
+var toggle = document.getElementById("notes-toggle");
+var saveStatus = document.getElementById("notes-status");
 var key = "{{ g.user.username|safe }}-notes";
 var mdConverter = new showdown.Converter();
+var saveTimer = null;
 
-// register an event to render the notes in the view tab when clicked
-view.addEventListener("click", function() {
-    var text = notes.value;
-    var html = mdConverter.makeHtml(text);
-    $("#pane-2").html(DOMPurify.sanitize(html));
-});
+function setSyncStatus(state) {
+    var icon = saveStatus.querySelector("i");
+    icon.className = "fas";
+    saveStatus.classList.remove("notes-status-error");
+    if (state === "syncing") {
+        icon.classList.add("fa-arrows-rotate", "fa-spin");
+        saveStatus.title = "Syncing...";
+    } else if (state === "synced") {
+        icon.classList.add("fa-circle-check");
+        saveStatus.title = "Synced";
+    } else if (state === "failed") {
+        icon.classList.add("fa-circle-exclamation");
+        saveStatus.title = "Sync failed";
+        saveStatus.classList.add("notes-status-error");
+    }
+}
 
-// register an event to save the notes when focus is lost
-notes.addEventListener("blur", function() {
-    // persist notes locally in case of a failed sync
-    localStorage.setItem(key, this.value);
-    // sync the notes
+function syncNotes() {
+    setSyncStatus("syncing");
+    localStorage.setItem(key, notes.value);
     $.ajax({
         url: "{{ url_for('core.notes_update') }}",
         type: "PUT",
-        async: false,
-        data: JSON.stringify({notes: this.value}),
+        data: JSON.stringify({notes: notes.value}),
         contentType: "application/json",
-        success: function(data){
-            this.value = data.notes;
+        success: function(data) {
+            notes.value = data.notes;
+            setSyncStatus("synced");
+        },
+        error: function() {
+            setSyncStatus("failed");
         }
     });
+}
+
+function scheduleSave() {
+    setSyncStatus("syncing");
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(syncNotes, 1000);
+}
+
+notes.addEventListener("input", scheduleSave);
+
+toggle.addEventListener("click", function() {
+    var icon = toggle.querySelector("i");
+    if (preview.hidden) {
+        var html = mdConverter.makeHtml(notes.value);
+        $(preview).html(DOMPurify.sanitize(html));
+        notes.hidden = true;
+        preview.hidden = false;
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-pen");
+        toggle.title = "Edit";
+        toggle.setAttribute("aria-label", "Edit");
+    } else {
+        notes.hidden = false;
+        preview.hidden = true;
+        icon.classList.remove("fa-pen");
+        icon.classList.add("fa-eye");
+        toggle.title = "Preview";
+        toggle.setAttribute("aria-label", "Preview");
+    }
 });
 
 // load the local version of the notes as they will
 // be the most recent in the event of a sync failure
 if (localStorage.getItem(key)) {
     notes.value = localStorage.getItem(key);
-    // force an attempt to sync the notes to the server
-    notes.dispatchEvent(new Event('blur'));
-    // should move most of this logic into the AJAX call's
-    // success and error handlers to do it right
+    syncNotes();
 }
 
 function save_artifact(event) {
     event.preventDefault();
     event.stopPropagation();
     var filename = "Notes";
-    var content = notes.innerHTML;
+    var content = notes.value;
     if (confirm("Save as an artifact?") == true) {
         $.ajax({
             url: "{{ url_for('core.artifacts_create') }}",

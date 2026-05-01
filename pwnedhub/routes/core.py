@@ -28,10 +28,6 @@ def home():
         return redirect(url_for('core.notes'))
     return redirect(url_for('core.index'))
 
-@blp.route('/about')
-def about():
-    return render_template('about.html')
-
 # admin controllers
 
 @blp.route('/admin/tools')
@@ -53,7 +49,6 @@ def admin_tools_add():
     )
     db.session.add(tool)
     db.session.commit()
-    flash('Tool added.')
     return redirect(url_for('core.admin_tools'))
 
 @blp.route('/admin/tools/remove/<int:tid>')
@@ -63,7 +58,6 @@ def admin_tools_remove(tid):
     tool = db.get_or_404(Tool, tid)
     db.session.delete(tool)
     db.session.commit()
-    flash('Tool removed.')
     return redirect(url_for('core.admin_tools'))
 
 @blp.route('/admin/users')
@@ -82,22 +76,18 @@ def admin_users_modify(action, uid):
             user.role = 0
             db.session.add(user)
             db.session.commit()
-            flash('User promoted.')
         elif action == 'demote':
             user.role = 1
             db.session.add(user)
             db.session.commit()
-            flash('User demoted.')
         elif action == 'enable':
             user.status = 1
             db.session.add(user)
             db.session.commit()
-            flash('User enabled.')
         elif action == 'disable':
             user.status = 0
             db.session.add(user)
             db.session.commit()
-            flash('User disabled.')
         else:
             flash('Invalid user action.')
     else:
@@ -198,7 +188,6 @@ def mail_delete(mid):
     letter = db.get_or_404(Mail, mid)
     db.session.delete(letter)
     db.session.commit()
-    flash('Mail deleted.')
     return redirect(url_for('core.mail'))
 
 @blp.route('/messages')
@@ -226,7 +215,6 @@ def messages_delete(mid):
     if message.author == g.user or g.user.is_admin:
         db.session.delete(message)
         db.session.commit()
-        flash('Message deleted.')
     else:
         abort(403)
     return redirect(url_for('core.messages'))
@@ -336,7 +324,6 @@ def artifacts_delete():
     filename = request.form['filename']
     try:
         os.remove(os.path.join(session.get('upload_folder'), filename))
-        flash('Artifact deleted.')
     except IOError:
         flash('Unable to remove the artifact.')
     return redirect(url_for('core.artifacts'))

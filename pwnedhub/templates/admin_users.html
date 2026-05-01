@@ -1,35 +1,45 @@
 {% extends "layout.html" %}
 {% block body %}
 {% if users|length > 0 %}
-<div class="flex-grow admin">
-    <table class="center">
-        <thead>
-            <tr><th>created</th><th>display name</th><th>username</th><th>role</th><th>status</th><th>action</th></tr>
-        </thead>
-        <tbody>
+<div class="page admin">
+    <div class="page-header">
+        <h3 class="page-title">Manage Users</h3>
+    </div>
+    <div class="list users-list">
         {% for user in users %}
-            <tr>
-                <td>{{ user.created_as_string }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.role_as_string }}</td>
-                <td>{{ user.status_as_string }}</td>
-                <td>
+        <div class="list-item">
+            <div class="list-item-primary flex-row flex-align-center">
+                <strong>{{ user.name }}</strong>
+                <span class="user-username">@{{ user.username }}</span>
+                <div class="user-badges">
                 {% if user.is_admin %}
-                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='demote', uid=user.id) }}');"><i class="fas fa-user-minus" title="Demote"></i></a>
+                    <span class="badge badge-primary">{{ user.role_as_string }}</span>
                 {% else %}
-                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='promote', uid=user.id) }}');"><i class="fas fa-user-plus" title="Promote"></i></a>
+                    <span class="badge badge-muted">{{ user.role_as_string }}</span>
                 {% endif %}
                 {% if user.is_enabled %}
-                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='disable', uid=user.id) }}');"><i class="fas fa-user-slash" title="Disable"></i></a>
+                    <span class="badge badge-success">{{ user.status_as_string }}</span>
                 {% else %}
-                    <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='enable', uid=user.id) }}');"><i class="fas fa-user" title="Enable"></i></a>
+                    <span class="badge badge-muted">{{ user.status_as_string }}</span>
                 {% endif %}
-                </td>
-            </tr>
+                </div>
+            </div>
+            <div class="list-item-secondary">{{ user.created_as_string }}</div>
+            <div class="list-item-actions">
+            {% if user.is_admin %}
+                <a class="btn-icon" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='demote', uid=user.id) }}');"><i class="icon fas fa-user-minus" title="Demote"></i></a>
+            {% else %}
+                <a class="btn-icon" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='promote', uid=user.id) }}');"><i class="icon fas fa-user-plus" title="Promote"></i></a>
+            {% endif %}
+            {% if user.is_enabled %}
+                <a class="btn-icon" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='disable', uid=user.id) }}');"><i class="icon fas fa-user-slash" title="Disable"></i></a>
+            {% else %}
+                <a class="btn-icon" onclick="cleanRedirect(event, '{{ url_for('core.admin_users_modify', action='enable', uid=user.id) }}');"><i class="icon fas fa-user" title="Enable"></i></a>
+            {% endif %}
+            </div>
+        </div>
         {% endfor %}
-        </tbody>
-    </table>
+    </div>
 </div>
 {% endif %}
 {% endblock %}

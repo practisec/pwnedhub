@@ -44,12 +44,21 @@ function confirmSubmit(event, form) {
     }
 }
 
-function toggleShow() {
+function toggleShow(btn) {
     var el = document.getElementById("password");
-    if (el.type =="password") {
+    var icon = btn ? btn.querySelector("i") : null;
+    if (el.type == "password") {
         el.type = "text";
+        if (icon) {
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        }
     } else {
         el.type = "password";
+        if (icon) {
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
     }
 }
 

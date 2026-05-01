@@ -1,9 +1,17 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-grow error center-content">
-    <h1>Oops! Somethin' broke.</h1>
-    <div class="traceback left-content">
-        <pre>{{ message }}</pre>
+<div class="page-centered">
+    <div class="error-page">
+        <div class="error-code">500</div>
+        <h1 class="error-title">Something broke</h1>
+        <p class="error-message">An internal error occurred while processing your request.</p>
+        <div class="error-actions">
+            <a class="btn btn-primary" href="{{ url_for('core.index') }}">Go home</a>
+            <a class="btn btn-secondary" onclick="window.history.back();">Go back</a>
+        </div>
+        <div class="traceback">
+            <pre>{{ message }}</pre>
+        </div>
     </div>
 </div>
 {% endblock %}

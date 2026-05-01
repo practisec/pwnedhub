@@ -1,9 +1,15 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-width-6 flex-offset-3 flex-basis-6 profile-view center-content">
-    <div class="avatar"><img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" /></div>
-    <div><h3>{{ user.name }}</h3></div>
-    <div><h6>Member since: {{ user.created_as_string[:-9] }}</h6></div>
-    <div><blockquote>{{ user.signature }}</blockquote></div>
+<div class="page-centered profile-view">
+    <div class="card form-card center-content">
+        <div class="profile-view-avatar">
+            <img class="circular bordered-dark" src="{{ user.avatar_or_default|safe }}" title="Avatar" />
+        </div>
+        <h2 class="profile-view-name">{{ user.name }}</h2>
+        <p class="profile-view-meta">Member since {{ user.created_as_string[:-9] }}</p>
+        {% if user.signature %}
+        <blockquote class="profile-view-signature">{{ user.signature }}</blockquote>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

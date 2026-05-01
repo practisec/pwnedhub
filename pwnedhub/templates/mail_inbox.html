@@ -1,24 +1,33 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-grow inbox">
-    <table class="center clickable">
-        <caption class="left-content"><input type="button" onclick="window.location='{{ url_for('core.mail_compose') }}';" value="Compose" /></caption>
-        <thead>
-            <tr><th>from</th><th>subject</th><th>date</th></tr>
-        </thead>
-        <tbody>
-        {% if mail|length > 0 %}
+<div class="page inbox">
+    <div class="page-header flex-row flex-justify-space-between flex-align-center">
+        <h3 class="page-title no-margin-bottom">PwnMail</h3>
+        <a class="btn btn-primary" href="{{ url_for('core.mail_compose') }}">Compose</a>
+    </div>
+    {% if mail|length > 0 %}
+    <div class="list">
         {% for letter in mail %}
-            <tr style="{% if letter.read == 0 %} font-weight: bold;{% endif %}" onclick="cleanRedirect(event, '{{ url_for('core.mail_view', mid=letter.id) }}');">
-                <td class="left-content">{{ letter.sender.name }}</td>
-                <td class="left-content">{{ letter.subject }}</td>
-                <td>{{ letter.created_as_string }}</td>
-            </tr>
+        <div class="list-item list-item-clickable{% if letter.read == 0 %} list-item-unread{% endif %}" onclick="cleanRedirect(event, '{{ url_for('core.mail_view', mid=letter.id) }}');">
+            <div class="list-item-primary flex-row flex-align-center">
+                <span class="list-item-sender">{{ letter.sender.name }}</span>
+                <span class="list-item-subject">{{ letter.subject }}</span>
+            </div>
+            <div class="list-item-secondary">{{ letter.created_as_string }}</div>
+            <div class="list-item-actions">
+                <a class="btn-icon" onclick="event.stopPropagation(); cleanRedirect(event, '{{ url_for('core.mail_reply', mid=letter.id) }}');"><i class="icon fas fa-reply" title="Reply"></i></a>
+                <a class="btn-icon" onclick="event.stopPropagation(); cleanRedirect(event, '{{ url_for('core.mail_delete', mid=letter.id) }}');"><i class="icon fas fa-trash" title="Delete"></i></a>
+            </div>
+        </div>
         {% endfor %}
-        {% else %}
-            <tr><td colspan="4" class="center-content"><i class="fas fa-exclamation-circle medium" title="Empty"></i></td></tr>
-        {% endif %}
-        </tbody>
-    </table>
+    </div>
+    {% else %}
+    <div class="list">
+        <div class="list-empty">
+            <i class="icon icon-md fas fa-inbox" title="Empty inbox"></i>
+            <p>Your inbox is empty.</p>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -1,0 +1,81 @@
+/*! variables.css v1.0.0 — design tokens */
+
+:root {
+    /* colors: primary */
+    --color-primary: #DC2626;
+    --color-primary-hover: #B91C1C;
+    --color-primary-light: rgba(220, 38, 38, 0.1);
+    --color-primary-text: #FFFFFF;
+
+    /* colors: neutrals */
+    --color-dark: #1A1A1A;
+    --color-dark-hover: #2D2D2D;
+    --color-body-bg: #EBEDF0;
+    --color-surface: #FFFFFF;
+    --color-surface-alt: #F9FAFB;
+    --color-text: #1F2937;
+    --color-text-secondary: #6B7280;
+    --color-text-inverse: #FFFFFF;
+    --color-text-link: inherit;
+    --color-text-link-hover: var(--color-primary);
+
+    /* colors: borders */
+    --color-border: #E5E7EB;
+    --color-border-strong: #9CA3AF;
+    --color-border-dark: var(--color-dark);
+
+    /* colors: status */
+    --color-success: #059669;
+    --color-error: var(--color-primary);
+    --color-info: #2563EB;
+
+    /* typography */
+    --font-family-base: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    --font-weight-light: 300;
+    --font-weight-regular: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-size-xs: 1.0rem;
+    --font-size-sm: 1.25rem;
+    --font-size-base: 1.5rem;
+    --font-size-md: 1.75rem;
+    --font-size-lg: 2.0rem;
+    --font-size-xl: 2.4rem;
+    --line-height-tight: 1.25;
+    --line-height-base: 1.6;
+    --line-height-loose: 1.75;
+
+    /* spacing */
+    --space-xs: 0.4rem;
+    --space-sm: 0.8rem;
+    --space-md: 1.6rem;
+    --space-lg: 2.4rem;
+    --space-xl: 3.2rem;
+    --space-2xl: 4.8rem;
+    --space-3xl: 6.4rem;
+
+    /* layout */
+    --container-max-width: 100rem;
+    --container-padding: 2rem;
+    --nav-height: 5rem;
+
+    /* borders */
+    --border-radius-sm: 0.4rem;
+    --border-radius-md: 0.8rem;
+    --border-radius-lg: 1.2rem;
+    --border-radius-full: 50%;
+    --border-width: 1px;
+
+    /* shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+    /* transitions */
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+
+    /* z-index */
+    --z-flash: 999;
+}

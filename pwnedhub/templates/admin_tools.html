@@ -1,30 +1,32 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-grow admin">
-    <form action="{{ url_for('core.admin_tools_add') }}" method="post">
-        <table class="center">
-            <thead>
-                <tr><th>name</th><th>path</th><th>description</th><th>action</th></tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><input type="text" name="name" placeholder="Name" /></td>
-                    <td><input type="text" name="path" placeholder="Path" /></td>
-                    <td><input type="text" name="description" placeholder="Description" /></td>
-                    <td><input type="submit" value="Add" onclick="cleanSubmit(event, this.form);" /></td>
-                </tr>
-            {% for tool in tools %}
-                <tr>
-                    <td>{{ tool.name }}</td>
-                    <td>{{ tool.path }}</td>
-                    <td class="left-content">{{ tool.description }}</td>
-                    <td>
-                        <a class="img-btn" onclick="cleanRedirect(event, '{{ url_for('core.admin_tools_remove', tid=tool.id) }}');"><i class="fas fa-trash" title="Remove"></i></a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </form>
+<div class="page admin">
+    <div class="page-header">
+        <h3 class="page-title">Manage Tools</h3>
+    </div>
+    <div class="card">
+        <form class="admin-tools-add" action="{{ url_for('core.admin_tools_add') }}" method="post">
+            <input class="form-input admin-tools-add-name" type="text" name="name" placeholder="Name" />
+            <input class="form-input admin-tools-add-path" type="text" name="path" placeholder="Path" />
+            <input class="form-input admin-tools-add-description" type="text" name="description" placeholder="Description" />
+            <input class="btn btn-primary btn-sm" type="submit" value="Add" onclick="cleanSubmit(event, this.form);" />
+        </form>
+    </div>
+    {% if tools|length > 0 %}
+    <div class="list">
+        {% for tool in tools %}
+        <div class="list-item">
+            <div class="list-item-primary">
+                <strong>{{ tool.name }}</strong>
+                <span class="admin-tool-path">{{ tool.path }}</span>
+                <p class="admin-tool-description">{{ tool.description }}</p>
+            </div>
+            <div class="list-item-actions">
+                <a class="btn-icon" onclick="cleanRedirect(event, '{{ url_for('core.admin_tools_remove', tid=tool.id) }}');"><i class="icon fas fa-trash" title="Remove"></i></a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

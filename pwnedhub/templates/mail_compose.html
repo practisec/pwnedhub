@@ -1,23 +1,33 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-width-10 flex-offset-1 flex-basis-10 mail">
-    <form class="flex-column" action="{{ url_for('core.mail_compose') }}" method="post">
-        <label for="receiver">To: *</label>
-        <select name="receiver">
-            <option value="" disabled selected>receiver...</option>
-        {% for user in users %}
-            <option value="{{ user.id }}">{{ user.name }}</option>
-        {% endfor %}
-        </select>
-        <label for="subject">Subject: *</label>
-        <input name="subject" type="text" />
-        <label for="content">Content: *</label>
-        <textarea name="content"></textarea>
-        <hr>
-        <div class="right-content">
-            <a class="img-btn" onclick="cleanSubmit(event, document.forms[0]);"><i class="fas fa-paper-plane" title="Send"></i></a>
-            <a class="img-btn" onclick="window.history.back();"><i class="fas fa-trash" title="Discard"></i></a>
-        </div>
-    </form>
+<div class="page mail">
+    <div class="page-header">
+        <h3 class="page-title">Compose</h3>
+    </div>
+    <div class="card">
+        <form class="flex-column" action="{{ url_for('core.mail_compose') }}" method="post">
+            <div class="form-group">
+                <label class="form-label" for="receiver">To<span class="form-required">*</span></label>
+                <select class="form-select" name="receiver">
+                    <option value="" disabled selected>receiver...</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.name }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="subject">Subject<span class="form-required">*</span></label>
+                <input class="form-input" name="subject" type="text" />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="content">Content<span class="form-required">*</span></label>
+                <textarea class="form-textarea" name="content"></textarea>
+            </div>
+            <div class="right-content">
+                <a class="btn-icon" onclick="cleanSubmit(event, document.forms[0]);"><i class="icon fas fa-paper-plane" title="Send"></i></a>
+                <a class="btn-icon" onclick="window.history.back();"><i class="icon fas fa-trash" title="Discard"></i></a>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

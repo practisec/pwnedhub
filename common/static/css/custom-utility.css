@@ -1,5 +1,6 @@
-/*! custom-utility.css v1.0.0 */
+/*! custom-utility.css v2.0.0 */
 
+/* alignment */
 .center {
     margin-left: auto;
     margin-right: auto;
@@ -21,40 +22,44 @@
     clear: both;
 }
 
+/* typography */
 .bolded {
     font-weight: bold;
 }
 
+.text-sm {
+    font-size: var(--font-size-sm, 1.25rem);
+}
+
+.text-muted {
+    color: var(--color-text-secondary, #6B7280);
+}
+
+/* borders & shapes */
 .rounded {
-    -webkit-border-radius: .5rem;
-    -moz-border-radius: .5rem;
-    border-radius: .5rem;
+    border-radius: var(--border-radius-md, .5rem);
 }
 
 .circular {
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
+    border-radius: var(--border-radius-full, 50%);
 }
 
+/* shadows */
 .shaded {
-    -webkit-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-md, 0 0 1rem rgba(0, 0, 0, 0.2));
 }
 
 .shaded-light {
-    -webkit-box-shadow: 0.5rem 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: 0.5rem 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
-    box-shadow: 0.5rem 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm, 0.5rem 0.5rem 1.5rem rgba(0, 0, 0, 0.1));
 }
 
+/* spacing */
 .gutter-right {
     margin-right: 1rem;
 }
 
 .gutter-half-right {
-    margin-right: 0.5;
+    margin-right: 0.5rem;
 }
 
 .gutter-bottom {
@@ -62,7 +67,7 @@
 }
 
 .gutter-half-bottom {
-    margin-bottom: 0.5;
+    margin-bottom: 0.5rem;
 }
 
 .gutter-left {
@@ -70,7 +75,20 @@
 }
 
 .gutter-half-left {
-    margin-left: 0.5;
+    margin-left: 0.5rem;
+}
+
+/* layout */
+.no-shrink {
+    flex-shrink: 0;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0;
+}
+
+.relative {
+    position: relative;
 }
 
 /*

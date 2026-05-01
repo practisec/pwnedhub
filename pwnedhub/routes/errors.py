@@ -32,9 +32,16 @@ def not_found(e):
     else:
         template = '''{% extends "layout.html" %}
 {% block body %}
-<div class="flex-grow error center-content">
-    <h1>Oops! That page doesn't exist.</h1>
-    <h3>'''+unquote(request.url)+'''</h3>
+<div class="page-centered">
+    <div class="error-page">
+        <div class="error-code">404</div>
+        <h1 class="error-title">Page not found</h1>
+        <p class="error-message">'''+unquote(request.url)+'''</p>
+        <div class="error-actions">
+            <a class="btn btn-primary" href="{{ url_for('core.index') }}">Go home</a>
+            <a class="btn btn-secondary" onclick="window.history.back();">Go back</a>
+        </div>
+    </div>
 </div>
 {% endblock %}'''
         return render_template_string(template), 404

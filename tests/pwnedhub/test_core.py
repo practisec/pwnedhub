@@ -13,11 +13,6 @@ class TestPublicRoutes:
         response = client.get('/')
         assert response.status_code == 200
 
-    def test_about(self, client):
-        """GET /about returns 200."""
-        response = client.get('/about')
-        assert response.status_code == 200
-
     def test_diagnostics(self, client):
         """GET /diagnostics returns 200 with platform info."""
         response = client.get('/diagnostics')

@@ -5,82 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>html{visibility:hidden;opacity:0;}</style><!-- FOUC fix 1/2 -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/fontawesome.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/skeleton-flexbox.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/normalize.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/variables.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/baseline.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-flex.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/custom-utility.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('common.static', filename='css/pwnedhub.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pwnedhub.css') }}">
     <script nonce="{{ g.nonce }}" type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.6.2.min.js') }}"></script>
     <script nonce="{{ g.nonce }}" type="text/javascript" src="{{ url_for('static', filename='js/pwnedhub.js') }}"></script>
     <script nonce="{{ g.nonce }}" type="text/javascript" src="{{ url_for('static', filename='js/showdown.js') }}"></script>
     <script nonce="{{ g.nonce }}" type="text/javascript" src="{{ url_for('static', filename='js/purify.min.js') }}"></script>
 </head>
-<body class="flex-column">
+<body>
     <div id="flash" class="flash"></div>
-    <header class="flex-no-shrink flex-row">
-        <nav class="flex-grow container-fluid flex-row">
-            <div class="brand">
+    <header class="site-header">
+        <nav class="site-nav">
+            <div class="nav-brand">
                 <a href="{{ url_for('core.index') }}"><img src="{{ url_for('common.static', filename='images/logo.png') }}" /></a>
             </div>
-            <div class="flex-grow flex-row flex-justify-end nav">
-                <ul class="flex-row flex-align-center top-menu">
+            {% set route = request.endpoint or '' %}
+            <div class="nav-links">
                 {% if g.user %}
                     {% if g.user.is_admin %}
-                    <li><a href="#">{% if g.user.has_unread_mail %}*{% endif %}collaboration</a>
-                        <ul class="sub-menu">
-                            <li><a href="{{ url_for('core.mail') }}">{% if g.user.has_unread_mail %}*{% endif %}PwnMail</a></li>
-                            <li><a href="{{ url_for('core.messages') }}">Messages</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">admin</a>
-                        <ul class="sub-menu">
-                            <li><a href="{{ url_for('core.admin_tools') }}">Tools</a></li>
-                            <li><a href="{{ url_for('core.admin_users') }}">Users</a></li>
-                        </ul>
-                    </li>
+                    <a class="nav-link {% if route.startswith('core.admin_users') %}active{% endif %}" href="{{ url_for('core.admin_users') }}">Users</a>
+                    <a class="nav-link {% if route.startswith('core.admin_tools') %}active{% endif %}" href="{{ url_for('core.admin_tools') }}">Tools</a>
+                    <a class="nav-link {% if route.startswith('core.mail') %}active{% endif %}" href="{{ url_for('core.mail') }}">{% if g.user.has_unread_mail %}*{% endif %}PwnMail</a>
+                    <a class="nav-link {% if route.startswith('core.messages') %}active{% endif %}" href="{{ url_for('core.messages') }}">Messages</a>
                     {% else %}
-                    <li><a href="#">testing</a>
-                        <ul class="sub-menu">
-                            <li><a href="{{ url_for('core.notes') }}">Notes</a></li>
-                            <li><a href="{{ url_for('core.artifacts') }}">Artifacts</a></li>
-                            <li><a href="{{ url_for('core.tools') }}">Tools</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">{% if g.user.has_unread_mail %}*{% endif %}collaboration</a>
-                        <ul class="sub-menu">
-                            <li><a href="{{ url_for('core.mail') }}">{% if g.user.has_unread_mail %}*{% endif %}PwnMail</a></li>
-                            <li><a href="{{ url_for('core.messages') }}">Messages</a></li>
-                        </ul>
-                    </li>
+                    <a class="nav-link {% if route.startswith('core.notes') %}active{% endif %}" href="{{ url_for('core.notes') }}">Notes</a>
+                    <a class="nav-link {% if route.startswith('core.artifacts') %}active{% endif %}" href="{{ url_for('core.artifacts') }}">Artifacts</a>
+                    <a class="nav-link {% if route.startswith('core.tools') %}active{% endif %}" href="{{ url_for('core.tools') }}">Tools</a>
+                    <a class="nav-link {% if route.startswith('core.mail') %}active{% endif %}" href="{{ url_for('core.mail') }}">{% if g.user.has_unread_mail %}*{% endif %}PwnMail</a>
+                    <a class="nav-link {% if route.startswith('core.messages') %}active{% endif %}" href="{{ url_for('core.messages') }}">Messages</a>
                     {% endif %}
-                    <li><img class="circular bordered-dark avatar" src="{{ g.user.avatar_or_default|safe }}" title="Avatar" />
-                        <ul class="sub-menu">
-                            <li><a href="{{ url_for('core.profile') }}">Profile</a></li>
-                            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-                        </ul>
-                    </li>
+                    <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                    <a href="{{ url_for('core.profile') }}"><img class="nav-avatar" src="{{ g.user.avatar_or_default|safe }}" title="Profile" /></a>
                 {% else %}
                 {% if not app_config('OIDC_ENABLE') %}
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <a class="nav-link {% if route == 'auth.register' %}active{% endif %}" href="{{ url_for('auth.register') }}">Register</a>
                 {% endif %}
-                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    <a class="nav-link {% if route == 'auth.login' %}active{% endif %}" href="{{ url_for('auth.login') }}">Login</a>
                 {% endif %}
-                </ul>
             </div>
         </nav>
     </header>
-    <section class="flex-grow flex-no-shrink flex-row">
-        <div class="flex-grow container-fluid flex-row">
-            {% block body %}{% endblock %}
-        </div>
-    </section>
-    <footer class="flex-no-shrink flex-row">
-        <div class="flex-grow container-fluid flex-row flex-justify-center">
-            <div class="footer center-content">
-                <a href="{{ url_for('core.index') }}">Home</a>
-                |
-                <a href="{{ url_for('core.about') }}">About</a><br>
-                &copy; {{ date.year }} PwnedHub. All rights reserved.
-            </div>
+    <main class="site-main">
+        {% block body %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <div class="site-footer-content">
+            &copy; {{ date.year }} PwnedHub. All rights reserved.
         </div>
     </footer>
     {% if get_flashed_messages() %}

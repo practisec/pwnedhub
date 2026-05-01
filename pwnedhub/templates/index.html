@@ -1,25 +1,32 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="flex-grow banner flex-column flex-justify-space-evenly">
-    <div class="center-content">
-        <h3>A <span class="red">collaborative</span> space to conduct <span class="red">hosted</span> security assessments.</h3>
+<div class="hero">
+    <h2>Pwned<span class="text-primary"><b>Hub</b></span></h2>
+    <p class="page-subtitle">A collaborative space to conduct hosted security assessments.</p>
+    <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Get Started</a>
+</div>
+<div class="page">
+    <div class="feature-grid">
+        <div class="card center-content">
+            <i class="icon icon-lg fas fa-search text-primary" title="Find"></i>
+            <h4>Scan.</h4>
+            <p>Leverage popular security testing tools right from your browser.</p>
+        </div>
+        <div class="card center-content">
+            <i class="icon icon-lg fas fa-bug text-primary" title="Bug"></i>
+            <h4>Find.</h4>
+            <p>Store and organize artifacts from your local and external tools.</p>
+        </div>
+        <div class="card center-content">
+            <i class="icon icon-lg fas fa-dollar-sign text-primary" title="Bounty"></i>
+            <h4>Win.</h4>
+            <p>Collaborate with coworkers and share knowledge with the community.</p>
+        </div>
     </div>
-    <div class="center-content">
-        <input type="button" onclick="window.location='{{ url_for('auth.login') }}';" value="Get Started" />
-    </div>
-    <div class="flex-row flex-wrap">
-        <div class="flex-grow flex-no-basis panel center-content">
-            <h5>Scan.</h5>
-            <i class="fas fa-search large" title="Find"></i>
-        </div>
-        <div class="flex-grow flex-no-basis panel center-content">
-            <h5>Find.</h5>
-            <i class="fas fa-bug large" title="Bug"></i>
-        </div>
-        <div class="flex-grow flex-no-basis panel center-content">
-            <h5>Win.</h5>
-            <i class="fas fa-dollar-sign large" title="Bounty"></i>
-        </div>
+    <div class="about-section">
+        <h3>About Pwned<span class="text-primary"><b>Hub</b></span></h3>
+        <p>The ability to consolidate and organize testing tools and results during client engagements is key for consultants dealing with short timelines and high expectations. Unfortunately, today's options for cloud resourced security testing are poorly designed and fail to support even the most basic needs. PwnedHub attempts to solve this problem by providing a space to share knowledge, execute test cases, and store the results.</p>
+        <p>Developed by child prodigies Cooper ("Cooperman"), Taylor ("Babygirl#1"), and Tanner ("Hack3rPrincess"), PwnedHub was designed based on experience gained through months of security testing. The PwnedHub team is ambitions, talented, and so confident in their product, if you don't like it, they'll issue a full refund. No questions asked.</p>
     </div>
 </div>
 {% endblock %}
