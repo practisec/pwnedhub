@@ -85,29 +85,6 @@ body {
     flex: 1;
 }
 
-.site-footer {
-    background-color: var(--color-dark);
-    color: var(--color-text-inverse);
-    border-top: 3px solid var(--color-primary);
-}
-
-.site-footer-content {
-    max-width: var(--container-max-width);
-    margin: 0 auto;
-    padding: var(--space-md) var(--container-padding);
-    font-size: var(--font-size-xs);
-    text-align: center;
-}
-
-.site-footer-content a {
-    color: var(--color-text-inverse);
-    text-decoration: none;
-}
-
-.site-footer-content a:hover {
-    color: var(--color-primary);
-}
-
 /* page content wrapper — used by most pages for max-width + padding */
 .page {
     max-width: var(--container-max-width);
@@ -121,7 +98,7 @@ body {
 
 /* form/profile pages: vertically centered card */
 .page-centered {
-    min-height: calc(100vh - var(--nav-height) - 6rem);
+    min-height: calc(100vh - var(--nav-height));
     display: flex;
     align-items: center;
     justify-content: center;

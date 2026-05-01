@@ -52,11 +52,6 @@
     <main class="site-main">
         {% block body %}{% endblock %}
     </main>
-    <footer class="site-footer">
-        <div class="site-footer-content">
-            &copy; {{ date.year }} PwnedHub. All rights reserved.
-        </div>
-    </footer>
     {% if get_flashed_messages() %}
     <script nonce="{{ g.nonce }}">
         {% for message in get_flashed_messages()|unique %}
