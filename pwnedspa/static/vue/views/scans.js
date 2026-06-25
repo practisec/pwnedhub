@@ -8,14 +8,13 @@ const template = `
 <div class="flex-column scans">
     <div class="scan-form">
         <select v-model="scanForm.tid" @change="selectTool($event.target.value)">
-            <option value="" disabled selected>Select a tool</option>
             <option v-for="tool in tools" :key="tool.id" :value="tool.id">{{ tool.name }}</option>
         </select>
         <div class="flex-column scan-form-args">
-            <input type="text" v-model="scanForm.args" @keyup="handleKeyPress" placeholder="Arguments here..." />
+            <input type="text" v-model="scanForm.args" @keyup="handleKeyPress" placeholder="Command arguments..." />
             <button class="show" @click="createScan"><i class="fas fa-paper-plane" title="Send"></i></button>
         </div>
-        <div class="scan-form-meta">Description: <span v-if="selectedTool">{{ selectedTool.description }}</span></div>
+        <div class="scan-form-meta" v-if="selectedTool && selectedTool.description">{{ selectedTool.description }}</div>
     </div>
     <hr>
     <div v-if="scans.length > 0" class="responsive-table scans-table">
@@ -106,6 +105,10 @@ export default {
             try {
                 const json = await Tool.all();
                 tools.value = json.tools;
+                if (tools.value.length > 0) {
+                    scanForm.value.tid = tools.value[0].id;
+                    selectedTool.value = tools.value[0];
+                }
             } catch (error) {
                 appStore.createToast(error.message);
             };

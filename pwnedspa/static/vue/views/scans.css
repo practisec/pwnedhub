@@ -22,6 +22,12 @@
     border: 0;
 }
 
+.scans .scan-form .scan-form-meta {
+    font-size: var(--font-size-sm, 1.25rem);
+    color: var(--color-text-secondary, #6B7280);
+    margin-top: var(--space-sm, 0.8rem);
+}
+
 .scans .scans-table pre {
     white-space: pre-wrap;
 }
