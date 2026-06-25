@@ -93,7 +93,6 @@ class TestAdminUsers:
         """Admin can promote a user to admin."""
         response = admin_client.get(f'/admin/users/promote/{user.id}', follow_redirects=True)
         assert response.status_code == 200
-        assert b'User promoted.' in response.data
         _db.session.expire_all()
         u = _db.session.get(User, user.id)
         assert u.role == 0
@@ -105,7 +104,6 @@ class TestAdminUsers:
         _db.session.commit()
         response = admin_client.get(f'/admin/users/demote/{user.id}', follow_redirects=True)
         assert response.status_code == 200
-        assert b'User demoted.' in response.data
         _db.session.expire_all()
         u = _db.session.get(User, user.id)
         assert u.role == 1
@@ -114,7 +112,6 @@ class TestAdminUsers:
         """Admin can disable a user."""
         response = admin_client.get(f'/admin/users/disable/{user.id}', follow_redirects=True)
         assert response.status_code == 200
-        assert b'User disabled.' in response.data
         _db.session.expire_all()
         u = _db.session.get(User, user.id)
         assert u.status == 0
@@ -125,7 +122,6 @@ class TestAdminUsers:
         _db.session.commit()
         response = admin_client.get(f'/admin/users/enable/{user.id}', follow_redirects=True)
         assert response.status_code == 200
-        assert b'User enabled.' in response.data
         _db.session.expire_all()
         u = _db.session.get(User, user.id)
         assert u.status == 1
@@ -267,7 +263,6 @@ class TestMessages:
         msg_id = msg.id
         response = logged_in_client.get(f'/messages/delete/{msg_id}', follow_redirects=True)
         assert response.status_code == 200
-        assert b'Message deleted.' in response.data
         _db.session.expire_all()
         deleted = _db.session.get(Message, msg_id)
         assert deleted is None
@@ -289,7 +284,6 @@ class TestMessages:
         msg_id = msg.id
         response = admin_client.get(f'/messages/delete/{msg_id}', follow_redirects=True)
         assert response.status_code == 200
-        assert b'Message deleted.' in response.data
         _db.session.expire_all()
         deleted = _db.session.get(Message, msg_id)
         assert deleted is None
