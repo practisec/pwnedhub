@@ -92,10 +92,6 @@ input.show {
     border: 0;
 }
 
-select:disabled {
-    appearance: none;
-}
-
 a {
     color: inherit;
 }

@@ -468,12 +468,6 @@ textarea.form-textarea:focus,
     border: 0;
 }
 
-select:disabled {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-}
-
 /* ============================================================
    Badges
    ============================================================ */
