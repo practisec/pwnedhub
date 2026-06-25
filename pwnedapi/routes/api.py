@@ -410,7 +410,7 @@ class ScanList(Resource):
         if not is_valid_command(cmd):
             abort(400, 'Command contains invalid characters.')
         job = current_app.api_task_queue.enqueue('pwnedapi.tasks.execute_tool', cmd)
-        sid = job.get_id()
+        sid = job.id
         scan = Scan(id=sid, command=cmd, owner=g.user)
         db.session.add(scan)
         db.session.commit()
