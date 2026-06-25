@@ -153,6 +153,11 @@ i.large {
     position: relative;
 }
 
+.content-wrapper {
+    position: relative;
+    z-index: auto;
+}
+
 .config .panel {
     border: 1px solid #bbb;
     padding: 1rem;

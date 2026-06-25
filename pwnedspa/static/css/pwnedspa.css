@@ -3,7 +3,7 @@
 @import "/static/common/css/custom-flex.css";
 @import "/static/common/css/custom-utility.css";
 @import "/static/common/css/baseline.css";
-@import "/static/common/css/pwnedspa.css";
+@import "/static/css/base.css";
 @import "/static/vue/components/modal.css";
 @import "/static/vue/components/toasts.css";
 @import "/static/vue/components/navigation.css";
@@ -20,8 +20,3 @@
 @import "/static/vue/views/passwordless.css";
 @import "/static/vue/views/login.css";
 @import "/static/vue/views/signup.css";
-
-.content-wrapper {
-    position: relative;
-    z-index: auto;
-}
