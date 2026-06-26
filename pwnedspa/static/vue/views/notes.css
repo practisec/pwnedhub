@@ -2,6 +2,22 @@
     height: 100%;
 }
 
+.notes .notes-status {
+    margin-left: auto;
+    margin-right: var(--space-sm);
+    align-self: center;
+}
+
+.notes .notes-status i {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-md);
+    margin: 0;
+}
+
+.notes .notes-status-error i {
+    color: var(--color-error);
+}
+
 .notes textarea {
     height: auto; /* skeleton override */
     padding: var(--space-sm) var(--space-md);

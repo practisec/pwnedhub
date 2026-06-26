@@ -2,7 +2,7 @@ import { useAppStore } from '../stores/app-store.js';
 import { Note } from '../services/api.js';
 import { marked } from '../libs/marked.js'; // esm build
 
-const { ref } = Vue;
+const { ref, computed, onBeforeUnmount } = Vue;
 
 const template = `
 <div class="flex-column notes">
@@ -11,10 +11,13 @@ const template = `
         <label for="edit">Edit</label>
         <input id="view" type="radio" name="grp" :checked="isActive('view')" @click="renderNote(); setActive('view')" />
         <label for="view">View</label>
+        <span class="notes-status" :class="{ 'notes-status-error': syncStatus === 'failed' }" :title="statusTitle">
+            <i class="fas" :class="statusIcon"></i>
+        </span>
     </div>
     <div class="flex-grow flex-row tab-content">
         <div class="flex-grow flex-row" :class="{ 'active': isActive('edit') }">
-            <textarea class="flex-grow" name="notes" id="notes" v-model="note" @blur="updateNote"></textarea>
+            <textarea class="flex-grow" name="notes" id="notes" v-model="note" @input="scheduleSave"></textarea>
         </div>
         <div class="flex-grow markdown" :class="{ 'active': isActive('view') }" v-html="markdown"></div>
     </div>
@@ -30,6 +33,21 @@ export default {
         const note = ref('');
         const markdown = ref('');
         const activePane = ref('view');
+        const syncStatus = ref('synced');
+
+        let saveTimer = null;
+
+        const statusIcon = computed(() => {
+            if (syncStatus.value === 'syncing') return 'fa-arrows-rotate fa-spin';
+            if (syncStatus.value === 'failed') return 'fa-circle-exclamation';
+            return 'fa-circle-check';
+        });
+
+        const statusTitle = computed(() => {
+            if (syncStatus.value === 'syncing') return 'Syncing...';
+            if (syncStatus.value === 'failed') return 'Sync failed';
+            return 'Synced';
+        });
 
         async function getNote() {
             try {
@@ -47,10 +65,18 @@ export default {
             };
         };
 
-        async function updateNote() {
+        function scheduleSave() {
+            syncStatus.value = 'syncing';
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(syncNotes, 1000);
+        };
+
+        async function syncNotes() {
             try {
                 await Note.replace({content: note.value});
+                syncStatus.value = 'synced';
             } catch (error) {
+                syncStatus.value = 'failed';
                 appStore.createToast(error.message);
             };
         };
@@ -63,15 +89,22 @@ export default {
             activePane.value = tab;
         };
 
+        onBeforeUnmount(() => {
+            clearTimeout(saveTimer);
+        });
+
         getNote();
 
         return {
             note,
             markdown,
+            syncStatus,
+            statusIcon,
+            statusTitle,
             isActive,
             setActive,
             renderNote,
-            updateNote,
+            scheduleSave,
         };
     },
 };
