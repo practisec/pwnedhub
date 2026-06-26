@@ -12,9 +12,11 @@ export const useAppStore = defineStore('app', () => {
     function createToast(message) {
         const id = ++maxToastId;
         toasts.value.push({id: id, text: message});
-        setTimeout(() => {
-            toasts.value = toasts.value.filter(t => t.id !== id)
-        }, 5000);
+        setTimeout(() => removeToast(id), 5000);
+    };
+
+    function removeToast(id) {
+        toasts.value = toasts.value.filter(t => t.id !== id);
     };
 
     function showModal(payload) {
@@ -35,6 +37,7 @@ export const useAppStore = defineStore('app', () => {
         modalComponent,
         modalProps,
         createToast,
+        removeToast,
         showModal,
         hideModal,
     };
