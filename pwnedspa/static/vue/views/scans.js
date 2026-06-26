@@ -14,8 +14,8 @@ const template = `
             <input type="text" v-model="scanForm.args" @keyup="handleKeyPress" placeholder="Command arguments..." />
             <button class="show" @click="createScan"><i class="fas fa-paper-plane" title="Send"></i></button>
         </div>
-        <div class="scan-form-meta" v-if="selectedTool && selectedTool.description">{{ selectedTool.description }}</div>
     </div>
+    <div class="tool-description" v-if="selectedTool && selectedTool.description">{{ selectedTool.description }}</div>
     <hr>
     <div v-if="scans.length > 0" class="responsive-table scans-table">
         <div class="responsive-table-headers">

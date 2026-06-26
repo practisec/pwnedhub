@@ -265,7 +265,7 @@ body {
 .tool-description {
     font-size: var(--font-size-sm);
     color: var(--color-text-secondary);
-    margin-top: var(--space-sm);
+    margin-bottom: var(--space-sm);
     min-height: var(--space-lg);
 }
 
@@ -415,6 +415,12 @@ select.form-select,
     border: var(--border-width) solid var(--color-border);
     border-radius: var(--border-radius-sm);
     transition: border-color var(--transition-fast);
+}
+
+/* reserve room for the baseline custom select arrow (1em wide, 0.75em from the
+   right) so the value never collides with or overflows into it */
+select.form-select {
+    padding-right: 2.25em;
 }
 
 input.form-input:focus,

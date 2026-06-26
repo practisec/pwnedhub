@@ -5,7 +5,12 @@
 .scans .scan-form {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-sm, 0.8rem);
+}
+
+.scans .scan-form select,
+.scans .scan-form input {
+    margin-bottom: 0;
 }
 
 .scans .scan-form .scan-form-args {
@@ -22,10 +27,10 @@
     border: 0;
 }
 
-.scans .scan-form .scan-form-meta {
+.scans .tool-description {
     font-size: var(--font-size-sm, 1.25rem);
     color: var(--color-text-secondary, #6B7280);
-    margin-top: var(--space-sm, 0.8rem);
+    margin-bottom: var(--space-sm, 0.8rem);
 }
 
 .scans .scans-table pre {
@@ -51,10 +56,6 @@
 
     .scans .scan-form .scan-form-args {
         flex-grow: 1;
-    }
-
-    .scans .scan-form .scan-form-meta {
-        flex-basis: 100%;
     }
 
     .scans .scan-form .scan-form-args button {

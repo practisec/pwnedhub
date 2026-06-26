@@ -208,11 +208,11 @@ select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    padding-right: 34px;
+    padding-right: 2.25em;
     background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
     background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px;
+    background-position: right 0.75em center;
+    background-size: 1em;
 }
 
 select:disabled {
