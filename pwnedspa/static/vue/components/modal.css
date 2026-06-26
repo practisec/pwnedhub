@@ -14,15 +14,15 @@
     width: 100%;
     height: 100%;
     position: relative;
-    padding: 3rem 2rem 2rem;
-    background-color: #fff;
+    padding: var(--space-xl) var(--space-lg) var(--space-lg);
+    background-color: var(--color-surface);
     transition: all .3s ease;
 }
 
 .modal-mask .modal-container a.img-btn {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: var(--space-xs);
+    right: var(--space-xs);
 }
 
 .modal-enter-active,
@@ -42,8 +42,8 @@
     .modal-mask .modal-container {
         width: 80%;
         height: 80%;
-        border-radius: .5rem;
-        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-md);
     }
 
 }

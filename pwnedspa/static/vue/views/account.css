@@ -1,13 +1,13 @@
 .account {
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: var(--space-sm);
 }
 
 .account .avatar {
     width: 80%;
     padding-bottom: 80%;
-    margin: 1.5rem auto;
+    margin: var(--space-md) auto;
     position: relative;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .account .form {
-    padding: 0.5rem 0;
+    padding: var(--space-xs) 0;
 }
 
 /* desktop account */

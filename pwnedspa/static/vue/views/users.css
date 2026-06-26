@@ -1,9 +1,9 @@
 .users {
-    padding: 1rem;
+    padding: var(--space-sm);
 }
 
 .users .avatar {
-    margin-right: 1rem;
+    margin-right: var(--space-sm);
 }
 
 .users .avatar img {

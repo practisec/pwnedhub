@@ -879,8 +879,12 @@ textarea.form-textarea:focus,
 
 .tools .form-input,
 .tools .form-select {
-    font-family: var(--font-family-mono);
     font-size: var(--font-size-base);
+}
+
+/* command arguments are mono; the tool selector stays normal text */
+.tools .form-input {
+    font-family: var(--font-family-mono);
 }
 
 .tools-control-row {

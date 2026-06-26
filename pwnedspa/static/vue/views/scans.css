@@ -5,7 +5,7 @@
 .scans .scan-form {
     display: flex;
     flex-direction: column;
-    margin-bottom: var(--space-sm, 0.8rem);
+    margin-bottom: var(--space-sm);
 }
 
 .scans .scan-form select,
@@ -15,6 +15,11 @@
 
 .scans .scan-form .scan-form-args {
     position: relative;
+}
+
+/* command arguments are mono; the tool selector stays normal text */
+.scans .scan-form .scan-form-args input {
+    font-family: var(--font-family-mono);
 }
 
 .scans .scan-form .scan-form-args button {
@@ -28,9 +33,9 @@
 }
 
 .scans .tool-description {
-    font-size: var(--font-size-sm, 1.25rem);
-    color: var(--color-text-secondary, #6B7280);
-    margin-bottom: var(--space-sm, 0.8rem);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-sm);
 }
 
 .scans .scans-table pre {

@@ -1,12 +1,12 @@
 .signup {
     display: flex;
     flex-direction: column;
-    color: white;
-    padding: 1rem;
+    color: var(--color-text-inverse);
+    padding: var(--space-sm);
 }
 
 .signup .form {
-    padding: 1rem 2rem;
+    padding: var(--space-sm) var(--space-lg);
     background-color: rgba(0,0,0,0.6);
 }
 

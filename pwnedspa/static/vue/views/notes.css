@@ -4,15 +4,15 @@
 
 .notes textarea {
     height: auto; /* skeleton override */
-    padding: 1rem 1.5rem;
-    border: 1px solid #bbb;
-    margin: 1rem;
+    padding: var(--space-sm) var(--space-md);
+    border: var(--border-width) solid var(--color-border-strong);
+    margin: var(--space-sm);
     resize: none;
 }
 
 .markdown {
-    padding: 2rem 3rem;
-    border: 1px solid #e1e1e1;
+    padding: var(--space-lg) var(--space-xl);
+    border: var(--border-width) solid var(--color-border);
 }
 
 .markdown li {
@@ -33,23 +33,23 @@
 }
 
 .tabs > label {
-    background-color: #eee;
-    border: 1px solid #e1e1e1;
-    padding: 0.5rem 1rem;
+    background-color: var(--color-surface-alt);
+    border: var(--border-width) solid var(--color-border);
+    padding: var(--space-xs) var(--space-sm);
     margin: 0;
     cursor: pointer;
     z-index: 1;
 }
 
 .tabs > input[type=radio]:checked + label {
-    background: #fff;
-    border-bottom: 1px solid #fff;
+    background: var(--color-surface);
+    border-bottom: var(--border-width) solid var(--color-surface);
 }
 
 .tab-content > div {
     margin-top: -1px; /* overlaps the border of the lab */
-    background-color: #fff;
-    border: 1px solid #e1e1e1;
+    background-color: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
 }
 
 .tab-content > div:not(.active) {

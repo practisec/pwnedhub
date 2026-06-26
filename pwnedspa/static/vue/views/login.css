@@ -1,12 +1,12 @@
 .login {
     display: flex;
     flex-direction: column;
-    color: white;
-    padding: 1rem;
+    color: var(--color-text-inverse);
+    padding: var(--space-sm);
 }
 
 .login .form {
-    padding: 1rem 2rem;
+    padding: var(--space-sm) var(--space-lg);
     background-color: rgba(0,0,0,0.6);
 }
 
@@ -17,7 +17,7 @@
 
 .login .panels > * {
     flex-basis: 20rem;
-    margin: 2rem 0;
+    margin: var(--space-lg) 0;
 }
 
 /* desktop login */
@@ -41,7 +41,7 @@
 
     .login .panels {
         flex-basis: 100%;
-        margin-top: 5rem;
+        margin-top: var(--space-2xl);
     }
 
 }

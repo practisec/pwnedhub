@@ -8,14 +8,14 @@
 .toast {
     width: 100%;
     text-align: center;
-    padding: 1rem 0;
-    font-size: 1.5rem;
-    background-color: red;
-    color: #fff;
+    padding: var(--space-sm) 0;
+    font-size: var(--font-size-base);
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
 }
 
 .toast:last-child {
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-md);
 }
 
 .toasts-move,

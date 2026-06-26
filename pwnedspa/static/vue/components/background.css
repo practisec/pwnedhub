@@ -12,7 +12,7 @@
 }
 
 .background-auth {
-    background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+    background-image: linear-gradient(120deg, var(--color-surface) 0%, var(--color-body-bg) 100%);
 }
 
 .background-unauth {

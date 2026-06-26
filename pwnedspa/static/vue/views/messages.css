@@ -8,14 +8,14 @@
 
 .rooms .tab {
     position: absolute;
-    top: calc(50vh - 2rem - 50px);
+    top: calc(50vh - 2rem - var(--nav-height));
     left: 15rem;
     z-index: 10;
-    background-color: #333;
-    color: #eee;
-    padding: 2rem 1rem;
-    border-radius: 0 0.5rem 0.5rem 0;
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+    background-color: var(--color-dark-hover);
+    color: var(--color-text-inverse);
+    padding: var(--space-lg) var(--space-sm);
+    border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+    box-shadow: var(--shadow-md);
     transition: all 0.3s ease-in;
 }
 
@@ -25,24 +25,24 @@
     left: 0;
     width: 15rem;
     z-index: 20;
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-md);
     transition: all 0.3s ease-in;
 }
 
 .rooms .rooms-wrapper {
-    background-color: #333;
-    color: #eee;
-    height: calc(100vh - 50px); /* height of nav (50) */
+    background-color: var(--color-dark-hover);
+    color: var(--color-text-inverse);
+    height: calc(100vh - var(--nav-height));
     overflow-y: auto;
 }
 
 .rooms .rooms-wrapper > * {
-    padding: 1rem;
-    border-bottom: 1px solid #444;
+    padding: var(--space-sm);
+    border-bottom: var(--border-width) solid var(--color-dark-hover);
 }
 
 .rooms .rooms-wrapper .label {
-    font-size: 1.25rem;
+    font-size: var(--font-size-sm);
     letter-spacing: 0.1rem;
     text-transform: uppercase;
 }
@@ -52,12 +52,12 @@
 }
 
 .rooms .rooms-wrapper .room.active {
-    font-weight: bold;
+    font-weight: var(--font-weight-bold);
 }
 
 .rooms .rooms-wrapper .room.tagged:before {
     content:"• ";
-    color: red;
+    color: var(--color-primary);
 }
 
 /* desktop rooms */
@@ -78,8 +78,8 @@
 }
 
 .messages {
-    height: calc(100vh - 50px); /* height of nav (50) */
-    padding: 0 1rem 1rem 1rem;
+    height: calc(100vh - var(--nav-height));
+    padding: 0 var(--space-sm) var(--space-sm) var(--space-sm);
 }
 
 .messages .message-container {
@@ -88,11 +88,11 @@
 
 .messages .message-container .message {
     position: relative;
-    padding: 1rem 0;
+    padding: var(--space-sm) 0;
 }
 
 .messages .message-container .message .avatar {
-    margin: 0 1rem;
+    margin: 0 var(--space-sm);
 }
 
 .messages .message-container .message .avatar img {
@@ -103,23 +103,23 @@
 }
 
 .messages .message-container .message .name {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: .5rem;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-xs);
 }
 
 .messages .message-container .message .comment {
-    margin-bottom: .5rem;
+    margin-bottom: var(--space-xs);
 }
 
 .messages .message-container .message a.img-btn {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
+    top: var(--space-xs);
+    right: var(--space-xs);
 }
 
 .messages .message-container .message .timestamp {
-    font-size: 1rem;
+    font-size: var(--font-size-xs);
     margin-bottom: 0;
 }
 
@@ -145,7 +145,7 @@
 @media all and (min-width: 960px) {
 
     .messages .message-container .message:hover {
-        background-color: #eee;
+        background-color: var(--color-surface-alt);
     }
 
     .messages .message-container .message a.img-btn {

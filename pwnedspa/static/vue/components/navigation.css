@@ -1,8 +1,8 @@
 .nav {
-    background-color: #222;/*#fafafa;*/
-    color: #fff;
-    padding: 0 2rem;
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+    background-color: var(--color-dark);
+    color: var(--color-text-inverse);
+    padding: 0 var(--space-lg);
+    box-shadow: var(--shadow-md);
 }
 
 .nav a {
@@ -35,7 +35,7 @@
 }
 
 .nav .menu .brand img {
-    height: 5rem;
+    height: var(--nav-height);
     display: block;
 }
 
@@ -49,11 +49,11 @@
 .nav .menu li.item span {
     display: block;
     cursor: pointer;
-    font-size: 1.25rem;
+    font-size: var(--font-size-sm);
     letter-spacing: 0.1rem;
     text-transform: uppercase;
-    font-weight: bold;
-    padding: 1rem 0;
+    font-weight: var(--font-weight-bold);
+    padding: var(--space-sm) 0;
 }
 
 .nav .menu li.avatar img {
@@ -82,17 +82,17 @@
     }
 
     .nav .menu li.item {
-        display: block; 
+        display: block;
         width: auto;
     }
 
     .nav .menu li.item:hover {
-        background: red;
+        background: var(--color-primary);
     }
 
     .nav .menu li.item a,
     .nav .menu li.item span {
-        padding: 1rem;
+        padding: var(--space-sm);
     }
 
     .nav .menu li.avatar {
@@ -104,7 +104,7 @@
     }
 
     .nav .menu li.avatar a {
-        padding: 0 1rem;
+        padding: 0 var(--space-sm);
     }
 
     .nav .menu li.toggle {

@@ -15,15 +15,15 @@ html {
 }
 
 body {
-    font-size: var(--font-size-base, 1.5rem);
-    line-height: var(--line-height-base, 1.6);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
 }
 
 /* typography */
 h1, h2, h3, h4, h5, h6 {
     margin-top: 0;
-    margin-bottom: var(--space-lg, 2rem);
-    font-weight: var(--font-weight-light, 300);
+    margin-bottom: var(--space-lg);
+    font-weight: var(--font-weight-light);
 }
 
 h1 {
@@ -96,11 +96,11 @@ p {
 
 /* links */
 a {
-    color: var(--color-text-link, inherit);
+    color: var(--color-text-link);
 }
 
 a:hover {
-    color: var(--color-text-link-hover, inherit);
+    color: var(--color-text-link-hover);
 }
 
 /* lists */
@@ -136,8 +136,8 @@ code {
     font-size: 90%;
     white-space: nowrap;
     background: #F1F1F1;
-    border: var(--border-width, 1px) solid var(--color-border, #E1E1E1);
-    border-radius: var(--border-radius-sm, 4px);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius-sm);
 }
 
 pre > code {
@@ -155,18 +155,18 @@ input[type="button"] {
     display: inline-block;
     height: 38px;
     padding: 0 15px;
-    color: var(--color-text-secondary, #555);
+    color: var(--color-text-secondary);
     text-align: center;
     font-size: 11px;
-    font-weight: var(--font-weight-semibold, 600);
+    font-weight: var(--font-weight-semibold);
     line-height: 38px;
     letter-spacing: .1rem;
     text-transform: uppercase;
     text-decoration: none;
     white-space: nowrap;
-    background-color: var(--color-surface, #fff);
-    border-radius: var(--border-radius-sm, 4px);
-    border: var(--border-width, 1px) solid var(--color-border-strong, #bbb);
+    background-color: var(--color-surface);
+    border-radius: var(--border-radius-sm);
+    border: var(--border-width) solid var(--color-border-strong);
     cursor: pointer;
 }
 
@@ -180,7 +180,7 @@ button:focus,
 input[type="submit"]:focus,
 input[type="reset"]:focus,
 input[type="button"]:focus {
-    color: var(--color-text, #333);
+    color: var(--color-text);
     border-color: #888;
     outline: 0;
 }
@@ -197,9 +197,9 @@ textarea,
 select {
     height: 38px;
     padding: 6px 10px;
-    background-color: var(--color-surface, #fff);
-    border: var(--border-width, 1px) solid var(--color-border, #e1e1e1);
-    border-radius: var(--border-radius-sm, 4px);
+    background-color: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius-sm);
     -webkit-box-shadow: none;
     box-shadow: none;
 }
@@ -228,7 +228,7 @@ input[type="url"]:focus,
 input[type="password"]:focus,
 textarea:focus,
 select:focus {
-    border: var(--border-width, 1px) solid var(--color-border-strong, #d1d1d1);
+    border: var(--border-width) solid var(--color-border-strong);
     outline: 0;
 }
 
@@ -242,7 +242,7 @@ label,
 legend {
     display: block;
     margin-bottom: .5rem;
-    font-weight: var(--font-weight-semibold, 600);
+    font-weight: var(--font-weight-semibold);
 }
 
 fieldset {
@@ -283,14 +283,14 @@ form {
 }
 
 .container-fluid {
-    padding-right: var(--container-padding, 2rem);
-    padding-left: var(--container-padding, 2rem);
+    padding-right: var(--container-padding);
+    padding-left: var(--container-padding);
 }
 
 /* misc */
 hr {
-    margin-top: var(--space-xl, 3rem);
-    margin-bottom: var(--space-xl, 3.5rem);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-xl);
     border-width: 0;
-    border-top: var(--border-width, 1px) solid var(--color-border, #e1e1e1);
+    border-top: var(--border-width) solid var(--color-border);
 }

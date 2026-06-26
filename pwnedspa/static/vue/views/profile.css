@@ -1,11 +1,11 @@
 .profile {
-    padding: 1rem;
+    padding: var(--space-sm);
 }
 
 .profile .avatar {
     width: 80%;
     padding-bottom: 80%;
-    margin: 2rem auto;
+    margin: var(--space-lg) auto;
     position: relative;
 }
 
@@ -26,7 +26,7 @@
 }
 
 .profile blockquote:before {
-  color: #bbb;
+  color: var(--color-border-strong);
   font-family: Arial;
   content: open-quote;
   font-size: 4em;

@@ -1,11 +1,11 @@
 .tools {
-    padding: 1rem;
+    padding: var(--space-sm);
 }
 
 .tools .tool-form {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-sm);
 }
 
 .tools .tools-table pre {
@@ -22,7 +22,7 @@
     }
 
     .tools .tool-form input {
-        margin-right: 1rem;
+        margin-right: var(--space-sm);
     }
 
     .tools .tools-table .tools-table-row .actions-cell {

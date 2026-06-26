@@ -47,8 +47,8 @@
 /* tags */
 
 body {
-    font-family: 'Open Sans', sans-serif;
-    background-color: #fafafa;
+    font-family: var(--font-family-base);
+    background-color: var(--color-body-bg);
 }
 
 form, table {
@@ -56,10 +56,10 @@ form, table {
 }
 
 table {
-    background-color: #fff;
+    background-color: var(--color-surface);
     border-collapse: separate;
-    border: 1px solid #bbb;
-    padding: 1rem;
+    border: var(--border-width) solid var(--color-border-strong);
+    padding: var(--space-sm);
 }
 
 table.clickable tr:hover {
@@ -68,20 +68,20 @@ table.clickable tr:hover {
 
 th, th:first-child, th:last-child, td, td:first-child, td:last-child {
     text-align: center;
-    padding: 1rem;
+    padding: var(--space-sm);
 }
 
 th, th:first-child, th:last-child {
-    background-color: red;
-    color: #fff;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+    padding-top: var(--space-xs);
+    padding-bottom: var(--space-xs);
 }
 
 td input, td select, td button {
     vertical-align: middle;
-    margin-top: .5rem;
-    margin-bottom: .5rem;
+    margin-top: var(--space-xs);
+    margin-bottom: var(--space-xs);
 }
 
 input.show {
@@ -108,7 +108,7 @@ a:visited {
 
 /* mouse over link */
 a:hover {
-    color: red;
+    color: var(--color-primary);
 }
 
 /* selected link */
@@ -123,14 +123,14 @@ a.img-btn {
 }
 
 hr {
-    margin: 0 0 1rem 0;
+    margin: 0 0 var(--space-sm) 0;
 }
 
 i {
-    font-size: 2rem;
-    color: #bbb;
-    margin-left: 0.25rem;
-    margin-right: 0.25rem;
+    font-size: var(--font-size-lg);
+    color: var(--color-border-strong);
+    margin-left: var(--space-xs);
+    margin-right: var(--space-xs);
 }
 
 i.medium {
@@ -155,9 +155,9 @@ i.large {
 }
 
 .config .panel {
-    border: 1px solid #bbb;
-    padding: 1rem;
-    margin-bottom: 1rem;
+    border: var(--border-width) solid var(--color-border-strong);
+    padding: var(--space-sm);
+    margin-bottom: var(--space-sm);
 }
 
 .artifacts form {
@@ -165,8 +165,8 @@ i.large {
 }
 
 .artifacts td {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    padding-top: var(--space-xs);
+    padding-bottom: var(--space-xs);
 }
 
 .error {
@@ -175,10 +175,10 @@ i.large {
 }
 
 .traceback {
-    background-color: #000;
-    color: #fff;
-    padding: 1rem 1.5rem;
-    border: 1px solid #bbb;
+    background-color: var(--color-dark);
+    color: var(--color-text-inverse);
+    padding: var(--space-sm) var(--space-md);
+    border: var(--border-width) solid var(--color-border-strong);
 }
 
 .traceback pre {
@@ -195,14 +195,14 @@ i.large {
 
 .responsive-table .responsive-table-headers {
     display: none;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-sm);
 }
 
 .responsive-table .responsive-table-header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 .responsive-table .responsive-table-body {
@@ -211,16 +211,16 @@ i.large {
 .responsive-table .responsive-table-row {
     display: flex;
     flex-direction: column;
-    background: #fff;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
+    background: var(--color-surface);
+    margin-bottom: var(--space-sm);
+    padding: var(--space-xs);
 }
 
 .responsive-table .responsive-table-cell {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 0.5rem;
+    padding: var(--space-xs);
 }
 
 .responsive-table .responsive-table-cell * {
@@ -230,7 +230,7 @@ i.large {
 .responsive-table .mobile-header {
     display: inline-block;
     min-width: 10rem;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
 }
 
 @media all and (min-width: 960px) {
@@ -278,23 +278,23 @@ i.large {
 }
 
 .bordered-light {
-    border: 1px solid #bbb;
+    border: var(--border-width) solid var(--color-border-strong);
 }
 
 .bordered-dark {
-    border: 1px solid #222;
+    border: var(--border-width) solid var(--color-dark);
 }
 
 .red {
-    color: red;
+    color: var(--color-primary);
 }
 
 .green {
-    color: green;
+    color: var(--color-success);
 }
 
 .blue {
-    color: blue;
+    color: var(--color-info);
 }
 
 /* utility end */
