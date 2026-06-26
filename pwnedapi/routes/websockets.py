@@ -61,7 +61,7 @@ def connect_handler():
     emit('loadRoom', default_room)
 
 @socketio.on('disconnect')
-def disconnect_handler():
+def disconnect_handler(reason=None):
     # remove client sid from global store
     del clients[session.user.id]
 
