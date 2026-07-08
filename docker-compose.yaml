@@ -1,8 +1,15 @@
 services:
 
+    # `app` carries the build for the shared base image (./Dockerfile); every
+    # other app service just references the resulting `pwnedhub-base` tag. Build
+    # it with `docker compose build` (or `docker compose up --build`). Each
+    # service installs its own REQUIREMENTS.txt at start — the base only carries
+    # the OS/system layer, so a dependency change just needs a restart.
     app:
-        build: ./pwnedhub
-        image: pwnedhub-dev
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: pwnedhub-base
         expose:
             - 80
         volumes:
@@ -14,14 +21,13 @@ services:
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
             - FLASK_APP=pwnedhub/wsgi.py
-        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG
+        command: sh -c "pip3 install --no-cache-dir -r pwnedhub/REQUIREMENTS.txt && gunicorn --workers 10 --bind 0.0.0.0:80 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG"
         depends_on:
             - db
             - redis
 
     sso:
-        build: ./pwnedsso
-        image: pwnedsso-dev
+        image: pwnedhub-base
         expose:
             - 80
         volumes:
@@ -30,24 +36,22 @@ services:
             - TZ=America/New_York
             - CONFIG=Production
             - DATABASE_HOST=db
-        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedsso.wsgi:app --error-logfile - --log-level DEBUG
+        command: sh -c "pip3 install --no-cache-dir -r pwnedsso/REQUIREMENTS.txt && gunicorn --workers 10 --bind 0.0.0.0:80 pwnedsso.wsgi:app --error-logfile - --log-level DEBUG"
         depends_on:
             - db
 
     spa:
-        build: ./pwnedspa
-        image: pwnedspa-dev
+        image: pwnedhub-base
         expose:
             - 80
         volumes:
             - .:/src
         environment:
             - CONFIG=Production
-        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedspa.wsgi:app --error-logfile - --log-level DEBUG
+        command: sh -c "pip3 install --no-cache-dir -r pwnedspa/REQUIREMENTS.txt && gunicorn --workers 10 --bind 0.0.0.0:80 pwnedspa.wsgi:app --error-logfile - --log-level DEBUG"
 
     api:
-        build: ./pwnedapi
-        image: pwnedapi-dev
+        image: pwnedhub-base
         expose:
             - 80
         volumes:
@@ -58,13 +62,13 @@ services:
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
             - FLASK_APP=pwnedapi/wsgi.py
-        command: gunicorn --workers 1 --worker-class geventwebsocket.gunicorn.workers.GeventWebSocketWorker --bind 0.0.0.0:80 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG
+        command: sh -c "pip3 install --no-cache-dir -r pwnedapi/REQUIREMENTS.txt && gunicorn --workers 1 --worker-class geventwebsocket.gunicorn.workers.GeventWebSocketWorker --bind 0.0.0.0:80 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG"
         depends_on:
             - db
             - redis
 
     api-worker:
-        image: pwnedapi-dev
+        image: pwnedhub-base
         volumes:
             - .:/src
         environment:
@@ -72,14 +76,13 @@ services:
             - CONFIG=Production
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
-        command: rq worker -u redis://redis:6379/0 pwnedapi-tasks
+        command: sh -c "pip3 install --no-cache-dir -r pwnedapi/REQUIREMENTS.txt && rq worker -u redis://redis:6379/0 pwnedapi-tasks"
         depends_on:
             - db
             - redis
 
     admin:
-        build: ./pwnedadmin
-        image: pwnedadmin-dev
+        image: pwnedhub-base
         expose:
             - 80
         volumes:
@@ -89,17 +92,16 @@ services:
             - CONFIG=Production
             - DATABASE_HOST=db
             - FLASK_APP=pwnedadmin/wsgi.py
-        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedadmin.wsgi:app --error-logfile - --log-level DEBUG
+        command: sh -c "pip3 install --no-cache-dir -r pwnedadmin/REQUIREMENTS.txt && gunicorn --workers 10 --bind 0.0.0.0:80 pwnedadmin.wsgi:app --error-logfile - --log-level DEBUG"
         depends_on:
             - db
 
     bot-worker:
-        build: ./adminbot
-        image: adminbot-dev
+        image: pwnedhub-base
         volumes:
             - .:/src
             - ~/tmp:/tmp
-        command: rq worker -u redis://redis:6379/0 adminbot-tasks
+        command: sh -c "pip3 install --no-cache-dir -r adminbot/REQUIREMENTS.txt && rq worker -u redis://redis:6379/0 adminbot-tasks"
         depends_on:
             - redis
 

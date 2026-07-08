@@ -21,7 +21,7 @@ PwnedHub is a vulnerable application designed exclusively for [PractiSec trainin
     $ cd pwnedhub
     ```
 
-4. Build the PwnedHub Docker images.
+4. Build the PwnedHub Docker image.
 
     ```
     docker compose build
