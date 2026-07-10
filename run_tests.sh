@@ -9,8 +9,10 @@ run_tests() {
     echo "================================================================"
     echo " Running $test_dir tests in '$service' container"
     echo "================================================================"
-    docker compose run --rm --no-deps -e CONFIG=Test "$service" \
-        python -m pytest $test_dir $PYTEST_ARGS
+    # Run in the live container, which already has the service's deps and pytest
+    # installed by its command: at startup. Requires the stack to be up.
+    docker compose exec -e CONFIG=Test "$service" \
+        python3 -m pytest $test_dir $PYTEST_ARGS
     return $?
 }
 

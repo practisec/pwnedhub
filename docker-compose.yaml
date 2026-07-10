@@ -21,7 +21,7 @@ services:
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
             - FLASK_APP=pwnedhub/wsgi.py
-        command: sh -c "pip3 install --no-cache-dir -r pwnedhub/REQUIREMENTS.txt && gunicorn --workers 10 --bind 0.0.0.0:80 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG"
+        command: sh -c "pip3 install --no-cache-dir -r pwnedhub/REQUIREMENTS.txt pytest==9.1.1 && gunicorn --workers 10 --bind 0.0.0.0:80 pwnedhub.wsgi:app --error-logfile - --log-level DEBUG"
         depends_on:
             - db
             - redis
@@ -36,7 +36,7 @@ services:
             - TZ=America/New_York
             - CONFIG=Production
             - DATABASE_HOST=db
-        command: sh -c "pip3 install --no-cache-dir -r pwnedsso/REQUIREMENTS.txt && gunicorn --workers 10 --bind 0.0.0.0:80 pwnedsso.wsgi:app --error-logfile - --log-level DEBUG"
+        command: sh -c "pip3 install --no-cache-dir -r pwnedsso/REQUIREMENTS.txt pytest==9.1.1 && gunicorn --workers 10 --bind 0.0.0.0:80 pwnedsso.wsgi:app --error-logfile - --log-level DEBUG"
         depends_on:
             - db
 
@@ -62,7 +62,7 @@ services:
             - DATABASE_HOST=db
             - REDIS_URL=redis://redis:6379/0
             - FLASK_APP=pwnedapi/wsgi.py
-        command: sh -c "pip3 install --no-cache-dir -r pwnedapi/REQUIREMENTS.txt && gunicorn --workers 1 --worker-class geventwebsocket.gunicorn.workers.GeventWebSocketWorker --bind 0.0.0.0:80 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG"
+        command: sh -c "pip3 install --no-cache-dir -r pwnedapi/REQUIREMENTS.txt pytest==9.1.1 && gunicorn --workers 1 --worker-class geventwebsocket.gunicorn.workers.GeventWebSocketWorker --bind 0.0.0.0:80 pwnedapi.wsgi:app --error-logfile - --log-level DEBUG"
         depends_on:
             - db
             - redis
@@ -92,7 +92,7 @@ services:
             - CONFIG=Production
             - DATABASE_HOST=db
             - FLASK_APP=pwnedadmin/wsgi.py
-        command: sh -c "pip3 install --no-cache-dir -r pwnedadmin/REQUIREMENTS.txt && gunicorn --workers 10 --bind 0.0.0.0:80 pwnedadmin.wsgi:app --error-logfile - --log-level DEBUG"
+        command: sh -c "pip3 install --no-cache-dir -r pwnedadmin/REQUIREMENTS.txt pytest==9.1.1 && gunicorn --workers 10 --bind 0.0.0.0:80 pwnedadmin.wsgi:app --error-logfile - --log-level DEBUG"
         depends_on:
             - db
 

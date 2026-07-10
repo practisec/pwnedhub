@@ -444,7 +444,7 @@ class TestScanList:
         import uuid
         scan_id = str(uuid.uuid4())
         mock_job = MagicMock()
-        mock_job.get_id.return_value = scan_id
+        mock_job.id = scan_id
         app.api_task_queue.enqueue.return_value = mock_job
 
         resp = _set_cookie_and_request(client, app, user, 'POST', '/scans', json_data={
