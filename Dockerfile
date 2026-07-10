@@ -23,8 +23,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 #
 # Firefox (used only by the adminbot service) comes from Mozilla's deb repo,
 # because jammy's apt `firefox` package is a snap that will not run in a
-# container. Selenium Manager (bundled with Selenium 4) fetches geckodriver at
-# runtime. It lives in the shared base so every container builds off one image
+# container. It lives in the shared base so every container builds off one image
 # and nothing installs packages at container start.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -37,6 +36,22 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y --no-install-recommends firefox && \
     rm -rf /var/lib/apt/lists/*
+
+# geckodriver (Firefox WebDriver, adminbot only). Baked in rather than fetched by
+# Selenium Manager at runtime: Selenium ships no Selenium Manager binary for
+# linux/aarch64, so on ARM hosts the runtime locator can't run at all. adminbot
+# points FirefoxService at /usr/bin/geckodriver, which skips Selenium Manager
+# entirely. Arch is detected so the image still builds on x86_64.
+RUN GECKO_VERSION=v0.37.0 && \
+    case "$(dpkg --print-architecture)" in \
+        arm64) GECKO_ARCH=linux-aarch64 ;; \
+        amd64) GECKO_ARCH=linux64 ;; \
+        *) echo "unsupported arch: $(dpkg --print-architecture)" >&2; exit 1 ;; \
+    esac && \
+    wget -qO /tmp/geckodriver.tar.gz "https://github.com/mozilla/geckodriver/releases/download/${GECKO_VERSION}/geckodriver-${GECKO_VERSION}-${GECKO_ARCH}.tar.gz" && \
+    tar -xzf /tmp/geckodriver.tar.gz -C /usr/bin && \
+    chmod +x /usr/bin/geckodriver && \
+    rm /tmp/geckodriver.tar.gz
 
 # Disable client-side SSL to match the db service (--skip-auto-generate-certs).
 RUN printf '[client]\nssl=0\n' > /etc/my.cnf
