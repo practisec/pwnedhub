@@ -1,0 +1,107 @@
+# Production overlay. Use WITH the base compose file:
+#
+#   docker compose -f docker-compose.yaml -f docker-compose.prod.yaml <cmd>
+#
+# Differences from dev:
+#   - Per-service images with dependencies baked in (Dockerfile.prod), so
+#     containers start without a runtime pip install and without pytest.
+#   - restart: unless-stopped, so the stack survives crashes and host reboots.
+#   - Named volumes persist MySQL data (dbdata) and uploaded artifacts across
+#     restarts. Sessions and the RQ queues stay ephemeral by design.
+#   - INFO log level instead of DEBUG.
+#
+# Application source is still bind-mounted from the host repo at /src (from the
+# base file), mirroring the AMI's staged /srv/www.
+#
+# Build order (base first, then the per-service prod images):
+#   docker compose build
+#   docker compose -f docker-compose.yaml -f docker-compose.prod.yaml build
+
+services:
+
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile.prod
+            args:
+                SERVICE: pwnedhub
+        image: pwnedhub-pwnedhub
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedhub.wsgi:app --error-logfile - --log-level INFO
+        restart: unless-stopped
+        volumes:
+            - artifacts:/tmp/artifacts
+
+    sso:
+        build:
+            context: .
+            dockerfile: Dockerfile.prod
+            args:
+                SERVICE: pwnedsso
+        image: pwnedhub-pwnedsso
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedsso.wsgi:app --error-logfile - --log-level INFO
+        restart: unless-stopped
+
+    spa:
+        build:
+            context: .
+            dockerfile: Dockerfile.prod
+            args:
+                SERVICE: pwnedspa
+        image: pwnedhub-pwnedspa
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedspa.wsgi:app --error-logfile - --log-level INFO
+        restart: unless-stopped
+
+    api:
+        build:
+            context: .
+            dockerfile: Dockerfile.prod
+            args:
+                SERVICE: pwnedapi
+        image: pwnedhub-pwnedapi
+        command: gunicorn --workers 1 --worker-class geventwebsocket.gunicorn.workers.GeventWebSocketWorker --bind 0.0.0.0:80 pwnedapi.wsgi:app --error-logfile - --log-level INFO
+        restart: unless-stopped
+
+    api-worker:
+        build:
+            context: .
+            dockerfile: Dockerfile.prod
+            args:
+                SERVICE: pwnedapi
+        image: pwnedhub-pwnedapi
+        command: rq worker -u redis://redis:6379/0 pwnedapi-tasks
+        restart: unless-stopped
+
+    admin:
+        build:
+            context: .
+            dockerfile: Dockerfile.prod
+            args:
+                SERVICE: pwnedadmin
+        image: pwnedhub-pwnedadmin
+        command: gunicorn --workers 10 --bind 0.0.0.0:80 pwnedadmin.wsgi:app --error-logfile - --log-level INFO
+        restart: unless-stopped
+
+    bot-worker:
+        build:
+            context: .
+            dockerfile: Dockerfile.prod
+            args:
+                SERVICE: adminbot
+        image: pwnedhub-adminbot
+        command: rq worker -u redis://redis:6379/0 adminbot-tasks
+        restart: unless-stopped
+
+    proxy:
+        restart: unless-stopped
+
+    db:
+        restart: unless-stopped
+        volumes:
+            - dbdata:/var/lib/mysql
+
+    redis:
+        restart: unless-stopped
+
+volumes:
+    dbdata:
+    artifacts:

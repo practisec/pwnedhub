@@ -1,0 +1,17 @@
+# Per-service production image.
+#
+# Layers a single service's Python dependencies onto the shared pwnedhub-base so
+# prod containers start WITHOUT a runtime pip install (unlike dev, which installs
+# REQUIREMENTS.txt in the service `command:`). Build one image per service via the
+# SERVICE build arg — each image carries only that service's deps, so per-app
+# dependency sets stay isolated (mirrors the AMI's per-app venvs).
+#
+# Application source is NOT baked in: it is bind-mounted from the host-staged repo
+# at /src (see docker-compose.yaml), mirroring the AMI's /srv/www layout.
+#
+# Requires pwnedhub-base to be built first: `docker compose build`.
+FROM pwnedhub-base
+
+ARG SERVICE
+COPY ${SERVICE}/REQUIREMENTS.txt /tmp/REQUIREMENTS.txt
+RUN pip3 install --no-cache-dir -r /tmp/REQUIREMENTS.txt && rm /tmp/REQUIREMENTS.txt
