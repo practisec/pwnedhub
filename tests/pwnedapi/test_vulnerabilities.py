@@ -143,6 +143,56 @@ class TestIDOR:
         assert data['email'] == admin_user.email
 
 
+class TestExpressionLanguageInjection:
+    """Tests that verify the scan filter evaluates user-supplied expressions (CVE-2024-36401 style)."""
+
+    def _reset_scans(self, db, user_id):
+        _, _, _, _, _, _, Scan, _ = _get_models()
+        Scan.query.filter_by(user_id=user_id).delete()
+        db.session.commit()
+
+    def _make_scan(self, db, user_id, sid, command, complete):
+        _, _, _, _, _, _, Scan, _ = _get_models()
+        scan = Scan(id=sid, command=command, complete=complete, user_id=user_id)
+        db.session.add(scan)
+        db.session.commit()
+        return scan
+
+    def test_scan_filter_evaluates_expression(self, app, client, user, db_session):
+        """GET /scans?filter=<expr> evaluates the expression against each scan's properties."""
+        db = _get_db()
+        self._reset_scans(db, user.id)
+        self._make_scan(db, user.id, 'scan-done', 'nmap -sV localhost', True)
+        self._make_scan(db, user.id, 'scan-running', 'dig example.com', False)
+
+        resp = _set_cookie_and_get(client, app, user, '/scans',
+            query_string={'filter': 'complete == True'})
+        assert resp.status_code == 200
+        scans = resp.get_json()['scans']
+        assert len(scans) == 1
+        assert scans[0]['id'] == 'scan-done'
+
+    def test_eli_scan_filter_rce(self, app, client, user, db_session):
+        """The filter expression reaches eval(), so it can execute arbitrary code."""
+        db = _get_db()
+        self._reset_scans(db, user.id)
+        self._make_scan(db, user.id, 'scan-rce', 'nmap localhost', True)
+
+        # The filter's truthiness depends on the output of an executed shell command,
+        # so a match proves the expression reached eval() and ran arbitrary code.
+        matching = "__import__('os').popen('echo pwned').read().strip() == 'pwned'"
+        resp = _set_cookie_and_get(client, app, user, '/scans',
+            query_string={'filter': matching})
+        assert resp.status_code == 200
+        assert len(resp.get_json()['scans']) == 1
+
+        non_matching = "__import__('os').popen('echo pwned').read().strip() == 'nope'"
+        resp = _set_cookie_and_get(client, app, user, '/scans',
+            query_string={'filter': non_matching})
+        assert resp.status_code == 200
+        assert len(resp.get_json()['scans']) == 0
+
+
 class TestMassAssignment:
     """Tests that verify mass assignment vulnerability in user creation."""
 

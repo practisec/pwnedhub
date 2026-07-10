@@ -17,6 +17,10 @@ const template = `
     </div>
     <div class="tool-description" v-if="selectedTool && selectedTool.description">{{ selectedTool.description }}</div>
     <hr>
+    <div class="scan-filter">
+        <input type="text" v-model="filter" @keyup.enter="applyFilter()" placeholder="Filter scans..." />
+        <i class="fas fa-info-circle filter-help" title="Filter scans by evaluating an expression against each scan's properties (command, complete, created, modified). Examples: complete == True, command.startswith('nmap')."></i>
+    </div>
     <div v-if="scans.length > 0" class="responsive-table scans-table">
         <div class="responsive-table-headers">
             <div class="responsive-table-header" style="flex-basis: 40%;">{{ headings.command }}</div>
@@ -71,6 +75,8 @@ export default {
         const appStore = useAppStore();
 
         const scans = ref([]);
+        const filter = ref('');
+        const appliedFilter = ref('');
         const tools = ref([]);
         const selectedTool = ref({});
         const scanForm = ref({
@@ -86,10 +92,24 @@ export default {
 
         let polling = null;
 
+        // Background refresh (initial load + poll). Uses the last applied filter
+        // and stays silent on error so a bad filter doesn't spam toasts.
         async function getScans() {
             try {
-                const json = await Scan.all();
+                const json = await Scan.all(appliedFilter.value);
                 scans.value = json.scans;
+            } catch (error) {
+                // ignore; applyFilter surfaces filter errors on submit
+            };
+        };
+
+        // Interactive filter submit. Only remembers the filter if it succeeds,
+        // so the poll never re-runs an expression that errored.
+        async function applyFilter() {
+            try {
+                const json = await Scan.all(filter.value);
+                scans.value = json.scans;
+                appliedFilter.value = filter.value;
             } catch (error) {
                 appStore.createToast(error.message);
             };
@@ -165,7 +185,9 @@ export default {
 
         return {
             scans,
+            filter,
             tools,
+            applyFilter,
             selectedTool,
             scanForm,
             headings,

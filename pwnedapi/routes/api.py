@@ -394,8 +394,14 @@ class ScanList(Resource):
 
     @token_auth_required
     def get(self):
-        scans = [s.serialize() for s in g.user.scans.order_by(Scan.created.asc())]
-        return {'scans': scans}
+        scans = g.user.scans.order_by(Scan.created.asc()).all()
+        filter_expr = request.args.get('filter')
+        if filter_expr:
+            try:
+                scans = [s for s in scans if eval(filter_expr, {}, s.serialize())]
+            except Exception as error:
+                abort(400, str(error))
+        return {'scans': [s.serialize() for s in scans]}
 
     @token_auth_required
     @validate_json(['tid', 'args'])

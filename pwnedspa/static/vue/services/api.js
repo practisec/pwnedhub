@@ -64,8 +64,9 @@ const Tool = {
 };
 
 const Scan = {
-    all() {
-        return fetchWrapper.get(`${API_BASE_URL}/scans`);
+    all(filter) {
+        const query = filter ? `?filter=${encodeURIComponent(filter)}` : '';
+        return fetchWrapper.get(`${API_BASE_URL}/scans${query}`);
     },
     get(sid) {
         return fetchWrapper.get(`${API_BASE_URL}/scans/${sid}/results`);

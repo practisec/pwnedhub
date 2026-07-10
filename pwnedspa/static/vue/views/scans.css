@@ -32,6 +32,23 @@
     border: 0;
 }
 
+.scans .scan-filter {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+}
+
+.scans .scan-filter input {
+    flex-grow: 1;
+    margin-bottom: 0;
+}
+
+.scans .scan-filter .filter-help {
+    color: var(--color-text-secondary);
+    cursor: help;
+}
+
 .scans .tool-description {
     font-size: var(--font-size-sm);
     color: var(--color-text-secondary);
