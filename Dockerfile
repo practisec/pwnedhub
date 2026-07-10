@@ -53,6 +53,25 @@ RUN GECKO_VERSION=v0.37.0 && \
     chmod +x /usr/bin/geckodriver && \
     rm /tmp/geckodriver.tar.gz
 
+# Security scanning tools the pwnedapi scan feature shells out to (api-worker).
+# Installed the same way as the kaio Packer/Ansible AMI role — same versions,
+# /opt layout, and /usr/bin wrappers — so Tool.path values and behavior match
+# production. ubuntu:22.04 is more minimal than the EC2 AMI, so packages present
+# by default there are installed explicitly: dnsutils (dig), perl +
+# libnet-ssleay-perl (nikto), and python3-venv (sslyze).
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        nmap dnsutils git perl libnet-ssleay-perl python3-venv && \
+    git clone --depth 1 --branch 2.5.0 --single-branch https://github.com/sullo/nikto.git /opt/nikto && \
+    printf '#!/bin/bash\ncd /opt/nikto/program/ && ./nikto.pl "$@"\ncd - > /dev/null\n' > /usr/bin/nikto && \
+    git clone --depth 1 --branch 1.10.6 --single-branch https://github.com/sqlmapproject/sqlmap.git /opt/sqlmap && \
+    printf '#!/bin/bash\ncd /opt/sqlmap/ && python3 ./sqlmap.py "$@"\ncd - > /dev/null\n' > /usr/bin/sqlmap && \
+    python3 -m venv /opt/sslyze && \
+    /opt/sslyze/bin/pip install --no-cache-dir sslyze && \
+    printf '#!/bin/bash\ncd /opt/sslyze/\nsource bin/activate\nsslyze "$@"\ndeactivate\ncd - > /dev/null\n' > /usr/bin/sslyze && \
+    chmod 0755 /usr/bin/nikto /usr/bin/sqlmap /usr/bin/sslyze && \
+    rm -rf /var/lib/apt/lists/*
+
 # Disable client-side SSL to match the db service (--skip-auto-generate-certs).
 RUN printf '[client]\nssl=0\n' > /etc/my.cnf
 
