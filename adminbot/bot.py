@@ -63,11 +63,9 @@ class HubBot(BaseBot):
         self.driver.get('http://www.pwnedhub.com/mail')
 
         self.debug('Clicking the first mail.')
-        rows = self.driver.find_elements('xpath', '//tbody/tr')
+        rows = self.driver.find_elements('xpath', '//div[@class="list"]/div')
         if rows and rows[0].get_attribute('onclick'):
-            for row in rows[:count]:
-                # click first child td to avoid bug with clicking tr elements
-                row.find_elements('xpath', '*')[0].click()
+            rows[0].click()
 
     def compose_mail(self, receiver_id, subject, content):
         self.debug('Composing a mail.')
